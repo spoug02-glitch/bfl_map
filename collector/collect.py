@@ -10,6 +10,7 @@ import sys
 import time
 from pathlib import Path
 
+import brands
 import geo
 import kakao_local
 import menu as menu_mod
@@ -17,9 +18,6 @@ import zeropay
 
 CENTER_LAT, CENTER_LNG = 37.6545, 127.0499  # 창동씨드큐브
 RADIUS_KM = 5.0
-# Brands registered in the zeropay DB but NOT actually usable with Beple Pay
-# (user-verified in the field). Applied to convenience stores only.
-CONVENIENCE_BRAND_BLOCKLIST = ("씨유", "CU")
 OUT_PATH = Path(__file__).resolve().parent.parent / "web" / "public" / "restaurants.json"
 UNRESOLVED_PATH = Path(__file__).resolve().parent / "unresolved.json"
 DISTRICTS = ["도봉구", "노원구", "강북구"]
@@ -33,10 +31,6 @@ def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3):
         if key in seen:
             continue
         seen.add(key)
-        if m["category"] == "체인화 편의점" and any(
-            b in m["name"].upper() for b in CONVENIENCE_BRAND_BLOCKLIST
-        ):
-            continue
         try:
             matched = matcher(m["name"], m["address"])
         except RuntimeError:
@@ -56,6 +50,7 @@ def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3):
             menus = menu_fetcher(matched["place_id"])
         rows.append({
             "name": m["name"],
+            "search_keys": brands.search_keys(m["name"]),
             "address": m["address"],
             "category": m["category"],
             "phone": m["phone"],

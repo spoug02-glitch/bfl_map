@@ -1,3 +1,4 @@
+import brands
 import collect
 
 
@@ -33,17 +34,24 @@ def test_build_dataset_filters_and_dedupes():
     assert r["menus"] == [{"name": "김치찌개", "price": "9000"}]
     assert 0 < r["distance_km"] < 0.2
     assert [u["name"] for u in unresolved] == ["매칭실패집"]
+    assert r["search_keys"] == brands.search_keys("가까운집")
+    assert list(r.keys())[:2] == ["name", "search_keys"]
 
 
-def test_build_dataset_excludes_cu_stores():
+def test_build_dataset_includes_cu_stores():
     merchants = MERCHANTS + [
         {"name": "씨유 씨드큐브점", "address": "서울 도봉구 마들로13길 61", "category": "체인화 편의점", "phone": "02-5"},
-        {"name": "CU창동점", "address": "서울 도봉구 마들로13길 62", "category": "체인화 편의점", "phone": "02-6"},
     ]
-    rows, unresolved = collect.build_dataset(merchants, fake_matcher, fake_menu, delay_sec=0)
+    coords = dict(COORDS, **{
+        "씨유 씨드큐브점": {"place_id": "4", "lat": 37.6546, "lng": 127.0500, "kakao_url": "http://place.map.kakao.com/4"},
+    })
+
+    def matcher(name, address):
+        return coords.get(name)
+
+    rows, unresolved = collect.build_dataset(merchants, matcher, fake_menu, delay_sec=0)
     names = [r["name"] for r in rows] + [u["name"] for u in unresolved]
-    assert "씨유 씨드큐브점" not in names  # CU: zeropay DB에 있지만 비플페이 미연동
-    assert "CU창동점" not in names
+    assert "씨유 씨드큐브점" in names  # CU: 비플페이 사용 가능, 제외 금지
 
 
 def test_build_dataset_skips_menu_for_convenience_stores():
