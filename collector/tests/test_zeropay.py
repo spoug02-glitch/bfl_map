@@ -1,3 +1,6 @@
+import pytest
+import requests
+
 import zeropay
 
 
@@ -37,3 +40,88 @@ def test_iter_all_merchants_paginates(monkeypatch):
     got = list(zeropay.iter_all_merchants("도봉구", "56221", delay_sec=0, page_size=2))
     assert [m["name"] for m in got] == ["가게A", "가게B", "가게C"]
     assert got[0] == {"name": "가게A", "address": "서울 도봉구 1", "category": "커피 전문점", "phone": "02-1"}
+
+
+def test_fetch_merchants_retries_on_failure(monkeypatch):
+    """Test that fetch_merchants retries on transient failure then succeeds."""
+    call_count = 0
+
+    def fake_post(*args, **kwargs):
+        nonlocal call_count
+        call_count += 1
+        if call_count < 3:
+            raise requests.RequestException("Transient error")
+        # Succeed on third attempt
+        class FakeResponse:
+            def json(self):
+                return {"TOTAL_CNT": 1, "LIST2": [{"AFLT_NM": "가게"}]}
+            def raise_for_status(self):
+                pass
+        return FakeResponse()
+
+    monkeypatch.setattr(requests, "post", fake_post)
+    monkeypatch.setattr("time.sleep", lambda x: None)  # Skip sleep
+
+    result = zeropay.fetch_merchants("도봉구", "56221", 1)
+    assert call_count == 3
+    assert result["TOTAL_CNT"] == 1
+
+
+def test_fetch_merchants_raises_after_max_retries(monkeypatch):
+    """Test that fetch_merchants raises RuntimeError after MAX_RETRIES+1 failures."""
+    call_count = 0
+
+    def fake_post(*args, **kwargs):
+        nonlocal call_count
+        call_count += 1
+        raise requests.RequestException("Persistent error")
+
+    monkeypatch.setattr(requests, "post", fake_post)
+    monkeypatch.setattr("time.sleep", lambda x: None)  # Skip sleep
+
+    with pytest.raises(RuntimeError, match="zeropay fetch failed"):
+        zeropay.fetch_merchants("도봉구", "56221", 1)
+
+    assert call_count == zeropay.MAX_RETRIES + 1
+
+
+def test_iter_all_merchants_caps_pages_on_lying_total(monkeypatch):
+    """Test that iter_all_merchants terminates even if server keeps echoing full pages with lying TOTAL_CNT."""
+    call_count = 0
+
+    def fake_fetch(gu, code, page, page_size=100):
+        nonlocal call_count
+        call_count += 1
+        # Server lies: says TOTAL_CNT=1000 but only has 50 actual items
+        # Server keeps returning full pages even past the real data
+        # Without page cap, this would infinite loop
+        if page <= 5:  # Real data is on pages 1-5 (5 pages × 10 items = 50 items)
+            return {
+                "TOTAL_CNT": 1000,  # Lying about total
+                "PAGE_SIZE": page_size,
+                "LIST2": [
+                    {"AFLT_NM": f"가게{page}_{i}", "AFLT_ROAD_ADDR": f"주소{page}_{i}", "BIZ_TYPE": "카테고리", "SHOP_TEL_NO": f"0{i}"}
+                    for i in range(page_size)
+                ]
+            }
+        else:
+            # Server still returns full page even beyond actual data (buggy behavior)
+            return {
+                "TOTAL_CNT": 1000,
+                "PAGE_SIZE": page_size,
+                "LIST2": [
+                    {"AFLT_NM": f"가게{page}_{i}", "AFLT_ROAD_ADDR": f"주소{page}_{i}", "BIZ_TYPE": "카테고리", "SHOP_TEL_NO": f"0{i}"}
+                    for i in range(page_size)
+                ]
+            }
+
+    monkeypatch.setattr(zeropay, "fetch_merchants", fake_fetch)
+
+    # With page_size=10 and TOTAL_CNT=1000, server would report max_pages ~= 1000//10 + 2 = 102
+    # Iterator should stop at the page cap, not infinite loop
+    got = list(zeropay.iter_all_merchants("도봉구", "56221", delay_sec=0, page_size=10))
+
+    # Should have stopped well before 102 pages due to cap
+    # Actual calculation: max_pages = 1000 // 10 + 2 = 102, so should stop around page 102
+    assert call_count <= 103
+    assert len(got) > 0

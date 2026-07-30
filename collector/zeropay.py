@@ -75,6 +75,7 @@ def fetch_merchants(gu: str, biz_type_cd: str, page: int, page_size: int = 100) 
 def iter_all_merchants(gu: str, biz_type_cd: str, delay_sec: float = 0.3, page_size: int = 100) -> Iterator[dict]:
     page = 1
     seen = 0
+    max_pages = None  # Set after first response to guard against over-reported TOTAL_CNT
     while True:
         data = fetch_merchants(gu, biz_type_cd, page, page_size)
         rows = data.get("LIST2") or []
@@ -87,7 +88,11 @@ def iter_all_merchants(gu: str, biz_type_cd: str, delay_sec: float = 0.3, page_s
             }
         seen += len(rows)
         total = int(data.get("TOTAL_CNT") or 0)
-        if not rows or seen >= total:
+        # Defensive cap: if server over-reports TOTAL_CNT, compute max safe pages
+        if max_pages is None and total > 0:
+            max_pages = total // page_size + 2
+        # Terminate if: no more rows, or we've seen all reported items, or we've exceeded the page cap
+        if not rows or seen >= total or (max_pages is not None and page >= max_pages):
             break
         page += 1
         time.sleep(delay_sec)
