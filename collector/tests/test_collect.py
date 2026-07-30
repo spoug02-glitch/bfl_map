@@ -17,7 +17,7 @@ COORDS = {
 }
 
 
-def fake_matcher(name, address):
+def fake_matcher(name, address, category=None):
     return COORDS.get(name)
 
 
@@ -46,7 +46,7 @@ def test_build_dataset_includes_cu_stores():
         "씨유 씨드큐브점": {"place_id": "4", "lat": 37.6546, "lng": 127.0500, "kakao_url": "http://place.map.kakao.com/4"},
     })
 
-    def matcher(name, address):
+    def matcher(name, address, category=None):
         return coords.get(name)
 
     rows, unresolved = collect.build_dataset(merchants, matcher, fake_menu, delay_sec=0)
@@ -65,3 +65,44 @@ def test_build_dataset_skips_menu_for_convenience_stores():
     assert "3" not in calls  # GS25 (체인화 편의점) must not trigger a panel3 call
     gs = next(r for r in rows if r["name"] == "GS25 씨드큐브점")
     assert gs["menus"] == []
+
+
+def test_build_dataset_passes_category_to_matcher():
+    captured = []
+
+    def spy_matcher(name, address, category=None):
+        captured.append((name, category))
+        return COORDS.get(name)
+
+    collect.build_dataset(MERCHANTS, spy_matcher, fake_menu, delay_sec=0)
+    assert ("가까운집", "한식 일반 음식점업") in captured
+    assert ("GS25 씨드큐브점", "체인화 편의점") in captured
+
+
+def test_build_dataset_uses_kakao_display_name_when_it_differs():
+    merchants = [
+        {"name": "순대신록 씨드큐브 창동점", "address": "서울 도봉구 마들로13길 61",
+         "category": "한식 일반 음식점업", "phone": "02-9"},
+    ]
+
+    def matcher(name, address, category=None):
+        return {"place_id": "9", "lat": 37.6546, "lng": 127.0500,
+                "kakao_url": "http://place.map.kakao.com/9", "place_name": "순대실록 창동씨드큐브점"}
+
+    rows, _ = collect.build_dataset(merchants, matcher, fake_menu, delay_sec=0)
+    assert len(rows) == 1
+    r = rows[0]
+    assert r["name"] == "순대실록 창동씨드큐브점"  # kakao's spelling, not zeropay's typo
+    assert r["zeropay_name"] == "순대신록 씨드큐브 창동점"
+    assert list(r.keys())[:2] == ["name", "search_keys"]
+    for key in brands.search_keys("순대실록 창동씨드큐브점"):
+        assert key in r["search_keys"]
+    for key in brands.search_keys("순대신록 씨드큐브 창동점"):
+        assert key in r["search_keys"]
+    assert len(r["search_keys"]) == len(set(r["search_keys"]))
+
+
+def test_build_dataset_omits_zeropay_name_when_names_match():
+    rows, _ = collect.build_dataset(MERCHANTS, fake_matcher, fake_menu, delay_sec=0)
+    r = next(r for r in rows if r["name"] == "가까운집")
+    assert "zeropay_name" not in r

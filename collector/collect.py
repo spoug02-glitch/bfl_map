@@ -32,7 +32,7 @@ def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3):
             continue
         seen.add(key)
         try:
-            matched = matcher(m["name"], m["address"])
+            matched = matcher(m["name"], m["address"], m["category"])
         except RuntimeError:
             # Kakao API outage: log merchant to unresolved and continue
             unresolved.append(m)
@@ -48,9 +48,16 @@ def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3):
             menus = []
         else:
             menus = menu_fetcher(matched["place_id"])
-        rows.append({
-            "name": m["name"],
-            "search_keys": brands.search_keys(m["name"]),
+        display_name = matched.get("place_name") or m["name"]
+        search_keys = brands.search_keys(display_name)
+        if display_name != m["name"]:
+            for key in brands.search_keys(m["name"]):
+                if key not in search_keys:
+                    search_keys.append(key)
+        row = {"name": display_name, "search_keys": search_keys}
+        if display_name != m["name"]:
+            row["zeropay_name"] = m["name"]
+        row.update({
             "address": m["address"],
             "category": m["category"],
             "phone": m["phone"],
@@ -61,6 +68,7 @@ def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3):
             "kakao_url": matched["kakao_url"],
             "menus": menus,
         })
+        rows.append(row)
         time.sleep(delay_sec)
     rows.sort(key=lambda r: r["distance_km"])
     return rows, unresolved
