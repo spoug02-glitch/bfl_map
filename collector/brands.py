@@ -78,6 +78,33 @@ def search_keys(name: str) -> list[str]:
     return result
 
 
+def name_variants(name: str) -> list[str]:
+    """De-duplicated outbound-query variants of `name`: the original text
+    plus alias-substituted copies. Unlike search_keys/expand_query, this
+    operates on the raw (unnormalized) text and preserves everything outside
+    the substituted span, so "씨유 방학롯데캐슬점" yields "cu 방학롯데캐슬점"
+    as a variant suitable for sending to the Kakao keyword search API."""
+    variants = [name]
+    lower = name.casefold()
+    for group in ALIAS_GROUPS:
+        for member in group:
+            idx = lower.find(member)
+            if idx == -1:
+                continue
+            for other in group:
+                if other == member:
+                    continue
+                variants.append(name[:idx] + other + name[idx + len(member):])
+
+    seen: set[str] = set()
+    result: list[str] = []
+    for v in variants:
+        if v not in seen:
+            seen.add(v)
+            result.append(v)
+    return result
+
+
 def expand_query(q: str) -> list[str]:
     """normalize(q) plus alias substitutions for consumers searching a plain
     name string (rather than a precomputed search_keys list)."""

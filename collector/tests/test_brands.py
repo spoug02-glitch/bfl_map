@@ -50,3 +50,18 @@ def test_expand_query_includes_alias_substitutions():
 def test_search_keys_deduplicated_and_order_stable():
     keys = brands.search_keys("씨유 방학점")
     assert len(keys) == len(set(keys))
+
+
+def test_name_variants_substitutes_alias_preserving_display_text():
+    variants = brands.name_variants("씨유 방학롯데캐슬점")
+    assert "씨유 방학롯데캐슬점" in variants  # original always included
+    assert "cu 방학롯데캐슬점" in variants
+
+
+def test_name_variants_no_alias_match_returns_only_original():
+    assert brands.name_variants("가까운집") == ["가까운집"]
+
+
+def test_name_variants_deduplicated():
+    variants = brands.name_variants("씨유 방학점")
+    assert len(variants) == len(set(variants))
