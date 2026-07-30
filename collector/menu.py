@@ -21,12 +21,14 @@ def fetch_menu(place_id: str) -> list[dict]:
         res = requests.get(PANEL3_URL.format(place_id=place_id), headers=HEADERS, timeout=10)
         res.raise_for_status()
         items = (res.json().get("menu") or {}).get("menus", {}).get("items") or []
+        out = []
+        for it in items[:TOP_N]:
+            if not isinstance(it, dict):
+                continue
+            name = (it.get("name") or "").strip()
+            if not name:
+                continue
+            out.append({"name": name, "price": str(it.get("price") or "").strip()})
+        return out
     except Exception:
         return []
-    out = []
-    for it in items[:TOP_N]:
-        name = (it.get("name") or "").strip()
-        if not name:
-            continue
-        out.append({"name": name, "price": str(it.get("price") or "").strip()})
-    return out

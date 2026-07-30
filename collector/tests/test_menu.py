@@ -32,3 +32,17 @@ def test_fetch_menu_missing_menu_key(monkeypatch):
 def test_fetch_menu_http_error_returns_empty(monkeypatch):
     monkeypatch.setattr(menu.requests, "get", lambda *a, **k: FakeRes(406, {}))
     assert menu.fetch_menu("111") == []
+
+
+def test_fetch_menu_mixed_valid_invalid_items(monkeypatch):
+    payload = {"menu": {"menus": {"items": [
+        "string",
+        None,
+        123,
+        {"name": "유효한메뉴", "price": "5000"},
+        {"name": "", "price": "0"},
+    ]}}}
+    monkeypatch.setattr(menu.requests, "get", lambda *a, **k: FakeRes(200, payload))
+    got = menu.fetch_menu("111")
+    assert len(got) == 1
+    assert got[0] == {"name": "유효한메뉴", "price": "5000"}
