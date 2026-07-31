@@ -65,6 +65,26 @@ def _load_checkpoint(path: Path) -> tuple[list, list, list, set]:
     return rows, unresolved, out_of_radius, processed
 
 
+def dedupe_by_place_id(rows: list[dict]) -> tuple[list[dict], int]:
+    """Collapse rows that point at the same Kakao place, keeping the first.
+
+    One physical restaurant must produce exactly one pin. Two different zeropay
+    listings legitimately resolve to one Kakao place (e.g. '씨유 L도봉지사4층점'
+    and '…8층점' are two floors of one store), and a resumed run can also replay
+    a row it then recomputes. Both would otherwise stack pins on the map.
+    Rows are distance-sorted before this runs, so the kept row is the nearest.
+    """
+    seen: set[str] = set()
+    out: list[dict] = []
+    for r in rows:
+        pid = r.get("kakao_place_id")
+        if pid in seen:
+            continue
+        seen.add(pid)
+        out.append(r)
+    return out, len(rows) - len(out)
+
+
 def _append_checkpoint(path: Path, key: tuple[str, str], status: str, value) -> None:
     with path.open("a", encoding="utf-8") as f:
         f.write(json.dumps({"key": list(key), "status": status, "value": value},
@@ -212,6 +232,10 @@ def main() -> None:
                                      progress_every=50, out_of_radius=out_of_radius,
                                      duplicates=duplicates, checkpoint_path=CHECKPOINT_PATH)
 
+    rows, merged = dedupe_by_place_id(rows)
+    if merged:
+        print(f"[done] merged {merged} row(s) pointing at an already-listed Kakao place", flush=True)
+
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(json.dumps(rows, ensure_ascii=False, indent=1), encoding="utf-8")
     UNRESOLVED_PATH.write_text(json.dumps(unresolved, ensure_ascii=False, indent=1), encoding="utf-8")
@@ -219,9 +243,17 @@ def main() -> None:
     print(f"[done] restaurants: {len(rows)} -> {OUT_PATH}")
     print(f"[done] unresolved: {len(unresolved)} -> {UNRESOLVED_PATH}")
     print(f"[done] out_of_radius: {len(out_of_radius)} -> {OUT_OF_RADIUS_PATH}")
-    a, b, c, d, n = len(rows), len(unresolved), len(out_of_radius), len(duplicates), len(merchants)
+    a, b, c, d, n = (len(rows) + merged, len(unresolved), len(out_of_radius),
+                     len(duplicates), len(merchants))
     print(f"[done] crawled={n} matched={a} unresolved={b} out_of_radius={c} duplicates={d} "
           f"({a}+{b}+{c}+{d} == {n}: {a + b + c + d == n})")
+    if a + b + c + d != n:
+        # A resumed run counts merchants restored from the checkpoint as repeats,
+        # so this only balances on an uninterrupted run. Say so instead of
+        # printing a bare False that reads like data loss.
+        print("[done] note: totals only balance on an uninterrupted run — a resume "
+              "re-encounters already-processed merchants and counts them as duplicates",
+              flush=True)
     # the run finished, so the resume log has served its purpose
     CHECKPOINT_PATH.unlink(missing_ok=True)
 

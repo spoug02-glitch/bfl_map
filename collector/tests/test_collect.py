@@ -254,3 +254,22 @@ def test_checkpoint_key_survives_name_correction(tmp_path):
     rec = json.loads(cp.read_text(encoding="utf-8").splitlines()[0])
     assert rec["key"] == ["긱(GIG)", "서울 도봉구 노해로 384"]
     assert rec["value"]["zeropay_name"] == "긱(GIG)"
+
+
+def test_dedupe_by_place_id_keeps_first():
+    # one physical restaurant must produce exactly one pin
+    rows = [
+        {"name": "가까운집", "kakao_place_id": "1", "distance_km": 0.1},
+        {"name": "먼 중복", "kakao_place_id": "1", "distance_km": 0.9},
+        {"name": "다른집", "kakao_place_id": "2", "distance_km": 0.5},
+    ]
+    out, merged = collect.dedupe_by_place_id(rows)
+    assert merged == 1
+    assert [r["kakao_place_id"] for r in out] == ["1", "2"]
+    assert out[0]["name"] == "가까운집"  # rows arrive distance-sorted, so nearest wins
+
+
+def test_dedupe_by_place_id_noop_when_unique():
+    rows = [{"kakao_place_id": str(i)} for i in range(3)]
+    out, merged = collect.dedupe_by_place_id(rows)
+    assert merged == 0 and len(out) == 3
