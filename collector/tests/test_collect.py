@@ -126,3 +126,34 @@ def test_build_dataset_emits_progress_heartbeat(capsys):
 def test_build_dataset_silent_without_progress_every(capsys):
     collect.build_dataset(MERCHANTS, fake_matcher, fake_menu, delay_sec=0)
     assert "[match]" not in capsys.readouterr().out
+
+
+# --- D2: out-of-radius audit trail ----------------------------------------
+
+def test_build_dataset_records_out_of_radius_match_with_distance():
+    """A merchant that matches a real Kakao place beyond RADIUS_KM must be
+    recorded (not silently dropped), carrying enough to audit a suspected
+    wrong match: zeropay name/address, matched kakao place_name/place_id,
+    and the computed distance."""
+    out_of_radius = []
+    rows, unresolved = collect.build_dataset(MERCHANTS, fake_matcher, fake_menu, delay_sec=0,
+                                              out_of_radius=out_of_radius)
+    assert len(out_of_radius) == 1
+    entry = out_of_radius[0]
+    assert entry["zeropay_name"] == "먼집"
+    assert entry["zeropay_address"] == "서울 강북구 어딘가 1"
+    assert entry["kakao_place_id"] == "2"
+    assert entry["distance_km"] > collect.RADIUS_KM
+    # out-of-radius entries must not silently appear as matched rows
+    assert "먼집" not in [r["name"] for r in rows]
+
+
+def test_build_dataset_reconciliation_arithmetic_balances():
+    """Every crawled merchant must land in exactly one of: matched (rows),
+    unresolved, out_of_radius, or duplicates — nothing may vanish."""
+    out_of_radius = []
+    duplicates = []
+    rows, unresolved = collect.build_dataset(MERCHANTS, fake_matcher, fake_menu, delay_sec=0,
+                                              out_of_radius=out_of_radius, duplicates=duplicates)
+    assert len(rows) + len(unresolved) + len(out_of_radius) + len(duplicates) == len(MERCHANTS)
+    assert len(duplicates) == 1

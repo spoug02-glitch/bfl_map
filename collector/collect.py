@@ -20,16 +20,25 @@ CENTER_LAT, CENTER_LNG = 37.6545, 127.0499  # 창동씨드큐브
 RADIUS_KM = 5.0
 OUT_PATH = Path(__file__).resolve().parent.parent / "web" / "public" / "restaurants.json"
 UNRESOLVED_PATH = Path(__file__).resolve().parent / "unresolved.json"
+OUT_OF_RADIUS_PATH = Path(__file__).resolve().parent / "out_of_radius.json"
 DISTRICTS = ["도봉구", "노원구", "강북구"]
 
 
 def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3,
-                  progress_every: int = 0):
+                  progress_every: int = 0, out_of_radius: list | None = None,
+                  duplicates: list | None = None):
     """Match merchants to Kakao places and attach menus.
 
     This is the slowest phase by far (a few API calls plus a delay per merchant),
     so pass progress_every=N to print a heartbeat every N merchants — without it a
     multi-thousand-row run looks indistinguishable from a hang.
+
+    out_of_radius and duplicates are optional audit-trail out-params: when
+    provided, every merchant dropped for being beyond RADIUS_KM (resp. a
+    repeat (name, address) row) is appended to the given list instead of
+    silently vanishing. Passing None (the default) keeps behavior and the
+    (rows, unresolved) return contract identical to before — every existing
+    caller is unaffected.
     """
     rows, unresolved = [], []
     seen: set[tuple[str, str]] = set()
@@ -40,6 +49,8 @@ def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3,
                   flush=True)
         key = (m["name"], m["address"])
         if key in seen:
+            if duplicates is not None:
+                duplicates.append(m)
             continue
         seen.add(key)
         try:
@@ -53,6 +64,14 @@ def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3,
             continue
         dist = geo.haversine_km(CENTER_LAT, CENTER_LNG, matched["lat"], matched["lng"])
         if dist > RADIUS_KM:
+            if out_of_radius is not None:
+                out_of_radius.append({
+                    "zeropay_name": m["name"],
+                    "zeropay_address": m["address"],
+                    "kakao_place_name": matched.get("place_name") or m["name"],
+                    "kakao_place_id": matched["place_id"],
+                    "distance_km": round(dist, 2),
+                })
             continue
         # menus are meaningless for convenience stores — skip the panel3 call
         if m["category"] == "체인화 편의점":
@@ -111,14 +130,22 @@ def main() -> None:
     print(f"[crawl] merchants: {len(merchants)}")
 
     menu_fetcher = (lambda _pid: []) if args.skip_menus else menu_mod.fetch_menu
+    out_of_radius: list = []
+    duplicates: list = []
     rows, unresolved = build_dataset(merchants, kakao_local.match_place, menu_fetcher,
-                                     progress_every=50)
+                                     progress_every=50, out_of_radius=out_of_radius,
+                                     duplicates=duplicates)
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(json.dumps(rows, ensure_ascii=False, indent=1), encoding="utf-8")
     UNRESOLVED_PATH.write_text(json.dumps(unresolved, ensure_ascii=False, indent=1), encoding="utf-8")
+    OUT_OF_RADIUS_PATH.write_text(json.dumps(out_of_radius, ensure_ascii=False, indent=1), encoding="utf-8")
     print(f"[done] restaurants: {len(rows)} -> {OUT_PATH}")
     print(f"[done] unresolved: {len(unresolved)} -> {UNRESOLVED_PATH}")
+    print(f"[done] out_of_radius: {len(out_of_radius)} -> {OUT_OF_RADIUS_PATH}")
+    a, b, c, d, n = len(rows), len(unresolved), len(out_of_radius), len(duplicates), len(merchants)
+    print(f"[done] crawled={n} matched={a} unresolved={b} out_of_radius={c} duplicates={d} "
+          f"({a}+{b}+{c}+{d} == {n}: {a + b + c + d == n})")
 
 
 if __name__ == "__main__":
