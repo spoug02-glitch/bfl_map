@@ -52,16 +52,19 @@ def _is_hangul_syllable(ch: str) -> bool:
 def _brand_boundary_ok(text: str, member: str) -> bool:
     """True when `member` occurs at the very START of `text` (a brand name
     is always the leading token of a search key/name, never buried
-    mid-word) and, when the member's final character is a Latin letter or
-    digit, the character immediately following the match is NOT a Latin
-    letter. This rejects 'cu' matching as a prefix of 'cupid'/'cucina' or
-    'bhc'/'bbq'/'kfc' inside a longer Latin word, while still allowing
-    digit- or Hangul-followed matches like 'gs25' in 'gs25방학본점' or
-    '씨유' in '씨유방학점'."""
+    mid-word) and, when the member's final character is a Latin LETTER, the
+    character immediately following the match is NOT a Latin letter. This
+    rejects 'cu' matching as a prefix of 'cupid'/'cucina' or 'bhc'/'bbq'/'kfc'
+    inside a longer Latin word. When the member ends in a DIGIT (e.g.
+    'gs25'), a following Latin letter is a script transition — a real
+    boundary, not a continuation of the same word (e.g. 'gs25' in
+    'gs25s노원역점') — so the guard does not apply; digit- or
+    Hangul-followed matches like 'gs25' in 'gs25방학본점' or '씨유' in
+    '씨유방학점' are unaffected either way."""
     if not text.startswith(member):
         return False
     last = member[-1:]
-    if last.isascii() and last.isalnum():
+    if last.isascii() and last.isalpha():
         nxt = text[len(member):len(member) + 1]
         if nxt.isascii() and nxt.isalpha():
             return False
@@ -77,7 +80,7 @@ def _occurs_at_boundary(key: str, q: str, idx: int) -> bool:
         if (prev.isascii() and prev.isalpha()) or _is_hangul_syllable(prev):
             return False
     last = q[-1:]
-    if last.isascii() and last.isalnum():
+    if last.isascii() and last.isalpha():
         end = idx + len(q)
         nxt = key[end:end + 1]
         if nxt.isascii() and nxt.isalpha():

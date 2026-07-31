@@ -121,3 +121,25 @@ def test_gs25_aliases_still_cross_match():
     keys_hangul = brands.search_keys("지에스25방학본점")
     assert brands.matches("지에스25", keys_latin)
     assert brands.matches("gs25", keys_hangul)
+
+
+# --- D3: alias boundary must not reject a digit-ending member followed by
+#         a Latin letter (script transition, not a word continuation) -----
+
+def test_gs25_digit_boundary_followed_by_latin_letter_still_matches():
+    """'GS25 S노원역점' normalizes (space stripped) to 'gs25s노원역점' — the
+    'gs25' alias member ends in a digit, so the following Latin 's' is a
+    real boundary (script transition), not a continuation of the same
+    word. Must still yield a 지에스25 variant and match."""
+    keys = brands.search_keys("GS25 S노원역점")
+    assert brands.matches("지에스25", keys)
+    assert any(key.startswith("지에스25") for key in keys)
+
+
+def test_lovecup_still_produces_no_cu_key_after_digit_boundary_relaxation():
+    """Regression guard: relaxing the digit-ending boundary rule must not
+    reopen the 'cu' (Latin-letter-ending alias) false positive inside
+    'lovecup' — 'cu' still ends in a letter, so the guard still applies."""
+    keys = brands.search_keys("러브컵(LOVECUP)")
+    assert not any(brands._contains_at_boundary(k, "cu") for k in keys)
+    assert brands.matches("씨유", keys) is False
