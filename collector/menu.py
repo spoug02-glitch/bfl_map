@@ -2,6 +2,11 @@
 
 Unofficial endpoint — requires `pf: web` header + browser UA.
 Any failure degrades to an empty list (map still works without menus).
+
+DELIBERATE SCOPE LIMIT — text only, never images. The panel3 response also
+carries menu photos (`menu.menus.photos` and per-item image URLs); we drop all
+of them on purpose, because we cannot attribute their source. Only the menu
+name and price are kept. Do not "enrich" this with photo URLs.
 """
 import requests
 

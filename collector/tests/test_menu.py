@@ -24,6 +24,23 @@ def test_fetch_menu_top5(monkeypatch):
     assert got[0] == {"name": "메뉴1", "price": "1000"}
 
 
+def test_fetch_menu_never_returns_photo_data(monkeypatch):
+    """We cannot attribute image sources, so menu photos must never be collected."""
+    payload = {"menu": {"menus": {
+        "photos": [{"url": "https://img.kakaocdn.net/menu1.jpg"}],
+        "items": [
+            {"name": "얼큰 순대국", "price": "15000",
+             "photo": {"url": "https://img.kakaocdn.net/item1.jpg"},
+             "image_url": "https://img.kakaocdn.net/item1b.jpg"},
+        ],
+    }}}
+    monkeypatch.setattr(menu.requests, "get", lambda *a, **k: FakeRes(200, payload))
+    got = menu.fetch_menu("111")
+    assert got == [{"name": "얼큰 순대국", "price": "15000"}]
+    assert all(set(item) == {"name", "price"} for item in got)
+    assert "jpg" not in str(got)
+
+
 def test_fetch_menu_missing_menu_key(monkeypatch):
     monkeypatch.setattr(menu.requests, "get", lambda *a, **k: FakeRes(200, {}))
     assert menu.fetch_menu("111") == []
