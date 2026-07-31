@@ -72,27 +72,57 @@ def fetch_merchants(gu: str, biz_type_cd: str, page: int, page_size: int = 100) 
     raise RuntimeError(f"zeropay fetch failed: gu={gu} code={biz_type_cd} page={page}") from last_err
 
 
-def iter_all_merchants(gu: str, biz_type_cd: str, delay_sec: float = 0.3, page_size: int = 100) -> Iterator[dict]:
+def _fetch_all_pages(gu: str, biz_type_cd: str, delay_sec: float, page_size: int) -> tuple[list[dict], int]:
+    """Fetch every page for (gu, biz_type_cd) once, de-duplicating by
+    (name, address) so a repeated row across pages can't inflate the
+    count. Returns (unique merchants, server-reported TOTAL_CNT)."""
     page = 1
-    seen = 0
+    total = 0
     max_pages = None  # Set after first response to guard against over-reported TOTAL_CNT
+    seen_keys: set[tuple[str, str]] = set()
+    merchants: list[dict] = []
     while True:
         data = fetch_merchants(gu, biz_type_cd, page, page_size)
         rows = data.get("LIST2") or []
+        total = int(data.get("TOTAL_CNT") or 0)
         for r in rows:
-            yield {
+            m = {
                 "name": (r.get("AFLT_NM") or "").strip(),
                 "address": (r.get("AFLT_ROAD_ADDR") or "").strip(),
                 "category": (r.get("BIZ_TYPE") or "").strip(),
                 "phone": (r.get("SHOP_TEL_NO") or "").strip(),
             }
-        seen += len(rows)
-        total = int(data.get("TOTAL_CNT") or 0)
+            key = (m["name"], m["address"])
+            if key not in seen_keys:
+                seen_keys.add(key)
+                merchants.append(m)
         # Defensive cap: if server over-reports TOTAL_CNT, compute max safe pages
         if max_pages is None and total > 0:
             max_pages = total // page_size + 2
-        # Terminate if: no more rows, or we've seen all reported items, or we've exceeded the page cap
-        if not rows or seen >= total or (max_pages is not None and page >= max_pages):
+        # Terminate if: no more rows, or we've collected all reported unique items,
+        # or we've exceeded the page cap
+        if not rows or len(merchants) >= total or (max_pages is not None and page >= max_pages):
             break
         page += 1
         time.sleep(delay_sec)
+    return merchants, total
+
+
+def iter_all_merchants(gu: str, biz_type_cd: str, delay_sec: float = 0.3, page_size: int = 1000) -> Iterator[dict]:
+    """Yield every merchant for (gu, biz_type_cd), de-duplicated by
+    (name, address). page_size defaults to 1000 so a whole result set
+    arrives in a single request for real-world category sizes (verified:
+    848/848 rows for the largest 도봉구 food code); the pagination loop in
+    _fetch_all_pages remains a fallback for any set larger than one page.
+
+    Completeness guarantee: after collecting a (gu, code), the unique
+    count is compared against the server's TOTAL_CNT. If short, the whole
+    fetch is retried once. If still short, a warning is printed (partial
+    data beats a dead run) and the partial result is yielded as-is."""
+    merchants, total = _fetch_all_pages(gu, biz_type_cd, delay_sec, page_size)
+    if total > 0 and len(merchants) < total:
+        merchants, total = _fetch_all_pages(gu, biz_type_cd, delay_sec, page_size)
+        if len(merchants) < total:
+            print(f"[warn] incomplete zeropay crawl: gu={gu} code={biz_type_cd} "
+                  f"expected={total} actual={len(merchants)}", flush=True)
+    yield from merchants
