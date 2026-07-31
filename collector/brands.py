@@ -45,16 +45,74 @@ def _strip_paren_content(text: str) -> str:
     return re.sub(r"[(\[{][^)\]}]*[)\]}]", "", text)
 
 
+def _is_hangul_syllable(ch: str) -> bool:
+    return bool(ch) and "가" <= ch <= "힣"
+
+
+def _brand_boundary_ok(text: str, member: str) -> bool:
+    """True when `member` occurs at the very START of `text` (a brand name
+    is always the leading token of a search key/name, never buried
+    mid-word) and, when the member's final character is a Latin letter or
+    digit, the character immediately following the match is NOT a Latin
+    letter. This rejects 'cu' matching as a prefix of 'cupid'/'cucina' or
+    'bhc'/'bbq'/'kfc' inside a longer Latin word, while still allowing
+    digit- or Hangul-followed matches like 'gs25' in 'gs25방학본점' or
+    '씨유' in '씨유방학점'."""
+    if not text.startswith(member):
+        return False
+    last = member[-1:]
+    if last.isascii() and last.isalnum():
+        nxt = text[len(member):len(member) + 1]
+        if nxt.isascii() and nxt.isalpha():
+            return False
+    return True
+
+
+def _occurs_at_boundary(key: str, q: str, idx: int) -> bool:
+    """Boundary check for an occurrence of `q` at position `idx` within
+    `key`: rejects the match if it is embedded inside a longer Latin/Hangul
+    run on either side (e.g. 'cu' inside 'lovecup')."""
+    if idx > 0:
+        prev = key[idx - 1]
+        if (prev.isascii() and prev.isalpha()) or _is_hangul_syllable(prev):
+            return False
+    last = q[-1:]
+    if last.isascii() and last.isalnum():
+        end = idx + len(q)
+        nxt = key[end:end + 1]
+        if nxt.isascii() and nxt.isalpha():
+            return False
+    return True
+
+
+def _contains_at_boundary(key: str, q: str) -> bool:
+    """Substring containment for `q` in `key`, requiring at least one
+    occurrence that isn't embedded inside a longer word (see
+    _occurs_at_boundary). Plain (non-alias) queries almost always match at
+    index 0 of some key, where the boundary check is trivially satisfied."""
+    if not q:
+        return False
+    start = 0
+    while True:
+        idx = key.find(q, start)
+        if idx == -1:
+            return False
+        if _occurs_at_boundary(key, q, idx):
+            return True
+        start = idx + 1
+
+
 def _alias_substitutions(key: str) -> list[str]:
-    """For every alias group with a member substring in `key`, return `key`
-    with that member replaced by each other member of the group."""
+    """For every alias group whose member matches `key` at a brand boundary
+    (see _brand_boundary_ok), return `key` with the leading occurrence of
+    that member replaced by each other member of the group."""
     variants = []
     for group in ALIAS_GROUPS:
         for member in group:
-            if member in key:
+            if _brand_boundary_ok(key, member):
                 for other in group:
                     if other != member:
-                        variants.append(key.replace(member, other))
+                        variants.append(other + key[len(member):])
     return variants
 
 
@@ -78,23 +136,46 @@ def search_keys(name: str) -> list[str]:
     return result
 
 
+def _name_variant_boundary_ok(text: str, member: str) -> bool:
+    """Stricter than _brand_boundary_ok: name_variants operates on raw,
+    unnormalized display text, where a real brand name is followed by a
+    space or other separator before the branch suffix ("씨유 방학점"), not
+    run directly into another Hangul/Latin word with no separator at all
+    ("맥날레스토랑" is NOT "맥날" + a branch name). Requires the brand
+    boundary check to pass AND the character right after the match (if
+    any) to not itself be a word character (Hangul syllable or Latin
+    letter/digit)."""
+    if not _brand_boundary_ok(text, member):
+        return False
+    nxt = text[len(member):len(member) + 1]
+    if not nxt:
+        return True
+    if nxt.isascii() and nxt.isalnum():
+        return False
+    if _is_hangul_syllable(nxt):
+        return False
+    return True
+
+
 def name_variants(name: str) -> list[str]:
     """De-duplicated outbound-query variants of `name`: the original text
     plus alias-substituted copies. Unlike search_keys/expand_query, this
     operates on the raw (unnormalized) text and preserves everything outside
     the substituted span, so "씨유 방학롯데캐슬점" yields "cu 방학롯데캐슬점"
-    as a variant suitable for sending to the Kakao keyword search API."""
+    as a variant suitable for sending to the Kakao keyword search API. Only
+    substitutes a member found at the very start of `name` (see
+    _name_variant_boundary_ok) — a brand name is always the leading token,
+    never buried mid-word."""
     variants = [name]
     lower = name.casefold()
     for group in ALIAS_GROUPS:
         for member in group:
-            idx = lower.find(member)
-            if idx == -1:
+            if not _name_variant_boundary_ok(lower, member):
                 continue
             for other in group:
                 if other == member:
                     continue
-                variants.append(name[:idx] + other + name[idx + len(member):])
+                variants.append(other + name[len(member):])
 
     seen: set[str] = set()
     result: list[str] = []
@@ -121,8 +202,11 @@ def expand_query(q: str) -> list[str]:
 
 
 def matches(query: str, keys: list[str]) -> bool:
-    """True when any expand_query(query) value is a substring of any key.
+    """True when any expand_query(query) value occurs in any key at a
+    brand boundary (see _contains_at_boundary) — plain substring semantics
+    for ordinary queries, but rejects a short alias term (e.g. 'cu') found
+    only embedded inside a longer unrelated word (e.g. 'lovecup').
     Empty/whitespace query matches everything (no filtering)."""
     if not query or not query.strip():
         return True
-    return any(q in key for q in expand_query(query) for key in keys)
+    return any(_contains_at_boundary(key, q) for q in expand_query(query) for key in keys)

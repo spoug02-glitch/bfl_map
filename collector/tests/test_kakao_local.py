@@ -128,17 +128,149 @@ def test_match_place_precision_guard_rejects_low_similarity_candidates(monkeypat
 
 
 def test_match_place_fallback_still_enforces_gu(monkeypatch):
-    """A same-name store in a different 구 must not be accepted even via fallback."""
+    """A same-name, same-road+number store in a different 구 must not be
+    accepted even via fallback (contrived: real road names don't usually
+    repeat across cities, but the guard must still hold when they do)."""
     def fake_search(query, size=5, category_group_code=None):
-        if query == "서울특별시 도봉구 어딘가 1":
-            return [_doc(place_id="p9", name="순대실록 어딘가점", road="서울 강남구 어딘가 1")]
+        if query == "서울특별시 도봉구 어딘가로 1":
+            return [_doc(place_id="p9", name="순대실록 어딘가점", road="서울 강남구 어딘가로 1")]
         return []
 
     monkeypatch.setattr(kakao_local, "_search", fake_search)
     got = kakao_local.match_place(
-        "순대신록 어딘가점", "서울특별시 도봉구 어딘가 1", category="한식 일반 음식점업"
+        "순대신록 어딘가점", "서울특별시 도봉구 어딘가로 1", category="한식 일반 음식점업"
     )
     assert got is None
+
+
+# --- F1/F2: address is authoritative, name similarity is only a tiebreaker ---
+
+def test_address_fallback_rejects_high_similarity_wrong_address(monkeypatch):
+    """Reproduces F1/F2: an exact-name candidate at the WRONG road/building
+    (same 구, kilometres off) must be rejected even though its similarity
+    score is 1.0 — the correct-address, lower-scoring candidate must win
+    instead."""
+    def fake_search(query, size=5, category_group_code=None):
+        if query == "서울특별시 도봉구 마들로13길 61":
+            return [
+                _doc(place_id="wrong", name="순대신록 씨드큐브 창동점",
+                     road="서울특별시 도봉구 다른로 999"),  # exact name, wrong building
+                _doc(place_id="right", name="순대실록 창동씨드큐브점",
+                     road="서울특별시 도봉구 마들로13길 61"),  # typo'd name, correct building
+            ]
+        return []
+
+    monkeypatch.setattr(kakao_local, "_search", fake_search)
+    got = kakao_local.match_place(
+        "순대신록 씨드큐브 창동점", "서울특별시 도봉구 마들로13길 61", category="한식 일반 음식점업"
+    )
+    assert got is not None
+    assert got["place_id"] == "right"
+
+
+def test_address_fallback_rejects_same_chain_different_branch(monkeypatch):
+    """Reproduces F2's proof case: _similarity('GS25 신창동점','GS25
+    도봉로120점').token == 1.0 (two branches of the same chain), but they
+    are at different addresses -> must not be accepted."""
+    assert kakao_local._similarity("GS25 신창동점", "GS25 도봉로120점").token == 1.0
+
+    def fake_search(query, size=5, category_group_code=None):
+        if query == "서울특별시 도봉구 창동로 1":
+            return [_doc(place_id="other-branch", name="GS25 도봉로120점",
+                          road="서울특별시 도봉구 도봉로120길 5")]
+        return []
+
+    monkeypatch.setattr(kakao_local, "_search", fake_search)
+    got = kakao_local.match_place(
+        "GS25 신창동점", "서울특별시 도봉구 창동로 1", category="체인화 편의점"
+    )
+    assert got is None
+
+
+def test_similarity_returns_full_and_token_components():
+    """_similarity must expose both component scores (not just the max) so
+    a caller can distinguish a real typo (both scores close) from a
+    same-brand-different-branch false positive (token high, full low)."""
+    score = kakao_local._similarity("GS25 신창동점", "GS25 도봉로120점")
+    assert score.token == 1.0
+    assert score.full < score.token
+    assert score.best == max(score.full, score.token)
+
+
+# --- F5: gu missing must not disable the address gate -----------------------
+
+def test_address_fallback_gu_none_still_gates_on_address_core(monkeypatch):
+    """When _gu_of(address) is None, the fallback must still require an
+    exact road+number match rather than accepting any candidate the search
+    happens to return."""
+    def fake_search(query, size=5, category_group_code=None):
+        if query == "마들로13길 61":
+            return [_doc(place_id="wrong-place", name="아무가게",
+                          road="부산광역시 해운대구 다른로 5")]
+        return []
+
+    monkeypatch.setattr(kakao_local, "_search", fake_search)
+    got = kakao_local.match_place("아무가게점", "마들로13길 61", category="한식 일반 음식점업")
+    assert got is None
+    assert kakao_local._gu_of("마들로13길 61") is None
+
+
+def test_address_fallback_rejects_different_brand_sharing_location_suffix(monkeypatch):
+    """Found via the live F6 audit: a multi-tenant building can have an
+    UNRELATED business at the exact same address whose full-name score is
+    inflated by a shared generic branch/location suffix (e.g. a hospital
+    name) even though the brand itself is completely different. The
+    address gate alone isn't enough here (both are genuinely at that
+    building) — the low brand-token score must also reject it.
+    Real case: '이마트24 상계백병원점' (Emart24) vs '카페센트 상계백병원점' (an
+    unrelated cafe) scores full=0.667 (>= FALLBACK_THRESHOLD) but
+    token=0.222 (< TOKEN_FLOOR)."""
+    score = kakao_local._similarity("이마트24 상계백병원점", "카페센트 상계백병원점")
+    assert score.full >= kakao_local.FALLBACK_THRESHOLD
+    assert score.token < kakao_local.TOKEN_FLOOR
+
+    def fake_search(query, size=5, category_group_code=None):
+        if query == "서울특별시 노원구 동일로 1342":
+            return [_doc(place_id="wrong-tenant", name="카페센트 상계백병원점",
+                          road="서울특별시 노원구 동일로 1342")]
+        return []
+
+    monkeypatch.setattr(kakao_local, "_search", fake_search)
+    got = kakao_local.match_place(
+        "이마트24 상계백병원점", "서울특별시 노원구 동일로 1342", category="체인화 편의점"
+    )
+    assert got is None
+
+
+def test_address_fallback_gu_none_still_accepts_correct_address_core(monkeypatch):
+    """The gu-less gate isn't overly strict: a candidate at the exact same
+    road+number must still be accepted."""
+    def fake_search(query, size=5, category_group_code=None):
+        if query == "마들로13길 61":
+            return [_doc(place_id="right", name="가나다마트", road="마들로13길 61")]
+        return []
+
+    monkeypatch.setattr(kakao_local, "_search", fake_search)
+    got = kakao_local.match_place("가나다마트점", "마들로13길 61", category="한식 일반 음식점업")
+    assert got is not None
+    assert got["place_id"] == "right"
+
+
+def test_address_core_extracts_road_and_main_number():
+    assert kakao_local._address_core("서울특별시 도봉구 마들로13길 61 (창동, 씨드큐브)") == \
+        ("마들로13길", "61")
+
+
+def test_address_core_handles_main_sub_number():
+    assert kakao_local._address_core("서울 도봉구 시루봉로 105-2") == ("시루봉로", "105-2")
+
+
+def test_address_core_handles_san_lot_prefix():
+    assert kakao_local._address_core("서울특별시 노원구 동일로 산36-1") == ("동일로", "36-1")
+
+
+def test_address_core_none_when_unparseable():
+    assert kakao_local._address_core("서울특별시 도봉구 어딘가 1") is None
 
 
 def test_clean_address_strips_trailing_dong_building_annotation():
