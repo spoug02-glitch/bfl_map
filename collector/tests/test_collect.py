@@ -1,3 +1,4 @@
+import pytest
 import brands
 import collect
 
@@ -157,3 +158,65 @@ def test_build_dataset_reconciliation_arithmetic_balances():
                                               out_of_radius=out_of_radius, duplicates=duplicates)
     assert len(rows) + len(unresolved) + len(out_of_radius) + len(duplicates) == len(MERCHANTS)
     assert len(duplicates) == 1
+
+
+def _merchants(n):
+    return [
+        {"name": f"가게{i}", "address": f"서울 도봉구 마들로13길 {i}",
+         "category": "한식 일반 음식점업", "phone": "02-1"}
+        for i in range(n)
+    ]
+
+
+def test_checkpoint_resume_matches_uninterrupted_run(tmp_path):
+    # a full run costs hours of API calls; an interruption must not restart from zero
+    cp = tmp_path / "cp.jsonl"
+    ms = _merchants(4)
+    coords = {m["name"]: {"place_id": str(i), "lat": 37.6545, "lng": 127.0499,
+                          "kakao_url": f"http://place.map.kakao.com/{i}"}
+              for i, m in enumerate(ms)}
+
+    calls = []
+
+    def counting_matcher(name, addr, cat=None):
+        calls.append(name)
+        return coords.get(name)
+
+    # first pass dies after 2 merchants
+    with pytest.raises(RuntimeError, match="boom"):
+        def dying(name, addr, cat=None):
+            if len(calls) >= 2:
+                raise ValueError("boom")
+            return counting_matcher(name, addr, cat)
+
+        try:
+            collect.build_dataset(ms, dying, fake_menu, delay_sec=0, checkpoint_path=cp)
+        except ValueError as e:
+            raise RuntimeError("boom") from e
+
+    assert len(calls) == 2
+    first_pass = len(calls)
+
+    # resume: already-processed merchants must not be re-matched
+    calls.clear()
+    rows, unresolved = collect.build_dataset(ms, counting_matcher, fake_menu,
+                                             delay_sec=0, checkpoint_path=cp)
+    assert len(calls) == len(ms) - first_pass  # only the remaining ones cost API calls
+    assert len(rows) == len(ms)
+    assert sorted(r["name"] for r in rows) == sorted(m["name"] for m in ms)
+
+
+def test_checkpoint_tolerates_truncated_final_line(tmp_path):
+    cp = tmp_path / "cp.jsonl"
+    cp.write_text('{"key": ["a", "b"], "status": "unresolved", "value": {"name": "a"}}\n'
+                  '{"key": ["c", "d"], "stat',  # killed mid-write
+                  encoding="utf-8")
+    rows, unresolved, out_of_radius, processed = collect._load_checkpoint(cp)
+    assert processed == {("a", "b")}
+    assert len(unresolved) == 1
+
+
+def test_no_checkpoint_path_writes_nothing(tmp_path):
+    cp = tmp_path / "cp.jsonl"
+    collect.build_dataset(MERCHANTS, fake_matcher, fake_menu, delay_sec=0)
+    assert not cp.exists()
