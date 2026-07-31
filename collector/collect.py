@@ -23,10 +23,21 @@ UNRESOLVED_PATH = Path(__file__).resolve().parent / "unresolved.json"
 DISTRICTS = ["도봉구", "노원구", "강북구"]
 
 
-def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3):
+def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3,
+                  progress_every: int = 0):
+    """Match merchants to Kakao places and attach menus.
+
+    This is the slowest phase by far (a few API calls plus a delay per merchant),
+    so pass progress_every=N to print a heartbeat every N merchants — without it a
+    multi-thousand-row run looks indistinguishable from a hang.
+    """
     rows, unresolved = [], []
     seen: set[tuple[str, str]] = set()
-    for m in merchants:
+    total = len(merchants) if hasattr(merchants, "__len__") else 0
+    for idx, m in enumerate(merchants, 1):
+        if progress_every and idx % progress_every == 0:
+            print(f"[match] {idx}/{total} | matched={len(rows)} unresolved={len(unresolved)}",
+                  flush=True)
         key = (m["name"], m["address"])
         if key in seen:
             continue
@@ -100,7 +111,8 @@ def main() -> None:
     print(f"[crawl] merchants: {len(merchants)}")
 
     menu_fetcher = (lambda _pid: []) if args.skip_menus else menu_mod.fetch_menu
-    rows, unresolved = build_dataset(merchants, kakao_local.match_place, menu_fetcher)
+    rows, unresolved = build_dataset(merchants, kakao_local.match_place, menu_fetcher,
+                                     progress_every=50)
 
     OUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUT_PATH.write_text(json.dumps(rows, ensure_ascii=False, indent=1), encoding="utf-8")

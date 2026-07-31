@@ -106,3 +106,23 @@ def test_build_dataset_omits_zeropay_name_when_names_match():
     rows, _ = collect.build_dataset(MERCHANTS, fake_matcher, fake_menu, delay_sec=0)
     r = next(r for r in rows if r["name"] == "가까운집")
     assert "zeropay_name" not in r
+
+
+def test_build_dataset_emits_progress_heartbeat(capsys):
+    # the match phase is silent for thousands of merchants; a heartbeat is the only
+    # way to tell a long run from a hang
+    many = [
+        {"name": f"가게{i}", "address": "서울 도봉구 마들로13길 61",
+         "category": "한식 일반 음식점업", "phone": "02-1"}
+        for i in range(5)
+    ]
+    collect.build_dataset(many, lambda n, a, c=None: None, fake_menu,
+                          delay_sec=0, progress_every=2)
+    out = capsys.readouterr().out
+    assert "[match] 2/5" in out
+    assert "unresolved=" in out
+
+
+def test_build_dataset_silent_without_progress_every(capsys):
+    collect.build_dataset(MERCHANTS, fake_matcher, fake_menu, delay_sec=0)
+    assert "[match]" not in capsys.readouterr().out
