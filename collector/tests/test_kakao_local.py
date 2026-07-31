@@ -221,13 +221,17 @@ def test_address_fallback_rejects_different_brand_sharing_location_suffix(monkey
     inflated by a shared generic branch/location suffix (e.g. a hospital
     name) even though the brand itself is completely different. The
     address gate alone isn't enough here (both are genuinely at that
-    building) — the low brand-token score must also reject it.
+    building) — the brand gate (_brand_agrees) must also reject it.
     Real case: '이마트24 상계백병원점' (Emart24) vs '카페센트 상계백병원점' (an
-    unrelated cafe) scores full=0.667 (>= FALLBACK_THRESHOLD) but
-    token=0.222 (< TOKEN_FLOOR)."""
-    score = kakao_local._similarity("이마트24 상계백병원점", "카페센트 상계백병원점")
-    assert score.full >= kakao_local.FALLBACK_THRESHOLD
-    assert score.token < kakao_local.TOKEN_FLOOR
+    unrelated cafe) scores full=0.667 -- high enough that a plain
+    full-similarity threshold alone (the old FALLBACK_THRESHOLD/.best
+    mechanism this test used to check) would wrongly accept it; the
+    contract changed with the F7 fix (see kakao_local.py's module-level
+    NAME_AGREEMENT_THRESHOLD comment) to gate address-agreeing candidates
+    on brand identity (_brand_agrees) instead, which rejects this pair
+    because "이마트24" resolves to a known brands.ALIAS_GROUPS family and
+    "카페센트" doesn't."""
+    assert kakao_local._brand_agrees("이마트24 상계백병원점", "카페센트 상계백병원점") is False
 
     def fake_search(query, size=5, category_group_code=None):
         if query == "서울특별시 노원구 동일로 1342":
@@ -286,6 +290,121 @@ def test_category_group_code_mapping():
     assert kakao_local._category_group_code("제과점업") == "CE7"
     assert kakao_local._category_group_code("한식 일반 음식점업") == "FD6"
     assert kakao_local._category_group_code(None) is None
+
+
+# --- F7: Step B (name path) must apply the SAME address-verification gate
+# as Step C, not accept on a gu-substring check alone -------------------
+
+def test_match_place_name_path_rejects_same_brand_different_building(monkeypatch):
+    """Reproduces the reported defect: Step B's only candidate is a
+    DIFFERENT branch of the same chain, at a different building in the
+    same 구. _similarity('GS25 신창동점','GS25 도봉로120점').full == 0.526
+    (well below the name-agreement threshold) and the addresses disagree,
+    so this must be rejected -- not accepted on the gu match alone."""
+    def fake_search(query, size=5, category_group_code=None):
+        if "GS25" in query or "지에스" in query:
+            return [_doc(place_id="wrong-branch", name="GS25 도봉로120점",
+                          road="서울 도봉구 도봉로120길 7")]
+        return []
+
+    monkeypatch.setattr(kakao_local, "_search", fake_search)
+    got = kakao_local.match_place(
+        "GS25 신창동점", "서울특별시 도봉구 마들로13길 61", category="체인화 편의점"
+    )
+    assert got is None
+
+
+def test_match_place_name_path_accepts_same_brand_same_building(monkeypatch):
+    """Same brand, and this time the candidate IS at the merchant's own
+    building -> Step B must still accept it (the new gate must not
+    over-reject a correct match)."""
+    def fake_search(query, size=5, category_group_code=None):
+        if "GS25" in query or "지에스" in query:
+            return [_doc(place_id="right-branch", name="GS25 신창동점",
+                          road="서울특별시 도봉구 마들로13길 61")]
+        return []
+
+    monkeypatch.setattr(kakao_local, "_search", fake_search)
+    got = kakao_local.match_place(
+        "GS25 신창동점", "서울특별시 도봉구 마들로13길 61", category="체인화 편의점"
+    )
+    assert got is not None
+    assert got["place_id"] == "right-branch"
+
+
+def test_match_place_accepts_alias_branch_label_at_same_address(monkeypatch):
+    """zeropay '씨유도봉한양점' (no space -- brands.name_variants can't even
+    produce a 'cu' query variant for this) vs kakao 'CU 방학한양점': a
+    completely different branch label, verified to be the same physical
+    store. _similarity(...).full is only 0.43 here (branch labels differ a
+    lot), and .token is 0.0 (no characters in common between '씨유...' and
+    'CU'/no space to isolate a token at all) -- neither similarity score
+    can carry this match. The identical address must carry it instead,
+    which requires the brand gate to recognize '씨유' and 'CU' as the same
+    alias family despite sharing zero characters."""
+    def fake_search(query, size=5, category_group_code=None):
+        return [_doc(place_id="cu-alias", name="CU 방학한양점",
+                      road="서울특별시 도봉구 마들로13길 61")]
+
+    monkeypatch.setattr(kakao_local, "_search", fake_search)
+    got = kakao_local.match_place(
+        "씨유도봉한양점", "서울특별시 도봉구 마들로13길 61", category="체인화 편의점"
+    )
+    assert got is not None
+    assert got["place_id"] == "cu-alias"
+
+
+def test_match_place_accepts_address_annotation_formatting_difference(monkeypatch):
+    """zeropay's address carries a trailing '(동, 건물명)' annotation the
+    Kakao listing doesn't have; _address_core already ignores it, so the
+    two addresses must still be treated as the SAME building."""
+    def fake_search(query, size=5, category_group_code=None):
+        return [_doc(place_id="annotated", name="가나다마트 창동점",
+                      road="서울특별시 도봉구 마들로13길 61")]
+
+    monkeypatch.setattr(kakao_local, "_search", fake_search)
+    got = kakao_local.match_place(
+        "가나다마트 창동점",
+        "서울특별시 도봉구 마들로13길 61 (창동, 씨드큐브)",
+        category="한식 일반 음식점업",
+    )
+    assert got is not None
+    assert got["place_id"] == "annotated"
+
+
+def test_match_place_no_gu_with_candidate_elsewhere_returns_none(monkeypatch):
+    """Second defect proof: when the merchant's own address has no
+    extractable 구 AND doesn't parse into an address core either, Step B
+    must not accept a candidate found anywhere just because the gu guard
+    was trivially skipped."""
+    def fake_search(query, size=5, category_group_code=None):
+        return [_doc(place_id="anywhere", name="아무가게",
+                      road="부산광역시 해운대구 다른로 5")]
+
+    monkeypatch.setattr(kakao_local, "_search", fake_search)
+    got = kakao_local.match_place("아무가게", "이상한주소 12")
+    assert kakao_local._gu_of("이상한주소 12") is None
+    assert got is None
+
+
+def test_match_place_typo_recovers_to_known_place_id(monkeypatch):
+    """Real case (also confirmed once against the live Kakao API, see the
+    fix report): '순대신록 씨드큐브 창동점' at '서울특별시 도봉구 마들로13길
+    61' resolves to Kakao place id 1080924210 ('순대실록 창동씨드큐브점')."""
+    def fake_search(query, size=5, category_group_code=None):
+        if query == "서울특별시 도봉구 마들로13길 61":
+            return [
+                _doc(place_id="1080924210", name="순대실록 창동씨드큐브점",
+                     road="서울특별시 도봉구 마들로13길 61"),
+            ]
+        return []
+
+    monkeypatch.setattr(kakao_local, "_search", fake_search)
+    got = kakao_local.match_place(
+        "순대신록 씨드큐브 창동점", "서울특별시 도봉구 마들로13길 61", category="한식 일반 음식점업"
+    )
+    assert got is not None
+    assert got["place_id"] == "1080924210"
 
 
 def test_match_place_call_budget(monkeypatch):

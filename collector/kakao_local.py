@@ -33,32 +33,37 @@ _CATEGORY_GROUP_MAP = {
     "제과점업": "CE7",
 }
 
-# Address-fallback acceptance threshold for the brand/name similarity score
-# (difflib SequenceMatcher ratio over brands.normalize()d text, see
-# _similarity). Calibrated against real 도봉구 data: the correct match for
-# the "순대신록"(zeropay typo)/"순대실록"(kakao) pair scores ~0.75, while the
-# same-building false positive "씨드큐브 창동 공영주차장" scores ~0.55.
-# 0.65 sits roughly midway, comfortably separating the two.
-FALLBACK_THRESHOLD = 0.65
+# Name-agreement threshold, used by BOTH Step B and Step C (see _classify)
+# as a fallback acceptance path when a candidate's address does NOT match
+# the merchant's own address core: accept purely on a strong full-name
+# match (SimilarityScore.full -- never .token/.best, since two DIFFERENT
+# branches of one chain score .token == 1.0, which is exactly the defect
+# this threshold exists to close).
+#
+# Calibrated against real 도봉구 data (live audit, see the fix report for
+# the full numbers):
+#   - reject anchor: the reported defect pair "GS25 신창동점"/"GS25
+#     도봉로120점" (different branches of one chain, different buildings)
+#     scores full=0.526.
+#   - reject anchor: a false positive actually present in the live 125-
+#     merchant sample before this fix, "우동집"/"마쯔무라돈까스 본점" (an
+#     unrelated restaurant that merely shares the merchant's 구), scores
+#     full=0.0.
+#   - accept anchor: a genuine live match, "씨유 창동현대점"/"CU 창동현대점"
+#     (alias-spelled branch label), scores full=0.714.
+# Most genuine matches are carried by address agreement instead (see
+# _address_agrees) regardless of this threshold, since Kakao's returned
+# listing is almost always at the merchant's real address; this threshold
+# only decides the rarer case where the address string itself doesn't
+# line up (e.g. zeropay stores a lot address, Kakao a road address) or
+# can't be parsed at all. 0.70 sits above both reject anchors with margin
+# while still admitting the accept anchor.
+NAME_AGREEMENT_THRESHOLD = 0.70
 
 # Address-fallback candidate pool size. Must be >=15: with the default
 # size=5, real data showed the top hit for a food-place address query can be
 # an unrelated category (e.g. a parking lot) crowding out the real match.
 FALLBACK_SIZE = 15
-
-# Minimum brand-token similarity (_similarity(...).token) an address-gated
-# candidate must clear to be eligible at all, regardless of its full-name
-# score. Multi-tenant buildings routinely share a generic branch/location
-# suffix (a subway station, hospital, mall name) across UNRELATED
-# businesses, which can inflate `full` well past FALLBACK_THRESHOLD even
-# though the actual brand names have nothing in common — e.g. found via the
-# live F6 audit: "이마트24 상계백병원점" (Emart24) vs "카페센트 상계백병원점"
-# (an unrelated cafe at the same address) scores full=0.667 but token=0.222;
-# "치킨마루광운대점" vs "굿킨 광운대점" scores full=0.714 but token=0.2. The
-# lowest genuinely-correct fallback match observed in that same audit was
-# token=0.462 ("들깨마을 맷돌순두부 수유점" vs its typo'd Kakao listing).
-# 0.35 sits roughly midway between the two, comfortably separating them.
-TOKEN_FLOOR = 0.35
 
 
 def _clean_name(name: str) -> str:
@@ -132,12 +137,11 @@ def _address_core(address: str) -> tuple[str, str] | None:
     return road, number
 
 
-def _accept(doc: dict, gu: str | None) -> dict | None:
+def _accept(doc: dict) -> dict | None:
     """Build the match_place() result dict from a Kakao doc, or None if the
-    doc is missing required fields or falls outside the target 구."""
-    doc_addr = doc.get("road_address_name") or doc.get("address_name") or ""
-    if gu and gu not in doc_addr:
-        return None
+    doc is missing required fields (id/x/y). Eligibility (gu/address/name
+    agreement) is decided upstream by _classify/_best_candidate; this
+    function only shapes the output."""
     try:
         return {
             "place_id": str(doc["id"]),
@@ -183,10 +187,10 @@ def _similarity(zeropay_name: str, candidate_name: str) -> SimilarityScore:
     inside longer strings); scoring the full name catches space-less names
     where there is no separate token ("88켄터키창동점"). NOTE: two
     different branches of the same chain (e.g. "GS25 신창동점" vs "GS25
-    도봉로120점") score token=1.0 here — this is expected and safe only
-    because callers gate acceptance on an exact address match first (see
-    _address_fallback) and use this score purely as a tiebreaker among
-    address-verified candidates."""
+    도봉로120점") score token=1.0 here -- .token/.best must never by
+    themselves decide acceptance; kept on SimilarityScore for callers that
+    want them (e.g. tests), but _classify's acceptance rule only ever
+    reads .full."""
     full = difflib.SequenceMatcher(
         None, brands.normalize(zeropay_name), brands.normalize(candidate_name)
     ).ratio()
@@ -196,74 +200,188 @@ def _similarity(zeropay_name: str, candidate_name: str) -> SimilarityScore:
     return SimilarityScore(full=full, token=token, best=max(full, token))
 
 
-def _address_fallback(
-    zeropay_name: str, address: str, gu: str | None, category_group_code: str | None
-) -> dict | None:
-    """Search the merchant's own address (optionally category-filtered).
+def _address_agrees(doc_addr: str, merchant_core: tuple[str, str] | None) -> bool:
+    """True when the candidate's road name + building main number exactly
+    equal the merchant's (_address_core). merchant_core is None whenever
+    the merchant's own address didn't parse into a comparable core, in
+    which case address agreement can never be established."""
+    return merchant_core is not None and _address_core(doc_addr) == merchant_core
 
-    Address is the authoritative signal here, name similarity only a
-    tiebreaker: a candidate is eligible only when its road name + building
-    number exactly match the merchant's (_address_core) — this is checked
-    unconditionally, independent of gu, so it holds even when _gu_of
-    couldn't extract a district (F5). The 구 substring check is kept as an
-    additional guard on top, not the only one (F1/F2). Address-eligible
-    candidates are further required to clear TOKEN_FLOOR on brand-token
-    similarity before they're even considered for ranking — this rejects
-    an unrelated tenant at the same multi-tenant building whose full-name
-    score is inflated by a shared generic branch suffix (e.g. a subway
-    station or hospital name) despite an entirely different brand. Among
-    the remaining candidates, accept the highest-similarity one only if it
-    clears FALLBACK_THRESHOLD; if the merchant's own address can't be
-    parsed into a road+number core at all, we cannot verify anything, so
-    return None rather than guessing.
-    """
-    query = _clean_address(address)
-    merchant_core = _address_core(query)
-    if merchant_core is None:
-        return None
-    best_doc, best_score = None, None
-    for doc in _search(query, size=FALLBACK_SIZE, category_group_code=category_group_code):
-        doc_addr = doc.get("road_address_name") or doc.get("address_name") or ""
-        if gu and gu not in doc_addr:
-            continue
-        if _address_core(doc_addr) != merchant_core:
-            continue
-        score = _similarity(zeropay_name, doc.get("place_name") or "")
-        if score.token < TOKEN_FLOOR:
-            continue
-        if best_score is None or score.best > best_score.best:
-            best_doc, best_score = doc, score
-    if best_doc is not None and best_score.best >= FALLBACK_THRESHOLD:
-        return _accept(best_doc, gu)
+
+def _brand_family(normalized_name: str) -> str | None:
+    """Alias-canonical brand identity for a brands.normalize()d name: the
+    matching ALIAS_GROUPS group's first member, if `normalized_name`
+    starts with any group member at a brand boundary (reusing
+    brands._brand_boundary_ok, the same check brands.name_variants() uses
+    for query generation), else None. Lets two spellings of the SAME brand
+    across scripts (e.g. "씨유..." and "cu...", which share zero
+    characters) be recognized as equal."""
+    for group in brands.ALIAS_GROUPS:
+        for member in group:
+            if brands._brand_boundary_ok(normalized_name, member):
+                return group[0]
     return None
+
+
+def _brand_agrees(zeropay_name: str, candidate_name: str) -> bool:
+    """Brand-identity check for an address-agreeing candidate (F6): True
+    when either (a) one brands.normalize()d name fully CONTAINS the other
+    as a substring — e.g. "썬더치킨" is a straight prefix of "썬더치킨
+    서울쌍문점" once normalized (no branch suffix on the zeropay side at
+    all), or "ueru" is embedded in "유이알유(ueru)" — or (b) both names
+    resolve to the SAME known brands.ALIAS_GROUPS family (see
+    _brand_family), e.g. "CU" and "씨유" (zero characters in common, so
+    (a) can't recognize them as one brand either).
+
+    Deliberately does NOT fall back to raw brand-token (leading-token)
+    similarity above a floor for names outside any known alias group: a
+    live false positive confirmed this is unsafe -- "커피앤드힐" vs "우지커피
+    도봉법원점" (unrelated cafes at the same building) share nothing but the
+    generic word "커피" ("coffee") in the middle of both names (so NEITHER
+    contains the other) yet still scored a brand-token ratio of 0.444,
+    nearly indistinguishable from the lowest genuinely-correct token score
+    (~0.462) ever observed for this codebase (see the fix report) -- a
+    floor on that score cannot separate the two. Full containment is a
+    much narrower, explainable condition that both known-good pairs
+    satisfy and the false positive does not. _classify separately falls
+    back to a strong FULL-name match (NAME_AGREEMENT_THRESHOLD) for
+    address-agreeing candidates that clear neither check here (e.g.
+    "메가엠지씨커피" vs "메가MGC커피", which don't contain one another and
+    aren't one curated alias family, but are still a 0.79 full match)."""
+    z_norm = brands.normalize(zeropay_name)
+    c_norm = brands.normalize(candidate_name)
+    if z_norm and c_norm and (z_norm in c_norm or c_norm in z_norm):
+        return True
+    z_family = _brand_family(z_norm)
+    c_family = _brand_family(c_norm)
+    if z_family is None and c_family is None:
+        return False
+    return z_family == c_family
+
+
+def _classify(
+    doc: dict, gu: str | None, zeropay_name: str, merchant_core: tuple[str, str] | None
+) -> tuple[str, float] | None:
+    """Shared acceptance rule for BOTH Step B and Step C (F7): classify one
+    Kakao doc against the merchant, returning (tier, full_score) if
+    eligible, else None.
+
+    A candidate is eligible only if both hold:
+      1. It's in the merchant's 구 (gu is a substring of its address) —
+         skipped when gu couldn't be determined, EXCEPT that in that case
+         address agreement then becomes mandatory (F5): an unparseable
+         merchant district must never let name-similarity alone decide.
+      2. Its road name + building number exactly match the merchant's
+         (_address_core -> tier "address"), OR — only when gu is known —
+         its full name is a strong match to the merchant's (_similarity
+         .full, never .token/.best -> tier "name").
+
+    An "address" candidate additionally has to clear _brand_agrees OR a
+    strong full-name match: an exact building match alone isn't enough
+    evidence in a multi-tenant building (F6, e.g. a parking lot sharing
+    the merchant's building), but _brand_agrees itself can miss a genuine
+    same-store spelling variant that isn't literally an ALIAS_GROUPS
+    member (live example: zeropay's "메가엠지씨커피" vs Kakao's "메가MGC커피"
+    for the SAME store, or zeropay recording the registered corporate name
+    instead of the storefront brand) — a strong full-name match recovers
+    those without reopening the parking-lot/unrelated-tenant hole, since
+    those score well under NAME_AGREEMENT_THRESHOLD (see its comment).
+    A candidate whose address does NOT agree is only eligible via the
+    (gu-gated) full-name-match path -- there is no address-based tier to
+    fall into."""
+    doc_addr = doc.get("road_address_name") or doc.get("address_name") or ""
+    if gu and gu not in doc_addr:
+        return None
+    candidate_name = doc.get("place_name") or ""
+    full = _similarity(zeropay_name, candidate_name).full
+    if _address_agrees(doc_addr, merchant_core):
+        if _brand_agrees(zeropay_name, candidate_name) or full >= NAME_AGREEMENT_THRESHOLD:
+            return "address", full
+        return None
+    if gu is None:
+        return None
+    if full >= NAME_AGREEMENT_THRESHOLD:
+        return "name", full
+    return None
+
+
+def _best_candidate(
+    docs: list[dict], gu: str | None, zeropay_name: str, merchant_core: tuple[str, str] | None
+) -> dict | None:
+    """Pick the best-eligible doc from a single _search() result list (see
+    _classify), preferring an address-verified match over a name-only
+    match so an exact-name candidate at the WRONG building never beats the
+    correct building (F1/F2). Within a tier, ties are broken by the
+    highest full-name score; a malformed top pick (_accept returns None)
+    falls through to the next-best candidate rather than giving up."""
+    address_hits: list[tuple[float, dict]] = []
+    name_hits: list[tuple[float, dict]] = []
+    for doc in docs:
+        classified = _classify(doc, gu, zeropay_name, merchant_core)
+        if classified is None:
+            continue
+        tier, score = classified
+        (address_hits if tier == "address" else name_hits).append((score, doc))
+    for pool in (address_hits, name_hits):
+        for _, doc in sorted(pool, key=lambda p: p[0], reverse=True):
+            accepted = _accept(doc)
+            if accepted:
+                return accepted
+    return None
+
+
+def _address_fallback(
+    zeropay_name: str,
+    address: str,
+    gu: str | None,
+    merchant_core: tuple[str, str] | None,
+    category_group_code: str | None,
+) -> dict | None:
+    """Search the merchant's own address (optionally category-filtered)
+    and hand the results to the shared _best_candidate acceptance rule
+    (see match_place's docstring)."""
+    query = _clean_address(address)
+    docs = _search(query, size=FALLBACK_SIZE, category_group_code=category_group_code)
+    return _best_candidate(docs, gu, zeropay_name, merchant_core)
 
 
 def match_place(name: str, address: str, category: str | None = None) -> dict | None:
     """Resolve a zeropay merchant to a Kakao place.
 
+    Step B (name-query search) and Step C (address-query fallback) share
+    ONE acceptance rule, applied per-candidate via _classify/_best_candidate:
+    a candidate is eligible only if it's in the merchant's 구 (or, when the
+    구 couldn't be determined, only if its address exactly matches the
+    merchant's — F5), AND either its road name + building number exactly
+    match the merchant's (brand-gated against an unrelated tenant at the
+    same building — F6), or — when address agreement isn't established —
+    its full name is a strong match to the merchant's (F7). Within one
+    search call's results, an address-verified candidate always wins over
+    a name-only one, so an exact-name match at the WRONG building can
+    never beat the correct building (F1/F2).
+
     Step B: try the cleaned name, then every alias-substituted variant
     (e.g. "씨유 ..." -> "cu ..."), each scoped to the merchant's 구.
     Step C (only if Step B found nothing): search the merchant's address
-    with a category filter derived from `category`, score candidates by
-    name similarity, and accept the best one above FALLBACK_THRESHOLD; if
-    that yields nothing, retry once without the category filter.
+    with a category filter derived from `category`; if that yields
+    nothing, retry once without the category filter.
     """
     gu = _gu_of(address)
+    merchant_core = _address_core(address)
     cleaned = _clean_name(name)
 
     for variant in brands.name_variants(cleaned):
         query = f"{variant} {gu}" if gu else variant
-        for doc in _search(query):
-            accepted = _accept(doc, gu)
-            if accepted:
-                return accepted
+        best = _best_candidate(_search(query), gu, name, merchant_core)
+        if best:
+            return best
 
     group_code = _category_group_code(category)
-    result = _address_fallback(name, address, gu, group_code)
+    result = _address_fallback(name, address, gu, merchant_core, group_code)
     if result:
         return result
     if group_code is not None:
-        result = _address_fallback(name, address, gu, None)
+        result = _address_fallback(name, address, gu, merchant_core, None)
         if result:
             return result
     return None
