@@ -38,18 +38,30 @@ def _load_checkpoint(path: Path) -> tuple[list, list, list, set]:
     processed: set[tuple[str, str]] = set()
     if not path.exists():
         return rows, unresolved, out_of_radius, processed
+    buckets = {"matched": rows, "unresolved": unresolved, "out_of_radius": out_of_radius}
+    skipped = 0
     for line in path.read_text(encoding="utf-8").splitlines():
         if not line.strip():
             continue
         try:
             rec = json.loads(line)
         except json.JSONDecodeError:
-            continue  # partial final line from a hard kill
-        processed.add((rec["key"][0], rec["key"][1]))
-        bucket = {"matched": rows, "unresolved": unresolved,
-                  "out_of_radius": out_of_radius}.get(rec["status"])
-        if bucket is not None and rec.get("value") is not None:
-            bucket.append(rec["value"])
+            skipped += 1  # partial final line from a hard kill
+            continue
+        # A record must be fully well-formed to be trusted: a half-written or
+        # buggy entry must be re-done, never replayed as if it were a result.
+        key = rec.get("key") if isinstance(rec, dict) else None
+        bucket = buckets.get(rec.get("status")) if isinstance(rec, dict) else None
+        if (not isinstance(key, list) or len(key) != 2
+                or not all(isinstance(part, str) for part in key)
+                or bucket is None or rec.get("value") is None):
+            skipped += 1
+            continue
+        processed.add((key[0], key[1]))
+        bucket.append(rec["value"])
+    if skipped:
+        print(f"[resume] skipped {skipped} unusable checkpoint record(s); "
+              "those merchants will be processed again", flush=True)
     return rows, unresolved, out_of_radius, processed
 
 
@@ -136,9 +148,11 @@ def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3,
         display_name = matched.get("place_name") or m["name"]
         search_keys = brands.search_keys(display_name)
         if display_name != m["name"]:
-            for key in brands.search_keys(m["name"]):
-                if key not in search_keys:
-                    search_keys.append(key)
+            # NOTE: do not name this `key` — it would shadow the (name, address)
+            # tuple this iteration still needs for the checkpoint record.
+            for extra in brands.search_keys(m["name"]):
+                if extra not in search_keys:
+                    search_keys.append(extra)
         row = {"name": display_name, "search_keys": search_keys}
         if display_name != m["name"]:
             row["zeropay_name"] = m["name"]

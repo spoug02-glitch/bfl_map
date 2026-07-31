@@ -1,3 +1,4 @@
+import json
 import pytest
 import brands
 import collect
@@ -220,3 +221,36 @@ def test_no_checkpoint_path_writes_nothing(tmp_path):
     cp = tmp_path / "cp.jsonl"
     collect.build_dataset(MERCHANTS, fake_matcher, fake_menu, delay_sec=0)
     assert not cp.exists()
+
+
+def test_checkpoint_skips_malformed_records(tmp_path, capsys):
+    # a half-written or buggy record must be re-done, never replayed as a result
+    cp = tmp_path / "cp.jsonl"
+    cp.write_text(
+        '{"key": ["good", "addr"], "status": "unresolved", "value": {"name": "good"}}\n'
+        '{"key": ["편"], "status": "matched", "value": {"name": "화로구이편"}}\n'  # shadowed-key bug
+        '{"key": ["a", "b", "c"], "status": "matched", "value": {"name": "x"}}\n'
+        '{"key": "notalist", "status": "matched", "value": {"name": "y"}}\n'
+        '{"key": ["a", "b"], "status": "bogus", "value": {"name": "z"}}\n'
+        '{"key": ["a", "b"], "status": "matched"}\n',
+        encoding="utf-8")
+    rows, unresolved, out_of_radius, processed = collect._load_checkpoint(cp)
+    assert processed == {("good", "addr")}
+    assert len(unresolved) == 1 and not rows and not out_of_radius
+    assert "skipped 5" in capsys.readouterr().out
+
+
+def test_checkpoint_key_survives_name_correction(tmp_path):
+    # regression: an inner loop once rebound `key`, writing list("편") == ["편"]
+    cp = tmp_path / "cp.jsonl"
+    merchants = [{"name": "긱(GIG)", "address": "서울 도봉구 노해로 384",
+                  "category": "커피 전문점", "phone": "02-1"}]
+
+    def renaming_matcher(name, addr, cat=None):
+        return {"place_id": "9", "lat": 37.6545, "lng": 127.0499,
+                "kakao_url": "http://place.map.kakao.com/9", "place_name": "긱"}
+
+    collect.build_dataset(merchants, renaming_matcher, fake_menu, delay_sec=0, checkpoint_path=cp)
+    rec = json.loads(cp.read_text(encoding="utf-8").splitlines()[0])
+    assert rec["key"] == ["긱(GIG)", "서울 도봉구 노해로 384"]
+    assert rec["value"]["zeropay_name"] == "긱(GIG)"
