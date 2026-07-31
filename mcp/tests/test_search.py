@@ -71,3 +71,20 @@ def test_get_menu_not_found(monkeypatch):
     monkeypatch.setattr(server, "_load", lambda: DATA)
     result = server.get_menu("존재하지않는가게이름xyz")
     assert "error" in result
+
+
+def test_get_menu_uses_live_menus_when_fetch_returns_results(monkeypatch):
+    monkeypatch.setattr(server, "_load", lambda: DATA)
+    fresh_menus = [{"name": "새우튀김", "price": "8000"}]
+    monkeypatch.setattr(server.menu_mod, "fetch_menu", lambda place_id: fresh_menus)
+    result = server.get_menu("순대실록")
+    assert result["source"] == "live"
+    assert result["menus"] == fresh_menus
+
+
+def test_get_menu_falls_back_to_cached_menus_when_fetch_returns_empty(monkeypatch):
+    monkeypatch.setattr(server, "_load", lambda: DATA)
+    monkeypatch.setattr(server.menu_mod, "fetch_menu", lambda place_id: [])
+    result = server.get_menu("순대실록")
+    assert result["source"] == "cached"
+    assert result["menus"] == DATA[0]["menus"]

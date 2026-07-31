@@ -22,7 +22,12 @@ def _load() -> list[dict]:
     return json.loads(DATA_PATH.read_text(encoding="utf-8"))
 
 
-def filter_restaurants(data, keyword=None, category=None, max_distance_km=None):
+def filter_restaurants(
+    data: list[dict],
+    keyword: str | None = None,
+    category: str | None = None,
+    max_distance_km: float | None = None,
+) -> list[dict]:
     out = []
     for r in data:
         # brands.matches handles spelling variants ("cu" finds 씨유, "지에스25" finds GS25)
@@ -48,7 +53,8 @@ def search_restaurants(keyword: str = "", category: str = "", max_distance_km: f
 
     keyword: 가게 이름 부분일치, 표기 차이 허용('CU'로 씨유, '지에스25'로 GS25 검색 가능).
     category: 업종 부분일치(예: '커피', '한식'). max_distance_km: 0이면 제한 없음.
-    결과에 메뉴·가격 포함. 30건을 초과하면 잘라내고 total_matched를 함께 알려준다.
+    결과에 메뉴·가격 포함. 30건을 초과하면 잘라내고, 마지막 원소로 실제 총 건수를 알려주며
+    keyword/category/max_distance_km로 범위를 좁혀달라고 안내하는 note 객체를 추가한다.
     """
     hits = filter_restaurants(
         _load(),
