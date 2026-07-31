@@ -72,18 +72,27 @@ def fetch_merchants(gu: str, biz_type_cd: str, page: int, page_size: int = 100) 
     raise RuntimeError(f"zeropay fetch failed: gu={gu} code={biz_type_cd} page={page}") from last_err
 
 
-def _fetch_all_pages(gu: str, biz_type_cd: str, delay_sec: float, page_size: int) -> tuple[list[dict], int]:
+def _fetch_all_pages(gu: str, biz_type_cd: str, delay_sec: float,
+                     page_size: int) -> tuple[list[dict], int, int]:
     """Fetch every page for (gu, biz_type_cd) once, de-duplicating by
-    (name, address) so a repeated row across pages can't inflate the
-    count. Returns (unique merchants, server-reported TOTAL_CNT)."""
+    (name, address) so a repeated row across pages can't inflate the count.
+
+    Returns (unique merchants, rows actually received, server TOTAL_CNT).
+    Completeness must be judged on RECEIVED rows, not unique ones: the
+    zeropay data itself contains exact duplicate listings (e.g. '맑음이네'
+    appears twice in 도봉구/56111 with identical name, address and phone),
+    so unique < TOTAL_CNT is normal and must not read as data loss.
+    """
     page = 1
     total = 0
+    received = 0
     max_pages = None  # Set after first response to guard against over-reported TOTAL_CNT
     seen_keys: set[tuple[str, str]] = set()
     merchants: list[dict] = []
     while True:
         data = fetch_merchants(gu, biz_type_cd, page, page_size)
         rows = data.get("LIST2") or []
+        received += len(rows)
         total = int(data.get("TOTAL_CNT") or 0)
         for r in rows:
             m = {
@@ -99,13 +108,13 @@ def _fetch_all_pages(gu: str, biz_type_cd: str, delay_sec: float, page_size: int
         # Defensive cap: if server over-reports TOTAL_CNT, compute max safe pages
         if max_pages is None and total > 0:
             max_pages = total // page_size + 2
-        # Terminate if: no more rows, or we've collected all reported unique items,
+        # Terminate if: no more rows, or we've received every reported row,
         # or we've exceeded the page cap
-        if not rows or len(merchants) >= total or (max_pages is not None and page >= max_pages):
+        if not rows or received >= total or (max_pages is not None and page >= max_pages):
             break
         page += 1
         time.sleep(delay_sec)
-    return merchants, total
+    return merchants, received, total
 
 
 def iter_all_merchants(gu: str, biz_type_cd: str, delay_sec: float = 0.3, page_size: int = 1000) -> Iterator[dict]:
@@ -115,14 +124,17 @@ def iter_all_merchants(gu: str, biz_type_cd: str, delay_sec: float = 0.3, page_s
     848/848 rows for the largest 도봉구 food code); the pagination loop in
     _fetch_all_pages remains a fallback for any set larger than one page.
 
-    Completeness guarantee: after collecting a (gu, code), the unique
-    count is compared against the server's TOTAL_CNT. If short, the whole
-    fetch is retried once. If still short, a warning is printed (partial
-    data beats a dead run) and the partial result is yielded as-is."""
-    merchants, total = _fetch_all_pages(gu, biz_type_cd, delay_sec, page_size)
-    if total > 0 and len(merchants) < total:
-        merchants, total = _fetch_all_pages(gu, biz_type_cd, delay_sec, page_size)
-        if len(merchants) < total:
+    Completeness guarantee: the number of rows RECEIVED is compared against
+    the server's TOTAL_CNT. If short, the whole fetch is retried once; if
+    still short, a warning is printed (partial data beats a dead run) and the
+    partial result is yielded as-is. Judging on received rather than unique
+    rows matters: the source data contains exact duplicate listings, so a
+    unique-count comparison would report every such category as incomplete
+    and retry it on every run forever."""
+    merchants, received, total = _fetch_all_pages(gu, biz_type_cd, delay_sec, page_size)
+    if total > 0 and received < total:
+        merchants, received, total = _fetch_all_pages(gu, biz_type_cd, delay_sec, page_size)
+        if received < total:
             print(f"[warn] incomplete zeropay crawl: gu={gu} code={biz_type_cd} "
-                  f"expected={total} actual={len(merchants)}", flush=True)
+                  f"expected={total} actual={received}", flush=True)
     yield from merchants
