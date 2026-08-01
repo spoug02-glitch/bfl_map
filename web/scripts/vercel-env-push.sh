@@ -15,8 +15,12 @@ ENV_FILE="$(dirname "$0")/../.env.local"
 
 [ -f "$ENV_FILE" ] || { echo "no .env.local at $ENV_FILE" >&2; exit 1; }
 
+# Keep this list in sync with .env.example. A variable missing here does not
+# fail the build — the feature that needs it just breaks in production.
 VARS=(
-  NEXT_PUBLIC_KAKAO_JS_KEY
+  NEXT_PUBLIC_KAKAO_JS_KEY   # map rendering + KakaoTalk share
+  KAKAO_REST_API_KEY         # Kakao login (Kakao uses the REST key as client_id)
+  KAKAO_CLIENT_SECRET        # only if the Kakao app has client secret enabled
   GOOGLE_CLIENT_ID
   GOOGLE_CLIENT_SECRET
   SESSION_SECRET
