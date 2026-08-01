@@ -893,26 +893,6 @@
   ]
  },
  {
-  "name": "생활맥주 창동역점",
-  "search_keys": [
-   "생활맥주창동역점"
-  ],
-  "address": "서울특별시 도봉구 마들로11길 65 (창동)",
-  "category": "생맥주 전문점",
-  "phone": "029963330",
-  "lat": 37.653371940898204,
-  "lng": 127.04960662074419,
-  "distance_km": 0.13,
-  "kakao_place_id": "1011394258",
-  "kakao_url": "http://place.map.kakao.com/1011394258",
-  "menus": [
-   {
-    "name": "앵그리버드와감자",
-    "price": "23000"
-   }
-  ]
- },
- {
   "name": "GS25 창동시티점",
   "search_keys": [
    "gs25창동시티점",
@@ -1168,42 +1148,6 @@
    {
     "name": "라볶이",
     "price": "8000"
-   }
-  ]
- },
- {
-  "name": "베를린호프",
-  "search_keys": [
-   "베를린호프"
-  ],
-  "address": "서울특별시 도봉구 마들로11길 65 (창동)",
-  "category": "생맥주 전문점",
-  "phone": "029900038",
-  "lat": 37.653297154599414,
-  "lng": 127.04961790316267,
-  "distance_km": 0.14,
-  "kakao_place_id": "16906534",
-  "kakao_url": "http://place.map.kakao.com/16906534",
-  "menus": [
-   {
-    "name": "양념치킨",
-    "price": "22000"
-   },
-   {
-    "name": "후라이드치킨",
-    "price": "20000"
-   },
-   {
-    "name": "닭똥집",
-    "price": "15000"
-   },
-   {
-    "name": "돈까스",
-    "price": "16000"
-   },
-   {
-    "name": "모듬튀김",
-    "price": "18000"
    }
   ]
  },
@@ -2524,44 +2468,6 @@
   ]
  },
  {
-  "name": "브롱스 창동점",
-  "search_keys": [
-   "브롱스창동점",
-   "브롱스bronx창동점"
-  ],
-  "zeropay_name": "브롱스(BRONX)창동점",
-  "address": "서울시 도봉구 마들로11가길15",
-  "category": "생맥주 전문점",
-  "phone": "07041524725",
-  "lat": 37.6526567066768,
-  "lng": 127.04925825037,
-  "distance_km": 0.21,
-  "kakao_place_id": "669896181",
-  "kakao_url": "http://place.map.kakao.com/669896181",
-  "menus": [
-   {
-    "name": "더블 치즈 피자 (12INCH)",
-    "price": "18000"
-   },
-   {
-    "name": "콤비네이션 피자 (12INCH)",
-    "price": "16000"
-   },
-   {
-    "name": "고르곤졸라 피자 (12INCH)",
-    "price": "15000"
-   },
-   {
-    "name": "클래식치즈피자 (18INCH)",
-    "price": "23000"
-   },
-   {
-    "name": "페퍼로니 피자 (18INCH)",
-    "price": "23000"
-   }
-  ]
- },
- {
   "name": "늘",
   "search_keys": [
    "늘"
@@ -2881,44 +2787,6 @@
    {
     "name": "닭볶음탕",
     "price": "30000"
-   }
-  ]
- },
- {
-  "name": "김복남맥주 서울창동점",
-  "search_keys": [
-   "김복남맥주서울창동점",
-   "김복남맥주창동점"
-  ],
-  "zeropay_name": "김복남맥주창동점",
-  "address": "서울특별시 도봉구 노해로67길 2 (창동)",
-  "category": "생맥주 전문점",
-  "phone": "029997874",
-  "lat": 37.6524473525514,
-  "lng": 127.05003322357958,
-  "distance_km": 0.23,
-  "kakao_place_id": "1783727653",
-  "kakao_url": "http://place.map.kakao.com/1783727653",
-  "menus": [
-   {
-    "name": "나쵸치킨플래터",
-    "price": "-1"
-   },
-   {
-    "name": "떡볶이&순살후라이드&감자튀김",
-    "price": "-1"
-   },
-   {
-    "name": "떡볶이&닭껍질튀김&감자튀김",
-    "price": "-1"
-   },
-   {
-    "name": "우동통&왕돈까스",
-    "price": "-1"
-   },
-   {
-    "name": "콘튀김&마라볶음면",
-    "price": "-1"
    }
   ]
  },
@@ -3521,42 +3389,6 @@
   ]
  },
  {
-  "name": "2번출구호프",
-  "search_keys": [
-   "2번출구호프"
-  ],
-  "address": "서울특별시 도봉구 노해로63다길 6,",
-  "category": "생맥주 전문점",
-  "phone": "0200000000",
-  "lat": 37.65320370678639,
-  "lng": 127.0467904684602,
-  "distance_km": 0.31,
-  "kakao_place_id": "396625197",
-  "kakao_url": "http://place.map.kakao.com/396625197",
-  "menus": [
-   {
-    "name": "불맛나는 쭈꾸미볶음",
-    "price": "15000"
-   },
-   {
-    "name": "쭈삼",
-    "price": "12000"
-   },
-   {
-    "name": "후라이드치킨",
-    "price": "14000"
-   },
-   {
-    "name": "양념치킨",
-    "price": "15000"
-   },
-   {
-    "name": "매운불닭",
-    "price": "8000"
-   }
-  ]
- },
- {
   "name": "오늘도빙수",
   "search_keys": [
    "오늘도빙수",
@@ -3806,44 +3638,6 @@
    {
     "name": "해삼+멍게",
     "price": "35000"
-   }
-  ]
- },
- {
-  "name": "훼미리호프",
-  "search_keys": [
-   "훼미리호프",
-   "훼미리"
-  ],
-  "zeropay_name": "훼미리",
-  "address": "서울시 도봉구 노해로 63다길 14",
-  "category": "기타 주점업",
-  "phone": "02",
-  "lat": 37.6535191733611,
-  "lng": 127.046480164059,
-  "distance_km": 0.32,
-  "kakao_place_id": "16269124",
-  "kakao_url": "http://place.map.kakao.com/16269124",
-  "menus": [
-   {
-    "name": "닭똥집",
-    "price": "9000"
-   },
-   {
-    "name": "감자튀김",
-    "price": "11000"
-   },
-   {
-    "name": "마른안주",
-    "price": "9000"
-   },
-   {
-    "name": "노가리",
-    "price": "10000"
-   },
-   {
-    "name": "대구포",
-    "price": "12000"
    }
   ]
  },
@@ -4353,43 +4147,6 @@
    {
     "name": "갈비만두",
     "price": "-1"
-   }
-  ]
- },
- {
-  "name": "리얼펍 창동역점",
-  "search_keys": [
-   "리얼펍창동역점"
-  ],
-  "zeropay_name": "리얼펍창동역점",
-  "address": "서울특별시 도봉구 노해로63다길 9(창동)",
-  "category": "생맥주 전문점",
-  "phone": "01063204610",
-  "lat": 37.6533173907813,
-  "lng": 127.046384848044,
-  "distance_km": 0.34,
-  "kakao_place_id": "267196771",
-  "kakao_url": "http://place.map.kakao.com/267196771",
-  "menus": [
-   {
-    "name": "킬바사 모둠소세지",
-    "price": "16900"
-   },
-   {
-    "name": "치즈폭탄 쉬림프",
-    "price": "13900"
-   },
-   {
-    "name": "킬바사 콘치즈",
-    "price": "13900"
-   },
-   {
-    "name": "쉬림프 냉우동 샐러드",
-    "price": "12900"
-   },
-   {
-    "name": "킬바사 짜파게티",
-    "price": "12900"
    }
   ]
  },
@@ -5631,21 +5388,6 @@
   ]
  },
  {
-  "name": "중앙호프",
-  "search_keys": [
-   "중앙호프"
-  ],
-  "address": "서울특별시 도봉구 노해로65길 17",
-  "category": "생맥주 전문점",
-  "phone": "00000000000",
-  "lat": 37.652032703045826,
-  "lng": 127.04609508355985,
-  "distance_km": 0.43,
-  "kakao_place_id": "10082390",
-  "kakao_url": "http://place.map.kakao.com/10082390",
-  "menus": []
- },
- {
   "name": "본죽&비빔밥cafe 창동점",
   "search_keys": [
    "본죽비빔밥cafe창동점",
@@ -5756,43 +5498,6 @@
    {
     "name": "훈제오리 단백질 도시락",
     "price": "-1"
-   }
-  ]
- },
- {
-  "name": "찰리네맥주집 창동역점",
-  "search_keys": [
-   "찰리네맥주집창동역점"
-  ],
-  "zeropay_name": "찰리네맥주집창동역점",
-  "address": "서울시 도봉구 노해로 63가길29",
-  "category": "생맥주 전문점",
-  "phone": "02",
-  "lat": 37.65405673352987,
-  "lng": 127.04499823636284,
-  "distance_km": 0.43,
-  "kakao_place_id": "766942559",
-  "kakao_url": "http://place.map.kakao.com/766942559",
-  "menus": [
-   {
-    "name": "씻겨진 먹태와 스페셜소스",
-    "price": "13000"
-   },
-   {
-    "name": "오리지날 노가리",
-    "price": "9000"
-   },
-   {
-    "name": "옛날맛 쥐포&석쇠구이 육포",
-    "price": "9000"
-   },
-   {
-    "name": "한치 딱 한마리",
-    "price": "5000"
-   },
-   {
-    "name": "은행구이",
-    "price": "5000"
    }
   ]
  },
@@ -7973,42 +7678,6 @@
   ]
  },
  {
-  "name": "영철아",
-  "search_keys": [
-   "영철아"
-  ],
-  "address": "서울특별시 도봉구 해등로16길 42 (창동)",
-  "category": "생맥주 전문점",
-  "phone": "029065782",
-  "lat": 37.6552254320594,
-  "lng": 127.042224754972,
-  "distance_km": 0.68,
-  "kakao_place_id": "634705450",
-  "kakao_url": "http://place.map.kakao.com/634705450",
-  "menus": [
-   {
-    "name": "빠샤삭생감자칩",
-    "price": "6000"
-   },
-   {
-    "name": "빠샤삭꿀감자칩",
-    "price": "6500"
-   },
-   {
-    "name": "순살가라아게",
-    "price": "9000"
-   },
-   {
-    "name": "고르곤졸라피자",
-    "price": "9500"
-   },
-   {
-    "name": "오징어입버터구이",
-    "price": "12000"
-   }
-  ]
- },
- {
   "name": "GS25 창4동점",
   "search_keys": [
    "gs25창4동점",
@@ -8562,21 +8231,6 @@
   "distance_km": 0.75,
   "kakao_place_id": "1441048380",
   "kakao_url": "http://place.map.kakao.com/1441048380",
-  "menus": []
- },
- {
-  "name": "1974달밤",
-  "search_keys": [
-   "1974달밤"
-  ],
-  "address": "서울특별시 도봉구 해등로16길 26",
-  "category": "기타 주점업",
-  "phone": "01024389995",
-  "lat": 37.6556906459458,
-  "lng": 127.04135807967,
-  "distance_km": 0.76,
-  "kakao_place_id": "1335424935",
-  "kakao_url": "http://place.map.kakao.com/1335424935",
   "menus": []
  },
  {
@@ -9313,21 +8967,6 @@
   ]
  },
  {
-  "name": "추억의라이브마이웨이",
-  "search_keys": [
-   "추억의라이브마이웨이"
-  ],
-  "address": "서울 노원구 노해로75길 14-27",
-  "category": "기타 주점업",
-  "phone": "01086479915",
-  "lat": 37.654807420298,
-  "lng": 127.058933005891,
-  "distance_km": 0.8,
-  "kakao_place_id": "2003270208",
-  "kakao_url": "http://place.map.kakao.com/2003270208",
-  "menus": []
- },
- {
   "name": "바게트샌드위치 노원점",
   "search_keys": [
    "바게트샌드위치노원점",
@@ -10012,44 +9651,6 @@
   "kakao_place_id": "1281133543",
   "kakao_url": "http://place.map.kakao.com/1281133543",
   "menus": []
- },
- {
-  "name": "정거장숯불바베큐 창동본점",
-  "search_keys": [
-   "정거장숯불바베큐창동본점",
-   "정거장숯불바베큐"
-  ],
-  "zeropay_name": "정거장숯불바베큐",
-  "address": "서울시 도봉구 해등로16길 12",
-  "category": "기타 주점업",
-  "phone": "029960917",
-  "lat": 37.65622248598804,
-  "lng": 127.04060815565383,
-  "distance_km": 0.84,
-  "kakao_place_id": "9383310",
-  "kakao_url": "http://place.map.kakao.com/9383310",
-  "menus": [
-   {
-    "name": "숯불바베큐",
-    "price": "18000"
-   },
-   {
-    "name": "숯불한식바베큐",
-    "price": "18000"
-   },
-   {
-    "name": "반반바베큐",
-    "price": "18000"
-   },
-   {
-    "name": "숯불바베큐 반마리",
-    "price": "10000"
-   },
-   {
-    "name": "소면골뱅이(중)",
-    "price": "16000"
-   }
-  ]
  },
  {
   "name": "들레",
@@ -11995,21 +11596,6 @@
   ]
  },
  {
-  "name": "로얄",
-  "search_keys": [
-   "로얄"
-  ],
-  "address": "서울시 노원구 동일로 1493",
-  "category": "생맥주 전문점",
-  "phone": "029305478",
-  "lat": 37.6560031075437,
-  "lng": 127.060546576952,
-  "distance_km": 0.95,
-  "kakao_place_id": "493889687",
-  "kakao_url": "http://place.map.kakao.com/493889687",
-  "menus": []
- },
- {
   "name": "다이어트모드",
   "search_keys": [
    "다이어트모드",
@@ -13149,81 +12735,6 @@
    {
     "name": "오징어순대",
     "price": "20000"
-   }
-  ]
- },
- {
-  "name": "역전할머니맥주 서울도봉보건소사거리점",
-  "search_keys": [
-   "역전할머니맥주서울도봉보건소사거리점",
-   "역전할머니맥주도봉보건소사거리점"
-  ],
-  "zeropay_name": "역전할머니맥주도봉보건소사거리점",
-  "address": "서울특별시 도봉구 해등로 157",
-  "category": "생맥주 전문점",
-  "phone": "01080288678",
-  "lat": 37.6567853004067,
-  "lng": 127.038821295534,
-  "distance_km": 1.01,
-  "kakao_place_id": "1947619611",
-  "kakao_url": "http://place.map.kakao.com/1947619611",
-  "menus": [
-   {
-    "name": "카다이프 새우튀김",
-    "price": "-1"
-   },
-   {
-    "name": "콘소메옥수수튀김",
-    "price": "-1"
-   },
-   {
-    "name": "갈릭빠다포테이토",
-    "price": "-1"
-   },
-   {
-    "name": "고구마프라이즈",
-    "price": "-1"
-   },
-   {
-    "name": "30cm롱치즈돈까스",
-    "price": "-1"
-   }
-  ]
- },
- {
-  "name": "처갓집양념치킨 녹천점",
-  "search_keys": [
-   "처갓집양념치킨녹천점"
-  ],
-  "zeropay_name": "처갓집양념치킨녹천점",
-  "address": "서울특별시 도봉구 덕릉로 398 (창동)",
-  "category": "생맥주 전문점",
-  "phone": "029954236",
-  "lat": 37.6457409206619,
-  "lng": 127.05304277621292,
-  "distance_km": 1.01,
-  "kakao_place_id": "17151155",
-  "kakao_url": "http://place.map.kakao.com/17151155",
-  "menus": [
-   {
-    "name": "K-마라 양념치킨",
-    "price": "19000"
-   },
-   {
-    "name": "꼬꼬뱅 양념치킨",
-    "price": "19000"
-   },
-   {
-    "name": "꼬꼬뱅 슈프림양념치킨",
-    "price": "19000"
-   },
-   {
-    "name": "슈프림양념치킨 블랙라벨",
-    "price": "19000"
-   },
-   {
-    "name": "치킨치즈볼 골드",
-    "price": "17000"
    }
   ]
  },
@@ -14727,44 +14238,6 @@
   ]
  },
  {
-  "name": "을지로골뱅이 노원원조1호점",
-  "search_keys": [
-   "을지로골뱅이노원원조1호점",
-   "을지로골뱅이"
-  ],
-  "zeropay_name": "을지로골뱅이",
-  "address": "서울시 노원구 동일로218길 17",
-  "category": "기타 주점업",
-  "phone": "029351378",
-  "lat": 37.65394453648585,
-  "lng": 127.0619478400242,
-  "distance_km": 1.06,
-  "kakao_place_id": "13560270",
-  "kakao_url": "http://place.map.kakao.com/13560270",
-  "menus": [
-   {
-    "name": "새콤달콤골뱅이 (계란찜)",
-    "price": "21000"
-   },
-   {
-    "name": "후라이드",
-    "price": "17000"
-   },
-   {
-    "name": "을지로골뱅이 (계란찜)",
-    "price": "21000"
-   },
-   {
-    "name": "골뱅이 + 치킨 (계란찜)",
-    "price": "29900"
-   },
-   {
-    "name": "양념치킨",
-    "price": "18000"
-   }
-  ]
- },
- {
   "name": "더쉐이프",
   "search_keys": [
    "더쉐이프"
@@ -15682,42 +15155,6 @@
   ]
  },
  {
-  "name": "숲",
-  "search_keys": [
-   "숲"
-  ],
-  "address": "서울시 노원구 상계로 1길 14-11",
-  "category": "생맥주 전문점",
-  "phone": "029300792",
-  "lat": 37.6569106381784,
-  "lng": 127.06181771149,
-  "distance_km": 1.08,
-  "kakao_place_id": "21610828",
-  "kakao_url": "http://place.map.kakao.com/21610828",
-  "menus": [
-   {
-    "name": "가리비회",
-    "price": "20000"
-   },
-   {
-    "name": "멍게",
-    "price": "15000"
-   },
-   {
-    "name": "산낙지",
-    "price": "20000"
-   },
-   {
-    "name": "해삼",
-    "price": "20000"
-   },
-   {
-    "name": "모듬해물",
-    "price": "30000"
-   }
-  ]
- },
- {
   "name": "켁터스커피일등복권",
   "search_keys": [
    "켁터스커피일등복권",
@@ -16590,23 +16027,6 @@
     "price": "-1"
    }
   ]
- },
- {
-  "name": "논다노래타운 노원점",
-  "search_keys": [
-   "논다노래타운노원점",
-   "논다노래타운"
-  ],
-  "zeropay_name": "논다노래타운",
-  "address": "서울 노원구 노해로 490",
-  "category": "기타 주점업",
-  "phone": "0233923359",
-  "lat": 37.6544037953957,
-  "lng": 127.062407181167,
-  "distance_km": 1.1,
-  "kakao_place_id": "56566464",
-  "kakao_url": "http://place.map.kakao.com/56566464",
-  "menus": []
  },
  {
   "name": "우지커피 노원중앙점",
@@ -18071,42 +17491,6 @@
   ]
  },
  {
-  "name": "생활맥주 노원역점",
-  "search_keys": [
-   "생활맥주노원역점"
-  ],
-  "address": "서울특별시 노원구 노해로79길 6-20 (상계동)",
-  "category": "기타 주점업",
-  "phone": "01084948794",
-  "lat": 37.6552956894413,
-  "lng": 127.062555249758,
-  "distance_km": 1.12,
-  "kakao_place_id": "1062129688",
-  "kakao_url": "http://place.map.kakao.com/1062129688",
-  "menus": [
-   {
-    "name": "김꽃동",
-    "price": "-1"
-   },
-   {
-    "name": "고급 찐 어묵탕",
-    "price": "-1"
-   },
-   {
-    "name": "앵그리버드 크런치",
-    "price": "-1"
-   },
-   {
-    "name": "생활 부대 떡볶이",
-    "price": "-1"
-   },
-   {
-    "name": "크리스피 텐더와 새우",
-    "price": "-1"
-   }
-  ]
- },
- {
   "name": "우지커피 노원역점",
   "search_keys": [
    "우지커피노원역점"
@@ -18657,21 +18041,6 @@
   ]
  },
  {
-  "name": "준코뮤직타운 노원점",
-  "search_keys": [
-   "준코뮤직타운노원점"
-  ],
-  "address": "서울특별시 노원구 노해로 492(상계동)",
-  "category": "기타 주점업",
-  "phone": "01035121896",
-  "lat": 37.654441486425,
-  "lng": 127.062690521257,
-  "distance_km": 1.13,
-  "kakao_place_id": "1451364232",
-  "kakao_url": "http://place.map.kakao.com/1451364232",
-  "menus": []
- },
- {
   "name": "빽다방 노원역북부점",
   "search_keys": [
    "빽다방노원역북부점",
@@ -18888,44 +18257,6 @@
    {
     "name": "쌍둥이육회세트",
     "price": "33000"
-   }
-  ]
- },
- {
-  "name": "포차더쎈 쌍문점",
-  "search_keys": [
-   "포차더쎈쌍문점",
-   "포차더쎈"
-  ],
-  "zeropay_name": "포차더쎈",
-  "address": "서울시 도봉구 도봉로 129길 23",
-  "category": "기타 주점업",
-  "phone": "02",
-  "lat": 37.6551695469371,
-  "lng": 127.036925668072,
-  "distance_km": 1.14,
-  "kakao_place_id": "1984936978",
-  "kakao_url": "http://place.map.kakao.com/1984936978",
-  "menus": [
-   {
-    "name": "양푼닭볶음탕",
-    "price": "33000"
-   },
-   {
-    "name": "국물닭발",
-    "price": "20000"
-   },
-   {
-    "name": "오뎅탕",
-    "price": "20000"
-   },
-   {
-    "name": "부대찌개",
-    "price": "20000"
-   },
-   {
-    "name": "마약치즈떡볶이",
-    "price": "17000"
    }
   ]
  },
@@ -19312,23 +18643,6 @@
     "price": "-1"
    }
   ]
- },
- {
-  "name": "허니파인",
-  "search_keys": [
-   "허니파인",
-   "허니파인（honey:fine）"
-  ],
-  "zeropay_name": "허니파인（honey:fine）",
-  "address": "서울특별시 노원구 상계로1길 38-11 307호 308호 허니파인",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.657971011344735,
-  "lng": 127.06208855674129,
-  "distance_km": 1.14,
-  "kakao_place_id": "21413217",
-  "kakao_url": "http://place.map.kakao.com/21413217",
-  "menus": []
  },
  {
   "name": "백억커피 상계백병원점",
@@ -20248,21 +19562,6 @@
   ]
  },
  {
-  "name": "굿모닝미스터비어",
-  "search_keys": [
-   "굿모닝미스터비어"
-  ],
-  "address": "서울 도봉구 방학로3길 16",
-  "category": "기타 주점업",
-  "phone": "00000000000",
-  "lat": 37.662018452219975,
-  "lng": 127.04075071466741,
-  "distance_km": 1.16,
-  "kakao_place_id": "12045686",
-  "kakao_url": "http://place.map.kakao.com/12045686",
-  "menus": []
- },
- {
   "name": "세븐일레븐 쌍문아트점",
   "search_keys": [
    "세븐일레븐쌍문아트점",
@@ -20672,44 +19971,6 @@
    {
     "name": "들깨칼국수",
     "price": "9500"
-   }
-  ]
- },
- {
-  "name": "오춘자비어 노원역점",
-  "search_keys": [
-   "오춘자비어노원역점",
-   "오춘자비어"
-  ],
-  "zeropay_name": "오춘자비어",
-  "address": "서울특별시 노원구 상계로1길 38-11 (상계동)",
-  "category": "생맥주 전문점",
-  "phone": "01097781255",
-  "lat": 37.657980734653215,
-  "lng": 127.06233084488336,
-  "distance_km": 1.16,
-  "kakao_place_id": "23735734",
-  "kakao_url": "http://place.map.kakao.com/23735734",
-  "menus": [
-   {
-    "name": "참치 스페셜",
-    "price": "28000"
-   },
-   {
-    "name": "실장추천참치",
-    "price": "38000"
-   },
-   {
-    "name": "일품참치",
-    "price": "55000"
-   },
-   {
-    "name": "혼마구로",
-    "price": "75000"
-   },
-   {
-    "name": "춘자떡볶이",
-    "price": "8000"
    }
   ]
  },
@@ -21734,80 +20995,6 @@
    {
     "name": "햄맛살유부김밥",
     "price": "4800"
-   }
-  ]
- },
- {
-  "name": "룸의정석 노원점",
-  "search_keys": [
-   "룸의정석노원점"
-  ],
-  "address": "서울 노원구 노해로81길 12-15",
-  "category": "기타 주점업",
-  "phone": "0231446806",
-  "lat": 37.6557458966903,
-  "lng": 127.063088256838,
-  "distance_km": 1.17,
-  "kakao_place_id": "695042590",
-  "kakao_url": "http://place.map.kakao.com/695042590",
-  "menus": [
-   {
-    "name": "우삼겹전골",
-    "price": "24000"
-   },
-   {
-    "name": "크림새우파스타",
-    "price": "23000"
-   },
-   {
-    "name": "봉골레술찜파스타",
-    "price": "19000"
-   },
-   {
-    "name": "까르보불닭치킨파스타",
-    "price": "23000"
-   },
-   {
-    "name": "마라우삼겹전골",
-    "price": "25000"
-   }
-  ]
- },
- {
-  "name": "곤",
-  "search_keys": [
-   "곤",
-   "곤gon"
-  ],
-  "zeropay_name": "곤(gon)",
-  "address": "서울특별시 노원구 상계로3길 28 (상계동)",
-  "category": "기타 주점업",
-  "phone": "029330150",
-  "lat": 37.65739854095486,
-  "lng": 127.06263181042111,
-  "distance_km": 1.17,
-  "kakao_place_id": "27305404",
-  "kakao_url": "http://place.map.kakao.com/27305404",
-  "menus": [
-   {
-    "name": "아스파라거스 베이컨롤",
-    "price": "17000"
-   },
-   {
-    "name": "모듬 수제소세지",
-    "price": "17000"
-   },
-   {
-    "name": "쉬림프 알리오올리오",
-    "price": "18000"
-   },
-   {
-    "name": "척스테이크",
-    "price": "20000"
-   },
-   {
-    "name": "루꼴라&로즈마리 시즈닝 통베이컨",
-    "price": "15000"
    }
   ]
  },
@@ -25527,21 +24714,6 @@
   ]
  },
  {
-  "name": "문바",
-  "search_keys": [
-   "문바"
-  ],
-  "address": "서울특별시 노원구 노해로83길 15",
-  "category": "기타 주점업",
-  "phone": "01064975885",
-  "lat": 37.6559327232887,
-  "lng": 127.064159342624,
-  "distance_km": 1.27,
-  "kakao_place_id": "386772938",
-  "kakao_url": "http://place.map.kakao.com/386772938",
-  "menus": []
- },
- {
   "name": "엄마밥줘",
   "search_keys": [
    "엄마밥줘"
@@ -25861,57 +25033,6 @@
   "distance_km": 1.29,
   "kakao_place_id": "323309205",
   "kakao_url": "http://place.map.kakao.com/323309205",
-  "menus": []
- },
- {
-  "name": "징기스칸",
-  "search_keys": [
-   "징기스칸"
-  ],
-  "address": "서울특별시 도봉구 노해로 249 (쌍문동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6515011065332,
-  "lng": 127.035754399909,
-  "distance_km": 1.29,
-  "kakao_place_id": "16875456",
-  "kakao_url": "http://place.map.kakao.com/16875456",
-  "menus": [
-   {
-    "name": "치킨과일",
-    "price": "3500"
-   },
-   {
-    "name": "쥐포",
-    "price": "10000"
-   },
-   {
-    "name": "마른안주",
-    "price": "10000"
-   },
-   {
-    "name": "과일화채",
-    "price": "17000"
-   },
-   {
-    "name": "황도",
-    "price": "10000"
-   }
-  ]
- },
- {
-  "name": "달빛나드리",
-  "search_keys": [
-   "달빛나드리"
-  ],
-  "address": "서울특별시 도봉구 방학로2길 13 (방학동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.66356452031872,
-  "lng": 127.0407957613925,
-  "distance_km": 1.29,
-  "kakao_place_id": "222179868",
-  "kakao_url": "http://place.map.kakao.com/222179868",
   "menus": []
  },
  {
@@ -26824,21 +25945,6 @@
   ]
  },
  {
-  "name": "코코노래주점",
-  "search_keys": [
-   "코코노래주점"
-  ],
-  "address": "서울특별시 노원구 노해로83길 18-6 지층  삼현빌딩",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.655943277099,
-  "lng": 127.064631919872,
-  "distance_km": 1.31,
-  "kakao_place_id": "20560918",
-  "kakao_url": "http://place.map.kakao.com/20560918",
-  "menus": []
- },
- {
   "name": "마녀들의떡볶이",
   "search_keys": [
    "마녀들의떡볶이"
@@ -27029,42 +26135,6 @@
    {
     "name": "윤씨네보쌈특대(중)",
     "price": "33000"
-   }
-  ]
- },
- {
-  "name": "최꼬치",
-  "search_keys": [
-   "최꼬치"
-  ],
-  "address": "서울특별시 노원구 노해로83길 18-10 (상계동)",
-  "category": "기타 주점업",
-  "phone": "029387319",
-  "lat": 37.656019779105264,
-  "lng": 127.06478044300196,
-  "distance_km": 1.32,
-  "kakao_place_id": "27501825",
-  "kakao_url": "http://place.map.kakao.com/27501825",
-  "menus": [
-   {
-    "name": "모듬 7종",
-    "price": "16900"
-   },
-   {
-    "name": "우삼겹탄탄나베",
-    "price": "24500"
-   },
-   {
-    "name": "모둠 10종",
-    "price": "22900"
-   },
-   {
-    "name": "대만식우육나베",
-    "price": "26500"
-   },
-   {
-    "name": "나가사끼알짬뽕탕",
-    "price": "19500"
    }
   ]
  },
@@ -27384,42 +26454,6 @@
   "kakao_place_id": "1691345365",
   "kakao_url": "http://place.map.kakao.com/1691345365",
   "menus": []
- },
- {
-  "name": "텐",
-  "search_keys": [
-   "텐"
-  ],
-  "address": "서울특별시 노원구 노해로83길 10-11",
-  "category": "기타 주점업",
-  "phone": "01049347636",
-  "lat": 37.65606296705483,
-  "lng": 127.06488814011064,
-  "distance_km": 1.33,
-  "kakao_place_id": "1181274101",
-  "kakao_url": "http://place.map.kakao.com/1181274101",
-  "menus": [
-   {
-    "name": "텐 한우 프리미엄 육회",
-    "price": "23000"
-   },
-   {
-    "name": "겉바속촉 수육튀김",
-    "price": "28000"
-   },
-   {
-    "name": "치즈,감자 전해드립니다",
-    "price": "15000"
-   },
-   {
-    "name": "크림에 빠진 베이컨 파스타",
-    "price": "15900"
-   },
-   {
-    "name": "텐 한우 프리미엄 육사시미",
-    "price": "27000"
-   }
-  ]
  },
  {
   "name": "CU 상계미도점",
@@ -28498,42 +27532,6 @@
   ]
  },
  {
-  "name": "술술퓨전포차",
-  "search_keys": [
-   "술술퓨전포차"
-  ],
-  "address": "서울특별시 도봉구 방학로5길 17 (방학동)",
-  "category": "기타 주점업",
-  "phone": "01091471180",
-  "lat": 37.662036558584596,
-  "lng": 127.0377836149646,
-  "distance_km": 1.36,
-  "kakao_place_id": "1709044918",
-  "kakao_url": "http://place.map.kakao.com/1709044918",
-  "menus": [
-   {
-    "name": "연포탕",
-    "price": "35000"
-   },
-   {
-    "name": "닭볶음탕",
-    "price": "25000"
-   },
-   {
-    "name": "모듬조개",
-    "price": "20000"
-   },
-   {
-    "name": "김치찌개",
-    "price": "15000"
-   },
-   {
-    "name": "생태탕",
-    "price": "25000"
-   }
-  ]
- },
- {
   "name": "또바기신쭈 방학본점",
   "search_keys": [
    "또바기신쭈방학본점",
@@ -28665,23 +27663,6 @@
   ]
  },
  {
-  "name": "통통포차",
-  "search_keys": [
-   "통통포차",
-   "통통호프포차"
-  ],
-  "zeropay_name": "통통호프포차",
-  "address": "서울특별시 도봉구 방학로5길 9-6 (방학동)",
-  "category": "생맥주 전문점",
-  "phone": "029569103",
-  "lat": 37.66220591031861,
-  "lng": 127.03788570250755,
-  "distance_km": 1.36,
-  "kakao_place_id": "21529845",
-  "kakao_url": "http://place.map.kakao.com/21529845",
-  "menus": []
- },
- {
   "name": "감악산 왕솥뚜껑",
   "search_keys": [
    "감악산왕솥뚜껑"
@@ -28776,55 +27757,6 @@
     "price": "6900"
    }
   ]
- },
- {
-  "name": "야화 노원점",
-  "search_keys": [
-   "야화노원점",
-   "야화혼술바노원점"
-  ],
-  "zeropay_name": "야화 혼술바 노원점",
-  "address": "서울특별시 노원구 노해로85길 18",
-  "category": "기타 주점업",
-  "phone": "01025705110",
-  "lat": 37.6562474926966,
-  "lng": 127.065206747207,
-  "distance_km": 1.36,
-  "kakao_place_id": "1214900169",
-  "kakao_url": "http://place.map.kakao.com/1214900169",
-  "menus": []
- },
- {
-  "name": "2000비어",
-  "search_keys": [
-   "2000비어"
-  ],
-  "address": "서울시 노원구 노해로85길 18",
-  "category": "기타 주점업",
-  "phone": "029336484",
-  "lat": 37.6562673431016,
-  "lng": 127.06515463451903,
-  "distance_km": 1.36,
-  "kakao_place_id": "1436175212",
-  "kakao_url": "http://place.map.kakao.com/1436175212",
-  "menus": []
- },
- {
-  "name": "인바이트호프&치킨",
-  "search_keys": [
-   "인바이트호프치킨",
-   "인바이트"
-  ],
-  "zeropay_name": "인바이트",
-  "address": "서울시 노원구 노해로85길 14",
-  "category": "기타 주점업",
-  "phone": "029338787",
-  "lat": 37.6560618698043,
-  "lng": 127.065243982417,
-  "distance_km": 1.36,
-  "kakao_place_id": "11865339",
-  "kakao_url": "http://place.map.kakao.com/11865339",
-  "menus": []
  },
  {
   "name": "세븐일레븐 노원중앙점",
@@ -29941,57 +28873,6 @@
   "menus": []
  },
  {
-  "name": "청학동",
-  "search_keys": [
-   "청학동"
-  ],
-  "address": "서울 도봉구 도봉로145나길 12",
-  "category": "생맥주 전문점",
-  "phone": "029558977",
-  "lat": 37.6652371871847,
-  "lng": 127.042089884405,
-  "distance_km": 1.38,
-  "kakao_place_id": "16618899",
-  "kakao_url": "http://place.map.kakao.com/16618899",
-  "menus": [
-   {
-    "name": "해물파전",
-    "price": "12000"
-   },
-   {
-    "name": "참치김치전",
-    "price": "10000"
-   },
-   {
-    "name": "김치전",
-    "price": "8000"
-   },
-   {
-    "name": "동그랑땡",
-    "price": "10000"
-   },
-   {
-    "name": "동태전",
-    "price": "12000"
-   }
-  ]
- },
- {
-  "name": "보리호프",
-  "search_keys": [
-   "보리호프"
-  ],
-  "address": "서울특별시 도봉구 방학로5길 9 (방학동)",
-  "category": "생맥주 전문점",
-  "phone": "0260147579",
-  "lat": 37.6623555254901,
-  "lng": 127.037722575484,
-  "distance_km": 1.38,
-  "kakao_place_id": "401614156",
-  "kakao_url": "http://place.map.kakao.com/401614156",
-  "menus": []
- },
- {
   "name": "GS25 방학테라디움점",
   "search_keys": [
    "gs25방학테라디움점",
@@ -31104,40 +29985,6 @@
     "price": "22900"
    }
   ]
- },
- {
-  "name": "더텐더",
-  "search_keys": [
-   "더텐더",
-   "더텐더방학"
-  ],
-  "zeropay_name": "더텐더방학",
-  "address": "서울특별시 도봉구 도봉로150길 31(방학동, ESA 아파트)",
-  "category": "기타 주점업",
-  "phone": "01050217189",
-  "lat": 37.666367728597805,
-  "lng": 127.04504193695702,
-  "distance_km": 1.39,
-  "kakao_place_id": "402653359",
-  "kakao_url": "http://place.map.kakao.com/402653359",
-  "menus": []
- },
- {
-  "name": "공감7080라이브",
-  "search_keys": [
-   "공감7080라이브",
-   "공감라이브"
-  ],
-  "zeropay_name": "공감라이브",
-  "address": "서울특별시 도봉구 방학로 124,",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6630797066086,
-  "lng": 127.038366693606,
-  "distance_km": 1.39,
-  "kakao_place_id": "320421883",
-  "kakao_url": "http://place.map.kakao.com/320421883",
-  "menus": []
  },
  {
   "name": "연탄불애막창구이 마들점",
@@ -32590,21 +31437,6 @@
   ]
  },
  {
-  "name": "프렌드",
-  "search_keys": [
-   "프렌드"
-  ],
-  "address": "서울특별시 도봉구 도봉로 493 지하 1층 (쌍문동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.64968496809633,
-  "lng": 127.03494218521584,
-  "distance_km": 1.42,
-  "kakao_place_id": "22757691",
-  "kakao_url": "http://place.map.kakao.com/22757691",
-  "menus": []
- },
- {
   "name": "이마트24 쌍문타운점",
   "search_keys": [
    "이마트24쌍문타운점",
@@ -33769,21 +32601,6 @@
     "price": "6000"
    }
   ]
- },
- {
-  "name": "어여와포차",
-  "search_keys": [
-   "어여와포차"
-  ],
-  "address": "서울특별시 도봉구 방학로2길 53 (방학동)",
-  "category": "기타 주점업",
-  "phone": "0234920976",
-  "lat": 37.6653376425568,
-  "lng": 127.040819399824,
-  "distance_km": 1.45,
-  "kakao_place_id": "1221192699",
-  "kakao_url": "http://place.map.kakao.com/1221192699",
-  "menus": []
  },
  {
   "name": "이디야커피 쌍문역점",
@@ -36007,21 +34824,6 @@
   "menus": []
  },
  {
-  "name": "유토피아",
-  "search_keys": [
-   "유토피아"
-  ],
-  "address": "서울특별시 도봉구 도봉로 697",
-  "category": "기타 주점업",
-  "phone": "00000000000",
-  "lat": 37.666649676671,
-  "lng": 127.042779801304,
-  "distance_km": 1.49,
-  "kakao_place_id": "10676199",
-  "kakao_url": "http://place.map.kakao.com/10676199",
-  "menus": []
- },
- {
   "name": "한손에커피",
   "search_keys": [
    "한손에커피"
@@ -37134,21 +35936,6 @@
   "distance_km": 1.52,
   "kakao_place_id": "140547363",
   "kakao_url": "http://place.map.kakao.com/140547363",
-  "menus": []
- },
- {
-  "name": "모던바",
-  "search_keys": [
-   "모던바"
-  ],
-  "address": "서울특별시 도봉구 도봉로 476",
-  "category": "기타 주점업",
-  "phone": "01092095253",
-  "lat": 37.6478767477149,
-  "lng": 127.034762302814,
-  "distance_km": 1.52,
-  "kakao_place_id": "1955867031",
-  "kakao_url": "http://place.map.kakao.com/1955867031",
   "menus": []
  },
  {
@@ -38902,42 +37689,6 @@
   ]
  },
  {
-  "name": "마들포차",
-  "search_keys": [
-   "마들포차"
-  ],
-  "address": "서울특별시 노원구 동일로 1550 (상계동)",
-  "category": "기타 주점업",
-  "phone": "05071375550",
-  "lat": 37.66692088333192,
-  "lng": 127.05757794012219,
-  "distance_km": 1.54,
-  "kakao_place_id": "850096846",
-  "kakao_url": "http://place.map.kakao.com/850096846",
-  "menus": [
-   {
-    "name": "바지락술찜",
-    "price": "14000"
-   },
-   {
-    "name": "명란구이",
-    "price": "9000"
-   },
-   {
-    "name": "쫄뱅이",
-    "price": "16000"
-   },
-   {
-    "name": "차돌비빔면",
-    "price": "6000"
-   },
-   {
-    "name": "치킨가라아게",
-    "price": "12000"
-   }
-  ]
- },
- {
   "name": "영산포홍어",
   "search_keys": [
    "영산포홍어"
@@ -40181,42 +38932,6 @@
   ]
  },
  {
-  "name": "주접단",
-  "search_keys": [
-   "주접단"
-  ],
-  "address": "서울특별시 도봉구 도봉로 473 (쌍문동)",
-  "category": "기타 주점업",
-  "phone": "01077321679",
-  "lat": 37.6480004063137,
-  "lng": 127.033994093949,
-  "distance_km": 1.58,
-  "kakao_place_id": "1892893120",
-  "kakao_url": "http://place.map.kakao.com/1892893120",
-  "menus": [
-   {
-    "name": "디아블로해산물토마토파스타",
-    "price": "18000"
-   },
-   {
-    "name": "베이비립스테이크",
-    "price": "20000"
-   },
-   {
-    "name": "새우왕창감바스",
-    "price": "20000"
-   },
-   {
-    "name": "부타노가쿠니",
-    "price": "18000"
-   },
-   {
-    "name": "우삼겹순두부짬뽕탕",
-    "price": "16000"
-   }
-  ]
- },
- {
   "name": "우지커피 쌍문역점",
   "search_keys": [
    "우지커피쌍문역점"
@@ -40810,42 +39525,6 @@
   "kakao_place_id": "21391986",
   "kakao_url": "http://place.map.kakao.com/21391986",
   "menus": []
- },
- {
-  "name": "비어스",
-  "search_keys": [
-   "비어스"
-  ],
-  "address": "서울 도봉구 마들로 657",
-  "category": "생맥주 전문점",
-  "phone": "01092270736",
-  "lat": 37.66832995065,
-  "lng": 127.045337818594,
-  "distance_km": 1.59,
-  "kakao_place_id": "761481411",
-  "kakao_url": "http://place.map.kakao.com/761481411",
-  "menus": [
-   {
-    "name": "과일안주",
-    "price": "-1"
-   },
-   {
-    "name": "황도",
-    "price": "-1"
-   },
-   {
-    "name": "화채",
-    "price": "-1"
-   },
-   {
-    "name": "을지로골뱅이",
-    "price": "-1"
-   },
-   {
-    "name": "고르곤졸라피자",
-    "price": "-1"
-   }
-  ]
  },
  {
   "name": "캔팩토리 방학점",
@@ -41866,57 +40545,6 @@
    {
     "name": "뚜레1번가 햄치즈 토스트",
     "price": "-1"
-   }
-  ]
- },
- {
-  "name": "팀홀덤펍클럽",
-  "search_keys": [
-   "팀홀덤펍클럽"
-  ],
-  "address": "서울특별시 도봉구 도당로 137",
-  "category": "기타 주점업",
-  "phone": "01063279927",
-  "lat": 37.6673573738489,
-  "lng": 127.041584438189,
-  "distance_km": 1.61,
-  "kakao_place_id": "1030304306",
-  "kakao_url": "http://place.map.kakao.com/1030304306",
-  "menus": []
- },
- {
-  "name": "해로",
-  "search_keys": [
-   "해로"
-  ],
-  "address": "서울특별시 도봉구 도봉로110나길 11",
-  "category": "기타 주점업",
-  "phone": "01027390414",
-  "lat": 37.6467262697163,
-  "lng": 127.034496617227,
-  "distance_km": 1.61,
-  "kakao_place_id": "1900156202",
-  "kakao_url": "http://place.map.kakao.com/1900156202",
-  "menus": [
-   {
-    "name": "해로해물(특)",
-    "price": "55000"
-   },
-   {
-    "name": "해로(1인)",
-    "price": "25000"
-   },
-   {
-    "name": "해로해물",
-    "price": "39000"
-   },
-   {
-    "name": "해로물회",
-    "price": "39000"
-   },
-   {
-    "name": "단새우 우니",
-    "price": "43000"
    }
   ]
  },
@@ -43588,36 +42216,6 @@
   ]
  },
  {
-  "name": "홍콩호프",
-  "search_keys": [
-   "홍콩호프"
-  ],
-  "address": "서울특별시 도봉구 도당로 88",
-  "category": "기타 주점업",
-  "phone": "01027158247",
-  "lat": 37.66523895924637,
-  "lng": 127.03679011438201,
-  "distance_km": 1.66,
-  "kakao_place_id": "16959221",
-  "kakao_url": "http://place.map.kakao.com/16959221",
-  "menus": []
- },
- {
-  "name": "똑순이포차",
-  "search_keys": [
-   "똑순이포차"
-  ],
-  "address": "서울특별시 도봉구 도당로 82 (방학동)",
-  "category": "기타 주점업",
-  "phone": "0234913460",
-  "lat": 37.6649993993948,
-  "lng": 127.036464711838,
-  "distance_km": 1.66,
-  "kakao_place_id": "2017997604",
-  "kakao_url": "http://place.map.kakao.com/2017997604",
-  "menus": []
- },
- {
   "name": "카페위드디 창동점",
   "search_keys": [
    "카페위드디창동점"
@@ -44106,44 +42704,6 @@
   "menus": []
  },
  {
-  "name": "막걸리카페",
-  "search_keys": [
-   "막걸리카페",
-   "막걸리"
-  ],
-  "zeropay_name": "막걸리",
-  "address": "서울시 도봉구 마들로 657",
-  "category": "기타 주점업",
-  "phone": "029552567",
-  "lat": 37.6689661225358,
-  "lng": 127.045129649858,
-  "distance_km": 1.66,
-  "kakao_place_id": "16085740",
-  "kakao_url": "http://place.map.kakao.com/16085740",
-  "menus": [
-   {
-    "name": "해물파전",
-    "price": "15000"
-   },
-   {
-    "name": "굴전",
-    "price": "17000"
-   },
-   {
-    "name": "동태전",
-    "price": "12000"
-   },
-   {
-    "name": "김치전",
-    "price": "12000"
-   },
-   {
-    "name": "호박전",
-    "price": "12000"
-   }
-  ]
- },
- {
   "name": "설빙 서울도봉방학점",
   "search_keys": [
    "설빙서울도봉방학점"
@@ -44526,42 +43086,6 @@
    {
     "name": "레몬크림탕슈",
     "price": "17000"
-   }
-  ]
- },
- {
-  "name": "갯마을조개",
-  "search_keys": [
-   "갯마을조개"
-  ],
-  "address": "서울시 도봉구 마들로 657",
-  "category": "기타 주점업",
-  "phone": "01032329455",
-  "lat": 37.669021061051644,
-  "lng": 127.04518522246558,
-  "distance_km": 1.67,
-  "kakao_place_id": "12408407",
-  "kakao_url": "http://place.map.kakao.com/12408407",
-  "menus": [
-   {
-    "name": "조개찜 (중)",
-    "price": "59000"
-   },
-   {
-    "name": "조개찜 (대)",
-    "price": "70000"
-   },
-   {
-    "name": "조개찜 (소)",
-    "price": "49000"
-   },
-   {
-    "name": "대하(대)",
-    "price": "40000"
-   },
-   {
-    "name": "연포탕",
-    "price": "65000"
    }
   ]
  },
@@ -45563,42 +44087,6 @@
   ]
  },
  {
-  "name": "술빛아래",
-  "search_keys": [
-   "술빛아래"
-  ],
-  "address": "서울특별시 도봉구 도당로27길 14",
-  "category": "기타 주점업",
-  "phone": "01038227045",
-  "lat": 37.6679837436914,
-  "lng": 127.041046403594,
-  "distance_km": 1.69,
-  "kakao_place_id": "1493319201",
-  "kakao_url": "http://place.map.kakao.com/1493319201",
-  "menus": [
-   {
-    "name": "묵은지 닭볶음탕",
-    "price": "25000"
-   },
-   {
-    "name": "차돌&우삼겹육전",
-    "price": "15000"
-   },
-   {
-    "name": "닭한마리",
-    "price": "25000"
-   },
-   {
-    "name": "미나리항정살",
-    "price": "23000"
-   },
-   {
-    "name": "해물순두부쫄면탕",
-    "price": "22000"
-   }
-  ]
- },
- {
   "name": "에이앤즈",
   "search_keys": [
    "에이앤즈"
@@ -46249,44 +44737,6 @@
   ]
  },
  {
-  "name": "치어스 도봉구청점",
-  "search_keys": [
-   "치어스도봉구청점",
-   "치어스"
-  ],
-  "zeropay_name": "치어스",
-  "address": "서울시 도봉구 도봉로152길 16",
-  "category": "생맥주 전문점",
-  "phone": "028130968",
-  "lat": 37.6692437384781,
-  "lng": 127.04483058471,
-  "distance_km": 1.7,
-  "kakao_place_id": "27305649",
-  "kakao_url": "http://place.map.kakao.com/27305649",
-  "menus": [
-   {
-    "name": "나가사끼탕",
-    "price": "-1"
-   },
-   {
-    "name": "탱탱알탕",
-    "price": "-1"
-   },
-   {
-    "name": "해물누룽지탕",
-    "price": "-1"
-   },
-   {
-    "name": "훈제연어고구마샐러드",
-    "price": "-1"
-   },
-   {
-    "name": "통마늘모래집튀김",
-    "price": "-1"
-   }
-  ]
- },
- {
   "name": "텐퍼센트커피 도봉구청점",
   "search_keys": [
    "텐퍼센트커피도봉구청점",
@@ -46645,44 +45095,6 @@
   "kakao_place_id": "1897943585",
   "kakao_url": "http://place.map.kakao.com/1897943585",
   "menus": []
- },
- {
-  "name": "호감",
-  "search_keys": [
-   "호감",
-   "호감감자튀김전문점"
-  ],
-  "zeropay_name": "호감 감자튀김전문점",
-  "address": "서울특별시 도봉구 도봉로152길 27 (도봉동)",
-  "category": "생맥주 전문점",
-  "phone": "01045101486",
-  "lat": 37.669476006783185,
-  "lng": 127.04531357959426,
-  "distance_km": 1.71,
-  "kakao_place_id": "23556861",
-  "kakao_url": "http://place.map.kakao.com/23556861",
-  "menus": [
-   {
-    "name": "기네스 생맥주",
-    "price": "12000"
-   },
-   {
-    "name": "코젤다크 생맥주",
-    "price": "6000"
-   },
-   {
-    "name": "감자튀김",
-    "price": "5000"
-   },
-   {
-    "name": "호가든 생맥주",
-    "price": "5500"
-   },
-   {
-    "name": "하이네캔 생맥주",
-    "price": "7000"
-   }
-  ]
  },
  {
   "name": "메가MGC커피 쌍문점",
@@ -47893,38 +46305,6 @@
   ]
  },
  {
-  "name": "스카이호프",
-  "search_keys": [
-   "스카이호프"
-  ],
-  "address": "서울특별시 도봉구 도봉로 730 (방학동)",
-  "category": "생맥주 전문점",
-  "phone": "0234911488",
-  "lat": 37.6694242925013,
-  "lng": 127.043878585196,
-  "distance_km": 1.74,
-  "kakao_place_id": "16441734",
-  "kakao_url": "http://place.map.kakao.com/16441734",
-  "menus": [
-   {
-    "name": "메뉴 1가지 주문시",
-    "price": "10000"
-   },
-   {
-    "name": "메뉴 2가지 동시 주문시",
-    "price": "18000"
-   },
-   {
-    "name": "메뉴 3가지 동시 주문시",
-    "price": "25000"
-   },
-   {
-    "name": "메뉴추가시 1가지당",
-    "price": "9000"
-   }
-  ]
- },
- {
   "name": "억이네",
   "search_keys": [
    "억이네"
@@ -48054,43 +46434,6 @@
    {
     "name": "홍어무침(1kg)",
     "price": "25000"
-   }
-  ]
- },
- {
-  "name": "더록서울",
-  "search_keys": [
-   "더록서울"
-  ],
-  "zeropay_name": "더록 서울",
-  "address": "서울특별시 도봉구 도봉로 730",
-  "category": "기타 주점업",
-  "phone": "01025920205",
-  "lat": 37.6694432151834,
-  "lng": 127.043872929025,
-  "distance_km": 1.74,
-  "kakao_place_id": "335475810",
-  "kakao_url": "http://place.map.kakao.com/335475810",
-  "menus": [
-   {
-    "name": "생맥주",
-    "price": "5000"
-   },
-   {
-    "name": "모히토",
-    "price": "10000"
-   },
-   {
-    "name": "소시지 모듬",
-    "price": "20000"
-   },
-   {
-    "name": "나초와 살사소스, 치즈소스",
-    "price": "5000"
-   },
-   {
-    "name": "먹태",
-    "price": "18000"
    }
   ]
  },
@@ -49105,21 +47448,6 @@
   "menus": []
  },
  {
-  "name": "상계호프",
-  "search_keys": [
-   "상계호프"
-  ],
-  "address": "서울특별시 노원구 상계로23길 8 (상계동)",
-  "category": "생맥주 전문점",
-  "phone": "029376889",
-  "lat": 37.6586509062547,
-  "lng": 127.069085862084,
-  "distance_km": 1.75,
-  "kakao_place_id": "1833054895",
-  "kakao_url": "http://place.map.kakao.com/1833054895",
-  "menus": []
- },
- {
   "name": "금남커퓌",
   "search_keys": [
    "금남커퓌"
@@ -49262,21 +47590,6 @@
     "price": "8000"
    }
   ]
- },
- {
-  "name": "태능한복의상실",
-  "search_keys": [
-   "태능한복의상실"
-  ],
-  "address": "서울시 도봉구 방학로10길 50(방학동)",
-  "category": "기타 주점업",
-  "phone": "0234915671",
-  "lat": 37.6642594974455,
-  "lng": 127.034110312264,
-  "distance_km": 1.76,
-  "kakao_place_id": "16990076",
-  "kakao_url": "http://place.map.kakao.com/16990076",
-  "menus": []
  },
  {
   "name": "카페리차지",
@@ -50010,42 +48323,6 @@
    {
     "name": "돌잔치 답례품",
     "price": "12000"
-   }
-  ]
- },
- {
-  "name": "기린쿠시",
-  "search_keys": [
-   "기린쿠시"
-  ],
-  "address": "서울시 도봉구 우이천로24길72",
-  "category": "기타 주점업",
-  "phone": "029993031",
-  "lat": 37.6464061045751,
-  "lng": 127.032434204929,
-  "distance_km": 1.78,
-  "kakao_place_id": "1522925593",
-  "kakao_url": "http://place.map.kakao.com/1522925593",
-  "menus": [
-   {
-    "name": "까르보나라",
-    "price": "17000"
-   },
-   {
-    "name": "팽이삼겹(1pcs)",
-    "price": "2900"
-   },
-   {
-    "name": "메로구이",
-    "price": "27000"
-   },
-   {
-    "name": "가리비 버터 치즈구이",
-    "price": "18000"
-   },
-   {
-    "name": "숯불 통오징어구이",
-    "price": "18000"
    }
   ]
  },
@@ -50988,21 +49265,6 @@
   ]
  },
  {
-  "name": "여울목",
-  "search_keys": [
-   "여울목"
-  ],
-  "address": "서울특별시 노원구 상계로 136 (상계동, 지하1층)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.658197352700945,
-  "lng": 127.06969741907551,
-  "distance_km": 1.79,
-  "kakao_place_id": "9243472",
-  "kakao_url": "http://place.map.kakao.com/9243472",
-  "menus": []
- },
- {
   "name": "쿠방플러스",
   "search_keys": [
    "쿠방플러스"
@@ -51734,44 +49996,6 @@
    {
     "name": "치즈 피자 (L)",
     "price": "6000"
-   }
-  ]
- },
- {
-  "name": "공감호프 치킨&골뱅이 쌍문점",
-  "search_keys": [
-   "공감호프치킨골뱅이쌍문점",
-   "공감호프치킨골뱅이"
-  ],
-  "zeropay_name": "공감호프 치킨&골뱅이",
-  "address": "서울특별시 도봉구 도봉로106길 22 (창동, 북한산현대홈시티)",
-  "category": "생맥주 전문점",
-  "phone": "029908307",
-  "lat": 37.64461731591165,
-  "lng": 127.03363336418995,
-  "distance_km": 1.81,
-  "kakao_place_id": "1100868975",
-  "kakao_url": "http://place.map.kakao.com/1100868975",
-  "menus": [
-   {
-    "name": "마른안주",
-    "price": "-1"
-   },
-   {
-    "name": "모듬어묵탕",
-    "price": "-1"
-   },
-   {
-    "name": "참치김치찌개",
-    "price": "-1"
-   },
-   {
-    "name": "해물국물떡볶이",
-    "price": "-1"
-   },
-   {
-    "name": "번데기탕",
-    "price": "-1"
    }
   ]
  },
@@ -53099,43 +51323,6 @@
   "kakao_place_id": "142752859",
   "kakao_url": "http://place.map.kakao.com/142752859",
   "menus": []
- },
- {
-  "name": "512야시장",
-  "search_keys": [
-   "512야시장"
-  ],
-  "zeropay_name": "512 야시장",
-  "address": "서울특별시 노원구 동일로208길 34",
-  "category": "기타 주점업",
-  "phone": "01062268622",
-  "lat": 37.643517371429056,
-  "lng": 127.06544489296262,
-  "distance_km": 1.83,
-  "kakao_place_id": "48270846",
-  "kakao_url": "http://place.map.kakao.com/48270846",
-  "menus": [
-   {
-    "name": "파인샤베트",
-    "price": "7000"
-   },
-   {
-    "name": "모듬튀김",
-    "price": "16000"
-   },
-   {
-    "name": "소세지와 감자튀김",
-    "price": "16000"
-   },
-   {
-    "name": "마늘치킨",
-    "price": "19000"
-   },
-   {
-    "name": "유린치킨",
-    "price": "19000"
-   }
-  ]
  },
  {
   "name": "CU 상계계상점",
@@ -54901,21 +53088,6 @@
   ]
  },
  {
-  "name": "솔향기",
-  "search_keys": [
-   "솔향기"
-  ],
-  "address": "서울특별시 노원구 상계로26길 10, 지하1층 (상계동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6580661088064,
-  "lng": 127.070708190377,
-  "distance_km": 1.87,
-  "kakao_place_id": "1169548988",
-  "kakao_url": "http://place.map.kakao.com/1169548988",
-  "menus": []
- },
- {
   "name": "한바다회",
   "search_keys": [
    "한바다회"
@@ -55056,23 +53228,6 @@
     "price": "9000"
    }
   ]
- },
- {
-  "name": "참존숯불바베큐치킨",
-  "search_keys": [
-   "참존숯불바베큐치킨",
-   "참존숯불바베큐"
-  ],
-  "zeropay_name": "참존숯불바베큐",
-  "address": "서울특별시 도봉구 도당로13길 40 (방학동)",
-  "category": "생맥주 전문점",
-  "phone": "0234919977",
-  "lat": 37.6663784373943,
-  "lng": 127.034682523495,
-  "distance_km": 1.88,
-  "kakao_place_id": "15772231",
-  "kakao_url": "http://place.map.kakao.com/15772231",
-  "menus": []
  },
  {
   "name": "GS25 쌍문중앙점",
@@ -55299,59 +53454,6 @@
   "kakao_place_id": "1492861103",
   "kakao_url": "http://place.map.kakao.com/1492861103",
   "menus": []
- },
- {
-  "name": "대박",
-  "search_keys": [
-   "대박"
-  ],
-  "address": "서울특별시 노원구 상계로27길 11",
-  "category": "생맥주 전문점",
-  "phone": "01071179843",
-  "lat": 37.6590987912136,
-  "lng": 127.070445109716,
-  "distance_km": 1.88,
-  "kakao_place_id": "1373088878",
-  "kakao_url": "http://place.map.kakao.com/1373088878",
-  "menus": []
- },
- {
-  "name": "상구비어 상계점",
-  "search_keys": [
-   "상구비어상계점",
-   "상구비어"
-  ],
-  "zeropay_name": "상구비어",
-  "address": "서울특별시 노원구 한글비석로48길 9 (상계동)",
-  "category": "기타 주점업",
-  "phone": "029382784",
-  "lat": 37.6646273903956,
-  "lng": 127.067046767141,
-  "distance_km": 1.88,
-  "kakao_place_id": "26551493",
-  "kakao_url": "http://place.map.kakao.com/26551493",
-  "menus": [
-   {
-    "name": "게다리 튀김",
-    "price": "9500"
-   },
-   {
-    "name": "수제나쵸",
-    "price": "8000"
-   },
-   {
-    "name": "감자튀김",
-    "price": "8000"
-   },
-   {
-    "name": "꿀감자",
-    "price": "9000"
-   },
-   {
-    "name": "토마토 카프레제",
-    "price": "9500"
-   }
-  ]
  },
  {
   "name": "빽다방 상계수락점",
@@ -55733,23 +53835,6 @@
   "menus": []
  },
  {
-  "name": "강커피&호프",
-  "search_keys": [
-   "강커피호프",
-   "강호프"
-  ],
-  "zeropay_name": "강호프",
-  "address": "서울특별시 노원구 상계로 145(상계동)",
-  "category": "생맥주 전문점",
-  "phone": "19640722",
-  "lat": 37.6587076291547,
-  "lng": 127.070672533216,
-  "distance_km": 1.89,
-  "kakao_place_id": "20743676",
-  "kakao_url": "http://place.map.kakao.com/20743676",
-  "menus": []
- },
- {
   "name": "메가MGC커피 상계수락점",
   "search_keys": [
    "메가mgc커피상계수락점"
@@ -56042,21 +54127,6 @@
     "price": "19000"
    }
   ]
- },
- {
-  "name": "내사랑호프",
-  "search_keys": [
-   "내사랑호프"
-  ],
-  "address": "서울특별시 도봉구 덕릉로59다길 14-6 (창동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.64033278619239,
-  "lng": 127.03776582239149,
-  "distance_km": 1.9,
-  "kakao_place_id": "1174393499",
-  "kakao_url": "http://place.map.kakao.com/1174393499",
-  "menus": []
  },
  {
   "name": "평창메밀 상계점",
@@ -56955,21 +55025,6 @@
   ]
  },
  {
-  "name": "비어블루",
-  "search_keys": [
-   "비어블루"
-  ],
-  "address": "서울시 노원구 한글비석로48길 12(상계동)",
-  "category": "기타 주점업",
-  "phone": "029306785",
-  "lat": 37.6648398900962,
-  "lng": 127.067278170293,
-  "distance_km": 1.91,
-  "kakao_place_id": "27496365",
-  "kakao_url": "http://place.map.kakao.com/27496365",
-  "menus": []
- },
- {
   "name": "플러스82 노원점",
   "search_keys": [
    "플러스82노원점"
@@ -57359,21 +55414,6 @@
   ]
  },
  {
-  "name": "노원수제맥주협동조합",
-  "search_keys": [
-   "노원수제맥주협동조합"
-  ],
-  "address": "서울특별시 노원구 상계로26길 13 (상계동)",
-  "category": "생맥주 전문점",
-  "phone": "029378288",
-  "lat": 37.66401411730398,
-  "lng": 127.06810479213561,
-  "distance_km": 1.92,
-  "kakao_place_id": "1336883205",
-  "kakao_url": "http://place.map.kakao.com/1336883205",
-  "menus": []
- },
- {
   "name": "선덕갈비",
   "search_keys": [
    "선덕갈비"
@@ -57647,44 +55687,6 @@
   "menus": []
  },
  {
-  "name": "원포이모네포장마차",
-  "search_keys": [
-   "원포이모네포장마차",
-   "이모네포장마차"
-  ],
-  "zeropay_name": "이모네포장마차",
-  "address": "서울시 도봉구 도당로13다길4",
-  "category": "기타 주점업",
-  "phone": "0234912243",
-  "lat": 37.6664254746095,
-  "lng": 127.034043298487,
-  "distance_km": 1.93,
-  "kakao_place_id": "16056292",
-  "kakao_url": "http://place.map.kakao.com/16056292",
-  "menus": [
-   {
-    "name": "오돌뼈",
-    "price": "12000"
-   },
-   {
-    "name": "물 오징어 데침",
-    "price": "15000"
-   },
-   {
-    "name": "번 데기탕",
-    "price": "12000"
-   },
-   {
-    "name": "돼지 껍데기",
-    "price": "10000"
-   },
-   {
-    "name": "칼칼한 떡볶기",
-    "price": "10000"
-   }
-  ]
- },
- {
   "name": "ueru",
   "search_keys": [
    "ueru",
@@ -57777,80 +55779,6 @@
   "kakao_place_id": "89577259",
   "kakao_url": "http://place.map.kakao.com/89577259",
   "menus": []
- },
- {
-  "name": "알바트로스 마들점",
-  "search_keys": [
-   "알바트로스마들점",
-   "알바트로스"
-  ],
-  "zeropay_name": "알바트로스",
-  "address": "서울시 노원구 동일로 1598",
-  "category": "생맥주 전문점",
-  "phone": "029525346",
-  "lat": 37.6710479296204,
-  "lng": 127.056424972193,
-  "distance_km": 1.93,
-  "kakao_place_id": "17363107",
-  "kakao_url": "http://place.map.kakao.com/17363107",
-  "menus": [
-   {
-    "name": "후라이드치킨",
-    "price": "19000"
-   },
-   {
-    "name": "파닭파닭",
-    "price": "21000"
-   },
-   {
-    "name": "흑마늘치킨",
-    "price": "21000"
-   },
-   {
-    "name": "과일과치킨",
-    "price": "35000"
-   },
-   {
-    "name": "양념치킨",
-    "price": "20000"
-   }
-  ]
- },
- {
-  "name": "카프리광장",
-  "search_keys": [
-   "카프리광장"
-  ],
-  "address": "서울시 노원구 한글비석로50길 22",
-  "category": "기타 주점업",
-  "phone": "029376562",
-  "lat": 37.66535632592206,
-  "lng": 127.06697261840452,
-  "distance_km": 1.93,
-  "kakao_place_id": "16378552",
-  "kakao_url": "http://place.map.kakao.com/16378552",
-  "menus": [
-   {
-    "name": "어묵탕",
-    "price": "11000"
-   },
-   {
-    "name": "부대찌개",
-    "price": "12000"
-   },
-   {
-    "name": "돼지고추장볶음",
-    "price": "11000"
-   },
-   {
-    "name": "두부김치",
-    "price": "11000"
-   },
-   {
-    "name": "후라이드치킨",
-    "price": "14000"
-   }
-  ]
  },
  {
   "name": "쌍문각갈비탕",
@@ -58238,21 +56166,6 @@
   "distance_km": 1.95,
   "kakao_place_id": "16675774",
   "kakao_url": "http://place.map.kakao.com/16675774",
-  "menus": []
- },
- {
-  "name": "비어스토리",
-  "search_keys": [
-   "비어스토리"
-  ],
-  "address": "서울시 도봉구 덕릉로 244",
-  "category": "기타 주점업",
-  "phone": "02",
-  "lat": 37.639266521210835,
-  "lng": 127.03899572473574,
-  "distance_km": 1.95,
-  "kakao_place_id": "16539580",
-  "kakao_url": "http://place.map.kakao.com/16539580",
   "menus": []
  },
  {
@@ -59106,21 +57019,6 @@
   ]
  },
  {
-  "name": "또와포차",
-  "search_keys": [
-   "또와포차"
-  ],
-  "address": "서울특별시 도봉구 시루봉로 307",
-  "category": "기타 주점업",
-  "phone": "0233918511",
-  "lat": 37.6713850622736,
-  "lng": 127.043235916287,
-  "distance_km": 1.97,
-  "kakao_place_id": "22051760",
-  "kakao_url": "http://place.map.kakao.com/22051760",
-  "menus": []
- },
- {
   "name": "복다방",
   "search_keys": [
    "복다방"
@@ -59616,21 +57514,6 @@
   "distance_km": 1.98,
   "kakao_place_id": "9286745",
   "kakao_url": "http://place.map.kakao.com/9286745",
-  "menus": []
- },
- {
-  "name": "날마다비어",
-  "search_keys": [
-   "날마다비어"
-  ],
-  "address": "서울시 도봉구 시루봉로 303",
-  "category": "생맥주 전문점",
-  "phone": "0234921044",
-  "lat": 37.6713815989957,
-  "lng": 127.042850527057,
-  "distance_km": 1.98,
-  "kakao_place_id": "27311040",
-  "kakao_url": "http://place.map.kakao.com/27311040",
   "menus": []
  },
  {
@@ -60298,21 +58181,6 @@
     "price": "3500"
    }
   ]
- },
- {
-  "name": "궁전",
-  "search_keys": [
-   "궁전"
-  ],
-  "address": "서울특별시 노원구 한글비석로23길 15 (상계동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.66013167219037,
-  "lng": 127.07135160885849,
-  "distance_km": 1.99,
-  "kakao_place_id": "16413694",
-  "kakao_url": "http://place.map.kakao.com/16413694",
-  "menus": []
  },
  {
   "name": "신창유부김밥",
@@ -61218,21 +59086,6 @@
   ]
  },
  {
-  "name": "홈런",
-  "search_keys": [
-   "홈런"
-  ],
-  "address": "서울특별시 노원구 한글비석로23길 7 노원구 상계동169-192  1층 홈련",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.66045868573214,
-  "lng": 127.07142218802163,
-  "distance_km": 2.01,
-  "kakao_place_id": "10966932",
-  "kakao_url": "http://place.map.kakao.com/10966932",
-  "menus": []
- },
- {
   "name": "투썸플레이스 상계점",
   "search_keys": [
    "투썸플레이스상계점",
@@ -61944,36 +59797,6 @@
     "price": "-1"
    }
   ]
- },
- {
-  "name": "만남의광장",
-  "search_keys": [
-   "만남의광장"
-  ],
-  "address": "서울특별시 도봉구 도봉로156길 32 (도봉동, 지층)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6725552291729,
-  "lng": 127.046156516123,
-  "distance_km": 2.03,
-  "kakao_place_id": "17011029",
-  "kakao_url": "http://place.map.kakao.com/17011029",
-  "menus": []
- },
- {
-  "name": "띵까띵까",
-  "search_keys": [
-   "띵까띵까"
-  ],
-  "address": "서울특별시 도봉구 시루봉로 287 (도봉동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6713641998632,
-  "lng": 127.041107207025,
-  "distance_km": 2.03,
-  "kakao_place_id": "1843962231",
-  "kakao_url": "http://place.map.kakao.com/1843962231",
-  "menus": []
  },
  {
   "name": "카페그루",
@@ -62710,44 +60533,6 @@
    {
     "name": "마파두부",
     "price": "-1"
-   }
-  ]
- },
- {
-  "name": "모모632",
-  "search_keys": [
-   "모모632",
-   "모모"
-  ],
-  "zeropay_name": "모모",
-  "address": "서울특별시 도봉구 덕릉로53길 82 (창동)",
-  "category": "기타 주점업",
-  "phone": "01086002048",
-  "lat": 37.640682462596,
-  "lng": 127.034516482938,
-  "distance_km": 2.05,
-  "kakao_place_id": "69209061",
-  "kakao_url": "http://place.map.kakao.com/69209061",
-  "menus": [
-   {
-    "name": "묵은지 갈비찜",
-    "price": "28000"
-   },
-   {
-    "name": "우겹 야채찜",
-    "price": "28000"
-   },
-   {
-    "name": "계절과일",
-    "price": "22000"
-   },
-   {
-    "name": "후라이드 치킨(1마리)",
-    "price": "14000"
-   },
-   {
-    "name": "후라이드 치킨(2마리)",
-    "price": "21800"
    }
   ]
  },
@@ -64222,23 +62007,6 @@
   ]
  },
  {
-  "name": "치킨주막 도봉점",
-  "search_keys": [
-   "치킨주막도봉점",
-   "치킨주막"
-  ],
-  "zeropay_name": "치킨주막",
-  "address": "서울시 도봉구 도봉로125길 70",
-  "category": "기타 주점업",
-  "phone": "029911192",
-  "lat": 37.6727484296754,
-  "lng": 127.045146676059,
-  "distance_km": 2.07,
-  "kakao_place_id": "516491831",
-  "kakao_url": "http://place.map.kakao.com/516491831",
-  "menus": []
- },
- {
   "name": "카페베네 한일병원점",
   "search_keys": [
    "카페베네한일병원점"
@@ -64600,57 +62368,6 @@
   ]
  },
  {
-  "name": "비타호프",
-  "search_keys": [
-   "비타호프"
-  ],
-  "address": "서울특별시 도봉구 도봉로156길 11, 1층 (도봉동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6728403958303,
-  "lng": 127.044973304133,
-  "distance_km": 2.08,
-  "kakao_place_id": "662884817",
-  "kakao_url": "http://place.map.kakao.com/662884817",
-  "menus": []
- },
- {
-  "name": "키다리아찌",
-  "search_keys": [
-   "키다리아찌"
-  ],
-  "address": "서울특별시 도봉구 덕릉로 230-1 창3동 557-99  1층 (키다리이찌)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6383207943584,
-  "lng": 127.038054849247,
-  "distance_km": 2.08,
-  "kakao_place_id": "14752470",
-  "kakao_url": "http://place.map.kakao.com/14752470",
-  "menus": [
-   {
-    "name": "두부,제육김치",
-    "price": "16000"
-   },
-   {
-    "name": "골뱅이소면",
-    "price": "16000"
-   },
-   {
-    "name": "모듬소세지",
-    "price": "16000"
-   },
-   {
-    "name": "해물볶음우동",
-    "price": "18000"
-   },
-   {
-    "name": "볶음우동",
-    "price": "13000"
-   }
-  ]
- },
- {
   "name": "유연국시",
   "search_keys": [
    "유연국시"
@@ -64763,23 +62480,6 @@
     "price": "25000"
    }
   ]
- },
- {
-  "name": "딱걸렸네호프소주",
-  "search_keys": [
-   "딱걸렸네호프소주",
-   "딱걸렸네"
-  ],
-  "zeropay_name": "딱걸렸네",
-  "address": "서울특별시 도봉구 도봉로156길 11",
-  "category": "생맥주 전문점",
-  "phone": "0234942214",
-  "lat": 37.6728223693255,
-  "lng": 127.044991429473,
-  "distance_km": 2.08,
-  "kakao_place_id": "16443990",
-  "kakao_url": "http://place.map.kakao.com/16443990",
-  "menus": []
  },
  {
   "name": "마포참숯갈비",
@@ -65986,36 +63686,6 @@
   ]
  },
  {
-  "name": "프렌드호프",
-  "search_keys": [
-   "프렌드호프"
-  ],
-  "address": "서울특별시 도봉구 도봉로155길 8, 1층 (도봉동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.67293463446485,
-  "lng": 127.04354286451786,
-  "distance_km": 2.12,
-  "kakao_place_id": "2095982091",
-  "kakao_url": "http://place.map.kakao.com/2095982091",
-  "menus": []
- },
- {
-  "name": "미라클커피숍",
-  "search_keys": [
-   "미라클커피숍"
-  ],
-  "address": "서울시 도봉구 도봉로 767",
-  "category": "기타 주점업",
-  "phone": "029545192",
-  "lat": 37.6729345092785,
-  "lng": 127.043880652047,
-  "distance_km": 2.12,
-  "kakao_place_id": "976400053",
-  "kakao_url": "http://place.map.kakao.com/976400053",
-  "menus": []
- },
- {
   "name": "GS25 신창초교점",
   "search_keys": [
    "gs25신창초교점",
@@ -66181,57 +63851,6 @@
    },
    {
     "name": "명가 떡볶이 세트",
-    "price": "-1"
-   }
-  ]
- },
- {
-  "name": "풀하우스",
-  "search_keys": [
-   "풀하우스"
-  ],
-  "address": "서울특별시 노원구 한글비석로23길 18 (상계동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6649229388008,
-  "lng": 127.07010039501064,
-  "distance_km": 2.12,
-  "kakao_place_id": "673809381",
-  "kakao_url": "http://place.map.kakao.com/673809381",
-  "menus": []
- },
- {
-  "name": "2070포차",
-  "search_keys": [
-   "2070포차"
-  ],
-  "address": "서울시 노원구 한글비석로24길 24",
-  "category": "기타 주점업",
-  "phone": "029523527",
-  "lat": 37.6618169510247,
-  "lng": 127.07210349706,
-  "distance_km": 2.12,
-  "kakao_place_id": "16794267",
-  "kakao_url": "http://place.map.kakao.com/16794267",
-  "menus": [
-   {
-    "name": "과일안주",
-    "price": "-1"
-   },
-   {
-    "name": "화채",
-    "price": "-1"
-   },
-   {
-    "name": "먹태",
-    "price": "-1"
-   },
-   {
-    "name": "육포",
-    "price": "-1"
-   },
-   {
-    "name": "노가리",
     "price": "-1"
    }
   ]
@@ -66797,36 +64416,6 @@
   ]
  },
  {
-  "name": "아마존",
-  "search_keys": [
-   "아마존"
-  ],
-  "address": "서울특별시 노원구 한글비석로24길 6, 1층 (상계동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6598520809287,
-  "lng": 127.073289312249,
-  "distance_km": 2.14,
-  "kakao_place_id": "16444080",
-  "kakao_url": "http://place.map.kakao.com/16444080",
-  "menus": []
- },
- {
-  "name": "디오니스",
-  "search_keys": [
-   "디오니스"
-  ],
-  "address": "서울시 노원구 노원로 314",
-  "category": "기타 주점업",
-  "phone": "029715620",
-  "lat": 37.6451673937419,
-  "lng": 127.07111747226,
-  "distance_km": 2.14,
-  "kakao_place_id": "8341418",
-  "kakao_url": "http://place.map.kakao.com/8341418",
-  "menus": []
- },
- {
   "name": "카페 마음",
   "search_keys": [
    "카페마음"
@@ -67070,21 +64659,6 @@
     "price": "4000"
    }
   ]
- },
- {
-  "name": "호프할래",
-  "search_keys": [
-   "호프할래"
-  ],
-  "address": "서울특별시 도봉구 덕릉로 222 (창동)",
-  "category": "생맥주 전문점",
-  "phone": "029915571",
-  "lat": 37.637773122831966,
-  "lng": 127.03765802653784,
-  "distance_km": 2.15,
-  "kakao_place_id": "13692749",
-  "kakao_url": "http://place.map.kakao.com/13692749",
-  "menus": []
  },
  {
   "name": "GS25 방학신동아점",
@@ -67485,36 +65059,6 @@
     "price": "14000"
    }
   ]
- },
- {
-  "name": "비어뱅크",
-  "search_keys": [
-   "비어뱅크"
-  ],
-  "address": "서울시 도봉구 도당로9길 23",
-  "category": "기타 주점업",
-  "phone": "029559109",
-  "lat": 37.6730610807249,
-  "lng": 127.042697334445,
-  "distance_km": 2.16,
-  "kakao_place_id": "19163487",
-  "kakao_url": "http://place.map.kakao.com/19163487",
-  "menus": []
- },
- {
-  "name": "골목포차",
-  "search_keys": [
-   "골목포차"
-  ],
-  "address": "서울시 도봉구 덕릉로53길 23",
-  "category": "기타 주점업",
-  "phone": "029993479",
-  "lat": 37.638493496991025,
-  "lng": 127.03609939310483,
-  "distance_km": 2.16,
-  "kakao_place_id": "27505798",
-  "kakao_url": "http://place.map.kakao.com/27505798",
-  "menus": []
  },
  {
   "name": "이마트24 R방학센터점",
@@ -68182,21 +65726,6 @@
   ]
  },
  {
-  "name": "영자네",
-  "search_keys": [
-   "영자네"
-  ],
-  "address": "서울시 도봉구 우이천로224-1",
-  "category": "기타 주점업",
-  "phone": "029971718",
-  "lat": 37.6392021724544,
-  "lng": 127.034421758864,
-  "distance_km": 2.18,
-  "kakao_place_id": "244187561",
-  "kakao_url": "http://place.map.kakao.com/244187561",
-  "menus": []
- },
- {
   "name": "메가MGC커피 서울쌍문초점",
   "search_keys": [
    "메가mgc커피서울쌍문초점"
@@ -68724,42 +66253,6 @@
    {
     "name": "카푸치노",
     "price": "4000"
-   }
-  ]
- },
- {
-  "name": "참나무장작구이",
-  "search_keys": [
-   "참나무장작구이"
-  ],
-  "address": "서울시 도봉구 우이천로 222",
-  "category": "기타 주점업",
-  "phone": "029922780",
-  "lat": 37.6389994194497,
-  "lng": 127.034529300294,
-  "distance_km": 2.19,
-  "kakao_place_id": "16906784",
-  "kakao_url": "http://place.map.kakao.com/16906784",
-  "menus": [
-   {
-    "name": "참나무 삼겹살바베큐(600g)",
-    "price": "33000"
-   },
-   {
-    "name": "김치찌개",
-    "price": "15000"
-   },
-   {
-    "name": "치킨바베큐",
-    "price": "11000"
-   },
-   {
-    "name": "치킨양념바베큐",
-    "price": "14000"
-   },
-   {
-    "name": "두부김치",
-    "price": "15000"
    }
   ]
  },
@@ -69408,23 +66901,6 @@
   ]
  },
  {
-  "name": "오렌지카",
-  "search_keys": [
-   "오렌지카",
-   "오렌지"
-  ],
-  "zeropay_name": "오렌지",
-  "address": "서울특별시 도봉구 해등로 158 (쌍문동, 지하1층)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6452900844088,
-  "lng": 127.027729108103,
-  "distance_km": 2.2,
-  "kakao_place_id": "19010551",
-  "kakao_url": "http://place.map.kakao.com/19010551",
-  "menus": []
- },
- {
   "name": "손큰원조할매순대국 상계점",
   "search_keys": [
    "손큰원조할매순대국상계점",
@@ -69650,42 +67126,6 @@
    },
    {
     "name": "땡초간장닭발",
-    "price": "-1"
-   }
-  ]
- },
- {
-  "name": "술점빵",
-  "search_keys": [
-   "술점빵"
-  ],
-  "address": "서울특별시 노원구 한글비석로20길 23-16(중계동)",
-  "category": "기타 주점업",
-  "phone": "01033330709",
-  "lat": 37.6604770840864,
-  "lng": 127.073735323728,
-  "distance_km": 2.2,
-  "kakao_place_id": "1827683670",
-  "kakao_url": "http://place.map.kakao.com/1827683670",
-  "menus": [
-   {
-    "name": "옛날닭발",
-    "price": "-1"
-   },
-   {
-    "name": "리코타치즈",
-    "price": "-1"
-   },
-   {
-    "name": "순살치킨",
-    "price": "-1"
-   },
-   {
-    "name": "골뱅이소면",
-    "price": "-1"
-   },
-   {
-    "name": "오징어볶음",
     "price": "-1"
    }
   ]
@@ -70087,44 +67527,6 @@
   "menus": []
  },
  {
-  "name": "너추골호프",
-  "search_keys": [
-   "너추골호프",
-   "너추골"
-  ],
-  "zeropay_name": "너추골",
-  "address": "서울시 도봉구 덕릉로 218",
-  "category": "기타 주점업",
-  "phone": "02",
-  "lat": 37.6374273076931,
-  "lng": 127.037143480975,
-  "distance_km": 2.21,
-  "kakao_place_id": "27309864",
-  "kakao_url": "http://place.map.kakao.com/27309864",
-  "menus": [
-   {
-    "name": "닭볶음탕",
-    "price": "27000"
-   },
-   {
-    "name": "골뱅이",
-    "price": "16000"
-   },
-   {
-    "name": "제육볶음",
-    "price": "13000"
-   },
-   {
-    "name": "낙지볶음",
-    "price": "13000"
-   },
-   {
-    "name": "닭발",
-    "price": "13000"
-   }
-  ]
- },
- {
   "name": "GS25 방학공원점",
   "search_keys": [
    "gs25방학공원점",
@@ -70176,42 +67578,6 @@
    {
     "name": "뚜레1번가 햄치즈 토스트",
     "price": "-1"
-   }
-  ]
- },
- {
-  "name": "비어체스터",
-  "search_keys": [
-   "비어체스터"
-  ],
-  "address": "서울특별시 노원구 덕릉로83길 19-6 (중계동)",
-  "category": "생맥주 전문점",
-  "phone": "07040647726",
-  "lat": 37.6599074440479,
-  "lng": 127.074086088661,
-  "distance_km": 2.21,
-  "kakao_place_id": "974652679",
-  "kakao_url": "http://place.map.kakao.com/974652679",
-  "menus": [
-   {
-    "name": "클라우드 생드래프트 (병맥주)",
-    "price": "2000"
-   },
-   {
-    "name": "1664라거 (생맥주)",
-    "price": "2900"
-   },
-   {
-    "name": "레드락 (생맥주)",
-    "price": "2900"
-   },
-   {
-    "name": "하이네켄 (생맥주)",
-    "price": "4900"
-   },
-   {
-    "name": "에델바이스 (생맥주)",
-    "price": "5900"
    }
   ]
  },
@@ -70866,44 +68232,6 @@
   ]
  },
  {
-  "name": "다원바다마을포차",
-  "search_keys": [
-   "다원바다마을포차",
-   "다원비다마을포차"
-  ],
-  "zeropay_name": "다원비다마을포차",
-  "address": "서울 노원구 한글비석로20길 27-8",
-  "category": "기타 주점업",
-  "phone": "029331110",
-  "lat": 37.6605815191577,
-  "lng": 127.073861226366,
-  "distance_km": 2.22,
-  "kakao_place_id": "1894022153",
-  "kakao_url": "http://place.map.kakao.com/1894022153",
-  "menus": [
-   {
-    "name": "마늘똥집",
-    "price": "15000"
-   },
-   {
-    "name": "오돌뼈",
-    "price": "15000"
-   },
-   {
-    "name": "국물닭발",
-    "price": "25000"
-   },
-   {
-    "name": "골뱅이 볶음",
-    "price": "22000"
-   },
-   {
-    "name": "모듬포 마른안주",
-    "price": "23000"
-   }
-  ]
- },
- {
   "name": "탐앤탐스 하계점",
   "search_keys": [
    "탐앤탐스하계점",
@@ -71371,23 +68699,6 @@
     "price": "10500"
    }
   ]
- },
- {
-  "name": "칠공팔공",
-  "search_keys": [
-   "칠공팔공",
-   "칠공팔공7080"
-  ],
-  "zeropay_name": "칠공팔공(7080)",
-  "address": "서울특별시 노원구 덕릉로83길 22 (중계동)",
-  "category": "기타 주점업",
-  "phone": "0000000000",
-  "lat": 37.66019838321643,
-  "lng": 127.07420990983616,
-  "distance_km": 2.23,
-  "kakao_place_id": "1825684097",
-  "kakao_url": "http://place.map.kakao.com/1825684097",
-  "menus": []
  },
  {
   "name": "메가MGC커피 중계씨앤미점",
@@ -71894,89 +69205,6 @@
    {
     "name": "참치김밥",
     "price": "5000"
-   }
-  ]
- },
- {
-  "name": "인쌩맥주 상계역점",
-  "search_keys": [
-   "인쌩맥주상계역점"
-  ],
-  "address": "서울특별시 노원구 한글비석로20길 30 (중계동)",
-  "category": "생맥주 전문점",
-  "phone": "01023666718",
-  "lat": 37.660454286013746,
-  "lng": 127.07417163149924,
-  "distance_km": 2.24,
-  "kakao_place_id": "832715701",
-  "kakao_url": "http://place.map.kakao.com/832715701",
-  "menus": [
-   {
-    "name": "짜계치",
-    "price": "-1"
-   },
-   {
-    "name": "분모자폭탄지코닭",
-    "price": "-1"
-   },
-   {
-    "name": "9900 순살치킨",
-    "price": "-1"
-   },
-   {
-    "name": "킬바사소시지불닭볶음면",
-    "price": "-1"
-   },
-   {
-    "name": "인생국물닭발",
-    "price": "-1"
-   }
-  ]
- },
- {
-  "name": "줄리아치킨호프",
-  "search_keys": [
-   "줄리아치킨호프"
-  ],
-  "address": "서울시 노원구 한글비석로24라길 18-5",
-  "category": "생맥주 전문점",
-  "phone": "029387096",
-  "lat": 37.6636402296819,
-  "lng": 127.072603945175,
-  "distance_km": 2.24,
-  "kakao_place_id": "24975443",
-  "kakao_url": "http://place.map.kakao.com/24975443",
-  "menus": []
- },
- {
-  "name": "이찌방 상계점",
-  "search_keys": [
-   "이찌방상계점"
-  ],
-  "address": "서울특별시 노원구 덕릉로83길 15, 2층 (중계동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6598369527956,
-  "lng": 127.074427146763,
-  "distance_km": 2.24,
-  "kakao_place_id": "115641179",
-  "kakao_url": "http://place.map.kakao.com/115641179",
-  "menus": [
-   {
-    "name": "소고기나베",
-    "price": "9900"
-   },
-   {
-    "name": "나가사끼짬뽕탕",
-    "price": "9900"
-   },
-   {
-    "name": "오꼬노미야끼",
-    "price": "7900"
-   },
-   {
-    "name": "메뉴판",
-    "price": ""
    }
   ]
  },
@@ -72660,45 +69888,6 @@
   ]
  },
  {
-  "name": "SNS민속주점",
-  "search_keys": [
-   "sns민속주점",
-   "에스엔에스sns민속주점",
-   "에스엔에스민속주점"
-  ],
-  "zeropay_name": "에스엔에스(S.N.S)민속주점",
-  "address": "서울특별시 노원구 한글비석로20길 38",
-  "category": "기타 주점업",
-  "phone": "01024503035",
-  "lat": 37.6608019897075,
-  "lng": 127.074290977167,
-  "distance_km": 2.26,
-  "kakao_place_id": "789708884",
-  "kakao_url": "http://place.map.kakao.com/789708884",
-  "menus": [
-   {
-    "name": "골뱅이",
-    "price": "19000"
-   },
-   {
-    "name": "두부김치",
-    "price": "16000"
-   },
-   {
-    "name": "훈제치킨",
-    "price": "15000"
-   },
-   {
-    "name": "닭발",
-    "price": "14000"
-   },
-   {
-    "name": "오돌뼈",
-    "price": "14000"
-   }
-  ]
- },
- {
   "name": "도담커피",
   "search_keys": [
    "도담커피"
@@ -73205,21 +70394,6 @@
   ]
  },
  {
-  "name": "공간",
-  "search_keys": [
-   "공간"
-  ],
-  "address": "서울시 노원구 한글비석로48길 9",
-  "category": "기타 주점업",
-  "phone": "01040814289",
-  "lat": 37.6646989929917,
-  "lng": 127.072423634019,
-  "distance_km": 2.28,
-  "kakao_place_id": "1180874553",
-  "kakao_url": "http://place.map.kakao.com/1180874553",
-  "menus": []
- },
- {
   "name": "설빙 상계역점",
   "search_keys": [
    "설빙상계역점"
@@ -73327,42 +70501,6 @@
    {
     "name": "노랑꼬치 순한맛",
     "price": "1500"
-   }
-  ]
- },
- {
-  "name": "술생각날때",
-  "search_keys": [
-   "술생각날때"
-  ],
-  "address": "서울시 강북구 도봉로98길 6",
-  "category": "기타 주점업",
-  "phone": "029982611",
-  "lat": 37.64141982241459,
-  "lng": 127.02991896206692,
-  "distance_km": 2.28,
-  "kakao_place_id": "480538779",
-  "kakao_url": "http://place.map.kakao.com/480538779",
-  "menus": [
-   {
-    "name": "마른오징어",
-    "price": "14000"
-   },
-   {
-    "name": "한치",
-    "price": "12000"
-   },
-   {
-    "name": "노가리",
-    "price": "12000"
-   },
-   {
-    "name": "새우튀김",
-    "price": "13000"
-   },
-   {
-    "name": "골뱅이(대)",
-    "price": "20000"
    }
   ]
  },
@@ -73793,21 +70931,6 @@
     "price": "19000"
    }
   ]
- },
- {
-  "name": "오가도",
-  "search_keys": [
-   "오가도"
-  ],
-  "address": "서울시 도봉구 도봉로159길 20",
-  "category": "기타 주점업",
-  "phone": "029548553",
-  "lat": 37.6744988885919,
-  "lng": 127.043124369072,
-  "distance_km": 2.3,
-  "kakao_place_id": "15387953",
-  "kakao_url": "http://place.map.kakao.com/15387953",
-  "menus": []
  },
  {
   "name": "더블즈",
@@ -76028,22 +73151,6 @@
   ]
  },
  {
-  "name": "그리운사람끼리한잔",
-  "search_keys": [
-   "그리운사람끼리한잔"
-  ],
-  "zeropay_name": "그리운사람끼리 한잔",
-  "address": "서울특별시 노원구 한글비석로5길 62, 상가동 101호 (중계동, 중계8단지주공아파트)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.64646818579126,
-  "lng": 127.07440927255429,
-  "distance_km": 2.34,
-  "kakao_place_id": "1263749512",
-  "kakao_url": "http://place.map.kakao.com/1263749512",
-  "menus": []
- },
- {
   "name": "이디야커피 상계역점",
   "search_keys": [
    "이디야커피상계역점",
@@ -76208,21 +73315,6 @@
     "price": "-1"
    }
   ]
- },
- {
-  "name": "한잔포차",
-  "search_keys": [
-   "한잔포차"
-  ],
-  "address": "서울특별시 강북구 도봉로97길 13, 1층 (수유동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.64186432487569,
-  "lng": 127.02864106756358,
-  "distance_km": 2.34,
-  "kakao_place_id": "1716521428",
-  "kakao_url": "http://place.map.kakao.com/1716521428",
-  "menus": []
  },
  {
   "name": "CU 번동중앙점",
@@ -76623,42 +73715,6 @@
   ]
  },
  {
-  "name": "산과맥주",
-  "search_keys": [
-   "산과맥주"
-  ],
-  "address": "서울특별시 노원구 동일로242길 54",
-  "category": "기타 주점업",
-  "phone": "029380903",
-  "lat": 37.6745680244351,
-  "lng": 127.058343320657,
-  "distance_km": 2.35,
-  "kakao_place_id": "1280523458",
-  "kakao_url": "http://place.map.kakao.com/1280523458",
-  "menus": [
-   {
-    "name": "바삭후라이드",
-    "price": "18000"
-   },
-   {
-    "name": "치킨과 골뱅이",
-    "price": "28000"
-   },
-   {
-    "name": "반반치킨",
-    "price": "20000"
-   },
-   {
-    "name": "감튀치킨",
-    "price": "18000"
-   },
-   {
-    "name": "돈까스",
-    "price": "15000"
-   }
-  ]
- },
- {
   "name": "이송함흥냉면",
   "search_keys": [
    "이송함흥냉면"
@@ -76712,42 +73768,6 @@
    {
     "name": "묵은지오일파스타정식",
     "price": "20800"
-   }
-  ]
- },
- {
-  "name": "호프광장",
-  "search_keys": [
-   "호프광장"
-  ],
-  "address": "서울시 강북구 한천로140길 48(수유동)",
-  "category": "기타 주점업",
-  "phone": "07043197835",
-  "lat": 37.641657088302,
-  "lng": 127.028682910485,
-  "distance_km": 2.35,
-  "kakao_place_id": "262585227",
-  "kakao_url": "http://place.map.kakao.com/262585227",
-  "menus": [
-   {
-    "name": "동태찌개",
-    "price": "16000"
-   },
-   {
-    "name": "반건조오징어",
-    "price": "13000"
-   },
-   {
-    "name": "두부김치",
-    "price": "13000"
-   },
-   {
-    "name": "계란말이",
-    "price": "11000"
-   },
-   {
-    "name": "옛날노가리",
-    "price": "7000"
    }
   ]
  },
@@ -77149,23 +74169,6 @@
     "price": "40000"
    }
   ]
- },
- {
-  "name": "별이빛나는밤에",
-  "search_keys": [
-   "별이빛나는밤에",
-   "별이빛나는밤"
-  ],
-  "zeropay_name": "별이빛나는밤",
-  "address": "서울시 노원구 동일로242길 54(상계동)",
-  "category": "생맥주 전문점",
-  "phone": "029313119",
-  "lat": 37.674679854399,
-  "lng": 127.058123501085,
-  "distance_km": 2.36,
-  "kakao_place_id": "16678223",
-  "kakao_url": "http://place.map.kakao.com/16678223",
-  "menus": []
  },
  {
   "name": "아마스빈 은행사거리점",
@@ -78253,44 +75256,6 @@
   "menus": []
  },
  {
-  "name": "디오스호프",
-  "search_keys": [
-   "디오스호프",
-   "디오스"
-  ],
-  "zeropay_name": "디오스",
-  "address": "서울특별시 노원구 동일로242길 40-14",
-  "category": "기타 주점업",
-  "phone": "029309244",
-  "lat": 37.67514533074806,
-  "lng": 127.05695290804927,
-  "distance_km": 2.38,
-  "kakao_place_id": "20533648",
-  "kakao_url": "http://place.map.kakao.com/20533648",
-  "menus": [
-   {
-    "name": "골뱅이소면",
-    "price": "18000"
-   },
-   {
-    "name": "낙지볶음과소면",
-    "price": "18000"
-   },
-   {
-    "name": "고추장불고기",
-    "price": "15000"
-   },
-   {
-    "name": "닭발볶음",
-    "price": "14000"
-   },
-   {
-    "name": "두부김치",
-    "price": "15000"
-   }
-  ]
- },
- {
   "name": "템포커피 중계점",
   "search_keys": [
    "템포커피중계점"
@@ -79002,21 +75967,6 @@
     "price": "5000"
    }
   ]
- },
- {
-  "name": "냇가",
-  "search_keys": [
-   "냇가"
-  ],
-  "address": "서울특별시 노원구 동일로242길 16-1 2층",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6754123204433,
-  "lng": 127.056328524377,
-  "distance_km": 2.39,
-  "kakao_place_id": "21529563",
-  "kakao_url": "http://place.map.kakao.com/21529563",
-  "menus": []
  },
  {
   "name": "바나프레소 중계은행사거리점",
@@ -80511,44 +77461,6 @@
   ]
  },
  {
-  "name": "크래프트한스 중계점",
-  "search_keys": [
-   "크래프트한스중계점",
-   "크래프트한스"
-  ],
-  "zeropay_name": "크래프트한스",
-  "address": "서울 노원구 한글비석로 235",
-  "category": "생맥주 전문점",
-  "phone": "01090351111",
-  "lat": 37.648872615639256,
-  "lng": 127.07628136797261,
-  "distance_km": 2.41,
-  "kakao_place_id": "1674206242",
-  "kakao_url": "http://place.map.kakao.com/1674206242",
-  "menus": [
-   {
-    "name": "한스크리스피치킨",
-    "price": "18000"
-   },
-   {
-    "name": "빠네퐁듀&치킨",
-    "price": "23000"
-   },
-   {
-    "name": "한스파티플래터",
-    "price": "39900"
-   },
-   {
-    "name": "한스갈릭간장치킨",
-    "price": "19000"
-   },
-   {
-    "name": "한스마라치킨",
-    "price": "20000"
-   }
-  ]
- },
- {
   "name": "카페인중독 상계점",
   "search_keys": [
    "카페인중독상계점"
@@ -81055,23 +77967,6 @@
     "price": "3700"
    }
   ]
- },
- {
-  "name": "플러스호프치킨",
-  "search_keys": [
-   "플러스호프치킨",
-   "플러스"
-  ],
-  "zeropay_name": "플러스",
-  "address": "서울특별시 도봉구 우이천로4길 25 (창동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.633941089137785,
-  "lng": 127.04079882074436,
-  "distance_km": 2.42,
-  "kakao_place_id": "412929302",
-  "kakao_url": "http://place.map.kakao.com/412929302",
-  "menus": []
  },
  {
   "name": "가장맛있는족발 수락산점",
@@ -82492,21 +79387,6 @@
   "menus": []
  },
  {
-  "name": "타임",
-  "search_keys": [
-   "타임"
-  ],
-  "address": "서울특별시 노원구 동일로242길 23, 2층 (상계동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6756184020586,
-  "lng": 127.056834246242,
-  "distance_km": 2.43,
-  "kakao_place_id": "1190265189",
-  "kakao_url": "http://place.map.kakao.com/1190265189",
-  "menus": []
- },
- {
   "name": "더카페 중계은행사거리점",
   "search_keys": [
    "더카페중계은행사거리점"
@@ -82782,42 +79662,6 @@
   "kakao_place_id": "15376952",
   "kakao_url": "http://place.map.kakao.com/15376952",
   "menus": []
- },
- {
-  "name": "섬마을조개구이",
-  "search_keys": [
-   "섬마을조개구이"
-  ],
-  "address": "서울시 강북구 도봉로 377(수유동)",
-  "category": "기타 주점업",
-  "phone": "029059847",
-  "lat": 37.64092018423544,
-  "lng": 127.0282634064744,
-  "distance_km": 2.43,
-  "kakao_place_id": "16769564",
-  "kakao_url": "http://place.map.kakao.com/16769564",
-  "menus": [
-   {
-    "name": "모듬조개구이 (소)",
-    "price": "25000"
-   },
-   {
-    "name": "모듬조개구이 (기본)",
-    "price": "15000"
-   },
-   {
-    "name": "모듬조개찜 (기본)",
-    "price": "15000"
-   },
-   {
-    "name": "모듬조개찜 (소)",
-    "price": "25000"
-   },
-   {
-    "name": "산낙지연포탕",
-    "price": "25000"
-   }
-  ]
  },
  {
   "name": "굿모닝커피",
@@ -83828,42 +80672,6 @@
   "menus": []
  },
  {
-  "name": "초안골빈대떡",
-  "search_keys": [
-   "초안골빈대떡"
-  ],
-  "address": "서울특별시 도봉구 우이천로4길 19",
-  "category": "기타 주점업",
-  "phone": "00000000000",
-  "lat": 37.6337430002539,
-  "lng": 127.040427114723,
-  "distance_km": 2.45,
-  "kakao_place_id": "16042779",
-  "kakao_url": "http://place.map.kakao.com/16042779",
-  "menus": [
-   {
-    "name": "모듬전",
-    "price": "23000"
-   },
-   {
-    "name": "해물파전",
-    "price": "18000"
-   },
-   {
-    "name": "동태전",
-    "price": "18000"
-   },
-   {
-    "name": "돈가스",
-    "price": "15000"
-   },
-   {
-    "name": "배추전",
-    "price": "13000"
-   }
-  ]
- },
- {
   "name": "진미홍탁",
   "search_keys": [
    "진미홍탁"
@@ -84147,42 +80955,6 @@
    {
     "name": "물비빔막국수",
     "price": "-1"
-   }
-  ]
- },
- {
-  "name": "보리통호프",
-  "search_keys": [
-   "보리통호프"
-  ],
-  "address": "서울특별시 노원구 동일로241가길 35 (상계동)",
-  "category": "기타 주점업",
-  "phone": "01037957506",
-  "lat": 37.6764229836676,
-  "lng": 127.05294672013,
-  "distance_km": 2.45,
-  "kakao_place_id": "884921137",
-  "kakao_url": "http://place.map.kakao.com/884921137",
-  "menus": [
-   {
-    "name": "국물떡볶이",
-    "price": "14000"
-   },
-   {
-    "name": "케이준샐러드",
-    "price": "20000"
-   },
-   {
-    "name": "연어샐러드",
-    "price": "22000"
-   },
-   {
-    "name": "모듬소세지",
-    "price": "18000"
-   },
-   {
-    "name": "골뱅이무침소면",
-    "price": "22000"
    }
   ]
  },
@@ -84534,57 +81306,6 @@
     "price": "-1"
    }
   ]
- },
- {
-  "name": "노가리학교",
-  "search_keys": [
-   "노가리학교"
-  ],
-  "address": "서울특별시 강북구 한천로140길 28 (수유동)",
-  "category": "생맥주 전문점",
-  "phone": "01067898202",
-  "lat": 37.641008572641,
-  "lng": 127.027877076648,
-  "distance_km": 2.45,
-  "kakao_place_id": "1099599245",
-  "kakao_url": "http://place.map.kakao.com/1099599245",
-  "menus": [
-   {
-    "name": "문어다리",
-    "price": "8000"
-   },
-   {
-    "name": "아이스 황도",
-    "price": "7000"
-   },
-   {
-    "name": "얼큰 문어라면",
-    "price": "10000"
-   },
-   {
-    "name": "편육한접시",
-    "price": "12000"
-   },
-   {
-    "name": "골뱅이무침",
-    "price": "13000"
-   }
-  ]
- },
- {
-  "name": "달빛호프",
-  "search_keys": [
-   "달빛호프"
-  ],
-  "address": "서울시 강북구 한천로140길 28",
-  "category": "생맥주 전문점",
-  "phone": "01047969497",
-  "lat": 37.6410265974146,
-  "lng": 127.027855555803,
-  "distance_km": 2.45,
-  "kakao_place_id": "2056082201",
-  "kakao_url": "http://place.map.kakao.com/2056082201",
-  "menus": []
  },
  {
   "name": "CU 강북신흥점",
@@ -84945,44 +81666,6 @@
    {
     "name": "참치 김밥",
     "price": "4800"
-   }
-  ]
- },
- {
-  "name": "다마시떼 중계점",
-  "search_keys": [
-   "다마시떼중계점",
-   "다마시떼"
-  ],
-  "zeropay_name": "다마시떼",
-  "address": "서울특별시 노원구 한글비석로 272(중계동)",
-  "category": "기타 주점업",
-  "phone": "029369495",
-  "lat": 37.6517296608236,
-  "lng": 127.077619191512,
-  "distance_km": 2.46,
-  "kakao_place_id": "826945706",
-  "kakao_url": "http://place.map.kakao.com/826945706",
-  "menus": [
-   {
-    "name": "레몬사와",
-    "price": "-1"
-   },
-   {
-    "name": "복분자",
-    "price": "-1"
-   },
-   {
-    "name": "참치타다끼",
-    "price": "-1"
-   },
-   {
-    "name": "소고기타다끼",
-    "price": "-1"
-   },
-   {
-    "name": "타코와사비",
-    "price": "-1"
    }
   ]
  },
@@ -85401,21 +82084,6 @@
     "price": "15900"
    }
   ]
- },
- {
-  "name": "치얼스호프",
-  "search_keys": [
-   "치얼스호프"
-  ],
-  "address": "서울특별시 강북구 한천로140길 25",
-  "category": "생맥주 전문점",
-  "phone": "01066973218",
-  "lat": 37.6411095372862,
-  "lng": 127.027645975893,
-  "distance_km": 2.46,
-  "kakao_place_id": "1602935498",
-  "kakao_url": "http://place.map.kakao.com/1602935498",
-  "menus": []
  },
  {
   "name": "세븐일레븐 도봉지민점",
@@ -86595,57 +83263,6 @@
   ]
  },
  {
-  "name": "주도락",
-  "search_keys": [
-   "주도락"
-  ],
-  "address": "서울특별시 노원구 공릉로 358-5 (하계동)",
-  "category": "생맥주 전문점",
-  "phone": "024380206",
-  "lat": 37.63887559027879,
-  "lng": 127.06999660482289,
-  "distance_km": 2.48,
-  "kakao_place_id": "27299117",
-  "kakao_url": "http://place.map.kakao.com/27299117",
-  "menus": [
-   {
-    "name": "치뚝세트 (치킨+뚝배기떡볶이)",
-    "price": "26000"
-   },
-   {
-    "name": "후라이드치킨",
-    "price": "19000"
-   },
-   {
-    "name": "마늘간장치킨",
-    "price": "20000"
-   },
-   {
-    "name": "양념치킨",
-    "price": "21000"
-   },
-   {
-    "name": "파닭치킨",
-    "price": "21000"
-   }
-  ]
- },
- {
-  "name": "블루문",
-  "search_keys": [
-   "블루문"
-  ],
-  "address": "서울특별시 노원구 동일로242가길 8, 2층 (상계동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6762594217885,
-  "lng": 127.055948286612,
-  "distance_km": 2.48,
-  "kakao_place_id": "1594103339",
-  "kakao_url": "http://place.map.kakao.com/1594103339",
-  "menus": []
- },
- {
   "name": "제뉴어리퍼스트",
   "search_keys": [
    "제뉴어리퍼스트"
@@ -86948,43 +83565,6 @@
   ]
  },
  {
-  "name": "바른생활맥주집",
-  "search_keys": [
-   "바른생활맥주집"
-  ],
-  "zeropay_name": "바른생활 맥주집",
-  "address": "서울특별시 도봉구 우이천로4길 12,",
-  "category": "생맥주 전문점",
-  "phone": "0200000000",
-  "lat": 37.6334637586624,
-  "lng": 127.04024003236486,
-  "distance_km": 2.49,
-  "kakao_place_id": "27326199",
-  "kakao_url": "http://place.map.kakao.com/27326199",
-  "menus": [
-   {
-    "name": "먹태구이",
-    "price": "-1"
-   },
-   {
-    "name": "치즈스틱",
-    "price": "-1"
-   },
-   {
-    "name": "순살치킨",
-    "price": "-1"
-   },
-   {
-    "name": "왕큰새우튀김",
-    "price": "-1"
-   },
-   {
-    "name": "돈가스감자튀김",
-    "price": "-1"
-   }
-  ]
- },
- {
   "name": "응급실 국물떡볶이 중계점",
   "search_keys": [
    "응급실국물떡볶이중계점"
@@ -87166,131 +83746,6 @@
    {
     "name": "떡볶이",
     "price": "-1"
-   }
-  ]
- },
- {
-  "name": "조은친구들",
-  "search_keys": [
-   "조은친구들"
-  ],
-  "address": "서울시 노원구 동일로242가길 12",
-  "category": "생맥주 전문점",
-  "phone": "029387820",
-  "lat": 37.6763963662504,
-  "lng": 127.055957457987,
-  "distance_km": 2.49,
-  "kakao_place_id": "16647370",
-  "kakao_url": "http://place.map.kakao.com/16647370",
-  "menus": []
- },
- {
-  "name": "민들레뜨락",
-  "search_keys": [
-   "민들레뜨락"
-  ],
-  "address": "서울시 노원구 초안산로2길 102",
-  "category": "기타 주점업",
-  "phone": "029919380",
-  "lat": 37.6330222008748,
-  "lng": 127.057773825341,
-  "distance_km": 2.49,
-  "kakao_place_id": "9879361",
-  "kakao_url": "http://place.map.kakao.com/9879361",
-  "menus": [
-   {
-    "name": "부추수육구이",
-    "price": "25000"
-   },
-   {
-    "name": "모듬소세지",
-    "price": "15000"
-   },
-   {
-    "name": "달모래집튀김",
-    "price": "17000"
-   },
-   {
-    "name": "번데기",
-    "price": "10000"
-   },
-   {
-    "name": "치즈오돌뼈",
-    "price": "17000"
-   }
-  ]
- },
- {
-  "name": "꼬막포차",
-  "search_keys": [
-   "꼬막포차"
-  ],
-  "address": "서울시 노원구 동일로242가길 12",
-  "category": "기타 주점업",
-  "phone": "029376322",
-  "lat": 37.676407182297,
-  "lng": 127.055948397565,
-  "distance_km": 2.49,
-  "kakao_place_id": "21930505",
-  "kakao_url": "http://place.map.kakao.com/21930505",
-  "menus": [
-   {
-    "name": "두부전",
-    "price": "-1"
-   },
-   {
-    "name": "안주",
-    "price": "-1"
-   },
-   {
-    "name": "해물순두부",
-    "price": "-1"
-   },
-   {
-    "name": "꽁치찌개",
-    "price": "-1"
-   },
-   {
-    "name": "오징어데침",
-    "price": "-1"
-   }
-  ]
- },
- {
-  "name": "용을타는 돼지네포장마차",
-  "search_keys": [
-   "용을타는돼지네포장마차",
-   "용을타는돼지네"
-  ],
-  "zeropay_name": "용을타는돼지네",
-  "address": "서울시 노원구 중계로18길 17(중계동)",
-  "category": "기타 주점업",
-  "phone": "029525041",
-  "lat": 37.6515132458647,
-  "lng": 127.077890931765,
-  "distance_km": 2.49,
-  "kakao_place_id": "15858824",
-  "kakao_url": "http://place.map.kakao.com/15858824",
-  "menus": [
-   {
-    "name": "똥집",
-    "price": "15000"
-   },
-   {
-    "name": "오징어데침",
-    "price": "15000"
-   },
-   {
-    "name": "꼼장어",
-    "price": "15000"
-   },
-   {
-    "name": "오돌뼈",
-    "price": "15000"
-   },
-   {
-    "name": "닭발",
-    "price": "15000"
    }
   ]
  },
@@ -87817,42 +84272,6 @@
   "menus": []
  },
  {
-  "name": "믹스매치",
-  "search_keys": [
-   "믹스매치"
-  ],
-  "address": "서울 강북구 한천로140길 18",
-  "category": "기타 주점업",
-  "phone": "07043330063",
-  "lat": 37.6406743941,
-  "lng": 127.027507585572,
-  "distance_km": 2.5,
-  "kakao_place_id": "1132376595",
-  "kakao_url": "http://place.map.kakao.com/1132376595",
-  "menus": [
-   {
-    "name": "시그니처 칵테일",
-    "price": "-1"
-   },
-   {
-    "name": "시그니처 테이스팅 코스 [2인]",
-    "price": "47000"
-   },
-   {
-    "name": "트러플 크림 뇨끼",
-    "price": "16000"
-   },
-   {
-    "name": "와인",
-    "price": "-1"
-   },
-   {
-    "name": "토마토 라구 파스타",
-    "price": "15000"
-   }
-  ]
- },
- {
   "name": "이마트24 수유사랑점",
   "search_keys": [
    "이마트24수유사랑점",
@@ -88020,21 +84439,6 @@
     "price": "25000"
    }
   ]
- },
- {
-  "name": "투데이",
-  "search_keys": [
-   "투데이"
-  ],
-  "address": "서울시 노원구 동일로242가길 16",
-  "category": "기타 주점업",
-  "phone": "0233910660",
-  "lat": 37.6765693154071,
-  "lng": 127.056039204966,
-  "distance_km": 2.51,
-  "kakao_place_id": "22576948",
-  "kakao_url": "http://place.map.kakao.com/22576948",
-  "menus": []
  },
  {
   "name": "GS25 노원수락산역점",
@@ -88617,42 +85021,6 @@
   ]
  },
  {
-  "name": "참새방앗간",
-  "search_keys": [
-   "참새방앗간"
-  ],
-  "address": "서울시 노원구 중계로 198",
-  "category": "기타 주점업",
-  "phone": "029317848",
-  "lat": 37.6508291964962,
-  "lng": 127.07819844205744,
-  "distance_km": 2.52,
-  "kakao_place_id": "16065851",
-  "kakao_url": "http://place.map.kakao.com/16065851",
-  "menus": [
-   {
-    "name": "닭볶음탕",
-    "price": "30000"
-   },
-   {
-    "name": "동태찌개",
-    "price": "20000"
-   },
-   {
-    "name": "김치찌개",
-    "price": "15000"
-   },
-   {
-    "name": "김치손두부",
-    "price": "15000"
-   },
-   {
-    "name": "황태해장국",
-    "price": "15000"
-   }
-  ]
- },
- {
   "name": "빽다방 상계하늘공원점",
   "search_keys": [
    "빽다방상계하늘공원점",
@@ -89173,21 +85541,6 @@
   ]
  },
  {
-  "name": "팡팡",
-  "search_keys": [
-   "팡팡"
-  ],
-  "address": "서울특별시 강북구 한천로 1008(번동)",
-  "category": "기타 주점업",
-  "phone": "01073036612",
-  "lat": 37.63842684836435,
-  "lng": 127.0295336778849,
-  "distance_km": 2.53,
-  "kakao_place_id": "17011348",
-  "kakao_url": "http://place.map.kakao.com/17011348",
-  "menus": []
- },
- {
   "name": "블랙캥거루",
   "search_keys": [
    "블랙캥거루"
@@ -89583,40 +85936,6 @@
    {
     "name": "왕돈카츠",
     "price": "11000"
-   }
-  ]
- },
- {
-  "name": "펀비어킹 강북구청점",
-  "search_keys": [
-   "펀비어킹강북구청점",
-   "펀비어킹"
-  ],
-  "zeropay_name": "펀비어킹(강북구청점)",
-  "address": "서울특별시 강북구 한천로140길 10 (수유동)",
-  "category": "기타 주점업",
-  "phone": "01097570598",
-  "lat": 37.6404645356365,
-  "lng": 127.027201592261,
-  "distance_km": 2.54,
-  "kakao_place_id": "1880987529",
-  "kakao_url": "http://place.map.kakao.com/1880987529",
-  "menus": [
-   {
-    "name": "아이스 과일펀치",
-    "price": "16900"
-   },
-   {
-    "name": "불고기 페스츄리 피자",
-    "price": "15900"
-   },
-   {
-    "name": "통오징어 한판떡볶킹",
-    "price": "21900"
-   },
-   {
-    "name": "살사치즈나쵸",
-    "price": "11900"
    }
   ]
  },
@@ -90230,21 +86549,6 @@
     "price": "9000"
    }
   ]
- },
- {
-  "name": "늘사랑",
-  "search_keys": [
-   "늘사랑"
-  ],
-  "address": "서울특별시 강북구 한천로 1024",
-  "category": "기타 주점업",
-  "phone": "01056441120",
-  "lat": 37.639336276928724,
-  "lng": 127.02816423502175,
-  "distance_km": 2.55,
-  "kakao_place_id": "20544154",
-  "kakao_url": "http://place.map.kakao.com/20544154",
-  "menus": []
  },
  {
   "name": "커피는미스김",
@@ -92557,42 +88861,6 @@
   ]
  },
  {
-  "name": "천냥노가리호프",
-  "search_keys": [
-   "천냥노가리호프"
-  ],
-  "address": "서울 강북구 한천로131길 5",
-  "category": "생맥주 전문점",
-  "phone": "029967471",
-  "lat": 37.638802032887966,
-  "lng": 127.02799634983424,
-  "distance_km": 2.6,
-  "kakao_place_id": "353850738",
-  "kakao_url": "http://place.map.kakao.com/353850738",
-  "menus": [
-   {
-    "name": "노가리",
-    "price": "1500"
-   },
-   {
-    "name": "한치",
-    "price": "9000"
-   },
-   {
-    "name": "새우튀김",
-    "price": "9000"
-   },
-   {
-    "name": "치킨(반마리)",
-    "price": "9000"
-   },
-   {
-    "name": "튀김만두",
-    "price": "7000"
-   }
-  ]
- },
- {
   "name": "응응스크르 서울번1동점",
   "search_keys": [
    "응응스크르서울번1동점"
@@ -92641,42 +88909,6 @@
    {
     "name": "오뎅탕",
     "price": "13000"
-   }
-  ]
- },
- {
-  "name": "붐비어",
-  "search_keys": [
-   "붐비어"
-  ],
-  "address": "서울 도봉구 도봉로165길 8",
-  "category": "생맥주 전문점",
-  "phone": "01087203884",
-  "lat": 37.6775509153525,
-  "lng": 127.044445629275,
-  "distance_km": 2.61,
-  "kakao_place_id": "19033303",
-  "kakao_url": "http://place.map.kakao.com/19033303",
-  "menus": [
-   {
-    "name": "과일",
-    "price": "-1"
-   },
-   {
-    "name": "화채",
-    "price": "-1"
-   },
-   {
-    "name": "노가리",
-    "price": "-1"
-   },
-   {
-    "name": "아귀포",
-    "price": "-1"
-   },
-   {
-    "name": "해물파전",
-    "price": "-1"
    }
   ]
  },
@@ -92749,42 +88981,6 @@
    {
     "name": "햄치즈 토스트",
     "price": "-1"
-   }
-  ]
- },
- {
-  "name": "마로바베큐치킨",
-  "search_keys": [
-   "마로바베큐치킨"
-  ],
-  "address": "서울시 노원구 한글비석로8길 29(중계동)",
-  "category": "기타 주점업",
-  "phone": "029369995",
-  "lat": 37.6482548971395,
-  "lng": 127.078485826797,
-  "distance_km": 2.61,
-  "kakao_place_id": "15293721",
-  "kakao_url": "http://place.map.kakao.com/15293721",
-  "menus": [
-   {
-    "name": "파닭(순살)바베큐치킨",
-    "price": "18000"
-   },
-   {
-    "name": "(순살)마늘바베큐치킨",
-    "price": "17000"
-   },
-   {
-    "name": "골뱅이무침",
-    "price": "15000"
-   },
-   {
-    "name": "훈제족발무침",
-    "price": "27000"
-   },
-   {
-    "name": "케이준샐러드",
-    "price": "17000"
    }
   ]
  },
@@ -93649,42 +89845,6 @@
   ]
  },
  {
-  "name": "79왕닭꼬치",
-  "search_keys": [
-   "79왕닭꼬치"
-  ],
-  "address": "서울특별시 강북구 한천로 1064-13(수유동)",
-  "category": "생맥주 전문점",
-  "phone": "027363917",
-  "lat": 37.6420219860521,
-  "lng": 127.024704927552,
-  "distance_km": 2.62,
-  "kakao_place_id": "1759116707",
-  "kakao_url": "http://place.map.kakao.com/1759116707",
-  "menus": [
-   {
-    "name": "호롱낙지꼬치 (2꼬치)",
-    "price": "8000"
-   },
-   {
-    "name": "닭꼬치 (2꼬치)",
-    "price": "6000"
-   },
-   {
-    "name": "매운양념닭꼬치꼬치 (2꼬치)",
-    "price": "6000"
-   },
-   {
-    "name": "염통꼬치 (2꼬치)",
-    "price": "5000"
-   },
-   {
-    "name": "마늘꼬치 (2꼬치)",
-    "price": "4000"
-   }
-  ]
- },
- {
   "name": "먼데이오프",
   "search_keys": [
    "먼데이오프"
@@ -93849,44 +90009,6 @@
   ]
  },
  {
-  "name": "디앤비치킨호프",
-  "search_keys": [
-   "디앤비치킨호프",
-   "디앤비치킨"
-  ],
-  "zeropay_name": "디앤비치킨",
-  "address": "서울특별시 도봉구 도봉로 821 (도봉동)",
-  "category": "기타 주점업",
-  "phone": "029558917",
-  "lat": 37.677768833010184,
-  "lng": 127.04476089701151,
-  "distance_km": 2.63,
-  "kakao_place_id": "970229641",
-  "kakao_url": "http://place.map.kakao.com/970229641",
-  "menus": [
-   {
-    "name": "후라이드치킨",
-    "price": "17000"
-   },
-   {
-    "name": "골뱅이소면",
-    "price": "17000"
-   },
-   {
-    "name": "과일치킨",
-    "price": "28000"
-   },
-   {
-    "name": "순살치킨",
-    "price": "18000"
-   },
-   {
-    "name": "치킨뱅이",
-    "price": "25000"
-   }
-  ]
- },
- {
   "name": "카페오롯",
   "search_keys": [
    "카페오롯"
@@ -93971,38 +90093,6 @@
   "distance_km": 2.63,
   "kakao_place_id": "550398565",
   "kakao_url": "http://place.map.kakao.com/550398565",
-  "menus": []
- },
- {
-  "name": "신세계7080",
-  "search_keys": [
-   "신세계7080",
-   "신세계"
-  ],
-  "zeropay_name": "신세계",
-  "address": "서울특별시 강북구 한천로 1064",
-  "category": "기타 주점업",
-  "phone": "029942483",
-  "lat": 37.6417408656368,
-  "lng": 127.024768284773,
-  "distance_km": 2.63,
-  "kakao_place_id": "914425954",
-  "kakao_url": "http://place.map.kakao.com/914425954",
-  "menus": []
- },
- {
-  "name": "주막촌",
-  "search_keys": [
-   "주막촌"
-  ],
-  "address": "서울시 강북구 노해로 110",
-  "category": "기타 주점업",
-  "phone": "01036399504",
-  "lat": 37.6439504079033,
-  "lng": 127.02314872124,
-  "distance_km": 2.63,
-  "kakao_place_id": "1369583122",
-  "kakao_url": "http://place.map.kakao.com/1369583122",
   "menus": []
  },
  {
@@ -94497,42 +90587,6 @@
   ]
  },
  {
-  "name": "한잔의추억",
-  "search_keys": [
-   "한잔의추억"
-  ],
-  "address": "서울특별시 강북구 한천로131길 13(번동)",
-  "category": "생맥주 전문점",
-  "phone": "029967446",
-  "lat": 37.63862552401596,
-  "lng": 127.02763939047544,
-  "distance_km": 2.64,
-  "kakao_place_id": "1169402748",
-  "kakao_url": "http://place.map.kakao.com/1169402748",
-  "menus": [
-   {
-    "name": "나스미소",
-    "price": "8000"
-   },
-   {
-    "name": "가지치즈철판야키",
-    "price": "7000"
-   },
-   {
-    "name": "돈페야키",
-    "price": "7000"
-   },
-   {
-    "name": "가츠나",
-    "price": "10000"
-   },
-   {
-    "name": "감자치즈철판야키",
-    "price": "7500"
-   }
-  ]
- },
- {
   "name": "이디야커피 수유역점",
   "search_keys": [
    "이디야커피수유역점",
@@ -94675,44 +90729,6 @@
    {
     "name": "간장제육",
     "price": "8500"
-   }
-  ]
- },
- {
-  "name": "써이포차나 본점",
-  "search_keys": [
-   "써이포차나본점",
-   "써이포차나"
-  ],
-  "zeropay_name": "써이포차나",
-  "address": "서울 도봉구 도봉로169나길 42？",
-  "category": "기타 주점업",
-  "phone": "029556605",
-  "lat": 37.67784044934453,
-  "lng": 127.04358880789702,
-  "distance_km": 2.65,
-  "kakao_place_id": "622790580",
-  "kakao_url": "http://place.map.kakao.com/622790580",
-  "menus": [
-   {
-    "name": "꾸웨이띠오(태국식쌀국수)",
-    "price": "9500"
-   },
-   {
-    "name": "팟타이",
-    "price": "11000"
-   },
-   {
-    "name": "쌀국수",
-    "price": "8500"
-   },
-   {
-    "name": "칠리누들",
-    "price": "9500"
-   },
-   {
-    "name": "미고랭볶음면",
-    "price": "9500"
    }
   ]
  },
@@ -95127,21 +91143,6 @@
     "price": "-1"
    }
   ]
- },
- {
-  "name": "마운틴호프",
-  "search_keys": [
-   "마운틴호프"
-  ],
-  "address": "서울시 노원구 동일로242가길 46(상계동)",
-  "category": "기타 주점업",
-  "phone": "02",
-  "lat": 37.6779640496112,
-  "lng": 127.055999444706,
-  "distance_km": 2.66,
-  "kakao_place_id": "15435277",
-  "kakao_url": "http://place.map.kakao.com/15435277",
-  "menus": []
  },
  {
   "name": "더벤티 하계점",
@@ -96491,42 +92492,6 @@
    {
     "name": "오돌뼈",
     "price": "16000"
-   }
-  ]
- },
- {
-  "name": "팔천포차",
-  "search_keys": [
-   "팔천포차"
-  ],
-  "address": "서울시 강북구 한천로 1065",
-  "category": "기타 주점업",
-  "phone": "029926724",
-  "lat": 37.6415932040779,
-  "lng": 127.024287827158,
-  "distance_km": 2.67,
-  "kakao_place_id": "27142518",
-  "kakao_url": "http://place.map.kakao.com/27142518",
-  "menus": [
-   {
-    "name": "제육볶음",
-    "price": "9000"
-   },
-   {
-    "name": "양푼이국물떡볶이",
-    "price": "9000"
-   },
-   {
-    "name": "오.제볶음",
-    "price": "9000"
-   },
-   {
-    "name": "간장파제육볶음",
-    "price": "9000"
-   },
-   {
-    "name": "오돌뼈볶음",
-    "price": "9000"
    }
   ]
  },
@@ -98204,21 +94169,6 @@
   ]
  },
  {
-  "name": "삼삼오오오뎅바",
-  "search_keys": [
-   "삼삼오오오뎅바"
-  ],
-  "address": "서울시 노원구 노원로 246",
-  "category": "기타 주점업",
-  "phone": "029753395",
-  "lat": 37.639633516238,
-  "lng": 127.074098809074,
-  "distance_km": 2.7,
-  "kakao_place_id": "15733546",
-  "kakao_url": "http://place.map.kakao.com/15733546",
-  "menus": []
- },
- {
   "name": "CU 월계사슴점",
   "search_keys": [
    "cu월계사슴점",
@@ -98426,21 +94376,6 @@
     "price": "3500"
    }
   ]
- },
- {
-  "name": "베스트",
-  "search_keys": [
-   "베스트"
-  ],
-  "address": "서울특별시 강북구 월계로3길 12 (미아동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6431431884263,
-  "lng": 127.022828947074,
-  "distance_km": 2.7,
-  "kakao_place_id": "21852142",
-  "kakao_url": "http://place.map.kakao.com/21852142",
-  "menus": []
  },
  {
   "name": "GS25 수유역점",
@@ -98782,44 +94717,6 @@
    {
     "name": "동태찌개",
     "price": "-1"
-   }
-  ]
- },
- {
-  "name": "청춘문방구 수유점",
-  "search_keys": [
-   "청춘문방구수유점",
-   "청춘문방구"
-  ],
-  "zeropay_name": "청춘문방구",
-  "address": "서울특별시 강북구 한천로139가길 29 (수유동)",
-  "category": "기타 주점업",
-  "phone": "01029579736",
-  "lat": 37.640493906012246,
-  "lng": 127.02475427451941,
-  "distance_km": 2.71,
-  "kakao_place_id": "1131394187",
-  "kakao_url": "http://place.map.kakao.com/1131394187",
-  "menus": [
-   {
-    "name": "무뼈닭발",
-    "price": "17900"
-   },
-   {
-    "name": "국물닭발",
-    "price": "17900"
-   },
-   {
-    "name": "모듬소세지",
-    "price": "14900"
-   },
-   {
-    "name": "닭떡볶이",
-    "price": "14900"
-   },
-   {
-    "name": "제육오돌뼈",
-    "price": "14900"
    }
   ]
  },
@@ -99674,97 +95571,6 @@
   "menus": []
  },
  {
-  "name": "굴사냥 광산사거리점",
-  "search_keys": [
-   "굴사냥광산사거리점",
-   "굴사냥"
-  ],
-  "zeropay_name": "굴사냥",
-  "address": "서울특별시 강북구 한천로 1096",
-  "category": "기타 주점업",
-  "phone": "029999433",
-  "lat": 37.643698365716,
-  "lng": 127.021927192373,
-  "distance_km": 2.74,
-  "kakao_place_id": "13319695",
-  "kakao_url": "http://place.map.kakao.com/13319695",
-  "menus": [
-   {
-    "name": "생굴찜 중",
-    "price": "58000"
-   },
-   {
-    "name": "조개찜 중",
-    "price": "75000"
-   },
-   {
-    "name": "생굴보쌈 중",
-    "price": "50000"
-   },
-   {
-    "name": "생굴무침",
-    "price": "33000"
-   },
-   {
-    "name": "굴전",
-    "price": "22000"
-   }
-  ]
- },
- {
-  "name": "왕과비",
-  "search_keys": [
-   "왕과비"
-  ],
-  "address": "서울특별시 강북구 한천로139길 29(수유동)",
-  "category": "기타 주점업",
-  "phone": "0000000000",
-  "lat": 37.6390016876753,
-  "lng": 127.025632987238,
-  "distance_km": 2.74,
-  "kakao_place_id": "17001898",
-  "kakao_url": "http://place.map.kakao.com/17001898",
-  "menus": []
- },
- {
-  "name": "이가네빈대떡",
-  "search_keys": [
-   "이가네빈대떡",
-   "이가네"
-  ],
-  "zeropay_name": "이가네",
-  "address": "서울특별시 강북구 한천로 1098 (수유동)",
-  "category": "기타 주점업",
-  "phone": "029905735",
-  "lat": 37.64377856885188,
-  "lng": 127.02184336859553,
-  "distance_km": 2.74,
-  "kakao_place_id": "21331324",
-  "kakao_url": "http://place.map.kakao.com/21331324",
-  "menus": [
-   {
-    "name": "순두부탕",
-    "price": "-1"
-   },
-   {
-    "name": "김치찌개",
-    "price": "-1"
-   },
-   {
-    "name": "돼지껍데기",
-    "price": "-1"
-   },
-   {
-    "name": "김치전",
-    "price": "-1"
-   },
-   {
-    "name": "해물부추전",
-    "price": "-1"
-   }
-  ]
- },
- {
   "name": "강북구청 주차장",
   "search_keys": [
    "강북구청주차장",
@@ -100400,21 +96206,6 @@
   ]
  },
  {
-  "name": "카리스마",
-  "search_keys": [
-   "카리스마"
-  ],
-  "address": "서울특별시 강북구 한천로 1091 (수유동)",
-  "category": "기타 주점업",
-  "phone": "0000000000",
-  "lat": 37.6431163084399,
-  "lng": 127.022042593635,
-  "distance_km": 2.76,
-  "kakao_place_id": "205333293",
-  "kakao_url": "http://place.map.kakao.com/205333293",
-  "menus": []
- },
- {
   "name": "오늘의순이",
   "search_keys": [
    "오늘의순이"
@@ -100837,42 +96628,6 @@
    {
     "name": "더블치즈김밥",
     "price": "4500"
-   }
-  ]
- },
- {
-  "name": "캐쥬얼포차하꼬",
-  "search_keys": [
-   "캐쥬얼포차하꼬"
-  ],
-  "address": "서울특별시 노원구 동일로 1689, 126호 (상계동, 하이베라스)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.67909355048026,
-  "lng": 127.05477599587148,
-  "distance_km": 2.77,
-  "kakao_place_id": "27497560",
-  "kakao_url": "http://place.map.kakao.com/27497560",
-  "menus": [
-   {
-    "name": "삼겹볶음우동",
-    "price": "16000"
-   },
-   {
-    "name": "삼겹두루치기",
-    "price": "14000"
-   },
-   {
-    "name": "삼겹숙주볶음",
-    "price": "14000"
-   },
-   {
-    "name": "오징어다리튀김",
-    "price": "15000"
-   },
-   {
-    "name": "국물떡볶이",
-    "price": "15000"
    }
   ]
  },
@@ -101347,44 +97102,6 @@
   ]
  },
  {
-  "name": "투다리 수유역점",
-  "search_keys": [
-   "투다리수유역점",
-   "투다리"
-  ],
-  "zeropay_name": "투다리",
-  "address": "서울특별시 강북구 한천로139나길 1(수유동)",
-  "category": "기타 주점업",
-  "phone": "029033318",
-  "lat": 37.639008965023,
-  "lng": 127.025311217772,
-  "distance_km": 2.77,
-  "kakao_place_id": "18167283",
-  "kakao_url": "http://place.map.kakao.com/18167283",
-  "menus": [
-   {
-    "name": "버터향오징어볼꼬치",
-    "price": "9500"
-   },
-   {
-    "name": "팽이버섯말이",
-    "price": "9000"
-   },
-   {
-    "name": "매운닭껍질꼬치",
-    "price": "9000"
-   },
-   {
-    "name": "닭산적",
-    "price": "9500"
-   },
-   {
-    "name": "닭껍질꼬치",
-    "price": "9000"
-   }
-  ]
- },
- {
   "name": "오닛",
   "search_keys": [
    "오닛"
@@ -101488,42 +97205,6 @@
    {
     "name": "쭈꾸미철판볶음 1인",
     "price": "30000"
-   }
-  ]
- },
- {
-  "name": "을지맛집포차",
-  "search_keys": [
-   "을지맛집포차"
-  ],
-  "address": "서울시 노원구 공릉로 325-3(하계동)",
-  "category": "기타 주점업",
-  "phone": "029713322",
-  "lat": 37.63566768042069,
-  "lng": 127.07067336486926,
-  "distance_km": 2.78,
-  "kakao_place_id": "27279663",
-  "kakao_url": "http://place.map.kakao.com/27279663",
-  "menus": [
-   {
-    "name": "오돌뼈",
-    "price": "15000"
-   },
-   {
-    "name": "계란말이",
-    "price": "14000"
-   },
-   {
-    "name": "야채곱창",
-    "price": "15000"
-   },
-   {
-    "name": "꼼장어볶음",
-    "price": "15000"
-   },
-   {
-    "name": "모듬마른안주",
-    "price": "15000"
    }
   ]
  },
@@ -101801,23 +97482,6 @@
     "price": "-1"
    }
   ]
- },
- {
-  "name": "라쿤세븐바",
-  "search_keys": [
-   "라쿤세븐바",
-   "라쿤세븐바（raccoonsevenbar）"
-  ],
-  "zeropay_name": "라쿤세븐바（RACCOON SEVEN BAR）",
-  "address": "서울특별시 강북구 한천로139길 35",
-  "category": "생맥주 전문점",
-  "phone": "0200000000",
-  "lat": 37.6387674835713,
-  "lng": 127.025392711577,
-  "distance_km": 2.78,
-  "kakao_place_id": "13114067",
-  "kakao_url": "http://place.map.kakao.com/13114067",
-  "menus": []
  },
  {
   "name": "무드앤밀",
@@ -103053,38 +98717,6 @@
   ]
  },
  {
-  "name": "칠석객잔",
-  "search_keys": [
-   "칠석객잔"
-  ],
-  "address": "서울특별시 강북구 오패산로 393 (번동)",
-  "category": "기타 주점업",
-  "phone": "01099583999",
-  "lat": 37.6362910172741,
-  "lng": 127.027870782222,
-  "distance_km": 2.8,
-  "kakao_place_id": "1094571324",
-  "kakao_url": "http://place.map.kakao.com/1094571324",
-  "menus": [
-   {
-    "name": "포르게타",
-    "price": "26000"
-   },
-   {
-    "name": "오이스터플레이트",
-    "price": "-1"
-   },
-   {
-    "name": "칠석 인살라타 카프레제",
-    "price": "14000"
-   },
-   {
-    "name": "부타노카쿠니",
-    "price": "28000"
-   }
-  ]
- },
- {
   "name": "프리마클라쎄카페",
   "search_keys": [
    "프리마클라쎄카페",
@@ -104020,72 +99652,6 @@
   ]
  },
  {
-  "name": "레드바",
-  "search_keys": [
-   "레드바",
-   "레드"
-  ],
-  "zeropay_name": "레드",
-  "address": "서울특별시 강북구 오패산로 405 (번동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.636939949601306,
-  "lng": 127.02691026736227,
-  "distance_km": 2.81,
-  "kakao_place_id": "15679832",
-  "kakao_url": "http://place.map.kakao.com/15679832",
-  "menus": [
-   {
-    "name": "위스키",
-    "price": "200000"
-   },
-   {
-    "name": "칵테일",
-    "price": "17000"
-   },
-   {
-    "name": "맥주",
-    "price": "13000"
-   }
-  ]
- },
- {
-  "name": "쿄우",
-  "search_keys": [
-   "쿄우"
-  ],
-  "address": "서울시 강북구 오패산로 389",
-  "category": "기타 주점업",
-  "phone": "029925123",
-  "lat": 37.6360206712119,
-  "lng": 127.028083676689,
-  "distance_km": 2.81,
-  "kakao_place_id": "15925640",
-  "kakao_url": "http://place.map.kakao.com/15925640",
-  "menus": [
-   {
-    "name": "나가사키짬뽕",
-    "price": "20000"
-   },
-   {
-    "name": "스끼야끼",
-    "price": "22000"
-   },
-   {
-    "name": "마구로타다기",
-    "price": "22000"
-   },
-   {
-    "name": "삼겹숙주볶음",
-    "price": "16000"
-   },
-   {
-    "name": "통오징어버터구이",
-    "price": "15000"
-   }
-  ]
- },
- {
   "name": "빈세앙",
   "search_keys": [
    "빈세앙"
@@ -104798,21 +100364,6 @@
   ]
  },
  {
-  "name": "뭉치포차",
-  "search_keys": [
-   "뭉치포차"
-  ],
-  "address": "서울시 강북구 오패산로 407",
-  "category": "기타 주점업",
-  "phone": "02",
-  "lat": 37.637091368606,
-  "lng": 127.026674664055,
-  "distance_km": 2.82,
-  "kakao_place_id": "21034648",
-  "kakao_url": "http://place.map.kakao.com/21034648",
-  "menus": []
- },
- {
   "name": "요거프레소 광산사거리점",
   "search_keys": [
    "요거프레소광산사거리점"
@@ -105422,56 +100973,6 @@
    {
     "name": "모듬떡볶이",
     "price": "6000"
-   }
-  ]
- },
- {
-  "name": "버닝바",
-  "search_keys": [
-   "버닝바",
-   "버닝"
-  ],
-  "zeropay_name": "버닝",
-  "address": "서울시 강북구 한천로139길 46",
-  "category": "기타 주점업",
-  "phone": "01022950727",
-  "lat": 37.638678425676,
-  "lng": 127.024735544247,
-  "distance_km": 2.83,
-  "kakao_place_id": "160453015",
-  "kakao_url": "http://place.map.kakao.com/160453015",
-  "menus": [
-   {
-    "name": "맥주",
-    "price": "10000"
-   }
-  ]
- },
- {
-  "name": "락앤롤데이",
-  "search_keys": [
-   "락앤롤데이"
-  ],
-  "address": "서울 강북구 도봉로87길 24",
-  "category": "기타 주점업",
-  "phone": "029041006",
-  "lat": 37.6387784653061,
-  "lng": 127.024590553876,
-  "distance_km": 2.83,
-  "kakao_place_id": "16089161",
-  "kakao_url": "http://place.map.kakao.com/16089161",
-  "menus": [
-   {
-    "name": "칵테일, 세계맥주, 위스키",
-    "price": "5000"
-   },
-   {
-    "name": "다양한 칵테일",
-    "price": "5000"
-   },
-   {
-    "name": "세계맥주",
-    "price": "5000"
    }
   ]
  },
@@ -106138,57 +101639,6 @@
    {
     "name": "김밥",
     "price": "2500"
-   }
-  ]
- },
- {
-  "name": "브이브이바",
-  "search_keys": [
-   "브이브이바",
-   "브비브이바"
-  ],
-  "zeropay_name": "브비브이바",
-  "address": "서울특별시 강북구 도봉로87길 26(수유동)",
-  "category": "생맥주 전문점",
-  "phone": "029089242",
-  "lat": 37.6388379543334,
-  "lng": 127.02447500776,
-  "distance_km": 2.84,
-  "kakao_place_id": "1123028688",
-  "kakao_url": "http://place.map.kakao.com/1123028688",
-  "menus": []
- },
- {
-  "name": "오아시스 뮤직펍",
-  "search_keys": [
-   "오아시스뮤직펍",
-   "오아시스"
-  ],
-  "zeropay_name": "오아시스",
-  "address": "서울특별시 강북구 노해로8가길 34",
-  "category": "기타 주점업",
-  "phone": "01067521751",
-  "lat": 37.63949762609913,
-  "lng": 127.02373650339946,
-  "distance_km": 2.84,
-  "kakao_place_id": "466854735",
-  "kakao_url": "http://place.map.kakao.com/466854735",
-  "menus": [
-   {
-    "name": "수입맥주",
-    "price": "-1"
-   },
-   {
-    "name": "깔루아 밀크",
-    "price": "-1"
-   },
-   {
-    "name": "산토리 가꾸빈 하이볼",
-    "price": "-1"
-   },
-   {
-    "name": "메뉴판",
-    "price": "-1"
    }
   ]
  },
@@ -107649,44 +103099,6 @@
   ]
  },
  {
-  "name": "시선 수유점",
-  "search_keys": [
-   "시선수유점",
-   "시선"
-  ],
-  "zeropay_name": "시선",
-  "address": "서울 강북구 노해로8길 34",
-  "category": "기타 주점업",
-  "phone": "01042007333",
-  "lat": 37.6383532032939,
-  "lng": 127.024576817837,
-  "distance_km": 2.86,
-  "kakao_place_id": "498589580",
-  "kakao_url": "http://place.map.kakao.com/498589580",
-  "menus": [
-   {
-    "name": "30cm오꼬노미야끼",
-    "price": "-1"
-   },
-   {
-    "name": "간사이오뎅탕",
-    "price": "-1"
-   },
-   {
-    "name": "간장메로구이",
-    "price": "-1"
-   },
-   {
-    "name": "게살계란탕",
-    "price": "-1"
-   },
-   {
-    "name": "광어사시미",
-    "price": "-1"
-   }
-  ]
- },
- {
   "name": "마왕족발 하계점",
   "search_keys": [
    "마왕족발하계점"
@@ -108639,117 +104051,6 @@
   "menus": []
  },
  {
-  "name": "온더하우스",
-  "search_keys": [
-   "온더하우스",
-   "온더하우스（onthehouse）"
-  ],
-  "zeropay_name": "온더하우스（On the House）",
-  "address": "서울특별시 강북구 노해로8길 29, 206호 (수유동, 현대크리스탈)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.63852626897623,
-  "lng": 127.02420638628026,
-  "distance_km": 2.88,
-  "kakao_place_id": "21929793",
-  "kakao_url": "http://place.map.kakao.com/21929793",
-  "menus": [
-   {
-    "name": "칵테일",
-    "price": "9000"
-   },
-   {
-    "name": "카나페",
-    "price": "20000"
-   },
-   {
-    "name": "파스타",
-    "price": "18000"
-   },
-   {
-    "name": "모히또",
-    "price": "14000"
-   },
-   {
-    "name": "마티니",
-    "price": "10000"
-   }
-  ]
- },
- {
-  "name": "프리타스프라이",
-  "search_keys": [
-   "프리타스프라이"
-  ],
-  "zeropay_name": "프리타스 프라이",
-  "address": "서울특별시 강북구 도봉로85길 14 (수유동)",
-  "category": "기타 주점업",
-  "phone": "01051235610",
-  "lat": 37.6380973172029,
-  "lng": 127.024607324172,
-  "distance_km": 2.88,
-  "kakao_place_id": "138396064",
-  "kakao_url": "http://place.map.kakao.com/138396064",
-  "menus": [
-   {
-    "name": "그린코코",
-    "price": "-1"
-   },
-   {
-    "name": "오렌지에이드",
-    "price": "-1"
-   },
-   {
-    "name": "마른안주",
-    "price": "-1"
-   },
-   {
-    "name": "아귀포",
-    "price": "-1"
-   },
-   {
-    "name": "반건조오징어",
-    "price": "-1"
-   }
-  ]
- },
- {
-  "name": "딱밤",
-  "search_keys": [
-   "딱밤"
-  ],
-  "address": "서울특별시 강북구 노해로8길 29",
-  "category": "기타 주점업",
-  "phone": "01021809826",
-  "lat": 37.638533479179,
-  "lng": 127.024195058693,
-  "distance_km": 2.88,
-  "kakao_place_id": "243656114",
-  "kakao_url": "http://place.map.kakao.com/243656114",
-  "menus": [
-   {
-    "name": "부채살찹스테이크",
-    "price": "20000"
-   },
-   {
-    "name": "마늘간장치킨",
-    "price": "19000"
-   },
-   {
-    "name": "오돌뼈주먹밥",
-    "price": "18000"
-   },
-   {
-    "name": "돈까스김치나베",
-    "price": "18000"
-   },
-   {
-    "name": "삼겹살김치찌개",
-    "price": "18000"
-   }
-  ]
- },
- {
   "name": "참사랑교회 베데스다카페",
   "search_keys": [
    "참사랑교회베데스다카페",
@@ -109169,42 +104470,6 @@
   ]
  },
  {
-  "name": "야경",
-  "search_keys": [
-   "야경"
-  ],
-  "address": "서울특별시 강북구 노해로8가길 20 (수유동)",
-  "category": "기타 주점업",
-  "phone": "07041029508",
-  "lat": 37.6389119951263,
-  "lng": 127.023690997148,
-  "distance_km": 2.89,
-  "kakao_place_id": "1850313827",
-  "kakao_url": "http://place.map.kakao.com/1850313827",
-  "menus": [
-   {
-    "name": "규타다끼",
-    "price": "25000"
-   },
-   {
-    "name": "스키야키",
-    "price": "34000"
-   },
-   {
-    "name": "에비마요",
-    "price": "18000"
-   },
-   {
-    "name": "사시미모리아와세",
-    "price": "32000"
-   },
-   {
-    "name": "꼬치세트",
-    "price": "-1"
-   }
-  ]
- },
- {
   "name": "세븐일레븐 수유래미안점",
   "search_keys": [
    "세븐일레븐수유래미안점",
@@ -109481,30 +104746,6 @@
   "kakao_place_id": "18636769",
   "kakao_url": "http://place.map.kakao.com/18636769",
   "menus": []
- },
- {
-  "name": "조군술방",
-  "search_keys": [
-   "조군술방"
-  ],
-  "address": "서울특별시 노원구 동일로 1700, 111호 (상계동, 토마토파르코)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6801661329784,
-  "lng": 127.055806116372,
-  "distance_km": 2.9,
-  "kakao_place_id": "1238457781",
-  "kakao_url": "http://place.map.kakao.com/1238457781",
-  "menus": [
-   {
-    "name": "메뉴판",
-    "price": ""
-   },
-   {
-    "name": "메뉴판뒷면",
-    "price": ""
-   }
-  ]
  },
  {
   "name": "다헌",
@@ -113371,38 +108612,6 @@
   "menus": []
  },
  {
-  "name": "88켄터키 덕성여대점",
-  "search_keys": [
-   "88켄터키덕성여대점"
-  ],
-  "address": "서울특별시 도봉구 우이천로 463, 1층 (쌍문동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6545615882278,
-  "lng": 127.015887971181,
-  "distance_km": 2.99,
-  "kakao_place_id": "531024570",
-  "kakao_url": "http://place.map.kakao.com/531024570",
-  "menus": [
-   {
-    "name": "치뱅이",
-    "price": "36800"
-   },
-   {
-    "name": "치새우세트",
-    "price": "34600"
-   },
-   {
-    "name": "골새우세트",
-    "price": "40800"
-   },
-   {
-    "name": "치떡세트",
-    "price": "23800"
-   }
-  ]
- },
- {
   "name": "두부명가",
   "search_keys": [
    "두부명가",
@@ -114309,42 +109518,6 @@
    },
    {
     "name": "모듬김밥",
-    "price": "-1"
-   }
-  ]
- },
- {
-  "name": "비어조",
-  "search_keys": [
-   "비어조"
-  ],
-  "address": "서울특별시 노원구 공릉로58길 131, 1층 (코너부분) (하계동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6364306159472,
-  "lng": 127.075362278121,
-  "distance_km": 3.01,
-  "kakao_place_id": "968212412",
-  "kakao_url": "http://place.map.kakao.com/968212412",
-  "menus": [
-   {
-    "name": "골뱅이소면",
-    "price": "-1"
-   },
-   {
-    "name": "모듬튀김국물떡볶이",
-    "price": "-1"
-   },
-   {
-    "name": "두부김치",
-    "price": "-1"
-   },
-   {
-    "name": "독일식모듬소세지",
-    "price": "-1"
-   },
-   {
-    "name": "제육볶음",
     "price": "-1"
    }
   ]
@@ -116109,21 +111282,6 @@
   ]
  },
  {
-  "name": "아지트",
-  "search_keys": [
-   "아지트"
-  ],
-  "address": "서울시 강북구 도봉로 10길 34",
-  "category": "생맥주 전문점",
-  "phone": "01038026054",
-  "lat": 37.63752016616251,
-  "lng": 127.02271052986602,
-  "distance_km": 3.05,
-  "kakao_place_id": "510025789",
-  "kakao_url": "http://place.map.kakao.com/510025789",
-  "menus": []
- },
- {
   "name": "GS25 수유삼성점",
   "search_keys": [
    "gs25수유삼성점",
@@ -117185,54 +112343,6 @@
   ]
  },
  {
-  "name": "비어박스",
-  "search_keys": [
-   "비어박스"
-  ],
-  "address": "서울특별시 강북구 한천로 1168 (수유동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6480168450855,
-  "lng": 127.015909239662,
-  "distance_km": 3.08,
-  "kakao_place_id": "15378869",
-  "kakao_url": "http://place.map.kakao.com/15378869",
-  "menus": []
- },
- {
-  "name": "오케이단란주점",
-  "search_keys": [
-   "오케이단란주점"
-  ],
-  "zeropay_name": "오케이 단란주점",
-  "address": "서울특별시 강북구 도봉로82길 26 지층ok단란주점",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6352078199393,
-  "lng": 127.024787642018,
-  "distance_km": 3.08,
-  "kakao_place_id": "1317753434",
-  "kakao_url": "http://place.map.kakao.com/1317753434",
-  "menus": []
- },
- {
-  "name": "쿠베라노래방",
-  "search_keys": [
-   "쿠베라노래방",
-   "쿠베라"
-  ],
-  "zeropay_name": "쿠베라",
-  "address": "서울특별시 강북구 도봉로82길 16, 2층 (번동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6355692124301,
-  "lng": 127.024319854688,
-  "distance_km": 3.08,
-  "kakao_place_id": "394282725",
-  "kakao_url": "http://place.map.kakao.com/394282725",
-  "menus": []
- },
- {
   "name": "세븐일레븐 번동점",
   "search_keys": [
    "세븐일레븐번동점",
@@ -117472,42 +112582,6 @@
    },
    {
     "name": "순살 반반 숯불치킨",
-    "price": "-1"
-   }
-  ]
- },
- {
-  "name": "사나포차 당고개점",
-  "search_keys": [
-   "사나포차당고개점"
-  ],
-  "address": "서울특별시 노원구 상계로 301-1(상계동)",
-  "category": "생맥주 전문점",
-  "phone": "0260523131",
-  "lat": 37.6704549515505,
-  "lng": 127.078681489581,
-  "distance_km": 3.09,
-  "kakao_place_id": "866562898",
-  "kakao_url": "http://place.map.kakao.com/866562898",
-  "menus": [
-   {
-    "name": "눈꽃치즈불닭",
-    "price": "-1"
-   },
-   {
-    "name": "두부김치",
-    "price": "-1"
-   },
-   {
-    "name": "매콤똥집볶음",
-    "price": "-1"
-   },
-   {
-    "name": "모듬해물탕",
-    "price": "-1"
-   },
-   {
-    "name": "사나감바스",
     "price": "-1"
    }
   ]
@@ -118423,23 +113497,6 @@
   ]
  },
  {
-  "name": "홍정완스라이브콘서트",
-  "search_keys": [
-   "홍정완스라이브콘서트",
-   "라이브콘서트"
-  ],
-  "zeropay_name": "라이브콘서트",
-  "address": "서울특별시 강북구 한천로 1172",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6482025018292,
-  "lng": 127.015502482168,
-  "distance_km": 3.11,
-  "kakao_place_id": "958662042",
-  "kakao_url": "http://place.map.kakao.com/958662042",
-  "menus": []
- },
- {
   "name": "CU 강북드림점",
   "search_keys": [
    "cu강북드림점",
@@ -118541,42 +113598,6 @@
   "kakao_place_id": "455098784",
   "kakao_url": "http://place.map.kakao.com/455098784",
   "menus": []
- },
- {
-  "name": "스몰한잔",
-  "search_keys": [
-   "스몰한잔"
-  ],
-  "address": "서울특별시 노원구 상계로37길 3 (상계동)",
-  "category": "기타 주점업",
-  "phone": "01088732646",
-  "lat": 37.670754007024,
-  "lng": 127.078786085673,
-  "distance_km": 3.12,
-  "kakao_place_id": "1228001087",
-  "kakao_url": "http://place.map.kakao.com/1228001087",
-  "menus": [
-   {
-    "name": "후라이드 치킨",
-    "price": "12000"
-   },
-   {
-    "name": "닭볶음탕",
-    "price": "20000"
-   },
-   {
-    "name": "양념치킨",
-    "price": "13000"
-   },
-   {
-    "name": "오뎅탕",
-    "price": "11000"
-   },
-   {
-    "name": "국물떡볶이",
-    "price": "12000"
-   }
-  ]
  },
  {
   "name": "CU 과학기술대생활관점",
@@ -118760,42 +113781,6 @@
    {
     "name": "반반콤보",
     "price": "23000"
-   }
-  ]
- },
- {
-  "name": "마로니에",
-  "search_keys": [
-   "마로니에"
-  ],
-  "address": "서울특별시 강북구 덕릉로 99 (번동)",
-  "category": "생맥주 전문점",
-  "phone": "01063545545",
-  "lat": 37.63495200302049,
-  "lng": 127.0244861954566,
-  "distance_km": 3.12,
-  "kakao_place_id": "1510378137",
-  "kakao_url": "http://place.map.kakao.com/1510378137",
-  "menus": [
-   {
-    "name": "SET3(과일+전+후라이드치킨)",
-    "price": "23000"
-   },
-   {
-    "name": "SET1(과일+전+먹태)",
-    "price": "21000"
-   },
-   {
-    "name": "SET2(과일+전+한치)",
-    "price": "23000"
-   },
-   {
-    "name": "SET4(과일+전+골뱅이소면)",
-    "price": "24000"
-   },
-   {
-    "name": "SET5(과일+전+반반치킨)",
-    "price": "24000"
    }
   ]
  },
@@ -119246,21 +114231,6 @@
     "price": "45000"
    }
   ]
- },
- {
-  "name": "뉴욕노래주점",
-  "search_keys": [
-   "뉴욕노래주점"
-  ],
-  "address": "서울특별시 강북구 수유로 84",
-  "category": "기타 주점업",
-  "phone": "021111111",
-  "lat": 37.63609748726303,
-  "lng": 127.02283132310949,
-  "distance_km": 3.14,
-  "kakao_place_id": "166882661",
-  "kakao_url": "http://place.map.kakao.com/166882661",
-  "menus": []
  },
  {
   "name": "빽다방 수유사거리점",
@@ -119837,22 +114807,6 @@
     "price": "2000"
    }
   ]
- },
- {
-  "name": "마미스치킨",
-  "search_keys": [
-   "마미스치킨"
-  ],
-  "zeropay_name": "마미스 치킨",
-  "address": "서울특별시 강북구 한천로105길 7, 101호 (번동, 번동1단지주공아파트상가)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6261758264421,
-  "lng": 127.04714734651,
-  "distance_km": 3.16,
-  "kakao_place_id": "21331121",
-  "kakao_url": "http://place.map.kakao.com/21331121",
-  "menus": []
  },
  {
   "name": "단미제과",
@@ -121947,21 +116901,6 @@
   ]
  },
  {
-  "name": "혼술",
-  "search_keys": [
-   "혼술"
-  ],
-  "address": "서울시 강북구 삼양로440",
-  "category": "생맥주 전문점",
-  "phone": "01071182198",
-  "lat": 37.6428451075681,
-  "lng": 127.016564177328,
-  "distance_km": 3.21,
-  "kakao_place_id": "217837112",
-  "kakao_url": "http://place.map.kakao.com/217837112",
-  "menus": []
- },
- {
   "name": "템포커피 수유사거리점",
   "search_keys": [
    "템포커피수유사거리점"
@@ -122547,44 +117486,6 @@
   ]
  },
  {
-  "name": "토크쇼 우이점",
-  "search_keys": [
-   "토크쇼우이점",
-   "토크쇼"
-  ],
-  "zeropay_name": "토크쇼",
-  "address": "서울특별시 강북구 삼양로 522 (우이동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.64959562756756,
-  "lng": 127.01385062342693,
-  "distance_km": 3.22,
-  "kakao_place_id": "16052287",
-  "kakao_url": "http://place.map.kakao.com/16052287",
-  "menus": [
-   {
-    "name": "오징어볶음",
-    "price": "15000"
-   },
-   {
-    "name": "오돌뼈볶음",
-    "price": "15000"
-   },
-   {
-    "name": "무뼈닭발",
-    "price": "15000"
-   },
-   {
-    "name": "곱창볶음",
-    "price": "15000"
-   },
-   {
-    "name": "쭈꾸미볶음",
-    "price": "15000"
-   }
-  ]
- },
- {
   "name": "포레스트",
   "search_keys": [
    "포레스트",
@@ -122769,21 +117670,6 @@
     "price": "6000"
    }
   ]
- },
- {
-  "name": "정글하우스",
-  "search_keys": [
-   "정글하우스"
-  ],
-  "address": "서울특별시 노원구 덕릉로 822 (상계동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.66985240058471,
-  "lng": 127.08104073457007,
-  "distance_km": 3.23,
-  "kakao_place_id": "27309956",
-  "kakao_url": "http://place.map.kakao.com/27309956",
-  "menus": []
  },
  {
   "name": "사리원돼지국밥 덕성여대점",
@@ -123279,44 +118165,6 @@
    },
    {
     "name": "치즈칠리 로스트",
-    "price": "-1"
-   }
-  ]
- },
- {
-  "name": "92닭숯불바베큐 수유점",
-  "search_keys": [
-   "92닭숯불바베큐수유점",
-   "92숯불바베큐"
-  ],
-  "zeropay_name": "92 숯불바베큐",
-  "address": "서울시 강북구 삼양로451",
-  "category": "기타 주점업",
-  "phone": "029926765",
-  "lat": 37.643576790272,
-  "lng": 127.015958147735,
-  "distance_km": 3.23,
-  "kakao_place_id": "22465900",
-  "kakao_url": "http://place.map.kakao.com/22465900",
-  "menus": [
-   {
-    "name": "노가리",
-    "price": "-1"
-   },
-   {
-    "name": "대구포",
-    "price": "-1"
-   },
-   {
-    "name": "쥐포",
-    "price": "-1"
-   },
-   {
-    "name": "육포",
-    "price": "-1"
-   },
-   {
-    "name": "갑오징어",
     "price": "-1"
    }
   ]
@@ -125560,80 +120408,6 @@
   ]
  },
  {
-  "name": "을지로골뱅이치킨",
-  "search_keys": [
-   "을지로골뱅이치킨",
-   "을지로골뱅이"
-  ],
-  "zeropay_name": "을지로골뱅이",
-  "address": "서울특별시 강북구 삼양로 416(수유동)",
-  "category": "기타 주점업",
-  "phone": "029004798",
-  "lat": 37.64060968124301,
-  "lng": 127.01715172055803,
-  "distance_km": 3.27,
-  "kakao_place_id": "1304681835",
-  "kakao_url": "http://place.map.kakao.com/1304681835",
-  "menus": [
-   {
-    "name": "골뱅이 (소)",
-    "price": "26000"
-   },
-   {
-    "name": "치킨+감자튀김",
-    "price": "18000"
-   },
-   {
-    "name": "새우튀김",
-    "price": "9000"
-   },
-   {
-    "name": "일본식어묵탕",
-    "price": "17000"
-   },
-   {
-    "name": "번데기탕",
-    "price": "9000"
-   }
-  ]
- },
- {
-  "name": "아옛날이여고래사냥",
-  "search_keys": [
-   "아옛날이여고래사냥"
-  ],
-  "address": "서울시 강북구 4.19로 7",
-  "category": "기타 주점업",
-  "phone": "02",
-  "lat": 37.64821895759,
-  "lng": 127.013570482241,
-  "distance_km": 3.27,
-  "kakao_place_id": "95295921",
-  "kakao_url": "http://place.map.kakao.com/95295921",
-  "menus": [
-   {
-    "name": "닭볶음탕",
-    "price": "35000"
-   },
-   {
-    "name": "동태찌개",
-    "price": "25000"
-   },
-   {
-    "name": "부대찌개",
-    "price": "20000"
-   },
-   {
-    "name": "돼지김치찌개",
-    "price": "20000"
-   },
-   {
-    "name": "참치김치찌개",
-    "price": "18000"
-   }
-  ]
- },
- {
   "name": "메가MGC커피 수유사거리점",
   "search_keys": [
    "메가mgc커피수유사거리점",
@@ -126662,42 +121436,6 @@
   "menus": []
  },
  {
-  "name": "그때그집",
-  "search_keys": [
-   "그때그집"
-  ],
-  "address": "서울특별시 강북구 삼양로645",
-  "category": "기타 주점업",
-  "phone": "02",
-  "lat": 37.66058496444839,
-  "lng": 127.01337666720201,
-  "distance_km": 3.29,
-  "kakao_place_id": "1024971619",
-  "kakao_url": "http://place.map.kakao.com/1024971619",
-  "menus": [
-   {
-    "name": "먹태",
-    "price": "15000"
-   },
-   {
-    "name": "한치",
-    "price": "15000"
-   },
-   {
-    "name": "노가리",
-    "price": "12000"
-   },
-   {
-    "name": "납작노가리",
-    "price": "2000"
-   },
-   {
-    "name": "쥐포",
-    "price": "12000"
-   }
-  ]
- },
- {
   "name": "카페라움",
   "search_keys": [
    "카페라움"
@@ -126797,57 +121535,6 @@
     "price": "6500"
    }
   ]
- },
- {
-  "name": "투다리 도봉산점",
-  "search_keys": [
-   "투다리도봉산점"
-  ],
-  "address": "서울특별시 도봉구 도봉로181길 13 (도봉동)",
-  "category": "기타 주점업",
-  "phone": "029547195",
-  "lat": 37.68389895503427,
-  "lng": 127.04511488824186,
-  "distance_km": 3.3,
-  "kakao_place_id": "795492655",
-  "kakao_url": "http://place.map.kakao.com/795492655",
-  "menus": [
-   {
-    "name": "얼큰해물우동",
-    "price": "11000"
-   },
-   {
-    "name": "통마늘모래집볶음",
-    "price": "-1"
-   },
-   {
-    "name": "알탕",
-    "price": "-1"
-   },
-   {
-    "name": "김치우동",
-    "price": "11000"
-   },
-   {
-    "name": "투다리 모둠 오뎅",
-    "price": "13000"
-   }
-  ]
- },
- {
-  "name": "술놀이터",
-  "search_keys": [
-   "술놀이터"
-  ],
-  "address": "서울특별시 도봉구 도봉산3길 79 (도봉동)",
-  "category": "기타 주점업",
-  "phone": "01035859389",
-  "lat": 37.6838039988368,
-  "lng": 127.043660318231,
-  "distance_km": 3.3,
-  "kakao_place_id": "16042627",
-  "kakao_url": "http://place.map.kakao.com/16042627",
-  "menus": []
  },
  {
   "name": "황금부대찌개",
@@ -127503,21 +122190,6 @@
   ]
  },
  {
-  "name": "오봉호프",
-  "search_keys": [
-   "오봉호프"
-  ],
-  "address": "서울특별시 도봉구 도봉로181길 8 (도봉동)",
-  "category": "기타 주점업",
-  "phone": "029546368",
-  "lat": 37.6840627757044,
-  "lng": 127.045524247661,
-  "distance_km": 3.31,
-  "kakao_place_id": "1984505596",
-  "kakao_url": "http://place.map.kakao.com/1984505596",
-  "menus": []
- },
- {
   "name": "부산자갈치생꼼장어",
   "search_keys": [
    "부산자갈치생꼼장어",
@@ -127552,44 +122224,6 @@
    {
     "name": "생삼겹살",
     "price": "-1"
-   }
-  ]
- },
- {
-  "name": "디오스호프 도봉점",
-  "search_keys": [
-   "디오스호프도봉점",
-   "디오스"
-  ],
-  "zeropay_name": "디오스",
-  "address": "서울시 도봉구 도봉로181길 15",
-  "category": "생맥주 전문점",
-  "phone": "029563050",
-  "lat": 37.6839656927454,
-  "lng": 127.044943742487,
-  "distance_km": 3.31,
-  "kakao_place_id": "18826170",
-  "kakao_url": "http://place.map.kakao.com/18826170",
-  "menus": [
-   {
-    "name": "후라이드치킨",
-    "price": "16000"
-   },
-   {
-    "name": "양념치킨",
-    "price": "18000"
-   },
-   {
-    "name": "마늘치킨",
-    "price": "18000"
-   },
-   {
-    "name": "파닭치킨",
-    "price": "18000"
-   },
-   {
-    "name": "닭날개",
-    "price": "15000"
    }
   ]
  },
@@ -128822,44 +123456,6 @@
   ]
  },
  {
-  "name": "본스치킨 미아3동점",
-  "search_keys": [
-   "본스치킨미아3동점",
-   "본스치킨"
-  ],
-  "zeropay_name": "본스치킨",
-  "address": "서울특별시 강북구 덕릉로28길 55",
-  "category": "기타 주점업",
-  "phone": "029881626",
-  "lat": 37.63218142670118,
-  "lng": 127.024703935342,
-  "distance_km": 3.33,
-  "kakao_place_id": "13134070",
-  "kakao_url": "http://place.map.kakao.com/13134070",
-  "menus": [
-   {
-    "name": "오븐치킨",
-    "price": "-1"
-   },
-   {
-    "name": "오븐치킨 순살만",
-    "price": "-1"
-   },
-   {
-    "name": "오븐치킨 날개만",
-    "price": "-1"
-   },
-   {
-    "name": "오븐치킨 다리만",
-    "price": "-1"
-   },
-   {
-    "name": "바베큐",
-    "price": "-1"
-   }
-  ]
- },
- {
   "name": "CU 수유헤아림점",
   "search_keys": [
    "cu수유헤아림점",
@@ -129108,42 +123704,6 @@
    {
     "name": "베리에이드",
     "price": "6500"
-   }
-  ]
- },
- {
-  "name": "연",
-  "search_keys": [
-   "연"
-  ],
-  "address": "서울 도봉구 도봉산1길 66",
-  "category": "기타 주점업",
-  "phone": "01038428028",
-  "lat": 37.684439492554546,
-  "lng": 127.04524332265665,
-  "distance_km": 3.35,
-  "kakao_place_id": "1336743207",
-  "kakao_url": "http://place.map.kakao.com/1336743207",
-  "menus": [
-   {
-    "name": "치킨가라아게",
-    "price": "17000"
-   },
-   {
-    "name": "소고기타다끼",
-    "price": "20000"
-   },
-   {
-    "name": "오뎅탕",
-    "price": "16000"
-   },
-   {
-    "name": "두부스팸김치",
-    "price": "18000"
-   },
-   {
-    "name": "제육볶음",
-    "price": "18000"
    }
   ]
  },
@@ -129940,21 +124500,6 @@
   "menus": []
  },
  {
-  "name": "샤모니",
-  "search_keys": [
-   "샤모니"
-  ],
-  "address": "서울특별시 강북구 삼양로 663 (우이동, 지하)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6621121808376,
-  "lng": 127.012902067195,
-  "distance_km": 3.37,
-  "kakao_place_id": "15446930",
-  "kakao_url": "http://place.map.kakao.com/15446930",
-  "menus": []
- },
- {
   "name": "훌리데이",
   "search_keys": [
    "훌리데이"
@@ -130188,42 +124733,6 @@
    {
     "name": "설렁탕",
     "price": "9000"
-   }
-  ]
- },
- {
-  "name": "포차데이",
-  "search_keys": [
-   "포차데이"
-  ],
-  "address": "서울특별시 노원구 섬밭로 134 (공릉동, 풍림아파트)",
-  "category": "기타 주점업",
-  "phone": "029482569",
-  "lat": 37.6281832155278,
-  "lng": 127.06911202733,
-  "distance_km": 3.38,
-  "kakao_place_id": "27322043",
-  "kakao_url": "http://place.map.kakao.com/27322043",
-  "menus": [
-   {
-    "name": "두부부침",
-    "price": "10000"
-   },
-   {
-    "name": "제육볶음",
-    "price": "17000"
-   },
-   {
-    "name": "두루치기",
-    "price": "17000"
-   },
-   {
-    "name": "오징어볶음",
-    "price": "15000"
-   },
-   {
-    "name": "차돌숙주",
-    "price": "15000"
    }
   ]
  },
@@ -131152,21 +125661,6 @@
   ]
  },
  {
-  "name": "이모네실내포차",
-  "search_keys": [
-   "이모네실내포차"
-  ],
-  "address": "서울 도봉구 도봉로181길 56",
-  "category": "기타 주점업",
-  "phone": "0234923337",
-  "lat": 37.6847880865292,
-  "lng": 127.043062303667,
-  "distance_km": 3.42,
-  "kakao_place_id": "16062718",
-  "kakao_url": "http://place.map.kakao.com/16062718",
-  "menus": []
- },
- {
   "name": "품앗이",
   "search_keys": [
    "품앗이"
@@ -131365,42 +125859,6 @@
   ]
  },
  {
-  "name": "광장호프치킨",
-  "search_keys": [
-   "광장호프치킨"
-  ],
-  "address": "서울특별시 강북구 삼양로 673 (우이동)",
-  "category": "기타 주점업",
-  "phone": "029029336",
-  "lat": 37.6627960683232,
-  "lng": 127.01250550909,
-  "distance_km": 3.42,
-  "kakao_place_id": "983341799",
-  "kakao_url": "http://place.map.kakao.com/983341799",
-  "menus": [
-   {
-    "name": "후라이드치킨",
-    "price": "20000"
-   },
-   {
-    "name": "양념치킨",
-    "price": "22000"
-   },
-   {
-    "name": "골뱅이소면",
-    "price": "20000"
-   },
-   {
-    "name": "돈까스",
-    "price": "15000"
-   },
-   {
-    "name": "소세지야채볶음",
-    "price": "15000"
-   }
-  ]
- },
- {
   "name": "오동커피",
   "search_keys": [
    "오동커피"
@@ -131527,42 +125985,6 @@
   "kakao_place_id": "16472419",
   "kakao_url": "http://place.map.kakao.com/16472419",
   "menus": []
- },
- {
-  "name": "종로빈대떡",
-  "search_keys": [
-   "종로빈대떡"
-  ],
-  "address": "서울시 도봉구 도봉로181길 60",
-  "category": "기타 주점업",
-  "phone": "01041327119",
-  "lat": 37.684861119848634,
-  "lng": 127.04291383159297,
-  "distance_km": 3.43,
-  "kakao_place_id": "16330448",
-  "kakao_url": "http://place.map.kakao.com/16330448",
-  "menus": [
-   {
-    "name": "육전",
-    "price": "-1"
-   },
-   {
-    "name": "감자전",
-    "price": "-1"
-   },
-   {
-    "name": "동태전",
-    "price": "-1"
-   },
-   {
-    "name": "녹두전",
-    "price": "-1"
-   },
-   {
-    "name": "모둠전",
-    "price": "-1"
-   }
-  ]
  },
  {
   "name": "우리집곱창",
@@ -131856,21 +126278,6 @@
     "price": "10000"
    }
   ]
- },
- {
-  "name": "어쩌라구",
-  "search_keys": [
-   "어쩌라구"
-  ],
-  "address": "서울특별시 강북구 삼각산로 98-1(수유동)",
-  "category": "기타 주점업",
-  "phone": "01047062554",
-  "lat": 37.6404694028764,
-  "lng": 127.015140574122,
-  "distance_km": 3.44,
-  "kakao_place_id": "1734367689",
-  "kakao_url": "http://place.map.kakao.com/1734367689",
-  "menus": []
  },
  {
   "name": "CU 우이장학관점",
@@ -134577,21 +128984,6 @@
   "menus": []
  },
  {
-  "name": "봉이포차",
-  "search_keys": [
-   "봉이포차"
-  ],
-  "address": "서울시 도봉구 도봉산3길32",
-  "category": "기타 주점업",
-  "phone": "02",
-  "lat": 37.68592400410051,
-  "lng": 127.04364795634865,
-  "distance_km": 3.54,
-  "kakao_place_id": "558269630",
-  "kakao_url": "http://place.map.kakao.com/558269630",
-  "menus": []
- },
- {
   "name": "핏짜굽는언니 공릉점",
   "search_keys": [
    "핏짜굽는언니공릉점",
@@ -134614,42 +129006,6 @@
    {
     "name": "언니 샐러드",
     "price": "17000"
-   }
-  ]
- },
- {
-  "name": "짝태촌노가리",
-  "search_keys": [
-   "짝태촌노가리"
-  ],
-  "address": "서울특별시 노원구 석계로18길 23 (월계동, 삼능스페이스향)",
-  "category": "생맥주 전문점",
-  "phone": "9437911",
-  "lat": 37.6238774508716,
-  "lng": 127.060838819627,
-  "distance_km": 3.54,
-  "kakao_place_id": "22058338",
-  "kakao_url": "http://place.map.kakao.com/22058338",
-  "menus": [
-   {
-    "name": "짝태",
-    "price": "14000"
-   },
-   {
-    "name": "왕노가리",
-    "price": "3000"
-   },
-   {
-    "name": "갑오징어",
-    "price": "25000"
-   },
-   {
-    "name": "치즈 옥수수전",
-    "price": "10000"
-   },
-   {
-    "name": "물만두 계란탕",
-    "price": "10000"
    }
   ]
  },
@@ -136159,42 +130515,6 @@
   ]
  },
  {
-  "name": "인생한밤",
-  "search_keys": [
-   "인생한밤"
-  ],
-  "address": "서울시 노원구 동일로 195길 7",
-  "category": "기타 주점업",
-  "phone": "07077724433",
-  "lat": 37.62730608101855,
-  "lng": 127.07142217209038,
-  "distance_km": 3.57,
-  "kakao_place_id": "1976990014",
-  "kakao_url": "http://place.map.kakao.com/1976990014",
-  "menus": [
-   {
-    "name": "감바스 알 아히요",
-    "price": "18000"
-   },
-   {
-    "name": "삭슈카에그인헬",
-    "price": "20000"
-   },
-   {
-    "name": "버팔로윙&감자튀김",
-    "price": "18000"
-   },
-   {
-    "name": "미트토마토소시지고로케",
-    "price": "22000"
-   },
-   {
-    "name": "등심카츠(150gx2)",
-    "price": "17000"
-   }
-  ]
- },
- {
   "name": "소담애수제왕만두 수유재래시장점",
   "search_keys": [
    "소담애수제왕만두수유재래시장점",
@@ -136430,23 +130750,6 @@
     "price": "1000"
    }
   ]
- },
- {
-  "name": "온누리치킨 미아점",
-  "search_keys": [
-   "온누리치킨미아점",
-   "온누리치킨"
-  ],
-  "zeropay_name": "온누리치킨",
-  "address": "서울특별시 강북구 오패산로52길 61 (미아동, 지상１층)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6255897828957,
-  "lng": 127.032280159993,
-  "distance_km": 3.57,
-  "kakao_place_id": "1817807566",
-  "kakao_url": "http://place.map.kakao.com/1817807566",
-  "menus": []
  },
  {
   "name": "이마트24 R화계역점",
@@ -136873,43 +131176,6 @@
   ]
  },
  {
-  "name": "굽모닝닭오리숯불바베큐",
-  "search_keys": [
-   "굽모닝닭오리숯불바베큐"
-  ],
-  "zeropay_name": "굽모닝닭,오리숯불바베큐",
-  "address": "서울시 강북구 수유로 28(수유동)",
-  "category": "기타 주점업",
-  "phone": "01072032294",
-  "lat": 37.63327983893488,
-  "lng": 127.01927651325654,
-  "distance_km": 3.58,
-  "kakao_place_id": "1936031598",
-  "kakao_url": "http://place.map.kakao.com/1936031598",
-  "menus": [
-   {
-    "name": "순살한식",
-    "price": "15000"
-   },
-   {
-    "name": "순살치즈떡바베큐",
-    "price": "20000"
-   },
-   {
-    "name": "순살파닭바베큐",
-    "price": "16000"
-   },
-   {
-    "name": "순살불닭바베큐",
-    "price": "16000"
-   },
-   {
-    "name": "순살간장바베큐",
-    "price": "15000"
-   }
-  ]
- },
- {
   "name": "GS25 수유인수점",
   "search_keys": [
    "gs25수유인수점",
@@ -137214,79 +131480,6 @@
    },
    {
     "name": "열무냉국수",
-    "price": "-1"
-   }
-  ]
- },
- {
-  "name": "청록원",
-  "search_keys": [
-   "청록원"
-  ],
-  "address": "서울특별시 강북구 삼양로173가길 42 (우이동, 백운대빌라)",
-  "category": "기타 주점업",
-  "phone": "0200000000",
-  "lat": 37.6627178842086,
-  "lng": 127.010435980333,
-  "distance_km": 3.59,
-  "kakao_place_id": "19722561",
-  "kakao_url": "http://place.map.kakao.com/19722561",
-  "menus": [
-   {
-    "name": "떙초김밥",
-    "price": "5000"
-   },
-   {
-    "name": "마요김밥",
-    "price": "5000"
-   },
-   {
-    "name": "매콤어묵김밥",
-    "price": "4000"
-   },
-   {
-    "name": "치즈라면",
-    "price": "6000"
-   },
-   {
-    "name": "떡라면",
-    "price": "6000"
-   }
-  ]
- },
- {
-  "name": "산에는꽃이피네",
-  "search_keys": [
-   "산에는꽃이피네"
-  ],
-  "zeropay_name": "산에는 꽃이 피네",
-  "address": "서울특별시 강북구 삼양로179길 12 우이동(산에는꽃이피네)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.66461347809564,
-  "lng": 127.01120241666712,
-  "distance_km": 3.59,
-  "kakao_place_id": "9810474",
-  "kakao_url": "http://place.map.kakao.com/9810474",
-  "menus": [
-   {
-    "name": "노가리",
-    "price": "-1"
-   },
-   {
-    "name": "골뱅이무침",
-    "price": "-1"
-   },
-   {
-    "name": "오뎅탕",
-    "price": "-1"
-   },
-   {
-    "name": "김치찌개",
-    "price": "-1"
-   },
-   {
-    "name": "마른오징어",
     "price": "-1"
    }
   ]
@@ -138715,21 +132908,6 @@
   ]
  },
  {
-  "name": "스카이호프",
-  "search_keys": [
-   "스카이호프"
-  ],
-  "address": "서울특별시 강북구 도봉로67길 35 (미아동)",
-  "category": "생맥주 전문점",
-  "phone": "029801416",
-  "lat": 37.6300753572521,
-  "lng": 127.022525873118,
-  "distance_km": 3.63,
-  "kakao_place_id": "15620310",
-  "kakao_url": "http://place.map.kakao.com/15620310",
-  "menus": []
- },
- {
   "name": "에스페레커피",
   "search_keys": [
    "에스페레커피"
@@ -139276,44 +133454,6 @@
    {
     "name": "김밥",
     "price": "-1"
-   }
-  ]
- },
- {
-  "name": "영자네곱창 수유점",
-  "search_keys": [
-   "영자네곱창수유점",
-   "영자네곱창"
-  ],
-  "zeropay_name": "영자네곱창",
-  "address": "서울특별시 강북구 도봉로67길 40 1층",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6301222515695,
-  "lng": 127.022299314279,
-  "distance_km": 3.64,
-  "kakao_place_id": "15509135",
-  "kakao_url": "http://place.map.kakao.com/15509135",
-  "menus": [
-   {
-    "name": "야채곱창",
-    "price": "10000"
-   },
-   {
-    "name": "콩나물곱창",
-    "price": "18000"
-   },
-   {
-    "name": "순대+곱창볶음",
-    "price": "18000"
-   },
-   {
-    "name": "순대볶음",
-    "price": "9000"
-   },
-   {
-    "name": "오돌뼈",
-    "price": "9000"
    }
   ]
  },
@@ -140371,21 +134511,6 @@
     "price": "-1"
    }
   ]
- },
- {
-  "name": "튀맥",
-  "search_keys": [
-   "튀맥"
-  ],
-  "address": "서울특별시 노원구 석계로15길 12, B102호 (월계동, 대한빌딩)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.622638479396834,
-  "lng": 127.0610598291593,
-  "distance_km": 3.68,
-  "kakao_place_id": "1367311895",
-  "kakao_url": "http://place.map.kakao.com/1367311895",
-  "menus": []
  },
  {
   "name": "커피콩",
@@ -141816,43 +135941,6 @@
    {
     "name": "햄치즈밥버거",
     "price": "5100"
-   }
-  ]
- },
- {
-  "name": "술잔에타",
-  "search_keys": [
-   "술잔에타"
-  ],
-  "zeropay_name": "술잔,에타",
-  "address": "서울특별시 노원구 공릉로51길 7 (공릉동)",
-  "category": "기타 주점업",
-  "phone": "01071089481",
-  "lat": 37.6287947638659,
-  "lng": 127.076758161827,
-  "distance_km": 3.71,
-  "kakao_place_id": "450021877",
-  "kakao_url": "http://place.map.kakao.com/450021877",
-  "menus": [
-   {
-    "name": "양념통삼겹튀김",
-    "price": "20000"
-   },
-   {
-    "name": "국물닭발",
-    "price": "18000"
-   },
-   {
-    "name": "스지나베",
-    "price": "20000"
-   },
-   {
-    "name": "훈제냉족발",
-    "price": "25000"
-   },
-   {
-    "name": "물뱅이",
-    "price": "20000"
    }
   ]
  },
@@ -143504,116 +137592,6 @@
   ]
  },
  {
-  "name": "2020노가리",
-  "search_keys": [
-   "2020노가리"
-  ],
-  "address": "서울특별시 강북구 솔매로50길 4 (미아동, 두산힐스빌)",
-  "category": "생맥주 전문점",
-  "phone": "0264048311",
-  "lat": 37.62614344046447,
-  "lng": 127.02688485130157,
-  "distance_km": 3.75,
-  "kakao_place_id": "704902554",
-  "kakao_url": "http://place.map.kakao.com/704902554",
-  "menus": [
-   {
-    "name": "먹태",
-    "price": "13000"
-   },
-   {
-    "name": "후라이드치킨",
-    "price": "12000"
-   },
-   {
-    "name": "어묵탕",
-    "price": "10000"
-   },
-   {
-    "name": "고기두부김치",
-    "price": "12000"
-   },
-   {
-    "name": "매콤달콤떡볶이",
-    "price": "7000"
-   }
-  ]
- },
- {
-  "name": "맛닭꼬 사이버대학점",
-  "search_keys": [
-   "맛닭꼬사이버대학점",
-   "맛닭꼬"
-  ],
-  "zeropay_name": "맛닭꼬",
-  "address": "서울특별시 강북구 도봉로 205 (미아동)",
-  "category": "생맥주 전문점",
-  "phone": "9805592",
-  "lat": 37.626878950669116,
-  "lng": 127.02551101073571,
-  "distance_km": 3.75,
-  "kakao_place_id": "27441705",
-  "kakao_url": "http://place.map.kakao.com/27441705",
-  "menus": [
-   {
-    "name": "오리지날 로스트",
-    "price": "-1"
-   },
-   {
-    "name": "오리지날 현미베이크",
-    "price": "-1"
-   },
-   {
-    "name": "바베큐 로스트",
-    "price": "-1"
-   },
-   {
-    "name": "데리갈릭 로스트",
-    "price": "-1"
-   },
-   {
-    "name": "치즈칠리 로스트",
-    "price": "-1"
-   }
-  ]
- },
- {
-  "name": "한잔의추억",
-  "search_keys": [
-   "한잔의추억"
-  ],
-  "address": "서울특별시 강북구 덕릉로 19-1 (수유동)",
-  "category": "기타 주점업",
-  "phone": "01028341345",
-  "lat": 37.6341669167979,
-  "lng": 127.015865501091,
-  "distance_km": 3.75,
-  "kakao_place_id": "16090123",
-  "kakao_url": "http://place.map.kakao.com/16090123",
-  "menus": [
-   {
-    "name": "순살양념치킨",
-    "price": "-1"
-   },
-   {
-    "name": "오징어데침",
-    "price": "-1"
-   },
-   {
-    "name": "치즈계란말이",
-    "price": "-1"
-   },
-   {
-    "name": "돈까스",
-    "price": "-1"
-   },
-   {
-    "name": "떡라면",
-    "price": "-1"
-   }
-  ]
- },
- {
   "name": "메가MGC커피 미아역점",
   "search_keys": [
    "메가mgc커피미아역점",
@@ -144361,42 +138339,6 @@
    {
     "name": "옛날우동",
     "price": "6500"
-   }
-  ]
- },
- {
-  "name": "라디오스타",
-  "search_keys": [
-   "라디오스타"
-  ],
-  "address": "서울특별시 노원구 동일로 1073 3층",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6257736857515,
-  "lng": 127.072598816542,
-  "distance_km": 3.77,
-  "kakao_place_id": "12754484",
-  "kakao_url": "http://place.map.kakao.com/12754484",
-  "menus": [
-   {
-    "name": "찹 스테이크",
-    "price": "24000"
-   },
-   {
-    "name": "비프 샐러드",
-    "price": "19000"
-   },
-   {
-    "name": "소시지",
-    "price": "18000"
-   },
-   {
-    "name": "육포",
-    "price": "14000"
-   },
-   {
-    "name": "한치",
-    "price": "14000"
    }
   ]
  },
@@ -145315,44 +139257,6 @@
   ]
  },
  {
-  "name": "디오스호프",
-  "search_keys": [
-   "디오스호프",
-   "디오스"
-  ],
-  "zeropay_name": "디오스",
-  "address": "서울시 노원구 동일로192길 5(공릉동)",
-  "category": "기타 주점업",
-  "phone": "029713877",
-  "lat": 37.6260398645501,
-  "lng": 127.073428287068,
-  "distance_km": 3.78,
-  "kakao_place_id": "20748564",
-  "kakao_url": "http://place.map.kakao.com/20748564",
-  "menus": [
-   {
-    "name": "감자튀김",
-    "price": "10000"
-   },
-   {
-    "name": "계란탕",
-    "price": "10000"
-   },
-   {
-    "name": "골뱅이",
-    "price": "17000"
-   },
-   {
-    "name": "과일사라다",
-    "price": "15000"
-   },
-   {
-    "name": "과일화채",
-    "price": "15000"
-   }
-  ]
- },
- {
   "name": "월계청춘카페",
   "search_keys": [
    "월계청춘카페",
@@ -145791,42 +139695,6 @@
    {
     "name": "닭칼국수",
     "price": "5000"
-   }
-  ]
- },
- {
-  "name": "달 루프탑",
-  "search_keys": [
-   "달루프탑"
-  ],
-  "address": "서울특별시 노원구 동일로192길 11 (공릉동)",
-  "category": "생맥주 전문점",
-  "phone": "0269566799",
-  "lat": 37.6261261840564,
-  "lng": 127.073709307398,
-  "distance_km": 3.79,
-  "kakao_place_id": "1455581025",
-  "kakao_url": "http://place.map.kakao.com/1455581025",
-  "menus": [
-   {
-    "name": "고르곤졸라피자",
-    "price": "13000"
-   },
-   {
-    "name": "불고기피자",
-    "price": "13000"
-   },
-   {
-    "name": "국물떡볶이",
-    "price": "12000"
-   },
-   {
-    "name": "크림누들떡볶이",
-    "price": "12000"
-   },
-   {
-    "name": "치즈롤까스",
-    "price": "12000"
    }
   ]
  },
@@ -146584,21 +140452,6 @@
   ]
  },
  {
-  "name": "선수입장",
-  "search_keys": [
-   "선수입장"
-  ],
-  "address": "서울특별시 노원구 동일로192길 31, 지하1층 (공릉동, 지층)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.62652203829427,
-  "lng": 127.0746318057203,
-  "distance_km": 3.8,
-  "kakao_place_id": "26455049",
-  "kakao_url": "http://place.map.kakao.com/26455049",
-  "menus": []
- },
- {
   "name": "왕십리불곱창",
   "search_keys": [
    "왕십리불곱창"
@@ -147255,44 +141108,6 @@
   ]
  },
  {
-  "name": "치어스 공릉점",
-  "search_keys": [
-   "치어스공릉점",
-   "치어스"
-  ],
-  "zeropay_name": "치어스",
-  "address": "서울특별시 노원구 동일로192길 45 (공릉동, 2층)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6267450755366,
-  "lng": 127.075273201155,
-  "distance_km": 3.81,
-  "kakao_place_id": "17020575",
-  "kakao_url": "http://place.map.kakao.com/17020575",
-  "menus": [
-   {
-    "name": "나가사끼탕",
-    "price": "-1"
-   },
-   {
-    "name": "탱탱알탕",
-    "price": "-1"
-   },
-   {
-    "name": "해물누룽지탕",
-    "price": "-1"
-   },
-   {
-    "name": "훈제연어고구마샐러드",
-    "price": "-1"
-   },
-   {
-    "name": "통마늘모래집튀김",
-    "price": "-1"
-   }
-  ]
- },
- {
   "name": "베리모어",
   "search_keys": [
    "베리모어"
@@ -147491,79 +141306,6 @@
    {
     "name": "오징어덮밥",
     "price": "9000"
-   }
-  ]
- },
- {
-  "name": "봉쥬비어 미아점",
-  "search_keys": [
-   "봉쥬비어미아점"
-  ],
-  "address": "서울특별시 강북구 솔매로 121 서울특별시 강북구 솔매로121/2층",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.62616446235706,
-  "lng": 127.02553795386147,
-  "distance_km": 3.81,
-  "kakao_place_id": "25660299",
-  "kakao_url": "http://place.map.kakao.com/25660299",
-  "menus": [
-   {
-    "name": "감자튀김",
-    "price": "6500"
-   },
-   {
-    "name": "허니버터감자튀김",
-    "price": "7000"
-   },
-   {
-    "name": "콘소세지&치즈스틱",
-    "price": "9000"
-   },
-   {
-    "name": "김말이강정",
-    "price": "8000"
-   },
-   {
-    "name": "타코야끼",
-    "price": "8000"
-   }
-  ]
- },
- {
-  "name": "골목술집",
-  "search_keys": [
-   "골목술집"
-  ],
-  "zeropay_name": "골목 술집",
-  "address": "서울특별시 강북구 덕릉로 18",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.633813788878314,
-  "lng": 127.0154247197373,
-  "distance_km": 3.81,
-  "kakao_place_id": "1224468610",
-  "kakao_url": "http://place.map.kakao.com/1224468610",
-  "menus": [
-   {
-    "name": "새우튀김",
-    "price": "-1"
-   },
-   {
-    "name": "크림새우",
-    "price": "-1"
-   },
-   {
-    "name": "매콤무뼈닭발",
-    "price": "-1"
-   },
-   {
-    "name": "우삼겹숙주볶음",
-    "price": "-1"
-   },
-   {
-    "name": "치즈불닭",
-    "price": "-1"
    }
   ]
  },
@@ -148258,42 +142000,6 @@
   ]
  },
  {
-  "name": "별난주점 광운대점",
-  "search_keys": [
-   "별난주점광운대점"
-  ],
-  "address": "서울특별시 노원구 광운로12길 28(월계동, 준파크빌2차)",
-  "category": "생맥주 전문점",
-  "phone": "029430288",
-  "lat": 37.62118267555183,
-  "lng": 127.06068823605271,
-  "distance_km": 3.82,
-  "kakao_place_id": "24183720",
-  "kakao_url": "http://place.map.kakao.com/24183720",
-  "menus": [
-   {
-    "name": "막테일",
-    "price": "5900"
-   },
-   {
-    "name": "살얼음맥주",
-    "price": "3500"
-   },
-   {
-    "name": "쏘맥주 (살얼음맥주)",
-    "price": "4000"
-   },
-   {
-    "name": "꿀맥주",
-    "price": "4000"
-   },
-   {
-    "name": "빅맥주",
-    "price": "4500"
-   }
-  ]
- },
- {
   "name": "한내지혜의숲",
   "search_keys": [
    "한내지혜의숲",
@@ -148477,44 +142183,6 @@
    {
     "name": "고르곤졸라피자",
     "price": "12900"
-   }
-  ]
- },
- {
-  "name": "역전할머니맥주 서울미아점",
-  "search_keys": [
-   "역전할머니맥주서울미아점",
-   "역전할머니맥주"
-  ],
-  "zeropay_name": "역전할머니맥주",
-  "address": "서울특별시 강북구 솔매로 119 (미아동)",
-  "category": "생맥주 전문점",
-  "phone": "029815455",
-  "lat": 37.6261825289645,
-  "lng": 127.025320461451,
-  "distance_km": 3.82,
-  "kakao_place_id": "772880861",
-  "kakao_url": "http://place.map.kakao.com/772880861",
-  "menus": [
-   {
-    "name": "카다이프 새우튀김",
-    "price": "-1"
-   },
-   {
-    "name": "콘소메옥수수튀김",
-    "price": "-1"
-   },
-   {
-    "name": "갈릭빠다포테이토",
-    "price": "-1"
-   },
-   {
-    "name": "고구마프라이즈",
-    "price": "-1"
-   },
-   {
-    "name": "30cm롱치즈돈까스",
-    "price": "-1"
    }
   ]
  },
@@ -149217,23 +142885,6 @@
     "price": "4000"
    }
   ]
- },
- {
-  "name": "달커피숍",
-  "search_keys": [
-   "달커피숍",
-   "달커피숖"
-  ],
-  "zeropay_name": "달커피숖",
-  "address": "서울 강북구 솔매로 119",
-  "category": "기타 주점업",
-  "phone": "0262321374",
-  "lat": 37.6261131464184,
-  "lng": 127.025351023627,
-  "distance_km": 3.83,
-  "kakao_place_id": "736700631",
-  "kakao_url": "http://place.map.kakao.com/736700631",
-  "menus": []
  },
  {
   "name": "우지커피 미아역점",
@@ -150917,30 +144568,6 @@
   ]
  },
  {
-  "name": "숲속호프",
-  "search_keys": [
-   "숲속호프"
-  ],
-  "address": "서울특별시 도봉구 도봉산4길 28-25(도봉동)",
-  "category": "기타 주점업",
-  "phone": "0264089522",
-  "lat": 37.6889105984549,
-  "lng": 127.044039719609,
-  "distance_km": 3.86,
-  "kakao_place_id": "1891267712",
-  "kakao_url": "http://place.map.kakao.com/1891267712",
-  "menus": [
-   {
-    "name": "아메리카노",
-    "price": "3000"
-   },
-   {
-    "name": "카페라떼",
-    "price": "3500"
-   }
-  ]
- },
- {
   "name": "옛골토성 도봉산점",
   "search_keys": [
    "옛골토성도봉산점"
@@ -151673,44 +145300,6 @@
   ]
  },
  {
-  "name": "역전할머니맥주 서울공릉점",
-  "search_keys": [
-   "역전할머니맥주서울공릉점",
-   "역전할머니맥주공릉점"
-  ],
-  "zeropay_name": "역전할머니맥주 공릉점",
-  "address": "서울특별시 노원구 동일로192길 80 (공릉동)",
-  "category": "생맥주 전문점",
-  "phone": "029791982",
-  "lat": 37.6272195147763,
-  "lng": 127.077256115785,
-  "distance_km": 3.87,
-  "kakao_place_id": "840587562",
-  "kakao_url": "http://place.map.kakao.com/840587562",
-  "menus": [
-   {
-    "name": "카다이프 새우튀김",
-    "price": "-1"
-   },
-   {
-    "name": "콘소메옥수수튀김",
-    "price": "-1"
-   },
-   {
-    "name": "갈릭빠다포테이토",
-    "price": "-1"
-   },
-   {
-    "name": "고구마프라이즈",
-    "price": "-1"
-   },
-   {
-    "name": "30cm롱치즈돈까스",
-    "price": "-1"
-   }
-  ]
- },
- {
   "name": "컴포즈커피 공릉경춘선숲길점",
   "search_keys": [
    "컴포즈커피공릉경춘선숲길점",
@@ -152174,30 +145763,6 @@
   ]
  },
  {
-  "name": "시작이밤이다",
-  "search_keys": [
-   "시작이밤이다"
-  ],
-  "address": "서울특별시 노원구 동일로190길 33 (공릉동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6258226850247,
-  "lng": 127.074927899949,
-  "distance_km": 3.88,
-  "kakao_place_id": "400355799",
-  "kakao_url": "http://place.map.kakao.com/400355799",
-  "menus": [
-   {
-    "name": "크림새우닭",
-    "price": "20000"
-   },
-   {
-    "name": "한우육회",
-    "price": "25000"
-   }
-  ]
- },
- {
   "name": "컴포즈커피 광운대80주년기념관점",
   "search_keys": [
    "컴포즈커피광운대80주년기념관점",
@@ -152451,44 +146016,6 @@
    {
     "name": "고추치즈김밥",
     "price": "-1"
-   }
-  ]
- },
- {
-  "name": "찰리네맥주집 수유점",
-  "search_keys": [
-   "찰리네맥주집수유점",
-   "찰리네맥주집"
-  ],
-  "zeropay_name": "찰리네 맥주집(수유점)",
-  "address": "서울특별시 강북구 삼양로 304 (수유동)",
-  "category": "생맥주 전문점",
-  "phone": "029805872",
-  "lat": 37.6305014056319,
-  "lng": 127.017962798429,
-  "distance_km": 3.88,
-  "kakao_place_id": "26356483",
-  "kakao_url": "http://place.map.kakao.com/26356483",
-  "menus": [
-   {
-    "name": "모듬감자",
-    "price": "8000"
-   },
-   {
-    "name": "돈까스",
-    "price": "18000"
-   },
-   {
-    "name": "생선까스",
-    "price": "18000"
-   },
-   {
-    "name": "핫윙",
-    "price": "13000"
-   },
-   {
-    "name": "닭 모레집 튀김",
-    "price": "11000"
    }
   ]
  },
@@ -154212,59 +147739,6 @@
   ]
  },
  {
-  "name": "리얼펍 미아점",
-  "search_keys": [
-   "리얼펍미아점",
-   "리얼펍미아역점"
-  ],
-  "zeropay_name": "리얼펍 미아역점",
-  "address": "서울특별시 강북구 도봉로49길 20",
-  "category": "생맥주 전문점",
-  "phone": "0200000000",
-  "lat": 37.6250941368914,
-  "lng": 127.025320092261,
-  "distance_km": 3.92,
-  "kakao_place_id": "955552365",
-  "kakao_url": "http://place.map.kakao.com/955552365",
-  "menus": [
-   {
-    "name": "감바스",
-    "price": "16000"
-   },
-   {
-    "name": "삭수카",
-    "price": "16000"
-   },
-   {
-    "name": "썬드라이토마토피자",
-    "price": "12000"
-   },
-   {
-    "name": "까르보나라파스타",
-    "price": "14000"
-   },
-   {
-    "name": "코리안파스타",
-    "price": "14000"
-   }
-  ]
- },
- {
-  "name": "위앤호프",
-  "search_keys": [
-   "위앤호프"
-  ],
-  "address": "서울시 강북구 솔매로44길 9",
-  "category": "생맥주 전문점",
-  "phone": "029878013",
-  "lat": 37.62542944127,
-  "lng": 127.024672247979,
-  "distance_km": 3.92,
-  "kakao_place_id": "15851312",
-  "kakao_url": "http://place.map.kakao.com/15851312",
-  "menus": []
- },
- {
   "name": "안녕소담",
   "search_keys": [
    "안녕소담"
@@ -155242,42 +148716,6 @@
   "kakao_place_id": "1547609271",
   "kakao_url": "http://place.map.kakao.com/1547609271",
   "menus": []
- },
- {
-  "name": "비어리즘",
-  "search_keys": [
-   "비어리즘"
-  ],
-  "address": "서울특별시 강북구 솔매로 106-1 (미아동)",
-  "category": "생맥주 전문점",
-  "phone": "029742685",
-  "lat": 37.6256133661308,
-  "lng": 127.024074192204,
-  "distance_km": 3.94,
-  "kakao_place_id": "1644831148",
-  "kakao_url": "http://place.map.kakao.com/1644831148",
-  "menus": [
-   {
-    "name": "노가리",
-    "price": "-1"
-   },
-   {
-    "name": "아귀포",
-    "price": "-1"
-   },
-   {
-    "name": "먹태",
-    "price": "-1"
-   },
-   {
-    "name": "감자튀김",
-    "price": "-1"
-   },
-   {
-    "name": "파인샤베트",
-    "price": "-1"
-   }
-  ]
  },
  {
   "name": "카조",
@@ -156366,42 +149804,6 @@
   ]
  },
  {
-  "name": "금강포장마차",
-  "search_keys": [
-   "금강포장마차"
-  ],
-  "address": "서울특별시 강북구 삼양로77가길 1 (수유동)",
-  "category": "기타 주점업",
-  "phone": "01088380808",
-  "lat": 37.6298996483959,
-  "lng": 127.017282936641,
-  "distance_km": 3.97,
-  "kakao_place_id": "18839381",
-  "kakao_url": "http://place.map.kakao.com/18839381",
-  "menus": [
-   {
-    "name": "두부김치",
-    "price": "12000"
-   },
-   {
-    "name": "도토리묵",
-    "price": "10000"
-   },
-   {
-    "name": "꼼장어구이",
-    "price": "18000"
-   },
-   {
-    "name": "야채곱창",
-    "price": "15000"
-   },
-   {
-    "name": "낙지볶음",
-    "price": "18000"
-   }
-  ]
- },
- {
   "name": "마을찻집고운울림",
   "search_keys": [
    "마을찻집고운울림"
@@ -157111,42 +150513,6 @@
    {
     "name": "오뎅탕",
     "price": "12000"
-   }
-  ]
- },
- {
-  "name": "육간대청",
-  "search_keys": [
-   "육간대청"
-  ],
-  "address": "서울특별시 강북구 삼각산로 40-9 (수유동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.638790584668335,
-  "lng": 127.00914101650613,
-  "distance_km": 3.99,
-  "kakao_place_id": "14616163",
-  "kakao_url": "http://place.map.kakao.com/14616163",
-  "menus": [
-   {
-    "name": "미나리생목살무한리필",
-    "price": "13000"
-   },
-   {
-    "name": "토종닭도리탕(1마리)",
-    "price": "45000"
-   },
-   {
-    "name": "토종닭능이백숙(1마리)",
-    "price": "50000"
-   },
-   {
-    "name": "오리로스(1마리)",
-    "price": "50000"
-   },
-   {
-    "name": "오리능이전복백숙(1마리)",
-    "price": "55000"
    }
   ]
  },
@@ -158293,57 +151659,6 @@
   ]
  },
  {
-  "name": "리젠시",
-  "search_keys": [
-   "리젠시"
-  ],
-  "address": "서울시 노원구 동일로 1045",
-  "category": "생맥주 전문점",
-  "phone": "02",
-  "lat": 37.623405389060714,
-  "lng": 127.07341210252861,
-  "distance_km": 4.03,
-  "kakao_place_id": "24811910",
-  "kakao_url": "http://place.map.kakao.com/24811910",
-  "menus": []
- },
- {
-  "name": "다락방",
-  "search_keys": [
-   "다락방"
-  ],
-  "address": "서울특별시 노원구 공릉로46길 18(공릉동, 윤탁노블레스)",
-  "category": "생맥주 전문점",
-  "phone": "029778582",
-  "lat": 37.627178941777196,
-  "lng": 127.080003162388,
-  "distance_km": 4.03,
-  "kakao_place_id": "416958636",
-  "kakao_url": "http://place.map.kakao.com/416958636",
-  "menus": [
-   {
-    "name": "락골뱅이+쫄면사리",
-    "price": "18000"
-   },
-   {
-    "name": "락골뱅이+쫄면사리+계란탕",
-    "price": "24000"
-   },
-   {
-    "name": "닭콤보(다리4개+날개4개)",
-    "price": "18000"
-   },
-   {
-    "name": "인기만점후라이드",
-    "price": "17000"
-   },
-   {
-    "name": "양념치킨&반반치킨",
-    "price": "18000"
-   }
-  ]
- },
- {
   "name": "세븐일레븐 공릉삼익점",
   "search_keys": [
    "세븐일레븐공릉삼익점",
@@ -158692,40 +152007,6 @@
     "price": "8000"
    }
   ]
- },
- {
-  "name": "명노래방",
-  "search_keys": [
-   "명노래방",
-   "명노래방단란주점"
-  ],
-  "zeropay_name": "명노래방단란주점",
-  "address": "서울특별시 노원구 공릉로 188 (공릉동, 지하)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.62666666885608,
-  "lng": 127.07942827750853,
-  "distance_km": 4.04,
-  "kakao_place_id": "21331910",
-  "kakao_url": "http://place.map.kakao.com/21331910",
-  "menus": []
- },
- {
-  "name": "뉴다찌다찌호프",
-  "search_keys": [
-   "뉴다찌다찌호프",
-   "뉴다찌"
-  ],
-  "zeropay_name": "뉴다찌",
-  "address": "서울시 노원구 동일로183길 15",
-  "category": "기타 주점업",
-  "phone": "01063980983",
-  "lat": 37.6229841510329,
-  "lng": 127.072727503411,
-  "distance_km": 4.04,
-  "kakao_place_id": "16649114",
-  "kakao_url": "http://place.map.kakao.com/16649114",
-  "menus": []
  },
  {
   "name": "포차어게인 미아역점",
@@ -159579,42 +152860,6 @@
   "menus": []
  },
  {
-  "name": "초원",
-  "search_keys": [
-   "초원"
-  ],
-  "address": "서울특별시 강북구 4.19로 88",
-  "category": "기타 주점업",
-  "phone": "029081885",
-  "lat": 37.6450229282761,
-  "lng": 127.00531419796025,
-  "distance_km": 4.06,
-  "kakao_place_id": "12097725",
-  "kakao_url": "http://place.map.kakao.com/12097725",
-  "menus": [
-   {
-    "name": "닭도리탕",
-    "price": "40000"
-   },
-   {
-    "name": "능이한방백숙",
-    "price": "70000"
-   },
-   {
-    "name": "능이한방오리",
-    "price": "75000"
-   },
-   {
-    "name": "닭발볶음",
-    "price": "25000"
-   },
-   {
-    "name": "각종전류",
-    "price": "15000"
-   }
-  ]
- },
- {
   "name": "아지브런치",
   "search_keys": [
    "아지브런치"
@@ -159738,21 +152983,6 @@
     "price": "11500"
    }
   ]
- },
- {
-  "name": "백곰",
-  "search_keys": [
-   "백곰"
-  ],
-  "address": "서울특별시 노원구 동일로182길 37-85 (공릉동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6241463182963,
-  "lng": 127.075759938992,
-  "distance_km": 4.07,
-  "kakao_place_id": "16273526",
-  "kakao_url": "http://place.map.kakao.com/16273526",
-  "menus": []
  },
  {
   "name": "오피셜커피",
@@ -160392,44 +153622,6 @@
    {
     "name": "치킨치즈볼 골드",
     "price": "17000"
-   }
-  ]
- },
- {
-  "name": "쿨호프 미아점",
-  "search_keys": [
-   "쿨호프미아점",
-   "쿨호프"
-  ],
-  "zeropay_name": "쿨호프",
-  "address": "서울특별시 강북구 솔매로 85 (미아동)",
-  "category": "생맥주 전문점",
-  "phone": "029866393",
-  "lat": 37.6252173815932,
-  "lng": 127.021758640667,
-  "distance_km": 4.09,
-  "kakao_place_id": "16935377",
-  "kakao_url": "http://place.map.kakao.com/16935377",
-  "menus": [
-   {
-    "name": "치킨뱅이",
-    "price": "18000"
-   },
-   {
-    "name": "과일",
-    "price": "12000"
-   },
-   {
-    "name": "낙지떡볶이",
-    "price": "14000"
-   },
-   {
-    "name": "낙지볶음",
-    "price": "14000"
-   },
-   {
-    "name": "훈제족발",
-    "price": "21000"
    }
   ]
  },
@@ -163792,44 +156984,6 @@
   ]
  },
  {
-  "name": "간이역왕노가리&호프,소주 미아점",
-  "search_keys": [
-   "간이역왕노가리호프소주미아점",
-   "간이역왕노가리앤호프"
-  ],
-  "zeropay_name": "간이역 왕노가리 앤 호프",
-  "address": "서울특별시 강북구 솔매로 72-1",
-  "category": "기타 주점업",
-  "phone": "01077363101",
-  "lat": 37.62473832531441,
-  "lng": 127.02024850094858,
-  "distance_km": 4.22,
-  "kakao_place_id": "42654176",
-  "kakao_url": "http://place.map.kakao.com/42654176",
-  "menus": [
-   {
-    "name": "왕노가리",
-    "price": "2500"
-   },
-   {
-    "name": "왕쥐포+땅콩",
-    "price": "5000"
-   },
-   {
-    "name": "계란후라이(3알)",
-    "price": "4000"
-   },
-   {
-    "name": "스팸&계란후라이",
-    "price": "10000"
-   },
-   {
-    "name": "피데기(반건조오징어)",
-    "price": "14000"
-   }
-  ]
- },
- {
   "name": "몽브루",
   "search_keys": [
    "몽브루"
@@ -164034,42 +157188,6 @@
    {
     "name": "매드로니피자",
     "price": "22900"
-   }
-  ]
- },
- {
-  "name": "좋은날",
-  "search_keys": [
-   "좋은날"
-  ],
-  "address": "서울시 노원구 공릉로41길 5",
-  "category": "기타 주점업",
-  "phone": "01042830429",
-  "lat": 37.6244287474532,
-  "lng": 127.079235589484,
-  "distance_km": 4.23,
-  "kakao_place_id": "656719069",
-  "kakao_url": "http://place.map.kakao.com/656719069",
-  "menus": [
-   {
-    "name": "후라이드",
-    "price": "17000"
-   },
-   {
-    "name": "치킨(양념,간장,불닭)",
-    "price": "18000"
-   },
-   {
-    "name": "왕돈까스안주",
-    "price": "17000"
-   },
-   {
-    "name": "참나물골뱅이스페셜(주먹밥•계란말이•소면•옛날소시지)",
-    "price": "22000"
-   },
-   {
-    "name": "연어샐러드",
-    "price": "17000"
    }
   ]
  },
@@ -165131,42 +158249,6 @@
   ]
  },
  {
-  "name": "카페루바토",
-  "search_keys": [
-   "카페루바토"
-  ],
-  "address": "서울시 노원구 동일로180길 53(공릉동)",
-  "category": "생맥주 전문점",
-  "phone": "02",
-  "lat": 37.622905576674,
-  "lng": 127.077276571808,
-  "distance_km": 4.26,
-  "kakao_place_id": "24711338",
-  "kakao_url": "http://place.map.kakao.com/24711338",
-  "menus": [
-   {
-    "name": "아메리카노(Hot)",
-    "price": "2500"
-   },
-   {
-    "name": "아메리카노(Ice)",
-    "price": "3000"
-   },
-   {
-    "name": "눈꽃빙수(팥)",
-    "price": "10900"
-   },
-   {
-    "name": "카푸치노(hot)",
-    "price": "3000"
-   },
-   {
-    "name": "카푸치노(Ice)",
-    "price": "3500"
-   }
-  ]
- },
- {
   "name": "말베르크",
   "search_keys": [
    "말베르크"
@@ -165857,21 +158939,6 @@
   "distance_km": 4.28,
   "kakao_place_id": "19207908",
   "kakao_url": "http://place.map.kakao.com/19207908",
-  "menus": []
- },
- {
-  "name": "돼지포차",
-  "search_keys": [
-   "돼지포차"
-  ],
-  "address": "서울시 강북구 솔샘로67길 73",
-  "category": "생맥주 전문점",
-  "phone": "02",
-  "lat": 37.6204193599278,
-  "lng": 127.027357398652,
-  "distance_km": 4.28,
-  "kakao_place_id": "671702329",
-  "kakao_url": "http://place.map.kakao.com/671702329",
   "menus": []
  },
  {
@@ -166658,76 +159725,6 @@
   "kakao_place_id": "13056325",
   "kakao_url": "http://place.map.kakao.com/13056325",
   "menus": []
- },
- {
-  "name": "오닭꼬치 공릉점",
-  "search_keys": [
-   "오닭꼬치공릉점",
-   "오닭꼬치"
-  ],
-  "zeropay_name": "오닭꼬치",
-  "address": "서울특별시 노원구 공릉로35길 22 (공릉동)",
-  "category": "생맥주 전문점",
-  "phone": "0263969222",
-  "lat": 37.622818563026,
-  "lng": 127.078064878434,
-  "distance_km": 4.31,
-  "kakao_place_id": "57920887",
-  "kakao_url": "http://place.map.kakao.com/57920887",
-  "menus": [
-   {
-    "name": "파닭꼬치/순살꼬치 택1",
-    "price": "4000"
-   },
-   {
-    "name": "소떡소떡",
-    "price": "3500"
-   },
-   {
-    "name": "삼겹살꼬치(소금/매콤 택1)(2꼬치)",
-    "price": "7000"
-   },
-   {
-    "name": "롱쏘세지",
-    "price": "3500"
-   },
-   {
-    "name": "소세지꼬치(2꼬치)",
-    "price": "5500"
-   }
-  ]
- },
- {
-  "name": "웨일스",
-  "search_keys": [
-   "웨일스"
-  ],
-  "address": "서울특별시 노원구 공릉로35길 22 (공릉동)",
-  "category": "기타 주점업",
-  "phone": "07046470210",
-  "lat": 37.6228140708316,
-  "lng": 127.078045616922,
-  "distance_km": 4.31,
-  "kakao_place_id": "1381345459",
-  "kakao_url": "http://place.map.kakao.com/1381345459",
-  "menus": [
-   {
-    "name": "통베이컨 크림파스타(2인분)",
-    "price": "22900"
-   },
-   {
-    "name": "군고구마아이스크림",
-    "price": "12500"
-   },
-   {
-    "name": "로제퐁듀새우",
-    "price": "22900"
-   },
-   {
-    "name": "양송이타파스",
-    "price": "21900"
-   }
-  ]
  },
  {
   "name": "소귀골백운산장",
@@ -168178,42 +161175,6 @@
   ]
  },
  {
-  "name": "낭만술집",
-  "search_keys": [
-   "낭만술집"
-  ],
-  "address": "서울특별시 노원구 공릉로38길 8",
-  "category": "기타 주점업",
-  "phone": "01031984730",
-  "lat": 37.6231506736363,
-  "lng": 127.079938808958,
-  "distance_km": 4.38,
-  "kakao_place_id": "1897155475",
-  "kakao_url": "http://place.map.kakao.com/1897155475",
-  "menus": [
-   {
-    "name": "계란말이",
-    "price": "16000"
-   },
-   {
-    "name": "두부김치",
-    "price": "19000"
-   },
-   {
-    "name": "이면수",
-    "price": "19000"
-   },
-   {
-    "name": "삼치구이",
-    "price": "19000"
-   },
-   {
-    "name": "시사모구이",
-    "price": "17000"
-   }
-  ]
- },
- {
   "name": "GS25 태릉해링턴점",
   "search_keys": [
    "gs25태릉해링턴점",
@@ -169093,40 +162054,6 @@
   "menus": []
  },
  {
-  "name": "모던잡방 공릉직영점",
-  "search_keys": [
-   "모던잡방공릉직영점",
-   "모던잡방"
-  ],
-  "zeropay_name": "모던잡방",
-  "address": "서울특별시 노원구 공릉로34길 11(공릉동)",
-  "category": "생맥주 전문점",
-  "phone": "029719666",
-  "lat": 37.622667831547076,
-  "lng": 127.07981029100128,
-  "distance_km": 4.41,
-  "kakao_place_id": "752472588",
-  "kakao_url": "http://place.map.kakao.com/752472588",
-  "menus": [
-   {
-    "name": "매콤크림새우떡볶이",
-    "price": "10900"
-   },
-   {
-    "name": "오뎅탕탕라볶이",
-    "price": "10900"
-   },
-   {
-    "name": "소시지떡볶이",
-    "price": "10500"
-   },
-   {
-    "name": "매콤크림소시지떡볶이",
-    "price": "10500"
-   }
-  ]
- },
- {
   "name": "세븐일레븐 공릉하나점",
   "search_keys": [
    "세븐일레븐공릉하나점",
@@ -169849,23 +162776,6 @@
   "distance_km": 4.44,
   "kakao_place_id": "2093705871",
   "kakao_url": "http://place.map.kakao.com/2093705871",
-  "menus": []
- },
- {
-  "name": "빅뉴스 공릉본점",
-  "search_keys": [
-   "빅뉴스공릉본점",
-   "빅뉴스"
-  ],
-  "zeropay_name": "빅뉴스",
-  "address": "서울시 노원구 공릉로34길 18(공릉동)",
-  "category": "기타 주점업",
-  "phone": "01037335628",
-  "lat": 37.6225829123319,
-  "lng": 127.08014436155,
-  "distance_km": 4.44,
-  "kakao_place_id": "16378485",
-  "kakao_url": "http://place.map.kakao.com/16378485",
   "menus": []
  },
  {
@@ -170963,42 +163873,6 @@
    {
     "name": "우도 땅콩 반반 치킨 콤보(다리+윙+봉)",
     "price": "25000"
-   }
-  ]
- },
- {
-  "name": "선수의생선집",
-  "search_keys": [
-   "선수의생선집"
-  ],
-  "address": "서울특별시 노원구 석계로 11 (월계동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.61584055008712,
-  "lng": 127.06440577575869,
-  "distance_km": 4.48,
-  "kakao_place_id": "27322445",
-  "kakao_url": "http://place.map.kakao.com/27322445",
-  "menus": [
-   {
-    "name": "황우럭구이",
-    "price": "24000"
-   },
-   {
-    "name": "냉라멘",
-    "price": "15000"
-   },
-   {
-    "name": "시샤모구이",
-    "price": "12000"
-   },
-   {
-    "name": "고등어구이",
-    "price": "12000"
-   },
-   {
-    "name": "삼치구이",
-    "price": "16000"
    }
   ]
  },
@@ -172510,21 +165384,6 @@
   ]
  },
  {
-  "name": "세븐나잇",
-  "search_keys": [
-   "세븐나잇"
-  ],
-  "address": "서울특별시 강북구 삼양로 194 (미아동)",
-  "category": "생맥주 전문점",
-  "phone": "01053017533",
-  "lat": 37.6211198752982,
-  "lng": 127.020737990897,
-  "distance_km": 4.51,
-  "kakao_place_id": "16676366",
-  "kakao_url": "http://place.map.kakao.com/16676366",
-  "menus": []
- },
- {
   "name": "대창간",
   "search_keys": [
    "대창간"
@@ -173045,21 +165904,6 @@
   ]
  },
  {
-  "name": "만석호프",
-  "search_keys": [
-   "만석호프"
-  ],
-  "address": "서울시 강북구 삼양로 193",
-  "category": "기타 주점업",
-  "phone": "029820387",
-  "lat": 37.621133459509906,
-  "lng": 127.02033927421748,
-  "distance_km": 4.53,
-  "kakao_place_id": "16622283",
-  "kakao_url": "http://place.map.kakao.com/16622283",
-  "menus": []
- },
- {
   "name": "세븐일레븐 미아한화포레나점",
   "search_keys": [
    "세븐일레븐미아한화포레나점",
@@ -173297,43 +166141,6 @@
    {
     "name": "애플망고",
     "price": "16000"
-   }
-  ]
- },
- {
-  "name": "두꺼비 호프",
-  "search_keys": [
-   "두꺼비호프"
-  ],
-  "zeropay_name": "두꺼비호프",
-  "address": "서울특별시 강북구 솔샘로 327 (미아동, 1층)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.6173629706523,
-  "lng": 127.028366621625,
-  "distance_km": 4.54,
-  "kakao_place_id": "23300952",
-  "kakao_url": "http://place.map.kakao.com/23300952",
-  "menus": [
-   {
-    "name": "노가리탕",
-    "price": "-1"
-   },
-   {
-    "name": "김치찌개",
-    "price": "-1"
-   },
-   {
-    "name": "계란탕",
-    "price": "-1"
-   },
-   {
-    "name": "잔치국수",
-    "price": "-1"
-   },
-   {
-    "name": "후라이드치킨",
-    "price": "-1"
    }
   ]
  },
@@ -173877,26 +166684,6 @@
   "menus": []
  },
  {
-  "name": "수유수제맥주프로젝트협동조합",
-  "search_keys": [
-   "수유수제맥주프로젝트협동조합"
-  ],
-  "address": "서울 강북구 인수봉로23길 37",
-  "category": "생맥주 전문점",
-  "phone": "07046473325",
-  "lat": 37.6275551476114,
-  "lng": 127.010850207643,
-  "distance_km": 4.56,
-  "kakao_place_id": "823443618",
-  "kakao_url": "http://place.map.kakao.com/823443618",
-  "menus": [
-   {
-    "name": "수유페일에일",
-    "price": "3900"
-   }
-  ]
- },
- {
   "name": "CU 강북이안점",
   "search_keys": [
    "cu강북이안점",
@@ -174092,42 +166879,6 @@
    {
     "name": "빨계떡",
     "price": ""
-   }
-  ]
- },
- {
-  "name": "영번지포장마차",
-  "search_keys": [
-   "영번지포장마차"
-  ],
-  "address": "서울시 노원구 화랑로 337-4",
-  "category": "기타 주점업",
-  "phone": "02",
-  "lat": 37.61533091862982,
-  "lng": 127.06544736533408,
-  "distance_km": 4.57,
-  "kakao_place_id": "773846",
-  "kakao_url": "http://place.map.kakao.com/773846",
-  "menus": [
-   {
-    "name": "광어물회",
-    "price": "40000"
-   },
-   {
-    "name": "광어",
-    "price": "35000"
-   },
-   {
-    "name": "우럭",
-    "price": "35000"
-   },
-   {
-    "name": "우럭물회",
-    "price": "40000"
-   },
-   {
-    "name": "오징어물회",
-    "price": "-1"
    }
   ]
  },
@@ -174407,21 +167158,6 @@
   ]
  },
  {
-  "name": "콘서트",
-  "search_keys": [
-   "콘서트"
-  ],
-  "address": "서울특별시 강북구 삼양로 185, 지하1층 (미아동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6204342495297,
-  "lng": 127.020590547117,
-  "distance_km": 4.58,
-  "kakao_place_id": "1473849889",
-  "kakao_url": "http://place.map.kakao.com/1473849889",
-  "menus": []
- },
- {
   "name": "메가MGC커피 미아솔샘점",
   "search_keys": [
    "메가mgc커피미아솔샘점"
@@ -174646,43 +167382,6 @@
    {
     "name": "제주 그린 밀크티",
     "price": "-1"
-   }
-  ]
- },
- {
-  "name": "일번지포장마차",
-  "search_keys": [
-   "일번지포장마차"
-  ],
-  "zeropay_name": "일번지 포장마차",
-  "address": "서울특별시 노원구 월계동 36-5 일번지포장마차",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.61511372962732,
-  "lng": 127.06553891858246,
-  "distance_km": 4.59,
-  "kakao_place_id": "15291549",
-  "kakao_url": "http://place.map.kakao.com/15291549",
-  "menus": [
-   {
-    "name": "낙지볶음",
-    "price": "15000"
-   },
-   {
-    "name": "꽃게탕",
-    "price": "15000"
-   },
-   {
-    "name": "곱창볶음",
-    "price": "12000"
-   },
-   {
-    "name": "꼼장어구이",
-    "price": "13000"
-   },
-   {
-    "name": "닭똥집",
-    "price": "12000"
    }
   ]
  },
@@ -175558,30 +168257,6 @@
    {
     "name": "D세트",
     "price": "52000"
-   }
-  ]
- },
- {
-  "name": "프라이데이펍",
-  "search_keys": [
-   "프라이데이펍"
-  ],
-  "address": "서울특별시 노원구 공릉로 104 (공릉동)",
-  "category": "생맥주 전문점",
-  "phone": "01064457650",
-  "lat": 37.619632565892694,
-  "lng": 127.07822465669031,
-  "distance_km": 4.61,
-  "kakao_place_id": "1332970018",
-  "kakao_url": "http://place.map.kakao.com/1332970018",
-  "menus": [
-   {
-    "name": "고추튀김 오리지널",
-    "price": "18000"
-   },
-   {
-    "name": "카스 생맥주 500ml",
-    "price": "4000"
    }
   ]
  },
@@ -177788,21 +170463,6 @@
   ]
  },
  {
-  "name": "황토골",
-  "search_keys": [
-   "황토골"
-  ],
-  "address": "서울시 강북구 삼양로30길 10",
-  "category": "기타 주점업",
-  "phone": "029896435",
-  "lat": 37.6189789424643,
-  "lng": 127.021770414865,
-  "distance_km": 4.66,
-  "kakao_place_id": "15805161",
-  "kakao_url": "http://place.map.kakao.com/15805161",
-  "menus": []
- },
- {
   "name": "CU 미아마인점",
   "search_keys": [
    "cu미아마인점",
@@ -178189,42 +170849,6 @@
   ]
  },
  {
-  "name": "맥주보급소",
-  "search_keys": [
-   "맥주보급소"
-  ],
-  "address": "서울특별시 강북구 삼양로 170 (미아동)",
-  "category": "생맥주 전문점",
-  "phone": "07088369653",
-  "lat": 37.6190024385645,
-  "lng": 127.021385304999,
-  "distance_km": 4.68,
-  "kakao_place_id": "232137148",
-  "kakao_url": "http://place.map.kakao.com/232137148",
-  "menus": [
-   {
-    "name": "치즈스틱",
-    "price": "7500"
-   },
-   {
-    "name": "감자튀김",
-    "price": "7500"
-   },
-   {
-    "name": "허니버터감자튀김",
-    "price": "8500"
-   },
-   {
-    "name": "소떡소떡",
-    "price": "7000"
-   },
-   {
-    "name": "닭똥집튀김",
-    "price": "7500"
-   }
-  ]
- },
- {
   "name": "카페 엘파소 CAFE ELPASO",
   "search_keys": [
    "카페엘파소cafeelpaso",
@@ -178334,42 +170958,6 @@
    {
     "name": "수퍼 파파스 L",
     "price": "28500"
-   }
-  ]
- },
- {
-  "name": "김복남맥주 공릉점",
-  "search_keys": [
-   "김복남맥주공릉점"
-  ],
-  "address": "서울특별시 노원구 화랑로 463(공릉동)",
-  "category": "생맥주 전문점",
-  "phone": "029755006",
-  "lat": 37.6190033938615,
-  "lng": 127.078649891195,
-  "distance_km": 4.69,
-  "kakao_place_id": "421042962",
-  "kakao_url": "http://place.map.kakao.com/421042962",
-  "menus": [
-   {
-    "name": "나쵸치킨플래터",
-    "price": "-1"
-   },
-   {
-    "name": "떡볶이&순살후라이드&감자튀김",
-    "price": "-1"
-   },
-   {
-    "name": "떡볶이&닭껍질튀김&감자튀김",
-    "price": "-1"
-   },
-   {
-    "name": "우동통&왕돈까스",
-    "price": "-1"
-   },
-   {
-    "name": "콘튀김&마라볶음면",
-    "price": "-1"
    }
   ]
  },
@@ -179231,59 +171819,6 @@
   ]
  },
  {
-  "name": "술통",
-  "search_keys": [
-   "술통"
-  ],
-  "address": "서울특별시 강북구 오패산로30길 13 (미아동)",
-  "category": "생맥주 전문점",
-  "phone": "07040247275",
-  "lat": 37.6138294253576,
-  "lng": 127.034626390167,
-  "distance_km": 4.72,
-  "kakao_place_id": "381579560",
-  "kakao_url": "http://place.map.kakao.com/381579560",
-  "menus": []
- },
- {
-  "name": "찰리네맥주집 삼양점",
-  "search_keys": [
-   "찰리네맥주집삼양점",
-   "찰리네맥주집"
-  ],
-  "zeropay_name": "찰리네맥주집",
-  "address": "서울특별시 강북구 삼양로27길 8(미아동)",
-  "category": "생맥주 전문점",
-  "phone": "05071316535",
-  "lat": 37.618806121291854,
-  "lng": 127.02083702523807,
-  "distance_km": 4.72,
-  "kakao_place_id": "26522276",
-  "kakao_url": "http://place.map.kakao.com/26522276",
-  "menus": [
-   {
-    "name": "고르곤졸라 씬피자",
-    "price": "13000"
-   },
-   {
-    "name": "국물떡볶이",
-    "price": "7900"
-   },
-   {
-    "name": "날씬감자",
-    "price": "7000"
-   },
-   {
-    "name": "반달감자",
-    "price": "7000"
-   },
-   {
-    "name": "매콤핫윙",
-    "price": "12000"
-   }
-  ]
- },
- {
   "name": "피자메카 공릉점",
   "search_keys": [
    "피자메카공릉점"
@@ -179777,44 +172312,6 @@
    {
     "name": "야끼만두(3개)",
     "price": "2000"
-   }
-  ]
- },
- {
-  "name": "삼양막걸리",
-  "search_keys": [
-   "삼양막걸리",
-   "삼양"
-  ],
-  "zeropay_name": "삼양",
-  "address": "서울특별시 강북구 삼양로27길 8 (미아동)",
-  "category": "기타 주점업",
-  "phone": "029885598",
-  "lat": 37.618779092855,
-  "lng": 127.020830221538,
-  "distance_km": 4.73,
-  "kakao_place_id": "585147808",
-  "kakao_url": "http://place.map.kakao.com/585147808",
-  "menus": [
-   {
-    "name": "고기완자전",
-    "price": "14000"
-   },
-   {
-    "name": "김치전",
-    "price": "13000"
-   },
-   {
-    "name": "참소라숙회",
-    "price": "16000"
-   },
-   {
-    "name": "장수막걸리",
-    "price": "4500"
-   },
-   {
-    "name": "지평막걸리",
-    "price": "5000"
    }
   ]
  },
@@ -182668,43 +175165,6 @@
   ]
  },
  {
-  "name": "LP와음악사랑",
-  "search_keys": [
-   "lp와음악사랑"
-  ],
-  "zeropay_name": "LP와 음악사랑",
-  "address": "서울특별시 강북구 도봉로10길 28, 지층 (미아동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.61385656004329,
-  "lng": 127.03100882040383,
-  "distance_km": 4.82,
-  "kakao_place_id": "16471779",
-  "kakao_url": "http://place.map.kakao.com/16471779",
-  "menus": [
-   {
-    "name": "블랙러시안",
-    "price": "9000"
-   },
-   {
-    "name": "화이트 러시안",
-    "price": "11000"
-   },
-   {
-    "name": "스크루드라이버",
-    "price": "9000"
-   },
-   {
-    "name": "미도리사워",
-    "price": "10000"
-   },
-   {
-    "name": "블루하와이",
-    "price": "10000"
-   }
-  ]
- },
- {
   "name": "더벤티 미아롯데점",
   "search_keys": [
    "더벤티미아롯데점"
@@ -183139,23 +175599,6 @@
     "price": "4500"
    }
   ]
- },
- {
-  "name": "콘콘",
-  "search_keys": [
-   "콘콘",
-   "콘콘concon"
-  ],
-  "zeropay_name": "콘콘(CONCON)",
-  "address": "서울특별시 강북구 오패산로31길 46",
-  "category": "기타 주점업",
-  "phone": "01039373605",
-  "lat": 37.6135645255596,
-  "lng": 127.031440224967,
-  "distance_km": 4.83,
-  "kakao_place_id": "397843588",
-  "kakao_url": "http://place.map.kakao.com/397843588",
-  "menus": []
  },
  {
   "name": "투썸플레이스 미아테라스파크점",
@@ -184748,42 +177191,6 @@
   ]
  },
  {
-  "name": "그날맥주",
-  "search_keys": [
-   "그날맥주"
-  ],
-  "address": "서울특별시 강북구 월계로7나길 50 (미아동)",
-  "category": "생맥주 전문점",
-  "phone": "01099002125",
-  "lat": 37.6131924097079,
-  "lng": 127.031468383506,
-  "distance_km": 4.87,
-  "kakao_place_id": "1185637098",
-  "kakao_url": "http://place.map.kakao.com/1185637098",
-  "menus": [
-   {
-    "name": "아귀포",
-    "price": "-1"
-   },
-   {
-    "name": "바삭먹태",
-    "price": "-1"
-   },
-   {
-    "name": "모듬안주",
-    "price": "-1"
-   },
-   {
-    "name": "노가리",
-    "price": "-1"
-   },
-   {
-    "name": "한치",
-    "price": "-1"
-   }
-  ]
- },
- {
   "name": "세븐일레븐 미아로데오점",
   "search_keys": [
    "세븐일레븐미아로데오점",
@@ -185052,36 +177459,6 @@
     "price": "20000"
    }
   ]
- },
- {
-  "name": "샴프네2",
-  "search_keys": [
-   "샴프네2"
-  ],
-  "address": "서울특별시 강북구 월계로7나길 42-1",
-  "category": "생맥주 전문점",
-  "phone": "029882202",
-  "lat": 37.6130229568183,
-  "lng": 127.031718617918,
-  "distance_km": 4.88,
-  "kakao_place_id": "661036726",
-  "kakao_url": "http://place.map.kakao.com/661036726",
-  "menus": []
- },
- {
-  "name": "조은치킨",
-  "search_keys": [
-   "조은치킨"
-  ],
-  "address": "서울시 강북구 미아동52-56",
-  "category": "기타 주점업",
-  "phone": "01021673608",
-  "lat": 37.6125864187242,
-  "lng": 127.033384485461,
-  "distance_km": 4.88,
-  "kakao_place_id": "16086735",
-  "kakao_url": "http://place.map.kakao.com/16086735",
-  "menus": []
  },
  {
   "name": "커피베이 솔샘역점",
@@ -185858,44 +178235,6 @@
   ]
  },
  {
-  "name": "와이니데이즈",
-  "search_keys": [
-   "와이니데이즈",
-   "와이니데이즈미아사거리점"
-  ],
-  "zeropay_name": "와이니데이즈 미아사거리점",
-  "address": "서울특별시 강북구 도봉로10가길 12 (미아동)",
-  "category": "기타 주점업",
-  "phone": "0264652500",
-  "lat": 37.61301411868993,
-  "lng": 127.03107302910432,
-  "distance_km": 4.9,
-  "kakao_place_id": "653816718",
-  "kakao_url": "http://place.map.kakao.com/653816718",
-  "menus": [
-   {
-    "name": "크림치즈 크래커",
-    "price": "7900"
-   },
-   {
-    "name": "감바스 파스타",
-    "price": "13900"
-   },
-   {
-    "name": "스테이크(찹)",
-    "price": "17900"
-   },
-   {
-    "name": "명란 크림 파스타",
-    "price": "12900"
-   },
-   {
-    "name": "쉬림프 로제 파스타",
-    "price": "13900"
-   }
-  ]
- },
- {
   "name": "감탄떡볶이 서울여대점",
   "search_keys": [
    "감탄떡볶이서울여대점"
@@ -186521,42 +178860,6 @@
   ]
  },
  {
-  "name": "히솝",
-  "search_keys": [
-   "히솝"
-  ],
-  "address": "서울특별시 강북구 도봉로10가길 16-4(미아동)",
-  "category": "생맥주 전문점",
-  "phone": "01072964867",
-  "lat": 37.61284380912634,
-  "lng": 127.03115903605325,
-  "distance_km": 4.92,
-  "kakao_place_id": "414703972",
-  "kakao_url": "http://place.map.kakao.com/414703972",
-  "menus": [
-   {
-    "name": "된장매쉬 항정살",
-    "price": "23000"
-   },
-   {
-    "name": "XO소스 가리비구이",
-    "price": "20000"
-   },
-   {
-    "name": "시리얼 새우",
-    "price": "19000"
-   },
-   {
-    "name": "비스크 파스타",
-    "price": "17000"
-   },
-   {
-    "name": "라구 파스타",
-    "price": "17000"
-   }
-  ]
- },
- {
   "name": "부잣집설렁탕",
   "search_keys": [
    "부잣집설렁탕"
@@ -186777,57 +179080,6 @@
     "price": "-1"
    }
   ]
- },
- {
-  "name": "금잔화",
-  "search_keys": [
-   "금잔화"
-  ],
-  "address": "서울특별시 강북구 월계로7길 42, 나동 1층 (중간) (미아동)",
-  "category": "생맥주 전문점",
-  "phone": "020000000",
-  "lat": 37.61210797635654,
-  "lng": 127.03344543153312,
-  "distance_km": 4.93,
-  "kakao_place_id": "449513382",
-  "kakao_url": "http://place.map.kakao.com/449513382",
-  "menus": [
-   {
-    "name": "아롱사태 모둠 전골",
-    "price": "29000"
-   },
-   {
-    "name": "한우 투쁠 육사시미",
-    "price": "28000"
-   },
-   {
-    "name": "힌우 투쁠 육회 감태쌈",
-    "price": "28000"
-   },
-   {
-    "name": "매콤 칠리 가지튀김",
-    "price": "18000"
-   },
-   {
-    "name": "바질 크림치즈 셀프까나페",
-    "price": "9000"
-   }
-  ]
- },
- {
-  "name": "가게맥주",
-  "search_keys": [
-   "가게맥주"
-  ],
-  "address": "서울특별시 강북구 도봉로45",
-  "category": "생맥주 전문점",
-  "phone": "029458041",
-  "lat": 37.6131676627173,
-  "lng": 127.029610896451,
-  "distance_km": 4.93,
-  "kakao_place_id": "19032477",
-  "kakao_url": "http://place.map.kakao.com/19032477",
-  "menus": []
  },
  {
   "name": "에이스",
@@ -187126,61 +179378,6 @@
   ]
  },
  {
-  "name": "지금보고싶다 미아사거리점",
-  "search_keys": [
-   "지금보고싶다미아사거리점",
-   "지금보고싶다"
-  ],
-  "zeropay_name": "지금 보고싶다",
-  "address": "서울특별시 강북구 도봉로8길 35 (미아동)",
-  "category": "기타 주점업",
-  "phone": "01092442985",
-  "lat": 37.6122516103257,
-  "lng": 127.032088648485,
-  "distance_km": 4.95,
-  "kakao_place_id": "516243473",
-  "kakao_url": "http://place.map.kakao.com/516243473",
-  "menus": [
-   {
-    "name": "찢먹태",
-    "price": "14900"
-   },
-   {
-    "name": "반건조 오징어",
-    "price": "12900"
-   },
-   {
-    "name": "닭껍질튀김",
-    "price": "7900"
-   },
-   {
-    "name": "쥐포구이",
-    "price": "8900"
-   },
-   {
-    "name": "튀김쥐포",
-    "price": "4900"
-   }
-  ]
- },
- {
-  "name": "조코뮤직타운",
-  "search_keys": [
-   "조코뮤직타운",
-   "조코뮤직"
-  ],
-  "zeropay_name": "조코뮤직",
-  "address": "서울특별시 강북구 도봉로8길 12 (미아동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6125257836871,
-  "lng": 127.031069428124,
-  "distance_km": 4.95,
-  "kakao_place_id": "16996325",
-  "kakao_url": "http://place.map.kakao.com/16996325",
-  "menus": []
- },
- {
   "name": "명성식당",
   "search_keys": [
    "명성식당"
@@ -187317,75 +179514,6 @@
     "price": "-1"
    }
   ]
- },
- {
-  "name": "전주포차",
-  "search_keys": [
-   "전주포차",
-   "전주포장마차"
-  ],
-  "zeropay_name": "전주포장마차",
-  "address": "서울특별시 강북구 월계로7길 38, 1층 (미아동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6118584014904,
-  "lng": 127.033448717529,
-  "distance_km": 4.96,
-  "kakao_place_id": "561146230",
-  "kakao_url": "http://place.map.kakao.com/561146230",
-  "menus": []
- },
- {
-  "name": "맥썸",
-  "search_keys": [
-   "맥썸"
-  ],
-  "address": "서울특별시 강북구 도봉로8길 26, 1층 (미아동)",
-  "category": "기타 주점업",
-  "phone": "020000000",
-  "lat": 37.6123382699679,
-  "lng": 127.031477084356,
-  "distance_km": 4.96,
-  "kakao_place_id": "558782529",
-  "kakao_url": "http://place.map.kakao.com/558782529",
-  "menus": [
-   {
-    "name": "맥썸왕돈가스",
-    "price": "11900"
-   },
-   {
-    "name": "망고팥빙수",
-    "price": "9900"
-   },
-   {
-    "name": "맥썸떡볶이",
-    "price": "8900"
-   },
-   {
-    "name": "롤치즈돈까스",
-    "price": "11900"
-   },
-   {
-    "name": "매콤로제떡볶이",
-    "price": "9900"
-   }
-  ]
- },
- {
-  "name": "안녕하세요프로젝트",
-  "search_keys": [
-   "안녕하세요프로젝트"
-  ],
-  "zeropay_name": "안녕하세요 프로젝트",
-  "address": "서울특별시 강북구 도봉로8길 26 (미아동)",
-  "category": "기타 주점업",
-  "phone": "0267355055",
-  "lat": 37.6123274556851,
-  "lng": 127.031486140558,
-  "distance_km": 4.96,
-  "kakao_place_id": "1930585372",
-  "kakao_url": "http://place.map.kakao.com/1930585372",
-  "menus": []
  },
  {
   "name": "GS25 미아삼거리점",

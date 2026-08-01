@@ -4,8 +4,8 @@ import requests
 import zeropay
 
 
-def test_food_codes_has_13_categories():
-    assert len(zeropay.FOOD_CODES) == 13
+def test_food_codes_has_11_categories():
+    assert len(zeropay.FOOD_CODES) == 11  # bars removed: lunch map, not a nightlife guide
     assert zeropay.FOOD_CODES["56221"] == "커피 전문점"
     # DB-verified codes (site dropdown lies: 56193 etc. return 0 rows)
     assert zeropay.FOOD_CODES["56162"] == "치킨 전문점"
