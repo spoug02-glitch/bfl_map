@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import EntryNotice from "@/components/EntryNotice";
+import VisitPing from "@/components/VisitPing";
 import FilterBar from "@/components/FilterBar";
 import MapView from "@/components/MapView";
 import PlacePanel from "@/components/PlacePanel";
@@ -121,6 +122,7 @@ export default function Home() {
         )}
       </div>
       <EntryNotice />
+      <VisitPing />
     </main>
   );
 }

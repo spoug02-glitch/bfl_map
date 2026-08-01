@@ -40,7 +40,9 @@
   /* next/font/google can't preload a Korean subset in this environment (see
      app/layout.tsx), so list OS Korean fonts explicitly before the Latin
      fallback — otherwise Hangul silently falls through to the browser default. */
-  --font-sans: var(--font-noto-sans-kr), var(--font-geist-sans), "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+  /* Pretendard (CDN, dynamic subset) is the primary face; the OS Korean fonts
+     behind it keep Hangul readable if the CDN is unreachable. */
+  --font-sans: "Pretendard Variable", Pretendard, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --font-mono: var(--font-geist-mono);
 
   --color-surface: var(--color-surface);
