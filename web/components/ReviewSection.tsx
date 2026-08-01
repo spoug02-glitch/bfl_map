@@ -107,7 +107,7 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
         <div className="mt-4 space-y-4 rounded-lg border border-border p-4 text-center shadow-xs">
           <p className="text-base text-text-muted">리뷰를 남기려면 로그인이 필요합니다.</p>
           <a
-            className="grid h-11 place-items-center rounded-lg bg-brand-kakao text-center text-base font-bold text-brand-kakao-text"
+            className="grid h-11 place-items-center rounded-lg bg-ink text-center text-base font-bold text-white"
             href="/api/auth/kakao"
           >
             카카오로 로그인하고 리뷰 남기기

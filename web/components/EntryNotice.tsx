@@ -21,8 +21,11 @@ export default function EntryNotice() {
     <div
       role="status"
       aria-live="polite"
-      className={`fixed inset-x-0 top-0 z-30 flex items-center gap-2 bg-warning px-4 py-2
-        text-sm text-warning-text shadow-xs transition-opacity duration-[400ms]
+      // Muted amber, not the full-strength brand yellow: this is a passing
+      // caution, not an alarm, and it sits above the whole map on entry.
+      className={`fixed inset-x-0 top-0 z-30 flex items-center gap-2 border-b border-warning
+        bg-warning-soft px-4 py-2 text-sm text-warning-text shadow-xs
+        transition-opacity duration-[400ms]
         ${phase === "fading" ? "opacity-0" : "opacity-100"}`}
       style={{ paddingTop: "max(0.5rem, env(safe-area-inset-top))" }}
     >

@@ -20,6 +20,7 @@ export default function Home() {
   const [user, setUser] = useState<SessionUser | null>(null);
   const [blogLinks, setBlogLinks] = useState<Record<string, BlogLink>>({});
   const [staleLink, setStaleLink] = useState(false);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   useEffect(() => {
     // 공유 링크(?place=<kakao_place_id>)로 들어온 경우 그 가게를 열어준다.
@@ -35,6 +36,20 @@ export default function Home() {
     });
     fetch("/api/auth/me").then(r => r.json()).then(d => setUser(d.user));
     fetch("/blog_links.json").then(r => r.json()).then(setBlogLinks).catch(() => {});
+
+    // A failed login used to bounce back here with no explanation, so it just
+    // looked like nothing happened. The common cause is clicking login twice:
+    // each attempt issues a new state token and invalidates the previous one.
+    const err = new URLSearchParams(window.location.search).get("login_error");
+    if (err) {
+      setLoginError(
+        err === "state"
+          ? "로그인이 만료됐어요. 버튼을 한 번만 누르고 기다려주세요."
+          : "로그인에 실패했어요. 잠시 후 다시 시도해주세요.",
+      );
+      // drop the parameter so a refresh does not replay the message
+      window.history.replaceState({}, "", window.location.pathname);
+    }
   }, []);
 
   const visible = useMemo(() => {
@@ -67,10 +82,12 @@ export default function Home() {
             </button>
           </div>
         ) : (
-          // Kakao first: this is a Korean app and most visitors already have that account.
+          // Both providers share one treatment: they are equal choices, and the
+          // brand yellow is already spent on the share button and the caution bar.
+          // Kakao sits first because most visitors here already have that account.
           <div className="flex items-center gap-2">
             <a
-              className="grid h-11 place-items-center rounded-lg bg-brand-kakao px-4 text-sm font-bold text-black shadow-xs"
+              className="grid h-11 place-items-center rounded-lg bg-ink px-4 text-sm font-bold text-white shadow-xs"
               href="/api/auth/kakao"
             >
               카카오 로그인
@@ -79,7 +96,7 @@ export default function Home() {
               className="grid h-11 place-items-center rounded-lg border border-border px-4 text-sm font-bold text-text-primary"
               href="/api/auth/google"
             >
-              구글
+              구글 로그인
             </a>
           </div>
         )}
@@ -97,6 +114,21 @@ export default function Home() {
           <div className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-border bg-surface px-4 py-3 text-center shadow-lg">
             <p className="font-bold text-text-primary">공유된 가게를 찾지 못했어요</p>
             <p className="mt-1 text-sm text-text-muted">가게 정보가 갱신되었거나 잘못된 링크일 수 있어요.</p>
+          </div>
+        )}
+        {loginError && (
+          <div
+            role="alert"
+            className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-border bg-surface px-4 py-3 text-center shadow-lg"
+          >
+            <p className="font-bold text-text-primary">로그인하지 못했어요</p>
+            <p className="mt-1 text-sm text-text-muted">{loginError}</p>
+            <button
+              className="mt-3 grid h-11 w-full place-items-center rounded-lg bg-ink text-sm font-bold text-white"
+              onClick={() => setLoginError(null)}
+            >
+              확인
+            </button>
           </div>
         )}
         {all.length > 0 && visible.length === 0 && !selected && (

@@ -20,8 +20,9 @@
   --color-accent: #2563eb;
   --color-accent-soft: rgba(37, 99, 235, 0.1);
 
-  --color-warning: #ffd700;
-  --color-warning-text: #111111;
+  --color-warning: #eab308;        /* border/accent only — full-strength yellow */
+  --color-warning-soft: #fef9c3;   /* the surface an entry banner actually uses */
+  --color-warning-text: #713f12;
 
   /* Primary CTA / selected-chip background — distinct dark navy from
      --color-text-primary, used across chips, buttons, and badges. */
@@ -60,6 +61,7 @@
   --color-accent-soft: var(--color-accent-soft);
 
   --color-warning: var(--color-warning);
+  --color-warning-soft: var(--color-warning-soft);
   --color-warning-text: var(--color-warning-text);
 
   --color-ink: var(--color-ink);
