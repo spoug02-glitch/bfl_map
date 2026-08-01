@@ -10,3 +10,5 @@ for (const stmt of ddl.split(";").map(s => s.trim()).filter(Boolean)) {
 }
 const [{ count }] = await sql`SELECT count(*)::int AS count FROM reviews`;
 console.log("reviews table ready, rows:", count);
+const [{ count: visitsCount }] = await sql`SELECT count(*)::int AS count FROM visits`;
+console.log("visits table ready, rows:", visitsCount);
