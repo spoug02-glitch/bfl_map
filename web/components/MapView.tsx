@@ -4,6 +4,9 @@ import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { CENTER, Restaurant } from "@/lib/constants";
 
+/** Kakao zoom: smaller is closer. 4 ≈ the office block and its immediate street. */
+const INITIAL_LEVEL = 4;
+
 // 카카오맵 JS SDK는 공식 @types 패키지가 없다 — 이 컴포넌트가 실제로 쓰는
 // 부분만 최소한으로 타입을 선언해 `any` 없이 사용한다.
 type KakaoLatLng = object;
@@ -51,7 +54,9 @@ export default function MapView({ restaurants, maxDist, onSelect }: Props) {
     window.kakao.maps.load(() => {
       const map = new window.kakao.maps.Map(mapEl.current, {
         center: new window.kakao.maps.LatLng(CENTER.lat, CENTER.lng),
-        level: 6,
+        // Open tight on the office block. Lunch starts with "what is right
+        // here", and the radius slider is there for widening out.
+        level: INITIAL_LEVEL,
       });
       mapRef.current = map;
       clustererRef.current = new window.kakao.maps.MarkerClusterer({

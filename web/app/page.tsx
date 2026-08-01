@@ -69,13 +69,13 @@ export default function Home() {
 
   return (
     <main className="flex h-dvh flex-col bg-surface-page">
-      <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b border-border-subtle bg-surface-page/80 px-4 shadow-xs backdrop-blur-md">
-        <h1 className="text-xl font-bold tracking-tight text-text-primary">직장인 맛집지도</h1>
+      <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border-subtle bg-surface-page/80 px-4 shadow-xs backdrop-blur-md md:h-12">
+        <h1 className="text-lg font-bold tracking-tight text-text-primary">직장인 맛집지도</h1>
         {user ? (
           <div className="flex items-center gap-2 text-sm">
             <span className="text-text-primary">{user.nickname}님</span>
             <button
-              className="grid h-11 place-items-center rounded-lg border border-border px-3 text-text-primary"
+              className="grid h-11 place-items-center rounded-lg border border-border px-3 text-text-primary md:h-9"
               onClick={() => fetch("/api/auth/logout", { method: "POST" }).then(() => setUser(null))}
             >
               로그아웃
@@ -87,13 +87,13 @@ export default function Home() {
           // Kakao sits first because most visitors here already have that account.
           <div className="flex items-center gap-2">
             <a
-              className="grid h-11 place-items-center rounded-lg bg-ink px-4 text-sm font-bold text-white shadow-xs"
+              className="grid h-11 place-items-center rounded-lg bg-ink px-4 text-sm font-bold text-white shadow-xs md:h-9"
               href="/api/auth/kakao"
             >
               카카오 로그인
             </a>
             <a
-              className="grid h-11 place-items-center rounded-lg border border-border px-4 text-sm font-bold text-text-primary"
+              className="grid h-11 place-items-center rounded-lg border border-border px-4 text-sm font-bold text-text-primary md:h-9"
               href="/api/auth/google"
             >
               구글 로그인
