@@ -2,6 +2,20 @@ import { SignJWT, jwtVerify } from "jose";
 
 export type SessionUser = { userId: string; nickname: string };
 
+export type AuthProvider = "google" | "kakao";
+
+/**
+ * Namespaces an account id by its provider.
+ *
+ * Google subs and Kakao ids are both opaque numeric-ish strings from separate
+ * systems, so storing them raw in reviews.user_id risks two different people
+ * colliding on one id — and a collision would let one person edit the other's
+ * review, since (place_id, user_id) is the review's primary identity.
+ */
+export function namespacedUserId(provider: AuthProvider, accountId: string): string {
+  return `${provider}:${accountId}`;
+}
+
 export const SESSION_COOKIE = "bfl_session";
 const SEVEN_DAYS_SEC = 60 * 60 * 24 * 7;
 

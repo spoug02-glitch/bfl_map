@@ -67,9 +67,21 @@ export default function Home() {
             </button>
           </div>
         ) : (
-          <a className="grid h-11 place-items-center rounded-lg bg-accent px-4 text-sm font-bold text-white shadow-xs" href="/api/auth/google">
-            구글 로그인
-          </a>
+          // Kakao first: this is a Korean app and most visitors already have that account.
+          <div className="flex items-center gap-2">
+            <a
+              className="grid h-11 place-items-center rounded-lg bg-brand-kakao px-4 text-sm font-bold text-black shadow-xs"
+              href="/api/auth/kakao"
+            >
+              카카오 로그인
+            </a>
+            <a
+              className="grid h-11 place-items-center rounded-lg border border-border px-4 text-sm font-bold text-text-primary"
+              href="/api/auth/google"
+            >
+              구글
+            </a>
+          </div>
         )}
       </header>
       <FilterBar
