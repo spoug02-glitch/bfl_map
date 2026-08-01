@@ -34,15 +34,20 @@ export async function POST(req: NextRequest) {
   }
   const v = validateReviewInput(json);
   if (!v.ok) return NextResponse.json({ error: v.error }, { status: 400 });
-  // rate limit: max 5 writes per user per minute, counted from the DB
+  const { placeId, taste, waiting, body } = v.value;
+  // rate limit: max 5 writes to distinct places per user per minute, counted from the DB
   // (serverless instances don't share memory, so an in-memory counter is useless)
-  const [{ recent }] = await sql`
-    SELECT count(*)::int AS recent FROM reviews
-    WHERE user_id = ${user.userId} AND updated_at > now() - interval '1 minute'`;
-  if (recent >= 5) {
+  // plus a per-place cooldown, since the POST upserts and repeatedly reviewing the
+  // SAME place would otherwise never move the distinct-place count
+  const [{ recent, tooSoon }] = await sql`
+    SELECT
+      (SELECT count(*)::int FROM reviews
+        WHERE user_id = ${user.userId} AND updated_at > now() - interval '1 minute') AS recent,
+      (SELECT updated_at > now() - interval '10 seconds' FROM reviews
+        WHERE user_id = ${user.userId} AND place_id = ${placeId}) AS "tooSoon"`;
+  if (recent >= 5 || tooSoon === true) {
     return NextResponse.json({ error: "잠시 후 다시 시도해주세요." }, { status: 429 });
   }
-  const { placeId, taste, waiting, body } = v.value;
   await sql`
     INSERT INTO reviews (place_id, user_id, nickname, taste, waiting, body)
     VALUES (${placeId}, ${user.userId}, ${user.nickname}, ${taste}, ${waiting}, ${body})
