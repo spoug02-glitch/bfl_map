@@ -92,7 +92,7 @@ export default function ShareButton({ restaurant }: { restaurant: Restaurant }) 
     <>
       <Script src={KAKAO_SDK_SRC} crossOrigin="anonymous" onLoad={initKakao} />
       <button
-        className="mt-2 grid h-11 w-full place-items-center rounded bg-yellow-300 text-sm font-medium text-black"
+        className="mt-4 grid h-11 w-full place-items-center rounded bg-brand-kakao text-base font-medium text-brand-kakao-text shadow-xs"
         onClick={share}
       >
         {copied ? "링크를 복사했어요" : "카카오톡으로 공유"}

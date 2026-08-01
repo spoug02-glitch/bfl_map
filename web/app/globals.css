@@ -23,7 +23,12 @@
   --color-warning: #ffd700;
   --color-warning-text: #111111;
 
-  --color-price: #191c1e;
+  /* Primary CTA / selected-chip background — distinct dark navy from
+     --color-text-primary, used across chips, buttons, and badges. */
+  --color-ink: #041627;
+
+  --color-price: #a04100;
+  --color-star: #fe6b00;
 
   --color-brand-kakao: #fee500;
   --color-brand-kakao-text: #000000;
@@ -32,7 +37,10 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-noto-sans-kr), var(--font-geist-sans);
+  /* next/font/google can't preload a Korean subset in this environment (see
+     app/layout.tsx), so list OS Korean fonts explicitly before the Latin
+     fallback — otherwise Hangul silently falls through to the browser default. */
+  --font-sans: var(--font-noto-sans-kr), var(--font-geist-sans), "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
   --font-mono: var(--font-geist-mono);
 
   --color-surface: var(--color-surface);
@@ -52,7 +60,10 @@
   --color-warning: var(--color-warning);
   --color-warning-text: var(--color-warning-text);
 
+  --color-ink: var(--color-ink);
+
   --color-price: var(--color-price);
+  --color-star: var(--color-star);
 
   --color-brand-kakao: var(--color-brand-kakao);
   --color-brand-kakao-text: var(--color-brand-kakao-text);

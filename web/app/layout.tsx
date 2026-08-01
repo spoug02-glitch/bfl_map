@@ -12,9 +12,13 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// This environment's next/font/google dataset has no "korean" subset for any
+// font (see node_modules/next/dist/docs — this Next.js build differs from
+// upstream), so Noto Sans KR here only preloads latin glyphs. Hangul falls
+// through to the OS Korean font listed in the --font-sans stack (globals.css).
 const notoSansKR = Noto_Sans_KR({
   variable: "--font-noto-sans-kr",
-  subsets: ["latin", "korean"],
+  subsets: ["latin"],
   weight: ["400", "500", "700"],
 });
 

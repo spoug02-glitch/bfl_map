@@ -6,7 +6,7 @@ import FilterBar from "@/components/FilterBar";
 import MapView from "@/components/MapView";
 import PlacePanel from "@/components/PlacePanel";
 import SiteFooter from "@/components/SiteFooter";
-import { BlogLink, CATEGORY_GROUPS, Restaurant, normalizeQuery } from "@/lib/constants";
+import { BlogLink, CATEGORY_GROUPS, RADIUS_KM, Restaurant, normalizeQuery } from "@/lib/constants";
 
 export type SessionUser = { userId: string; nickname: string };
 
@@ -48,22 +48,25 @@ export default function Home() {
     );
   }, [all, group, query, maxDist]);
 
+  const resetFilters = () => { setGroup(null); setQuery(""); setMaxDist(RADIUS_KM); };
+  const widenRadius = () => setMaxDist(Math.min(5, Math.round((maxDist + 1) * 10) / 10));
+
   return (
-    <main className="flex h-dvh flex-col">
-      <header className="flex items-center justify-between border-b px-4 py-2">
-        <h1 className="text-lg font-bold">직장인 맛집지도 🍚</h1>
+    <main className="flex h-dvh flex-col bg-surface-page">
+      <header className="flex h-16 shrink-0 items-center justify-between gap-2 border-b border-border-subtle bg-surface-page/80 px-4 shadow-xs backdrop-blur-md">
+        <h1 className="text-xl font-bold tracking-tight text-text-primary">직장인 맛집지도</h1>
         {user ? (
           <div className="flex items-center gap-2 text-sm">
-            <span>{user.nickname}님</span>
+            <span className="text-text-primary">{user.nickname}님</span>
             <button
-              className="grid h-11 place-items-center rounded border px-3"
+              className="grid h-11 place-items-center rounded-lg border border-border px-3 text-text-primary"
               onClick={() => fetch("/api/auth/logout", { method: "POST" }).then(() => setUser(null))}
             >
               로그아웃
             </button>
           </div>
         ) : (
-          <a className="grid h-11 place-items-center rounded bg-blue-600 px-3 text-sm font-medium text-white" href="/api/auth/google">
+          <a className="grid h-11 place-items-center rounded-lg bg-accent px-4 text-sm font-bold text-white shadow-xs" href="/api/auth/google">
             구글 로그인
           </a>
         )}
@@ -78,9 +81,35 @@ export default function Home() {
         <MapView restaurants={visible} maxDist={maxDist} onSelect={setSelected} />
         <SiteFooter />
         {staleLink && (
-          <p className="absolute inset-x-0 top-2 z-20 mx-auto w-fit rounded bg-black/80 px-3 py-2 text-sm text-white">
-            공유된 가게를 찾지 못했어요. 목록이 갱신되었을 수 있어요.
-          </p>
+          <div className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-border bg-surface px-4 py-3 text-center shadow-lg">
+            <p className="font-bold text-text-primary">공유된 가게를 찾지 못했어요</p>
+            <p className="mt-1 text-sm text-text-muted">가게 정보가 갱신되었거나 잘못된 링크일 수 있어요.</p>
+          </div>
+        )}
+        {all.length > 0 && visible.length === 0 && !selected && (
+          <div className="absolute inset-0 z-10 flex items-center justify-center px-6">
+            <div className="w-full max-w-xs rounded-xl border border-border bg-surface p-6 text-center shadow-lg">
+              <p className="text-lg font-bold text-text-primary">조건에 맞는 가게가 없어요</p>
+              <p className="mt-2 text-sm text-text-muted">
+                필터를 조정하거나 지도 반경을 넓혀보세요. 더 많은 맛집을 찾을 수 있습니다.
+              </p>
+              <div className="mt-4 flex flex-col gap-2">
+                <button
+                  className="grid h-11 place-items-center rounded-lg bg-ink text-sm font-bold text-white shadow-xs"
+                  onClick={widenRadius}
+                  disabled={maxDist >= 5}
+                >
+                  반경 넓히기
+                </button>
+                <button
+                  className="grid h-11 place-items-center rounded-lg bg-surface-muted text-sm font-bold text-text-primary"
+                  onClick={resetFilters}
+                >
+                  필터 초기화
+                </button>
+              </div>
+            </div>
+          </div>
         )}
         {selected && (
           <PlacePanel

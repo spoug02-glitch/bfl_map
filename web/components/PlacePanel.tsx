@@ -18,29 +18,32 @@ export default function PlacePanel({ restaurant: r, user, blogLink, onClose }: P
   return (
     <aside
       className="fixed inset-x-0 bottom-0 z-10 max-h-[75dvh] w-full overflow-y-auto
-        rounded-t-2xl border-t bg-white p-4 shadow-xl
+        rounded-t-2xl border-t border-border-subtle bg-surface p-4 shadow-lg
         md:absolute md:inset-x-auto md:inset-y-0 md:right-0 md:top-0 md:h-full md:max-h-none
         md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0"
       style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
     >
-      <div className="flex items-start justify-between">
+      <div className="flex items-start justify-between gap-2">
         <div>
-          <h2 className="text-lg font-bold">{r.name}</h2>
-          <p className="text-sm text-gray-600">{r.category} · {r.distance_km}km</p>
+          <h2 className="text-xl font-bold tracking-tight text-text-primary">{r.name}</h2>
+          <p className="mt-1 text-base text-text-muted">{r.category} · {r.distance_km}km</p>
         </div>
         <button
           aria-label="닫기"
-          className="grid h-11 w-11 shrink-0 place-items-center text-xl"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-lg text-xl text-text-primary"
           onClick={onClose}
         >
           ×
         </button>
       </div>
-      <p className="mt-2 text-sm">{r.address}</p>
-      {r.phone && <p className="text-sm text-gray-600">{r.phone}</p>}
-      <a className="flex h-11 items-center text-sm text-blue-600 underline" href={r.kakao_url} target="_blank" rel="noreferrer">
-        카카오맵에서 보기 ↗
-      </a>
+
+      <div className="mt-4 space-y-2 rounded border border-border-subtle bg-surface-muted p-4">
+        <p className="text-base text-text-primary">📍 {r.address}</p>
+        {r.phone && <p className="text-base text-text-primary">📞 {r.phone}</p>}
+        <a className="flex h-11 items-center text-base text-accent underline" href={r.kakao_url} target="_blank" rel="noreferrer">
+          카카오맵에서 보기 ↗
+        </a>
+      </div>
 
       <ShareButton restaurant={r} />
 
@@ -50,15 +53,15 @@ export default function PlacePanel({ restaurant: r, user, blogLink, onClose }: P
       {/* 편의점은 메뉴 개념이 없어 수집 단계에서 아예 조회하지 않는다 */}
       {!isConvenienceStore(r.category) && (
         <>
-          <h3 className="mt-4 font-semibold">메뉴</h3>
+          <h3 className="mt-6 border-b border-border-subtle pb-2 text-xl font-bold text-text-primary">메뉴</h3>
           {r.menus.length === 0 ? (
-            <p className="text-sm text-gray-500">메뉴 정보 없음 — 카카오맵 링크에서 확인</p>
+            <p className="mt-2 text-sm text-text-muted">메뉴 정보 없음 — 카카오맵 링크에서 확인</p>
           ) : (
-            <ul className="mt-1 space-y-1 text-sm">
+            <ul className="mt-1">
               {r.menus.map(m => (
-                <li key={m.name} className="flex justify-between">
-                  <span>{m.name}</span>
-                  <span className="text-gray-700">
+                <li key={m.name} className="flex items-center justify-between border-b border-border-subtle/50 py-3 text-base last:border-b-0">
+                  <span className="text-text-primary">{m.name}</span>
+                  <span className="text-price">
                     {m.price ? `${Number(m.price).toLocaleString()}원` : ""}
                   </span>
                 </li>
@@ -72,13 +75,13 @@ export default function PlacePanel({ restaurant: r, user, blogLink, onClose }: P
           지도 마커 순서·검색 순위에는 영향을 주지 않는다(랭킹 조작 금지). */}
       {blogLink && (
         <a
-          className="mt-4 block rounded border border-emerald-200 bg-emerald-50 p-2"
+          className="mt-6 block rounded-lg bg-surface-muted p-4"
           href={blogLink.url}
           target="_blank"
           rel="noreferrer"
         >
-          <span className="text-xs font-medium text-emerald-800">✍️ 만든 이 블로그 후기</span>
-          <p className="mt-0.5 text-sm text-emerald-900 underline">{blogLink.title}</p>
+          <span className="text-xs font-medium text-text-muted">✍️ 만든 이 블로그 후기</span>
+          <p className="mt-1 font-bold text-accent underline">{blogLink.title}</p>
         </a>
       )}
 
