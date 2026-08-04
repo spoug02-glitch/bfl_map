@@ -20,6 +20,14 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Database Setup
+
+새로운 데이터베이스는 `schema.sql`을 실행하여 생성합니다. 기존 데이터베이스에서는 `migrations/2026-08-04-users-nickname.sql`을 정확히 한 번 실행해야 합니다.
+
+**중요**: 마이그레이션은 새 코드 배포 **전에** 반드시 실행되어야 합니다. 배포 순서가 바뀌면 배포된 코드가 아직 없는 `users` 테이블을 조인하려다 500 오류가 발생합니다. 마이그레이션 파일 상단의 주의사항을 참고하세요 — 기존 `reviews.nickname`에 프로바이더 실명이 남아 있는 데이터베이스의 경우 추가 처리가 필요합니다.
+
+데이터베이스 연결은 `DATABASE_URL` 환경 변수에서 가져옵니다 (`.env.example` 참고).
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
