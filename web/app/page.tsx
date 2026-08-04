@@ -5,11 +5,13 @@ import EntryNotice from "@/components/EntryNotice";
 import VisitPing from "@/components/VisitPing";
 import FilterBar from "@/components/FilterBar";
 import MapView from "@/components/MapView";
+import NicknameModal from "@/components/NicknameModal";
 import PlacePanel from "@/components/PlacePanel";
 import SiteFooter from "@/components/SiteFooter";
 import { BlogLink, CATEGORY_GROUPS, RADIUS_KM, Restaurant, normalizeQuery } from "@/lib/constants";
+import { suggestNickname } from "@/lib/nickname";
 
-export type SessionUser = { userId: string; nickname: string };
+export type SessionUser = { userId: string; nickname: string | null };
 
 export default function Home() {
   const [all, setAll] = useState<Restaurant[]>([]);
@@ -21,6 +23,7 @@ export default function Home() {
   const [blogLinks, setBlogLinks] = useState<Record<string, BlogLink>>({});
   const [staleLink, setStaleLink] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
+  const [editingNickname, setEditingNickname] = useState(false);
 
   useEffect(() => {
     // 공유 링크(?place=<kakao_place_id>)로 들어온 경우 그 가게를 열어준다.
@@ -71,9 +74,14 @@ export default function Home() {
     <main className="flex h-dvh flex-col bg-surface-page">
       <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border-subtle bg-surface-page/80 px-4 shadow-xs backdrop-blur-md md:h-12">
         <h1 className="text-lg font-bold tracking-tight text-text-primary">직장인 맛집지도</h1>
-        {user ? (
+        {user?.nickname ? (
           <div className="flex items-center gap-2 text-sm">
-            <span className="text-text-primary">{user.nickname}님</span>
+            <button
+              className="grid h-11 place-items-center rounded-lg px-2 text-text-primary md:h-9"
+              onClick={() => setEditingNickname(true)}
+            >
+              {user.nickname}님
+            </button>
             <button
               className="grid h-11 place-items-center rounded-lg border border-border px-3 text-text-primary md:h-9"
               onClick={() => fetch("/api/auth/logout", { method: "POST" }).then(() => setUser(null))}
@@ -81,7 +89,7 @@ export default function Home() {
               로그아웃
             </button>
           </div>
-        ) : (
+        ) : user ? null : (
           // Both providers share one treatment: they are equal choices, and the
           // brand yellow is already spent on the share button and the caution bar.
           // Kakao sits first because most visitors here already have that account.
@@ -162,6 +170,22 @@ export default function Home() {
             user={user}
             blogLink={blogLinks[selected.kakao_place_id]}
             onClose={() => setSelected(null)}
+          />
+        )}
+        {user && user.nickname === null && (
+          <NicknameModal
+            mode="create"
+            initial={suggestNickname()}
+            onSaved={n => setUser({ ...user, nickname: n })}
+            onClose={() => {}}
+          />
+        )}
+        {user?.nickname && editingNickname && (
+          <NicknameModal
+            mode="edit"
+            initial={user.nickname}
+            onSaved={n => { setUser({ ...user, nickname: n }); setEditingNickname(false); }}
+            onClose={() => setEditingNickname(false)}
           />
         )}
       </div>
