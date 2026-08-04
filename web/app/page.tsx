@@ -37,7 +37,10 @@ export default function Home() {
       if (found) setSelected(found);
       else setStaleLink(true);  // 데이터 갱신으로 사라진 가게일 수 있다
     });
-    fetch("/api/auth/me").then(r => r.json()).then(d => setUser(d.user));
+    fetch("/api/auth/me")
+      .then(r => r.json())
+      .then(d => setUser(d.user ?? null))
+      .catch(() => setUser(null));
     fetch("/blog_links.json").then(r => r.json()).then(setBlogLinks).catch(() => {});
 
     // A failed login used to bounce back here with no explanation, so it just
@@ -89,7 +92,17 @@ export default function Home() {
               로그아웃
             </button>
           </div>
-        ) : user ? null : (
+        ) : user ? (
+          // 로그인은 했지만 닉네임이 없는 상태: NicknameModal이 화면을 덮고 있어
+          // 나갈 방법이 없다. DB 장애로 저장이 계속 실패하면 그대로 갇히므로,
+          // 지도만이라도 보러 갈 수 있게 로그아웃 출구를 열어둔다.
+          <button
+            className="grid h-11 place-items-center rounded-lg border border-border px-3 text-sm text-text-primary md:h-9"
+            onClick={() => fetch("/api/auth/logout", { method: "POST" }).then(() => setUser(null))}
+          >
+            로그아웃
+          </button>
+        ) : (
           // Both providers share one treatment: they are equal choices, and the
           // brand yellow is already spent on the share button and the caution bar.
           // Kakao sits first because most visitors here already have that account.

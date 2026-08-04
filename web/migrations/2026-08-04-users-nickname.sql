@@ -11,6 +11,14 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- 기존 리뷰에 박혀 있던 이름을 잃지 않도록 먼저 옮긴다.
 -- 한 사람이 여러 리뷰를 썼다면 가장 최근 것을 채택한다.
+--
+-- 주의: 여기서 옮기는 reviews.nickname은 이 기능이 등장하기 전, provider가 넘겨준
+-- 실명이 그대로 박혀 있던 값이다. 이 문장은 실명이 노출되지 않도록 막으려는
+-- 기능의 목적과 정면으로 배치된다. 운영 DB에서는 이미 실행되어 0행 no-op이었지만,
+-- reviews.nickname에 provider 실명이 남아 있는 staging/backup DB에다 이 파일을
+-- 그대로 돌리면 그 실명들이 조용히 표시 닉네임으로 승격된다.
+-- 그런 DB라면 이 INSERT를 승격 용도로 쓰지 말고, 해당 행들의 nickname을
+-- 먼저 초기화한 뒤에 실행해야 한다.
 INSERT INTO users (user_id, nickname)
   SELECT DISTINCT ON (user_id) user_id, nickname
   FROM reviews
