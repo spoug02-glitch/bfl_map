@@ -1,6 +1,7 @@
 import { SignJWT, jwtVerify } from "jose";
 
-export type SessionUser = { userId: string; nickname: string };
+/** 세션이 들고 다니는 전부. 표시 이름은 여기 없고 users 테이블에서 읽는다. */
+export type Session = { userId: string };
 
 export type AuthProvider = "google" | "kakao";
 
@@ -35,20 +36,22 @@ function secretKey(): Uint8Array {
   return new TextEncoder().encode(secret);
 }
 
-export async function createSessionToken(user: SessionUser): Promise<string> {
-  return new SignJWT({ nickname: user.nickname })
+export async function createSessionToken(userId: string): Promise<string> {
+  return new SignJWT({})
     .setProtectedHeader({ alg: "HS256" })
-    .setSubject(user.userId)
+    .setSubject(userId)
     .setIssuedAt()
     .setExpirationTime(`${SEVEN_DAYS_SEC}s`)
     .sign(secretKey());
 }
 
-export async function verifySessionToken(token: string): Promise<SessionUser | null> {
+export async function verifySessionToken(token: string): Promise<Session | null> {
   try {
     const { payload } = await jwtVerify(token, secretKey());
-    if (!payload.sub || typeof payload.nickname !== "string") return null;
-    return { userId: payload.sub, nickname: payload.nickname };
+    // sub만 요구한다. 배포 전에 발급된 토큰에는 nickname 클레임이 남아 있는데,
+    // 그걸 무시하고 통과시켜야 기존 로그인 사용자가 강제로 로그아웃되지 않는다.
+    if (typeof payload.sub !== "string" || payload.sub === "") return null;
+    return { userId: payload.sub };
   } catch {
     return null;
   }

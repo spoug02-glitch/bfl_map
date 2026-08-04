@@ -21,10 +21,8 @@ export async function GET(req: NextRequest) {
     const res = NextResponse.redirect(`${base}/`);
     res.cookies.set(
       SESSION_COOKIE,
-      await createSessionToken({
-        userId: namespacedUserId("google", account.userId),
-        nickname: account.nickname,
-      }),
+      // account.nickname(구글 프로필 이름)은 쓰지 않고 버린다 — 대개 본명이다.
+      await createSessionToken(namespacedUserId("google", account.userId)),
       sessionCookieOptions,
     );
     res.cookies.delete("google_oauth_state");

@@ -21,10 +21,8 @@ export async function GET(req: NextRequest) {
     const res = NextResponse.redirect(`${base}/`);
     res.cookies.set(
       SESSION_COOKIE,
-      await createSessionToken({
-        userId: namespacedUserId("kakao", account.userId),
-        nickname: account.nickname,
-      }),
+      // account.nickname(카카오 프로필 이름)은 쓰지 않고 버린다 — 대개 본명이다.
+      await createSessionToken(namespacedUserId("kakao", account.userId)),
       sessionCookieOptions,
     );
     res.cookies.delete("kakao_oauth_state");
