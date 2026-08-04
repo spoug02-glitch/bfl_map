@@ -67,7 +67,7 @@ async function postReview(userId: string) {
   const { POST } = await import("@/app/api/reviews/route");
   const { createSessionToken, SESSION_COOKIE } = await import("@/lib/session");
   const { NextRequest } = await import("next/server");
-  const token = await createSessionToken({ userId, nickname: "테스터" });
+  const token = await createSessionToken(userId);
   const req = new NextRequest("http://localhost/api/reviews", {
     method: "POST",
     headers: { "content-type": "application/json", cookie: `${SESSION_COOKIE}=${token}` },
@@ -78,28 +78,43 @@ async function postReview(userId: string) {
 
 describe("POST /api/reviews rate limit", () => {
   it("rejects a repeat write to the same place inside the 10s cooldown", async () => {
-    sqlMock.mockResolvedValueOnce([{ recent: 1, tooSoon: true }]);
+    sqlMock.mockResolvedValueOnce([{ recent: 1, tooSoon: true, hasNickname: true }]);
     const res = await postReview("user-cooldown-blocked");
     expect(res.status).toBe(429);
     expect(sqlMock).toHaveBeenCalledTimes(1); // rejected before the insert round trip
   });
 
   it("allows a repeat write to the same place once the cooldown has passed", async () => {
-    sqlMock.mockResolvedValueOnce([{ recent: 1, tooSoon: false }]).mockResolvedValueOnce([]);
+    sqlMock
+      .mockResolvedValueOnce([{ recent: 1, tooSoon: false, hasNickname: true }])
+      .mockResolvedValueOnce([]);
     const res = await postReview("user-cooldown-passed");
     expect(res.status).toBe(201);
   });
 
   it("still rejects once a user has written to 5 distinct places in the last minute", async () => {
-    sqlMock.mockResolvedValueOnce([{ recent: 5, tooSoon: null }]);
+    sqlMock.mockResolvedValueOnce([{ recent: 5, tooSoon: null, hasNickname: true }]);
     const res = await postReview("user-crossplace-limit");
     expect(res.status).toBe(429);
     expect(sqlMock).toHaveBeenCalledTimes(1);
   });
 
   it("never blocks a first-ever review for a place (tooSoon is null)", async () => {
-    sqlMock.mockResolvedValueOnce([{ recent: 0, tooSoon: null }]).mockResolvedValueOnce([]);
+    sqlMock
+      .mockResolvedValueOnce([{ recent: 0, tooSoon: null, hasNickname: true }])
+      .mockResolvedValueOnce([]);
     const res = await postReview("user-first-review");
     expect(res.status).toBe(201);
+  });
+});
+
+// 모달을 우회해 API를 직접 호출한 경우에 대한 방어
+describe("POST /api/reviews nickname guard", () => {
+  it("blocks a session that has not set a nickname yet", async () => {
+    sqlMock.mockResolvedValueOnce([{ recent: 0, tooSoon: null, hasNickname: false }]);
+    const res = await postReview("user-without-nickname");
+    expect(res.status).toBe(409);
+    expect(await res.json()).toEqual({ error: "닉네임을 먼저 설정해주세요." });
+    expect(sqlMock).toHaveBeenCalledTimes(1); // rejected before the insert round trip
   });
 });

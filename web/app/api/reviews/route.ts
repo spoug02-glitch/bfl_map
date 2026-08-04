@@ -9,9 +9,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "placeId가 필요합니다." }, { status: 400 });
   }
   const reviews = await sql`
-    SELECT nickname, taste, waiting, body, updated_at
-    FROM reviews WHERE place_id = ${placeId}
-    ORDER BY updated_at DESC LIMIT 50`;
+    SELECT u.nickname, r.taste, r.waiting, r.body, r.updated_at
+    FROM reviews r JOIN users u ON u.user_id = r.user_id
+    WHERE r.place_id = ${placeId}
+    ORDER BY r.updated_at DESC LIMIT 50`;
   const [summary] = await sql`
     SELECT count(*)::int AS count,
            round(avg(taste), 1)::float AS "avgTaste",
@@ -22,8 +23,8 @@ export async function GET(req: NextRequest) {
 
 export async function POST(req: NextRequest) {
   const token = req.cookies.get(SESSION_COOKIE)?.value;
-  const user = token ? await verifySessionToken(token) : null;
-  if (!user) {
+  const session = token ? await verifySessionToken(token) : null;
+  if (!session) {
     return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
   }
   let json: unknown;
@@ -39,20 +40,25 @@ export async function POST(req: NextRequest) {
   // (serverless instances don't share memory, so an in-memory counter is useless)
   // plus a per-place cooldown, since the POST upserts and repeatedly reviewing the
   // SAME place would otherwise never move the distinct-place count
-  const [{ recent, tooSoon }] = await sql`
+  const [{ recent, tooSoon, hasNickname }] = await sql`
     SELECT
       (SELECT count(*)::int FROM reviews
-        WHERE user_id = ${user.userId} AND updated_at > now() - interval '1 minute') AS recent,
+        WHERE user_id = ${session.userId} AND updated_at > now() - interval '1 minute') AS recent,
       (SELECT updated_at > now() - interval '10 seconds' FROM reviews
-        WHERE user_id = ${user.userId} AND place_id = ${placeId}) AS "tooSoon"`;
+        WHERE user_id = ${session.userId} AND place_id = ${placeId}) AS "tooSoon",
+      EXISTS (SELECT 1 FROM users WHERE user_id = ${session.userId}) AS "hasNickname"`;
+  // 닉네임이 없으면 INSERT가 외래 키에서 터진다. 그 전에 읽을 수 있는 이유로 막는다.
+  if (!hasNickname) {
+    return NextResponse.json({ error: "닉네임을 먼저 설정해주세요." }, { status: 409 });
+  }
   if (recent >= 5 || tooSoon === true) {
     return NextResponse.json({ error: "잠시 후 다시 시도해주세요." }, { status: 429 });
   }
   await sql`
-    INSERT INTO reviews (place_id, user_id, nickname, taste, waiting, body)
-    VALUES (${placeId}, ${user.userId}, ${user.nickname}, ${taste}, ${waiting}, ${body})
+    INSERT INTO reviews (place_id, user_id, taste, waiting, body)
+    VALUES (${placeId}, ${session.userId}, ${taste}, ${waiting}, ${body})
     ON CONFLICT (place_id, user_id)
     DO UPDATE SET taste = EXCLUDED.taste, waiting = EXCLUDED.waiting,
-                  body = EXCLUDED.body, nickname = EXCLUDED.nickname, updated_at = now()`;
+                  body = EXCLUDED.body, updated_at = now()`;
   return NextResponse.json({ ok: true }, { status: 201 });
 }
