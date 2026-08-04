@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import type { SessionUser } from "@/app/page";
+import type { SessionUser } from "@/lib/constants";
 
 type Review = { nickname: string; taste: number; waiting: number; body: string; updated_at: string };
 type Summary = { count: number; avgTaste: number | null; avgWaiting: number | null };

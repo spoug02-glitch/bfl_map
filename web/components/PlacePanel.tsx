@@ -3,7 +3,7 @@
 import { BlogLink, Restaurant, isConvenienceStore } from "@/lib/constants";
 import ReviewSection from "@/components/ReviewSection";
 import ShareButton from "@/components/ShareButton";
-import type { SessionUser } from "@/app/page";
+import type { SessionUser } from "@/lib/constants";
 
 type Props = {
   restaurant: Restaurant;
