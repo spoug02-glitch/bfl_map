@@ -35,6 +35,14 @@ describe("shareDescription", () => {
     );
   });
 
+  it("omits the menu clause when Kakao reports the price as undisclosed", () => {
+    // 카카오 panel3은 가격 미공개를 "-1"로 준다 (수집분의 25%). 그대로 쓰면
+    // 공유 카드에 "-1원"이 나가 틀린 가격을 퍼뜨린다.
+    const undisclosed = { ...sundae, menus: [{ name: "더티땅콩라떼", price: "-1" }] };
+    expect(shareDescription(undisclosed)).toBe("씨드큐브에서 0.04km");
+    expect(shareDescription(undisclosed)).not.toContain("-1");
+  });
+
   it("stays inside the Kakao feed template's 76 character description limit", () => {
     const long: ShareSubject = { ...sundae, menus: [{ name: "가".repeat(80), price: "1000" }] };
     expect(shareDescription(long).length).toBeLessThanOrEqual(76);

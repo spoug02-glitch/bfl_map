@@ -43,3 +43,6 @@ next-env.d.ts
 
 .vercel
 .env*
+
+# Serena MCP writes this per-project scratch config
+.serena/

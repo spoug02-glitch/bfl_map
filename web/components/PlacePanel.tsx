@@ -1,6 +1,6 @@
 "use client";
 
-import { BlogLink, Restaurant, isConvenienceStore } from "@/lib/constants";
+import { BlogLink, Restaurant, formatPrice, isConvenienceStore } from "@/lib/constants";
 import ReviewSection from "@/components/ReviewSection";
 import ShareButton from "@/components/ShareButton";
 import type { SessionUser } from "@/lib/constants";
@@ -61,9 +61,9 @@ export default function PlacePanel({ restaurant: r, user, blogLink, onClose }: P
               {r.menus.map(m => (
                 <li key={m.name} className="flex items-center justify-between border-b border-border-subtle/50 py-3 text-base last:border-b-0">
                   <span className="text-text-primary">{m.name}</span>
-                  <span className="text-price">
-                    {m.price ? `${Number(m.price).toLocaleString()}원` : ""}
-                  </span>
+                  {/* 가격 미공개(-1)나 빈 값이면 칸을 비운다 — 카카오가 -1을 주는데
+                      그대로 찍으면 "-1원"이 된다. */}
+                  <span className="text-price">{formatPrice(m.price) ?? ""}</span>
                 </li>
               ))}
             </ul>

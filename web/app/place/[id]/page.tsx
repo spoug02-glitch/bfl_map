@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import MapApp from "@/components/MapApp";
+import { PLACE_ID_RE } from "@/lib/constants";
 import { shareDescription, shareTitle, type ShareSubject } from "@/lib/share-copy";
 import shareIndex from "@/lib/share-index.json";
 
@@ -14,9 +15,20 @@ const SITE_NAME = "직장인 맛집지도";
 
 type Props = { params: Promise<{ id: string }> };
 
+/**
+ * 경로 파라미터는 누구나 아무 값이나 넣을 수 있다. 평범한 객체 조회는 `__proto__`나
+ * `constructor` 같은 상속 키에 걸려 "없는 가게"인데도 객체/함수를 돌려주고, 그러면
+ * 아래 fallback을 그냥 지나쳐 메타데이터 생성이 터진다. 형식 검사와 자기 키 검사를
+ * 둘 다 통과한 것만 조회한다.
+ */
+function lookupPlace(id: string): ShareSubject | undefined {
+  if (!PLACE_ID_RE.test(id)) return undefined;
+  return Object.hasOwn(index, id) ? index[id] : undefined;
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const place = index[id];
+  const place = lookupPlace(id);
   // 색인에 없는 id로 들어와도 화면은 떠야 한다(데이터 갱신으로 사라진 가게).
   // 그럴 땐 앱 기본 카드로 떨어뜨린다.
   if (!place) {

@@ -1,3 +1,5 @@
+import { formatPrice } from "@/lib/constants";
+
 /**
  * 공유 카드 문구. 카카오톡 공유와 링크 미리보기(OG 태그)가 같은 문구를 쓰도록
  * 한 곳에 둔다 — 두 군데서 따로 만들면 조용히 갈라진다.
@@ -23,7 +25,10 @@ export function shareTitle(r: ShareSubject): string {
 
 export function shareDescription(r: ShareSubject): string {
   const top = r.menus[0];
-  const menuPart = top?.price ? ` · ${top.name} ${Number(top.price).toLocaleString("ko-KR")}원` : "";
+  // 가격이 미공개(-1)거나 비어 있으면 메뉴 자체를 뺀다 — 공유 카드에 "-1원"이
+  // 나가면 틀린 정보를 퍼뜨리는 셈이다.
+  const price = top ? formatPrice(top.price) : null;
+  const menuPart = price ? ` · ${top.name} ${price}` : "";
   return `씨드큐브에서 ${r.distance_km}km${menuPart}`.slice(0, DESC_MAX);
 }
 
