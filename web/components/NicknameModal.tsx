@@ -18,25 +18,28 @@ export default function NicknameModal({ mode, initial, onSaved, onClose }: Props
   const save = async () => {
     setError("");
     setBusy(true);
-    try {
-      const res = await fetch("/api/auth/nickname", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ nickname: value }),
-      });
-      if (!res.ok) {
-        const d = await res.json().catch(() => ({}));
-        setError(d.error ?? "저장에 실패했어요.");
-        return;
-      }
-      const d = await res.json();
-      onSaved(d.nickname);
-    } catch {
-      // 모달을 닫을 수 없는 화면이라, 실패를 삼키면 사용자가 갇힌다.
+    // 모달을 닫을 수 없는 화면이라, 실패를 삼키면 사용자가 갇힌다.
+    const res = await fetch("/api/auth/nickname", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ nickname: value }),
+    }).catch(() => null);
+    setBusy(false);
+    if (!res) {
       setError("네트워크 오류가 발생했어요. 다시 시도해주세요.");
-    } finally {
-      setBusy(false);
+      return;
     }
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}));
+      setError(d.error ?? "저장에 실패했어요.");
+      return;
+    }
+    const d = await res.json().catch(() => null);
+    if (!d?.nickname) {
+      setError("저장에 실패했어요.");
+      return;
+    }
+    onSaved(d.nickname);
   };
 
   return (
