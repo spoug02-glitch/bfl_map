@@ -10,6 +10,12 @@
 
 **작업 브랜치:** `feature/bfl-map-nickname` (이미 생성됨, 스펙 커밋 `79ff6ab` 포함)
 
+**실행 순서: 1 → 2 → 5 → 3 → 4 → 6 → 7.** 태스크 번호는 아래 문서 순서를 그대로 두되,
+Task 2가 세션 시그니처를 바꾸는 순간 `reviews/route.ts`와 그 테스트가 컴파일되지 않으므로
+그걸 고치는 Task 5를 곧바로 이어 붙인다. Task 5의 테스트는 DB를 목으로 대체하므로
+마이그레이션(Task 3)보다 먼저 와도 통과한다. 실제 실행이 필요한 Task 6 이전에
+마이그레이션이 끝나 있으면 된다.
+
 ## Global Constraints
 
 - 닉네임 길이는 **2~12자**, 코드 포인트 기준(`[...s].length`)으로 센다.
@@ -328,7 +334,12 @@ Run: `npm test -- session.test.ts`
 Expected: PASS (4 tests)
 
 Run: `npx tsc --noEmit`
-Expected: 아직 실패한다 — `app/api/reviews/route.ts`가 `user.nickname`을, `app/page.tsx`가 `SessionUser`를 참조한다. Task 5·6에서 정리되므로 여기서는 **이 두 파일의 에러만** 남아 있는지 확인하고 넘어간다. 다른 파일에서 에러가 나면 이번 변경이 잘못된 것이다.
+Expected: 아직 실패한다. 남아야 하는 에러는 **정확히 두 곳**뿐이다:
+
+- `app/api/reviews/route.ts` — `user.nickname` 참조 (INSERT 값과 DO UPDATE 절)
+- `__tests__/reviews.test.ts` — `createSessionToken`에 객체를 넘김
+
+바로 다음 순서인 Task 5가 이 둘을 정리한다. **다른 파일에서 에러가 나면 이번 변경이 잘못된 것이다.** `app/page.tsx`는 `SessionUser`를 자기 파일 안에서 따로 정의하므로 여기서는 영향받지 않는다.
 
 - [ ] **Step 5: Commit**
 
@@ -895,7 +906,7 @@ Both go **inside** the `<div className="relative flex-1">` that already wraps th
 - [ ] **Step 3: Typecheck and build**
 
 Run: `npx tsc --noEmit`
-Expected: 에러 없음 (Task 2에서 남겨둔 두 파일의 에러가 여기서 사라진다)
+Expected: 에러 없음
 
 Run: `npm run lint`
 Expected: 에러 없음
