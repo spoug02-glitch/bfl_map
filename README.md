@@ -39,25 +39,35 @@ cd web && npm install && npm run dev     # http://localhost:3000
 | 이름 | 용도 |
 |---|---|
 | `NEXT_PUBLIC_KAKAO_JS_KEY` | 지도 렌더링 + 카톡 공유. **REST 키가 아니라 JavaScript 키** |
-| `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | 구글 로그인 (웹 애플리케이션 유형 클라이언트) |
+| `KAKAO_REST_API_KEY` | 카카오 로그인. 카카오는 REST API 키를 `client_id`로 쓴다 |
+| `KAKAO_CLIENT_SECRET` | 카카오 앱에서 클라이언트 시크릿을 켠 경우에만. 켜 두고 안 넣으면 토큰 교환이 401 |
 | `SESSION_SECRET` | 세션 JWT 서명. 32자 이상 |
 | `DATABASE_URL` | Neon Postgres. 리뷰와 방문 집계 저장 |
 | `NEXT_PUBLIC_BASE_URL` | 배포 도메인. OAuth 리다이렉트와 공유 링크에 쓰인다 |
-| `ADMIN_USER_ID` | (선택) `/api/stats`를 읽을 수 있는 구글 계정 sub. 비어 있으면 그 엔드포인트는 404 |
+| `ADMIN_USER_ID` | (선택) `/api/stats`를 읽을 수 있는 계정의 네임스페이스 id (`kakao:5678`). 비어 있으면 그 엔드포인트는 404 |
 
 `collector/.env`에는 `KAKAO_REST_API_KEY`만 둔다.
 
 ## 콘솔 설정 체크리스트
 
-**카카오** — 지도와 공유가 같은 앱의 JavaScript 키를 쓴다. 키를 발급한 앱과 도메인을 등록한
-앱이 다르면 `domain mismatched` 401이 난다.
-- [앱] > [제품 링크 관리] > [웹 도메인]: `http://localhost:3000`, `https://<배포도메인>`
-- 카카오 로그인 **활성화** — 공식 문서가 카카오톡 공유의 사전 설정으로 요구한다.
-  이 앱의 사용자 인증은 구글이며, 사용자에게 카카오 로그인을 요구하지는 않는다.
+**카카오** — 로그인 수단은 카카오 하나뿐이다. 구글 로그인은 제거했다: 한 사람이 계정을 두 개
+갖게 되면 같은 가게에 리뷰를 두 번 남겨 평점을 밀 수 있기 때문이다.
 
-**구글 클라우드** — 승인된 리디렉션 URI에 `{도메인}/api/auth/google/callback`
-(localhost와 운영 도메인 둘 다). OAuth 동의 화면이 "테스트" 상태면 등록된 테스트 사용자만
-로그인할 수 있다.
+설정이 세 군데로 나뉘어 있고 서로 다른 목록이다. 하나만 채우면 다른 쪽이 조용히 실패한다.
+
+- **[앱] > [플랫폼 키] > [JavaScript 키] > [JS SDK 도메인]** — 지도와 카톡 공유가 이걸 본다.
+  키를 발급한 앱과 도메인을 등록한 앱이 다르면 `domain mismatched` 401이 난다.
+- **[앱] > [플랫폼 키] > [REST API 키] > [카카오 로그인 리다이렉트 URI]** — 로그인이 이걸 본다.
+  `{도메인}/api/auth/kakao/callback` 을 **경로까지** 넣어야 한다. 도메인만 넣으면 `KOE006`.
+  리다이렉트 URI는 **플랫폼 키마다 따로** 등록된다 — JavaScript 키 쪽에 넣어도 서버 로그인에는
+  적용되지 않는다.
+- **[앱] > [플랫폼 키] > [REST API 키] > [클라이언트 시크릿]** — 켜 두었다면
+  `KAKAO_CLIENT_SECRET`을 반드시 채운다. 안 넣으면 동의 화면까지 간 뒤 토큰 교환이 `KOE010`으로
+  실패한다.
+- **[카카오 로그인] > [일반]** 의 활성화 토글이 ON이어야 한다.
+
+REST API 키와 JavaScript 키는 비밀이 아니다 — 각각 authorize URL과 페이지 소스에 그대로
+드러나며 도메인 화이트리스트로 보호한다. 노출을 걱정할 값은 클라이언트 시크릿과 어드민 키뿐이다.
 
 **Vercel** — 프로젝트 루트를 `Bfl_map/web`으로 지정. 프리뷰 배포는 브랜치마다 도메인이
 바뀌어 카카오에 등록할 수 없으므로, 지도와 공유 검증은 운영 도메인에서 한다.

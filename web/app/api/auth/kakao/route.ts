@@ -4,9 +4,9 @@ import { buildAuthorizeUrl } from "@/lib/kakao-auth";
 export function GET(req: NextRequest) {
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? req.nextUrl.origin;
 
-  // Same reason as the Google route: a Vercel project answers on several
-  // hostnames, and the state cookie must be written on the host the callback
-  // will actually be served from, not on whichever alias the visitor used.
+  // A Vercel project answers on several hostnames, and the state cookie must be
+  // written on the host the callback will actually be served from, not on
+  // whichever alias the visitor used.
   if (process.env.NEXT_PUBLIC_BASE_URL && req.nextUrl.origin !== base) {
     return NextResponse.redirect(`${base}${req.nextUrl.pathname}`);
   }

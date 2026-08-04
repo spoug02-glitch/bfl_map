@@ -22,11 +22,12 @@ describe("kakao buildAuthorizeUrl", () => {
 });
 
 describe("namespacedUserId", () => {
-  it("keeps identical account ids from different providers apart", () => {
-    // a Kakao id and a Google sub could otherwise collide and let one person
-    // overwrite another's review, since (place_id, user_id) identifies a review
-    expect(namespacedUserId("kakao", "12345")).not.toBe(namespacedUserId("google", "12345"));
+  it("prefixes the account id with its provider", () => {
+    // Kakao is the only provider now, but the prefix has to stay: rows written
+    // during the Google era still carry `google:`, and an unprefixed id would
+    // collide with them — letting one person overwrite another's review, since
+    // (place_id, user_id) is what identifies a review.
     expect(namespacedUserId("kakao", "12345")).toBe("kakao:12345");
-    expect(namespacedUserId("google", "12345")).toBe("google:12345");
+    expect(namespacedUserId("kakao", "12345")).not.toBe("google:12345");
   });
 });

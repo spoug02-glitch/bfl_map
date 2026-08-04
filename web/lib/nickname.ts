@@ -25,8 +25,15 @@ export function validateNickname(
 }
 
 const SUGGEST_PREFIX = "점심러";
+const SUGGEST_MIN = 100000;
+const SUGGEST_RANGE = 900000;
 
-/** 첫 로그인 모달의 입력칸에 미리 채워 넣을 값. 중복을 허용하므로 충돌은 검사하지 않는다. */
+/**
+ * 첫 로그인 모달의 입력칸에 미리 채워 넣을 값.
+ *
+ * 닉네임은 유니크하므로 이 값도 충돌할 수 있다. 서버가 409로 걸러주지만 그건
+ * 사용자에게 마찰이므로, 자리수를 6자리로 잡아 충돌 확률을 실질적으로 없앤다.
+ */
 export function suggestNickname(): string {
-  return `${SUGGEST_PREFIX}${1000 + Math.floor(Math.random() * 9000)}`;
+  return `${SUGGEST_PREFIX}${SUGGEST_MIN + Math.floor(Math.random() * SUGGEST_RANGE)}`;
 }

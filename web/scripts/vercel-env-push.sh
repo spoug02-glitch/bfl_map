@@ -21,8 +21,6 @@ VARS=(
   NEXT_PUBLIC_KAKAO_JS_KEY   # map rendering + KakaoTalk share
   KAKAO_REST_API_KEY         # Kakao login (Kakao uses the REST key as client_id)
   KAKAO_CLIENT_SECRET        # only if the Kakao app has client secret enabled
-  GOOGLE_CLIENT_ID
-  GOOGLE_CLIENT_SECRET
   SESSION_SECRET
   DATABASE_URL
   ADMIN_USER_ID

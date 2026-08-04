@@ -103,23 +103,14 @@ export default function Home() {
             로그아웃
           </button>
         ) : (
-          // Both providers share one treatment: they are equal choices, and the
-          // brand yellow is already spent on the share button and the caution bar.
-          // Kakao sits first because most visitors here already have that account.
-          <div className="flex items-center gap-2">
-            <a
-              className="grid h-11 place-items-center rounded-lg bg-ink px-4 text-sm font-bold text-white shadow-xs md:h-9"
-              href="/api/auth/kakao"
-            >
-              카카오 로그인
-            </a>
-            <a
-              className="grid h-11 place-items-center rounded-lg border border-border px-4 text-sm font-bold text-text-primary md:h-9"
-              href="/api/auth/google"
-            >
-              구글 로그인
-            </a>
-          </div>
+          // 로그인 수단은 카카오 하나뿐이다. 구글도 열어두면 한 사람이 계정을
+          // 두 개 갖게 되고, 같은 가게에 리뷰를 두 번 남겨 평점을 밀 수 있다.
+          <a
+            className="grid h-11 place-items-center rounded-lg bg-ink px-4 text-sm font-bold text-white shadow-xs md:h-9"
+            href="/api/auth/kakao"
+          >
+            카카오 로그인
+          </a>
         )}
       </header>
       <FilterBar

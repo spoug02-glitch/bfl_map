@@ -10,8 +10,8 @@ beforeAll(() => {
 describe("session token", () => {
   it("round-trips a user id", async () => {
     const { createSessionToken, verifySessionToken } = await import("@/lib/session");
-    const token = await createSessionToken("google:sub-42");
-    expect(await verifySessionToken(token)).toEqual({ userId: "google:sub-42" });
+    const token = await createSessionToken("kakao:sub-42");
+    expect(await verifySessionToken(token)).toEqual({ userId: "kakao:sub-42" });
   });
 
   it("does not carry a nickname claim", async () => {

@@ -112,12 +112,6 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
           >
             카카오로 로그인하고 리뷰 남기기
           </a>
-          <a
-            className="grid h-11 place-items-center rounded-lg border border-border text-center text-sm font-bold text-text-primary"
-            href="/api/auth/google"
-          >
-            구글로 로그인
-          </a>
         </div>
       )}
 

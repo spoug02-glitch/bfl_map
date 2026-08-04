@@ -60,7 +60,9 @@ describe("suggestNickname", () => {
     }
   });
 
-  it("uses the 점심러 + 4 digit shape", () => {
-    expect(suggestNickname()).toMatch(/^점심러\d{4}$/);
+  it("uses the 점심러 + 6 digit shape", () => {
+    // 6 digits, not 4: nicknames are unique now, so a narrow space would make
+    // the prefilled suggestion collide and bounce off the server's 409.
+    expect(suggestNickname()).toMatch(/^점심러\d{6}$/);
   });
 });
