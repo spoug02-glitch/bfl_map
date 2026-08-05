@@ -50,7 +50,7 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   // created_at은 그대로 둔다 — 방문 시점은 바뀌지 않았고, 7일 쿨다운도 그 값을 본다.
   const rows = await sql`
     UPDATE reviews
-    SET taste = ${v.value.taste}, waiting = ${v.value.waiting},
+    SET taste = ${v.value.taste}, convenience = ${v.value.convenience},
         body = ${v.value.body}, updated_at = now()
     WHERE id = ${ctx.id} AND user_id = ${ctx.userId}
     RETURNING id`;

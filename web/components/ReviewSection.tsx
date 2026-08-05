@@ -7,13 +7,13 @@ type Review = {
   id: number;
   nickname: string;
   taste: number;
-  waiting: number;
+  convenience: number;
   body: string;
   created_at: string;
   /** 서버가 세션과 대조해 판정한다 — user_id를 내려보내지 않기 위해서다. */
   mine: boolean;
 };
-type Summary = { count: number; avgTaste: number | null; avgWaiting: number | null };
+type Summary = { count: number; avgTaste: number | null; avgConvenience: number | null };
 
 const MAX_LEN = 100;
 
@@ -22,7 +22,7 @@ function Stars({ value, onChange, label }: { value: number; onChange: (v: number
     <div className="flex items-center justify-between text-base">
       <span className="whitespace-nowrap text-text-primary">{label}</span>
       {/* 별 사이 간격을 두지 않는다. 44px 버튼 5개(220px)만으로도 375px 화면에서
-          "점심 웨이팅"이 한 줄에 들어가는데, gap-1(16px)을 더하면 1px이 모자라
+          "점심 편의성"이 한 줄에 들어가는데, gap-1(16px)을 더하면 1px이 모자라
           라벨이 두 줄로 접혔다. 탭 타깃은 44x44 그대로 유지한다. */}
       <div className="flex shrink-0 items-center">
         {[1, 2, 3, 4, 5].map(n => (
@@ -48,7 +48,7 @@ function ReviewEditor({
   review, onCancel, onSaved,
 }: { review: Review; onCancel: () => void; onSaved: () => void }) {
   const [taste, setTaste] = useState(review.taste);
-  const [waiting, setWaiting] = useState(review.waiting);
+  const [convenience, setConvenience] = useState(review.convenience);
   const [body, setBody] = useState(review.body);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -59,7 +59,7 @@ function ReviewEditor({
     const res = await fetch(`/api/reviews/${review.id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ taste, waiting, body }),
+      body: JSON.stringify({ taste, convenience, body }),
     }).catch(() => null);
     setBusy(false);
     if (!res) { setError("네트워크 오류가 발생했어요. 다시 시도해주세요."); return; }
@@ -74,7 +74,7 @@ function ReviewEditor({
   return (
     <div className="mt-3 space-y-3">
       <Stars label="맛" value={taste} onChange={setTaste} />
-      <Stars label="점심 웨이팅" value={waiting} onChange={setWaiting} />
+      <Stars label="점심 편의성" value={convenience} onChange={setConvenience} />
       <textarea
         className="w-full rounded-lg bg-surface-muted p-3 text-base text-text-primary"
         rows={2}
@@ -107,7 +107,7 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
   const [reviews, setReviews] = useState<Review[]>([]);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [taste, setTaste] = useState(0);
-  const [waiting, setWaiting] = useState(0);
+  const [convenience, setConvenience] = useState(0);
   const [body, setBody] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
@@ -124,12 +124,12 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
 
   const submit = async () => {
     setError("");
-    if (taste === 0 || waiting === 0) { setError("맛과 점심 웨이팅 별점을 모두 선택해주세요."); return; }
+    if (taste === 0 || convenience === 0) { setError("맛과 점심 편의성 별점을 모두 선택해주세요."); return; }
     setBusy(true);
     const res = await fetch("/api/reviews", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ placeId, taste, waiting, body }),
+      body: JSON.stringify({ placeId, taste, convenience, body }),
     });
     setBusy(false);
     if (!res.ok) {
@@ -137,7 +137,7 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
       setError(d.error ?? "저장에 실패했습니다.");
       return;
     }
-    setBody(""); setTaste(0); setWaiting(0);
+    setBody(""); setTaste(0); setConvenience(0);
     load();
   };
 
@@ -164,7 +164,7 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
         {summary && summary.count > 0 && (
           <p className="rounded-xl bg-surface-muted px-3 py-1.5 text-xs font-medium text-text-primary">
             맛 <span className="text-star">★{summary.avgTaste}</span> ·{" "}
-            점심 웨이팅 <span className="text-star">★{summary.avgWaiting}</span>
+            점심 편의성 <span className="text-star">★{summary.avgConvenience}</span>
           </p>
         )}
       </div>
@@ -173,7 +173,7 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
         <div className="mt-4 space-y-4 rounded-lg border border-border bg-surface p-4 shadow-xs">
           <h4 className="font-bold text-text-primary">내 리뷰 작성</h4>
           <Stars label="맛" value={taste} onChange={setTaste} />
-          <Stars label="점심 웨이팅" value={waiting} onChange={setWaiting} />
+          <Stars label="점심 편의성" value={convenience} onChange={setConvenience} />
           <textarea
             className="w-full rounded-lg bg-surface-muted p-3 text-base text-text-primary placeholder:text-text-muted"
             rows={2}
@@ -212,7 +212,7 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
             <div className="flex items-center justify-between">
               <span className="font-bold text-text-primary">{rv.nickname}</span>
               <span className="text-xs font-medium text-text-muted">
-                맛 <span className="text-star">★{rv.taste}</span> · 웨이팅 <span className="text-star">★{rv.waiting}</span>
+                맛 <span className="text-star">★{rv.taste}</span> · 편의성 <span className="text-star">★{rv.convenience}</span>
               </span>
             </div>
             {editing === rv.id ? (

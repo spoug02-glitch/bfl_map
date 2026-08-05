@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS reviews (
   place_id      TEXT NOT NULL,
   user_id       TEXT NOT NULL CONSTRAINT reviews_user_fk REFERENCES users (user_id),
   taste         SMALLINT NOT NULL CHECK (taste BETWEEN 1 AND 5),
-  waiting       SMALLINT NOT NULL CHECK (waiting BETWEEN 1 AND 5),
+  convenience       SMALLINT NOT NULL CHECK (convenience BETWEEN 1 AND 5),
   body          VARCHAR(100) NOT NULL DEFAULT '',
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()

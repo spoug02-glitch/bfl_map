@@ -1,7 +1,7 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { validateReviewInput } from "@/lib/reviews";
 
-const valid = { placeId: "1080924210", taste: 4, waiting: 2, body: "국물 진함. 12시 전엔 안 기다림" };
+const valid = { placeId: "1080924210", taste: 4, convenience: 2, body: "국물 진함. 12시 전엔 안 기다림" };
 
 describe("validateReviewInput", () => {
   it("accepts a valid input", () => {
@@ -22,7 +22,7 @@ describe("validateReviewInput", () => {
   it("rejects out-of-range ratings", () => {
     expect(validateReviewInput({ ...valid, taste: 0 }).ok).toBe(false);
     expect(validateReviewInput({ ...valid, taste: 6 }).ok).toBe(false);
-    expect(validateReviewInput({ ...valid, waiting: 3.5 }).ok).toBe(false);
+    expect(validateReviewInput({ ...valid, convenience: 3.5 }).ok).toBe(false);
   });
 
   it("rejects bad placeId", () => {

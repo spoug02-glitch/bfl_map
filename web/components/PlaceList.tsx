@@ -7,7 +7,7 @@ export type MyReview = {
   id: number;
   place_id: string;
   taste: number;
-  waiting: number;
+  convenience: number;
   body: string;
   created_at: string;
 };
@@ -181,7 +181,7 @@ export default function PlaceList({
                   key={rv.id}
                   lead={`★${rv.taste}`}
                   title={place.name}
-                  subtitle={rv.body || `맛 ★${rv.taste} · 웨이팅 ★${rv.waiting}`}
+                  subtitle={rv.body || `맛 ★${rv.taste} · 편의성 ★${rv.convenience}`}
                   onClick={() => onSelect(place)}
                 />
               );

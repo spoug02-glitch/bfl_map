@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
   }
   // 가게 이름은 붙이지 않는다 — 그건 restaurants.json에 있고 클라이언트가 이미 들고 있다.
   const reviews = await sql`
-    SELECT id, place_id, taste, waiting, body, created_at
+    SELECT id, place_id, taste, convenience, body, created_at
     FROM reviews WHERE user_id = ${session.userId}
     ORDER BY created_at DESC LIMIT 100`;
   return NextResponse.json({ reviews });

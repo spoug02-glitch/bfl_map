@@ -11,7 +11,7 @@ beforeEach(() => {
   sqlMock.mockReset();
 });
 
-const validBody = { taste: 4, waiting: 2, body: "고쳐 씀" };
+const validBody = { taste: 4, convenience: 2, body: "고쳐 씀" };
 
 async function call(
   method: "PATCH" | "DELETE",

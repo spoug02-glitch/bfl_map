@@ -20,7 +20,7 @@ export async function GET(req: NextRequest) {
   const session = token ? await verifySessionToken(token) : null;
   const me = session?.userId ?? null;
   const reviews = await sql`
-    SELECT r.id, u.nickname, r.taste, r.waiting, r.body, r.created_at,
+    SELECT r.id, u.nickname, r.taste, r.convenience, r.body, r.created_at,
            COALESCE(r.user_id = ${me}, false) AS mine
     FROM reviews r JOIN users u ON u.user_id = r.user_id
     WHERE r.place_id = ${placeId}
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
   const [summary] = await sql`
     SELECT count(*)::int AS count,
            round(avg(taste), 1)::float AS "avgTaste",
-           round(avg(waiting), 1)::float AS "avgWaiting"
+           round(avg(convenience), 1)::float AS "avgConvenience"
     FROM reviews WHERE place_id = ${placeId}`;
   return NextResponse.json({ reviews, summary });
 }
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
   }
   const v = validateReviewInput(json);
   if (!v.ok) return NextResponse.json({ error: v.error }, { status: 400 });
-  const { placeId, taste, waiting, body } = v.value;
+  const { placeId, taste, convenience, body } = v.value;
   // 한 왕복으로 세 가지를 묻는다. 서버리스 인스턴스끼리 메모리를 공유하지 않으니
   // 횟수 제한은 DB에서 세야 한다.
   const [{ recent, lastHere, hasNickname }] = await sql`
@@ -79,7 +79,7 @@ export async function POST(req: NextRequest) {
   }
   // upsert가 아니라 INSERT다. 예전 리뷰를 덮지 않고 방문마다 쌓인다.
   await sql`
-    INSERT INTO reviews (place_id, user_id, taste, waiting, body)
-    VALUES (${placeId}, ${session.userId}, ${taste}, ${waiting}, ${body})`;
+    INSERT INTO reviews (place_id, user_id, taste, convenience, body)
+    VALUES (${placeId}, ${session.userId}, ${taste}, ${convenience}, ${body})`;
   return NextResponse.json({ ok: true }, { status: 201 });
 }
