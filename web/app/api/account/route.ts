@@ -20,10 +20,15 @@ export async function DELETE(req: NextRequest) {
     return NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 });
   }
 
-  // 외래 키 때문에 순서가 정해져 있다: users를 참조하는 것들을 먼저 지운다.
-  await sql`DELETE FROM saved_places WHERE user_id = ${session.userId}`;
-  await sql`DELETE FROM reviews WHERE user_id = ${session.userId}`;
-  await sql`DELETE FROM users WHERE user_id = ${session.userId}`;
+  // 한 트랜잭션으로 묶는다. 따로 보내면 중간에 끊겼을 때 리뷰만 사라지고 계정은
+  // 남는 상태가 만들어진다 — "지웠다"고 답해놓고 식별자를 들고 있는 셈이라
+  // 탈퇴에서는 그 중간 상태가 존재하면 안 된다.
+  // 외래 키 때문에 순서도 정해져 있다: users를 참조하는 것들이 먼저다.
+  await sql.transaction([
+    sql`DELETE FROM saved_places WHERE user_id = ${session.userId}`,
+    sql`DELETE FROM reviews WHERE user_id = ${session.userId}`,
+    sql`DELETE FROM users WHERE user_id = ${session.userId}`,
+  ]);
 
   // 세션도 함께 끝낸다 — 지워진 계정의 쿠키를 들고 다니게 두면 안 된다.
   const res = NextResponse.json({ ok: true });
