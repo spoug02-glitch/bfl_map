@@ -11,14 +11,19 @@ const MAX_LEN = 100;
 function Stars({ value, onChange, label }: { value: number; onChange: (v: number) => void; label: string }) {
   return (
     <div className="flex items-center justify-between text-base">
-      <span className="text-text-primary">{label}</span>
-      <div className="flex items-center gap-1">
+      <span className="whitespace-nowrap text-text-primary">{label}</span>
+      {/* 별 사이 간격을 두지 않는다. 44px 버튼 5개(220px)만으로도 375px 화면에서
+          "점심 웨이팅"이 한 줄에 들어가는데, gap-1(16px)을 더하면 1px이 모자라
+          라벨이 두 줄로 접혔다. 탭 타깃은 44x44 그대로 유지한다. */}
+      <div className="flex shrink-0 items-center">
         {[1, 2, 3, 4, 5].map(n => (
           <button
             key={n}
             type="button"
             aria-label={`${label} ${n}점`}
-            className="grid h-11 w-11 place-items-center text-xl"
+            // 360px 미만(구형 SE 등)에서는 별 5개 220px + 라벨 74px이 패널을 넘겨
+            // 가로 스크롤을 만든다. 그 구간에서만 폭을 좁히고 높이 44px는 지킨다.
+            className="grid h-11 w-9 place-items-center text-xl min-[360px]:w-11"
             onClick={() => onChange(n)}
           >
             <span className={n <= value ? "text-star" : "text-border"}>★</span>
@@ -87,7 +92,7 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
             className="w-full rounded-lg bg-surface-muted p-3 text-base text-text-primary placeholder:text-text-muted"
             rows={2}
             maxLength={MAX_LEN}
-            placeholder="100자 이내로 짧게 (사진은 안 받아요, 피곤하니까)"
+            placeholder="100자 이내로 짧게(사진은 나중에, 우리는 직장인이라 바쁘니까)"
             value={body}
             onChange={e => setBody(e.target.value.slice(0, MAX_LEN))}
           />
