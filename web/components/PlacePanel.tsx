@@ -2,6 +2,7 @@
 
 import { BlogLink, Restaurant, formatPrice, isConvenienceStore } from "@/lib/constants";
 import ReviewSection from "@/components/ReviewSection";
+import SaveButton from "@/components/SaveButton";
 import ShareButton from "@/components/ShareButton";
 import type { SessionUser } from "@/lib/constants";
 
@@ -9,12 +10,16 @@ type Props = {
   restaurant: Restaurant;
   user: SessionUser | null;
   blogLink?: BlogLink;
+  saved: boolean;
+  onToggleSaved: (placeId: string, saved: boolean) => void;
   onClose: () => void;
 };
 
 // 모바일(<768px)에서는 하단 바텀시트, md 이상에서는 우측 사이드 패널.
 // fixed + inset-x-0 bottom-0 로 뷰포트에 붙이고, md부터 absolute 우측 전체높이로 전환한다.
-export default function PlacePanel({ restaurant: r, user, blogLink, onClose }: Props) {
+export default function PlacePanel({
+  restaurant: r, user, blogLink, saved, onToggleSaved, onClose,
+}: Props) {
   return (
     <aside
       className="fixed inset-x-0 bottom-0 z-10 max-h-[75dvh] w-full overflow-y-auto
@@ -45,6 +50,12 @@ export default function PlacePanel({ restaurant: r, user, blogLink, onClose }: P
         </a>
       </div>
 
+      <SaveButton
+        placeId={r.kakao_place_id}
+        saved={saved}
+        loggedIn={user !== null}
+        onChange={onToggleSaved}
+      />
       <ShareButton restaurant={r} />
 
       {/* 편의점 결제 주의는 진입 토스트(EntryNotice)와 푸터가 담당한다.

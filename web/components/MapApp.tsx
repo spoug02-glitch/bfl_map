@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import EntryNotice from "@/components/EntryNotice";
 import VisitPing from "@/components/VisitPing";
 import FilterBar from "@/components/FilterBar";
@@ -8,7 +8,7 @@ import MapView from "@/components/MapView";
 import NicknameModal from "@/components/NicknameModal";
 import PlacePanel from "@/components/PlacePanel";
 import SiteFooter from "@/components/SiteFooter";
-import PlaceList from "@/components/PlaceList";
+import PlaceList, { type ListTab, type MyReview } from "@/components/PlaceList";
 import {
   BlogLink,
   CATEGORY_GROUPS,
@@ -35,6 +35,9 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [staleLink, setStaleLink] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [editingNickname, setEditingNickname] = useState(false);
+  const [tab, setTab] = useState<ListTab>("near");
+  const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+  const [myReviews, setMyReviews] = useState<MyReview[]>([]);
 
   useEffect(() => {
     // 공유 링크로 들어온 경우 그 가게를 열어준다. 마커 클릭마다 URL을 갱신하지는
@@ -86,6 +89,43 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   }, [all, group, query, maxDist]);
 
   const visible = useMemo(() => ranked.map(x => x.place), [ranked]);
+
+  const placeById = useMemo(
+    () => new Map(all.map(r => [r.kakao_place_id, r])),
+    [all],
+  );
+
+  // 저장 목록은 필터·반경과 무관하게 저장한 순서 그대로 보여준다.
+  // 로그아웃하면 상태를 비우는 대신 여기서 거른다 — effect 안에서 동기적으로
+  // setState를 부르면 렌더가 연쇄로 도는 패턴이 된다.
+  const savedPlaces = useMemo(
+    () =>
+      user
+        ? [...savedIds].map(id => placeById.get(id)).filter((r): r is Restaurant => r !== undefined)
+        : [],
+    [user, savedIds, placeById],
+  );
+
+  // 로그인 상태가 정해진 뒤에만 부른다 — 비로그인 상태에서 부르면 401만 쌓인다.
+  const loadMine = useCallback(() => {
+    if (!user) return;
+    fetch("/api/saved").then(r => r.ok ? r.json() : { placeIds: [] })
+      .then(d => setSavedIds(new Set(d.placeIds ?? [])))
+      .catch(() => {});
+    fetch("/api/reviews/mine").then(r => r.ok ? r.json() : { reviews: [] })
+      .then(d => setMyReviews(d.reviews ?? []))
+      .catch(() => {});
+  }, [user]);
+
+  useEffect(loadMine, [loadMine]);
+
+  const toggleSaved = useCallback((placeId: string, saved: boolean) => {
+    setSavedIds(prev => {
+      const next = new Set(prev);
+      if (saved) next.add(placeId); else next.delete(placeId);
+      return next;
+    });
+  }, []);
 
   const resetFilters = () => { setGroup(null); setQuery(""); setMaxDist(RADIUS_KM); };
   const widenRadius = () => setMaxDist(Math.min(5, Math.round((maxDist + 1) * 10) / 10));
@@ -167,11 +207,19 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             restaurant={selected}
             user={user}
             blogLink={blogLinks[selected.kakao_place_id]}
-            onClose={() => setSelected(null)}
+            saved={savedIds.has(selected.kakao_place_id)}
+            onToggleSaved={toggleSaved}
+            onClose={() => { setSelected(null); loadMine(); }}
           />
         ) : all.length > 0 && (
           <PlaceList
+            tab={tab}
+            onTab={setTab}
             places={ranked}
+            savedPlaces={savedPlaces}
+            myReviews={user ? myReviews : []}
+            placeById={placeById}
+            loggedIn={user !== null}
             onSelect={setSelected}
             onWiden={widenRadius}
             onReset={resetFilters}
