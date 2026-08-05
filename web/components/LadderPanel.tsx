@@ -19,10 +19,12 @@ const RANDOM_PICK = 4;
  * 랜덤으로 뽑을 때만 적용하는 반경(km). 사다리로 정하는 건 "지금 나가서 먹을 곳"이라
  * 걸어갈 거리 안이어야 한다.
  *
- * 실측(2026-08-05): 100m 안 10곳, 150m 41곳, 200m 69곳. 100m는 후보가 얕아
- * 뽑을 때마다 같은 얼굴이 나오고, 업종 필터를 하나만 걸어도 1~2곳으로 줄어든다.
+ * 실측(2026-08-05, 편의점 제외): 100m 10곳, 150m 38곳, 200m 64곳.
+ * 100m로 두면 10곳에서 4곳을 뽑는 셈이라 돌릴 때마다 절반이 겹쳐 사다리를 돌리는
+ * 재미가 없다. 150m면 조합이 매번 달라지고, 걸어서 2분이라 "지금 나가서 먹을 곳"이라는
+ * 취지도 유지된다.
  */
-const RANDOM_RADIUS_KM = 0.1;
+const RANDOM_RADIUS_KM = 0.15;
 
 export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
   const [picked, setPicked] = useState<Restaurant[]>([]);
