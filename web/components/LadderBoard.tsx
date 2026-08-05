@@ -61,8 +61,9 @@ export default function LadderBoard({
   const height = PAD * 2 + (LADDER_ROWS + 1) * ROW;
   const boardStyle = { width: Math.max(width, 240), maxWidth: "100%" };
 
-  // 움직임을 줄여달라고 한 사람에게는 선이 기다리지 않고 바로 그려진다. 이건 CSS로
-  // 못 막는다 — 재생 시간이 아래 인라인 스타일로 들어가 미디어 쿼리가 이기지 못한다.
+  // 선을 멈추는 건 globals.css가 한다(하이드레이션 전부터 필요해서다). 여기서 이
+  // 설정을 다시 읽는 건 답을 여는 시점 때문이다 — 기다릴 애니메이션이 없는데
+  // 아래 대비 타이머만 3초를 세고 있으면 결과를 못 보고 앉아 있게 된다.
   const reduced = usePrefersReducedMotion();
   const path = start === null ? null : trace(ladder, start);
   const seconds = path && !reduced ? path.length / TRACE_SPEED : 0;
@@ -125,6 +126,9 @@ export default function LadderBoard({
           <path
             // key로 다시 마운트시켜 출발 자리가 바뀔 때마다 처음부터 그려진다.
             key={start}
+            // globals.css가 이 이름으로 잡아서, 움직임을 줄여달라고 한 사람에게는
+            // 자바스크립트가 붙기 전부터 시간을 0으로 눌러둔다.
+            className="ladder-trace"
             d={path.d}
             fill="none"
             stroke="var(--color-star)"

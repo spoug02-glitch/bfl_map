@@ -113,8 +113,14 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  /* ladder-trace는 여기서 못 끈다 — 재생 시간이 인라인 스타일로 들어가 스타일시트가
-     이기지 못한다. LadderBoard가 이 설정을 직접 읽어 시간을 0으로 만든다. */
+  /* 재생 시간은 선 길이에서 나오는 값이라 인라인 스타일로 들어간다. 그걸 이기려면
+     !important가 필요하다.
+     자바스크립트로만 끄면 늦는다 — 공유 링크 페이지는 서버가 사다리까지 그려
+     보내서, 브라우저가 하이드레이션을 기다리지 않고 그 HTML만으로 선을 움직이기
+     시작한다. 그 사이를 막을 수 있는 건 스타일시트뿐이다. */
+  .ladder-trace {
+    animation-duration: 0s !important;
+  }
   @keyframes ladder-land {
     0%, 100% { transform: none; }
   }
