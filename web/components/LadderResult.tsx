@@ -15,6 +15,8 @@ import type { LadderDraw } from "@/lib/ladder-link";
  */
 export default function LadderResult({ draw }: { draw: LadderDraw | null }) {
   const [names, setNames] = useState<Map<string, Restaurant> | null>(null);
+  // 링크로 들어온 사람도 선이 내려가는 걸 보고 나서 답을 만난다.
+  const [arrived, setArrived] = useState(false);
 
   useEffect(() => {
     fetch("/restaurants.json")
@@ -63,15 +65,26 @@ export default function LadderResult({ draw }: { draw: LadderDraw | null }) {
       <p className="mt-1 text-sm text-text-muted">후보 {draw.placeIds.length}곳 중에 뽑혔어요.</p>
 
       <div className="mt-6">
-        <LadderBoard ladder={ladder} names={labels} winner={draw.winner} start={start} />
+        <LadderBoard
+          ladder={ladder}
+          names={labels}
+          winner={draw.winner}
+          start={start}
+          arrived={arrived}
+          onArrive={() => setArrived(true)}
+        />
       </div>
 
-      <div className="mt-6 rounded-lg bg-surface-muted p-5">
-        <p className="text-center text-sm text-text-muted">오늘 점심은</p>
+      <div className="mt-6 min-h-[7rem] rounded-lg bg-surface-muted p-5">
+        <p className="text-center text-sm text-text-muted">
+          {arrived ? "오늘 점심은" : "내려가는 중…"}
+        </p>
+        {arrived && (
         <p className="mt-1 text-center text-2xl font-bold text-text-primary">
           {winnerPlace ? winnerPlace.name : names === null ? "…" : "사라진 가게"}
         </p>
-        {winnerPlace && (
+        )}
+        {arrived && winnerPlace && (
           <>
             <p className="mt-1 text-center text-sm text-text-muted">
               {winnerPlace.category} · 씨드큐브에서 {winnerPlace.distance_km}km
@@ -84,7 +97,7 @@ export default function LadderResult({ draw }: { draw: LadderDraw | null }) {
         )}
       </div>
 
-      {winnerPlace && (
+      {arrived && winnerPlace && (
         <Link
           className="mt-4 grid h-11 w-full place-items-center rounded-lg bg-ink text-base font-bold text-white"
           href={sharePath(winnerId)}

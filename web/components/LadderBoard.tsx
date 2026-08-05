@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { LADDER_ROWS, followLeg, type Ladder } from "@/lib/ladder";
 
 type Props = {
@@ -11,33 +11,66 @@ type Props = {
   winner: number | null;
   /** 어느 자리에서 출발했는지. 공유 링크로 들어오면 서버가 역산해 넘겨준다. */
   start: number | null;
+  /** 선이 바닥에 닿았는지. 상태는 부모가 들고 있다 — 답을 언제 공개할지 정하는 쪽이다. */
+  arrived: boolean;
   onPick?: (leg: number) => void;
+  onArrive?: () => void;
 };
 
 const COL = 60;
 const ROW = 24;
 const PAD = 14;
 
-/** 한 줄을 타고 내려간 자취. 애니메이션이 이 선을 따라 그려진다. */
-function tracePath(ladder: Ladder, start: number): string {
+/**
+ * 선이 내려가는 속도(초당 픽셀). 시간을 고정하면 후보가 많을수록 선이 빨라져
+ * 사다리마다 체감이 달라진다 — 길이에 비례해 시간을 정해 속도를 일정하게 둔다.
+ */
+const TRACE_SPEED = 190;
+
+type Trace = { d: string; length: number };
+
+/**
+ * 한 줄을 타고 내려간 자취와 그 길이.
+ *
+ * 길이는 DOM에 묻지 않고 직접 센다(getTotalLength). 그래야 렌더 전에 재생 시간을
+ * 알 수 있고, 애니메이션이 끝났다는 신호가 오지 않을 때 쓸 대비 시간도 계산된다.
+ */
+function trace(ladder: Ladder, start: number): Trace {
   let pos = start;
   let d = `M ${PAD + pos * COL} ${PAD}`;
+  let length = 0;
   ladder.forEach((row, r) => {
     const y = PAD + (r + 1) * ROW;
     d += ` L ${PAD + pos * COL} ${y}`;
+    length += ROW;
     if (row[pos]) pos += 1;
     else if (pos > 0 && row[pos - 1]) pos -= 1;
     else return;
     d += ` L ${PAD + pos * COL} ${y}`;
+    length += COL;
   });
-  return d + ` L ${PAD + pos * COL} ${PAD + (LADDER_ROWS + 1) * ROW}`;
+  return { d: `${d} L ${PAD + pos * COL} ${PAD + (LADDER_ROWS + 1) * ROW}`, length: length + ROW };
 }
 
-export default function LadderBoard({ ladder, names, winner, start, onPick }: Props) {
+export default function LadderBoard({
+  ladder, names, winner, start, arrived, onPick, onArrive,
+}: Props) {
   const legs = names.length;
   const width = PAD * 2 + (legs - 1) * COL;
   const height = PAD * 2 + (LADDER_ROWS + 1) * ROW;
   const boardStyle = { width: Math.max(width, 240), maxWidth: "100%" };
+
+  const path = start === null ? null : trace(ladder, start);
+  const seconds = path ? path.length / TRACE_SPEED : 0;
+
+  // animationend는 안 올 수 있다 — 탭이 뒤로 가 있거나, 애니메이션이 중간에
+  // 갈아치워지거나, 브라우저가 합성을 멈춘 경우다. 그 신호에만 기대면 사용자는
+  // "내려가는 중…"에 영원히 갇힌다. 예상 시간이 지나면 그냥 공개한다.
+  useEffect(() => {
+    if (start === null || arrived || !onArrive) return;
+    const t = setTimeout(onArrive, seconds * 1000 + 400);
+    return () => clearTimeout(t);
+  }, [start, arrived, onArrive, seconds]);
 
   return (
     <div className="overflow-x-auto">
@@ -62,7 +95,7 @@ export default function LadderBoard({ ladder, names, winner, start, onPick }: Pr
         viewBox={`0 0 ${width} ${height}`}
         style={boardStyle}
         role="img"
-        aria-label={winner === null ? "사다리" : `사다리 결과: ${names[winner]}`}
+        aria-label={arrived && winner !== null ? `사다리 결과: ${names[winner]}` : "사다리"}
       >
         {Array.from({ length: legs }, (_, i) => (
           <line
@@ -84,36 +117,43 @@ export default function LadderBoard({ ladder, names, winner, start, onPick }: Pr
             ) : null,
           ),
         )}
-        {start !== null && (
+        {path && (
           <path
-            // key로 다시 마운트시켜 출발 자리가 바뀔 때마다 애니메이션이 새로 돈다.
+            // key로 다시 마운트시켜 출발 자리가 바뀔 때마다 처음부터 그려진다.
             key={start}
-            d={tracePath(ladder, start)}
+            d={path.d}
             fill="none"
             stroke="var(--color-star)"
             strokeWidth="4"
             strokeLinecap="round"
             strokeLinejoin="round"
             style={{
-              strokeDasharray: 2000,
-              animation: "ladder-trace 1.4s ease-out forwards",
+              strokeDasharray: path.length,
+              strokeDashoffset: path.length,
+              // linear로 둔다. ease-out은 처음에 확 나가고 끝에서 기어가 김이 빠진다.
+              animation: `ladder-trace ${seconds.toFixed(2)}s linear forwards`,
             }}
+            onAnimationEnd={onArrive}
           />
         )}
       </svg>
 
-      {/* 도착 자리 — 걸린 가게들 */}
+      {/* 도착 자리 — 선이 닿기 전에는 어느 것도 강조하지 않는다 */}
       <div className="flex items-start" style={boardStyle}>
-        {names.map((name, i) => (
-          <span
-            key={i}
-            className={`min-w-0 flex-1 break-keep px-1 text-center text-xs leading-tight ${
-              winner === i ? "font-bold text-text-primary" : "text-text-muted"
-            }`}
-          >
-            {name}
-          </span>
-        ))}
+        {names.map((name, i) => {
+          const hit = arrived && winner === i;
+          return (
+            <span
+              key={i}
+              className={`min-w-0 flex-1 break-keep px-1 text-center text-xs leading-tight ${
+                hit ? "font-bold text-text-primary" : "text-text-muted"
+              }`}
+              style={hit ? { animation: "ladder-land 0.45s ease-out" } : undefined}
+            >
+              {name}
+            </span>
+          );
+        })}
       </div>
     </div>
   );

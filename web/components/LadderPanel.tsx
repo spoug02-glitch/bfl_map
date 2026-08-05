@@ -33,6 +33,8 @@ export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
   // start가 null이면 사다리는 놓였지만 아직 자리를 안 고른 상태다. -1 같은 값을
   // 쓰면 followLeg가 그걸 그대로 돌려줘 "당첨 -1번"이 되어버린다.
   const [draw, setDraw] = useState<{ seed: number; start: number | null } | null>(null);
+  // 선이 바닥에 닿기 전까지는 답을 감춘다. 미리 보여주면 사다리를 볼 이유가 없다.
+  const [arrived, setArrived] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const full = picked.length >= MAX_LEGS;
@@ -87,10 +89,14 @@ export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
   const winner =
     ladder && draw && draw.start !== null ? followLeg(ladder, draw.start) : null;
 
-  const start = () => setDraw({ seed: Math.floor(Math.random() * 1_000_000), start: null });
+  const start = () => {
+    setArrived(false);
+    setDraw({ seed: Math.floor(Math.random() * 1_000_000), start: null });
+  };
 
   const pick = (leg: number) => {
     if (!draw) return;
+    setArrived(false);
     setDraw({ ...draw, start: leg });
   };
 
@@ -215,7 +221,11 @@ export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
       ) : (
         <>
           <p className="mt-1 text-sm text-text-muted">
-            {draw.start === null ? "출발할 자리를 골라주세요." : "결과가 나왔어요."}
+            {draw.start === null
+              ? "출발할 자리를 골라주세요."
+              : arrived
+                ? "결과가 나왔어요."
+                : "내려가는 중…"}
           </p>
           <div className="mt-4">
             <LadderBoard
@@ -223,11 +233,13 @@ export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
               names={picked.map(p => p.name)}
               winner={winner}
               start={draw.start}
+              arrived={arrived}
               onPick={pick}
+              onArrive={() => setArrived(true)}
             />
           </div>
 
-          {winner !== null && (
+          {winner !== null && arrived && (
             <div className="mt-5 rounded-lg bg-surface-muted p-4">
               <p className="text-center text-sm text-text-muted">오늘 점심은</p>
               <p className="mt-1 text-center text-xl font-bold text-text-primary">

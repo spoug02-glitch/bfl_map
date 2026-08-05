@@ -98,16 +98,25 @@ body {
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
 }
 
-/* 사다리를 타고 내려가는 선. 선 길이만큼 dash를 재워뒀다가 풀어서 그려나간다. */
+/* 사다리를 타고 내려가는 선.
+   시작값(stroke-dashoffset)은 컴포넌트가 실제 선 길이를 재서 인라인으로 넣는다 —
+   여기서 상수로 박아두면 사다리가 길어질수록 속도가 달라진다. */
 @keyframes ladder-trace {
-  from { stroke-dashoffset: 2000; }
   to { stroke-dashoffset: 0; }
 }
 
+/* 도착한 칸이 한 번 튀어오른다. 선이 멈추는 순간과 답이 뜨는 순간을 붙여준다. */
+@keyframes ladder-land {
+  0% { transform: scale(1); }
+  40% { transform: scale(1.12); }
+  100% { transform: scale(1); }
+}
+
 @media (prefers-reduced-motion: reduce) {
-  /* 움직임을 원치 않는 사람에게는 결과 선을 그냥 보여준다 */
   @keyframes ladder-trace {
-    from { stroke-dashoffset: 0; }
     to { stroke-dashoffset: 0; }
+  }
+  @keyframes ladder-land {
+    0%, 100% { transform: none; }
   }
 }
