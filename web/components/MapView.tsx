@@ -62,8 +62,12 @@ export default function MapView({ restaurants, maxDist, origin, onSelect, onPick
 
   // 클릭 리스너는 지도 생성 시 한 번만 단다. 최신 콜백을 ref로 읽어 리스너를
   // 다시 달지 않는다 — 카카오 SDK에는 removeListener를 걸 훅이 마땅치 않다.
+  // 갱신은 렌더가 아니라 effect에서 한다: 렌더 중 ref 쓰기는 동시성 렌더링에서
+  // 버려질 수 있는 작업이라 React가 금지한다.
   const onPickOriginRef = useRef(onPickOrigin);
-  onPickOriginRef.current = onPickOrigin;
+  useEffect(() => {
+    onPickOriginRef.current = onPickOrigin;
+  }, [onPickOrigin]);
 
   const initMap = () => {
     window.kakao.maps.load(() => {
