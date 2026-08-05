@@ -3,7 +3,16 @@
 import { useCallback, useEffect, useState } from "react";
 import type { SessionUser } from "@/lib/constants";
 
-type Review = { nickname: string; taste: number; waiting: number; body: string; updated_at: string };
+type Review = {
+  id: number;
+  nickname: string;
+  taste: number;
+  waiting: number;
+  body: string;
+  created_at: string;
+  /** 서버가 세션과 대조해 판정한다 — user_id를 내려보내지 않기 위해서다. */
+  mine: boolean;
+};
 type Summary = { count: number; avgTaste: number | null; avgWaiting: number | null };
 
 const MAX_LEN = 100;
@@ -34,6 +43,66 @@ function Stars({ value, onChange, label }: { value: number; onChange: (v: number
   );
 }
 
+/** 이미 쓴 리뷰를 그 자리에서 고친다. 작성 폼과 별개로 두어 서로 상태가 섞이지 않는다. */
+function ReviewEditor({
+  review, onCancel, onSaved,
+}: { review: Review; onCancel: () => void; onSaved: () => void }) {
+  const [taste, setTaste] = useState(review.taste);
+  const [waiting, setWaiting] = useState(review.waiting);
+  const [body, setBody] = useState(review.body);
+  const [error, setError] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  const save = async () => {
+    setError("");
+    setBusy(true);
+    const res = await fetch(`/api/reviews/${review.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ taste, waiting, body }),
+    }).catch(() => null);
+    setBusy(false);
+    if (!res) { setError("네트워크 오류가 발생했어요. 다시 시도해주세요."); return; }
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}));
+      setError(d.error ?? "저장에 실패했어요.");
+      return;
+    }
+    onSaved();
+  };
+
+  return (
+    <div className="mt-3 space-y-3">
+      <Stars label="맛" value={taste} onChange={setTaste} />
+      <Stars label="점심 웨이팅" value={waiting} onChange={setWaiting} />
+      <textarea
+        className="w-full rounded-lg bg-surface-muted p-3 text-base text-text-primary"
+        rows={2}
+        maxLength={MAX_LEN}
+        aria-label="리뷰 내용"
+        value={body}
+        onChange={e => setBody(e.target.value.slice(0, MAX_LEN))}
+      />
+      {error && <p className="text-xs text-red-600">{error}</p>}
+      <div className="flex justify-end gap-2">
+        <button
+          className="h-11 rounded-lg bg-surface-muted px-4 text-sm font-bold text-text-primary"
+          onClick={onCancel}
+        >
+          취소
+        </button>
+        <button
+          className="h-11 rounded-lg bg-ink px-4 text-sm font-bold text-white disabled:opacity-50"
+          disabled={busy}
+          onClick={save}
+        >
+          {busy ? "저장 중…" : "저장"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function ReviewSection({ placeId, user }: { placeId: string; user: SessionUser | null }) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [summary, setSummary] = useState<Summary | null>(null);
@@ -42,6 +111,8 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
   const [body, setBody] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
+  const [editing, setEditing] = useState<number | null>(null);
+  const [listError, setListError] = useState("");
 
   const load = useCallback(() => {
     fetch(`/api/reviews?placeId=${placeId}`)
@@ -67,6 +138,18 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
       return;
     }
     setBody(""); setTaste(0); setWaiting(0);
+    load();
+  };
+
+  const remove = async (id: number) => {
+    setListError("");
+    const res = await fetch(`/api/reviews/${id}`, { method: "DELETE" }).catch(() => null);
+    if (!res) { setListError("네트워크 오류가 발생했어요. 다시 시도해주세요."); return; }
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}));
+      setListError(d.error ?? "삭제에 실패했어요.");
+      return;
+    }
     load();
   };
 
@@ -124,18 +207,45 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
       )}
 
       <ul className="mt-4 space-y-3">
-        {reviews.map((rv, i) => (
-          <li key={i} className="rounded-lg border border-border p-4 shadow-xs">
+        {reviews.map(rv => (
+          <li key={rv.id} className="rounded-lg border border-border p-4 shadow-xs">
             <div className="flex items-center justify-between">
               <span className="font-bold text-text-primary">{rv.nickname}</span>
               <span className="text-xs font-medium text-text-muted">
                 맛 <span className="text-star">★{rv.taste}</span> · 웨이팅 <span className="text-star">★{rv.waiting}</span>
               </span>
             </div>
-            {rv.body && <p className="mt-2 text-base text-text-primary">{rv.body}</p>}
+            {editing === rv.id ? (
+              <ReviewEditor
+                review={rv}
+                onCancel={() => setEditing(null)}
+                onSaved={() => { setEditing(null); load(); }}
+              />
+            ) : (
+              <>
+                {rv.body && <p className="mt-2 text-base text-text-primary">{rv.body}</p>}
+                {rv.mine && (
+                  <div className="mt-2 flex justify-end gap-1">
+                    <button
+                      className="h-11 rounded-lg px-3 text-sm font-medium text-text-muted"
+                      onClick={() => setEditing(rv.id)}
+                    >
+                      수정
+                    </button>
+                    <button
+                      className="h-11 rounded-lg px-3 text-sm font-medium text-text-muted"
+                      onClick={() => remove(rv.id)}
+                    >
+                      삭제
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
           </li>
         ))}
       </ul>
+      {listError && <p className="mt-2 text-xs text-red-600">{listError}</p>}
     </section>
   );
 }

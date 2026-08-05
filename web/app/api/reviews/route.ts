@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { PLACE_ID_RE } from "@/lib/constants";
 import { sql } from "@/lib/db";
 import { kstDate } from "@/lib/kst";
 import { validateReviewInput } from "@/lib/reviews";
@@ -10,11 +11,17 @@ const REVIEW_COOLDOWN_MS = REVIEW_COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
 
 export async function GET(req: NextRequest) {
   const placeId = req.nextUrl.searchParams.get("placeId") ?? "";
-  if (!/^\d{1,20}$/.test(placeId)) {
+  if (!PLACE_ID_RE.test(placeId)) {
     return NextResponse.json({ error: "placeId가 필요합니다." }, { status: 400 });
   }
+  // 내 리뷰에만 수정·삭제 버튼을 붙이려면 클라이언트가 어느 게 자기 것인지 알아야
+  // 한다. user_id를 내려보내면 남의 계정 식별자까지 노출되므로 서버가 판정해 준다.
+  const token = req.cookies.get(SESSION_COOKIE)?.value;
+  const session = token ? await verifySessionToken(token) : null;
+  const me = session?.userId ?? null;
   const reviews = await sql`
-    SELECT u.nickname, r.taste, r.waiting, r.body, r.created_at
+    SELECT r.id, u.nickname, r.taste, r.waiting, r.body, r.created_at,
+           COALESCE(r.user_id = ${me}, false) AS mine
     FROM reviews r JOIN users u ON u.user_id = r.user_id
     WHERE r.place_id = ${placeId}
     ORDER BY r.created_at DESC LIMIT 50`;
