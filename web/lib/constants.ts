@@ -35,7 +35,7 @@ export function isConvenienceStore(category: string): boolean {
 export const CONVENIENCE_NOTICE =
   "편의점은 회사 식권 정책에 따라 결제가 제한될 수 있어요. 사내 규정을 확인해주세요.";
 
-export const CREDIT = { author: "노에마", email: "spoug02@gmail.com" };
+export const CREDIT = { author: "노에마", email: "obanaeodzb@naver.com" };
 
 /** Mirrors the character-stripping half of collector/brands.py `normalize`.
  *  Only the raw query needs this — alias expansion is already baked into each

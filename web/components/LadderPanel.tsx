@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import LadderBoard from "@/components/LadderBoard";
-import { Restaurant, normalizeQuery } from "@/lib/constants";
+import { Restaurant, isConvenienceStore, normalizeQuery } from "@/lib/constants";
 import { buildLadder, followLeg } from "@/lib/ladder";
 import { MAX_LEGS, MIN_LEGS, encodeLadder } from "@/lib/ladder-link";
 
@@ -53,10 +53,11 @@ export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
       .slice(0, 6);
   }, [query, pool, picked]);
 
-  // 랜덤 후보는 걸어갈 거리 안에서만 고른다. 검색으로 직접 담는 건 이 제한을
-  // 받지 않는다 — 멀어도 가고 싶은 곳은 본인이 아는 법이다.
+  // 랜덤 후보는 걸어갈 거리 안의 밥집에서만 고른다. 편의점이 뽑히면 "점심 뭐 먹지"에
+  // 대한 답이 안 된다. 검색으로 직접 담는 건 두 제한을 다 받지 않는다 — 멀어도,
+  // 편의점이라도, 오늘 거기 가겠다는 건 본인이 아는 법이다.
   const nearby = useMemo(
-    () => pool.filter(r => r.distance_km <= RANDOM_RADIUS_KM),
+    () => pool.filter(r => r.distance_km <= RANDOM_RADIUS_KM && !isConvenienceStore(r.category)),
     [pool],
   );
 
@@ -150,7 +151,8 @@ export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
             </button>
           </div>
           <p className="mt-1 text-xs text-text-muted">
-            랜덤은 {RANDOM_RADIUS_KM * 1000}m 안 {nearby.length}곳에서 뽑아요. 검색으로 담는 건 거리 제한이 없어요.
+            랜덤은 {RANDOM_RADIUS_KM * 1000}m 안 밥집 {nearby.length}곳에서 뽑아요 (편의점 제외).
+            검색으로 담는 건 제한이 없어요.
           </p>
 
           <input

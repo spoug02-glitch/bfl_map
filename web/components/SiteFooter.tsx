@@ -8,7 +8,7 @@ export default function SiteFooter() {
       style={{ paddingBottom: "max(0.25rem, env(safe-area-inset-bottom))" }}
     >
       <p>
-        만든 이 <strong className="text-text-primary">{CREDIT.author}</strong> ·{" "}
+        <strong className="text-text-primary">{CREDIT.author}</strong> · 문의사항이나 기타 제의는{" "}
         <a className="pointer-events-auto underline" href={`mailto:${CREDIT.email}`}>
           {CREDIT.email}
         </a>{" "}
