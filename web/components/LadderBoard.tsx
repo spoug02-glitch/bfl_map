@@ -1,7 +1,8 @@
 "use client";
 
 import { useEffect } from "react";
-import { LADDER_ROWS, followLeg, type Ladder } from "@/lib/ladder";
+import { LADDER_ROWS, type Ladder } from "@/lib/ladder";
+import { usePrefersReducedMotion } from "@/lib/use-reduced-motion";
 
 type Props = {
   ladder: Ladder;
@@ -60,17 +61,20 @@ export default function LadderBoard({
   const height = PAD * 2 + (LADDER_ROWS + 1) * ROW;
   const boardStyle = { width: Math.max(width, 240), maxWidth: "100%" };
 
+  // 움직임을 줄여달라고 한 사람에게는 선이 기다리지 않고 바로 그려진다. 이건 CSS로
+  // 못 막는다 — 재생 시간이 아래 인라인 스타일로 들어가 미디어 쿼리가 이기지 못한다.
+  const reduced = usePrefersReducedMotion();
   const path = start === null ? null : trace(ladder, start);
-  const seconds = path ? path.length / TRACE_SPEED : 0;
+  const seconds = path && !reduced ? path.length / TRACE_SPEED : 0;
 
   // animationend는 안 올 수 있다 — 탭이 뒤로 가 있거나, 애니메이션이 중간에
   // 갈아치워지거나, 브라우저가 합성을 멈춘 경우다. 그 신호에만 기대면 사용자는
   // "내려가는 중…"에 영원히 갇힌다. 예상 시간이 지나면 그냥 공개한다.
   useEffect(() => {
     if (start === null || arrived || !onArrive) return;
-    const t = setTimeout(onArrive, seconds * 1000 + 400);
+    const t = setTimeout(onArrive, seconds * 1000 + (reduced ? 0 : 400));
     return () => clearTimeout(t);
-  }, [start, arrived, onArrive, seconds]);
+  }, [start, arrived, onArrive, seconds, reduced]);
 
   return (
     <div className="overflow-x-auto">
