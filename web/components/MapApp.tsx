@@ -252,6 +252,14 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             initial={user.nickname}
             onSaved={n => { setUser({ ...user, nickname: n }); setEditingNickname(false); }}
             onClose={() => setEditingNickname(false)}
+            onWithdrawn={() => {
+              // 지워진 계정의 흔적을 화면에 남기지 않는다.
+              setEditingNickname(false);
+              setUser(null);
+              setSavedIds(new Set());
+              setMyReviews([]);
+              setSelected(null);
+            }}
           />
         )}
       </div>

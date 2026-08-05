@@ -11,6 +11,10 @@ export default function SiteFooter() {
         만든 이 <strong className="text-text-primary">{CREDIT.author}</strong> ·{" "}
         <a className="pointer-events-auto underline" href={`mailto:${CREDIT.email}`}>
           {CREDIT.email}
+        </a>{" "}
+        ·{" "}
+        <a className="pointer-events-auto underline" href="/privacy">
+          개인정보 처리방침
         </a>
       </p>
       <p className="hidden sm:block">{CONVENIENCE_NOTICE}</p>
