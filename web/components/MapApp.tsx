@@ -8,15 +8,20 @@ import MapView from "@/components/MapView";
 import NicknameModal from "@/components/NicknameModal";
 import PlacePanel from "@/components/PlacePanel";
 import SiteFooter from "@/components/SiteFooter";
+import PlaceList from "@/components/PlaceList";
 import {
   BlogLink,
   CATEGORY_GROUPS,
+  CENTER,
   RADIUS_KM,
   Restaurant,
   SessionUser,
   normalizeQuery,
 } from "@/lib/constants";
+import { haversineKm, type LatLng } from "@/lib/geo";
 import { suggestNickname } from "@/lib/nickname";
+
+const OFFICE_LABEL = "창동씨드큐브";
 
 /**
  * `initialPlaceId`는 /place/[id]가 넘겨준다 — 그 경로만이 가게별 OG 태그를 달 수
@@ -34,6 +39,8 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [staleLink, setStaleLink] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [editingNickname, setEditingNickname] = useState(false);
+  // 거리 계산과 반경 원의 기준점. 지도를 찍으면 옮겨간다.
+  const [origin, setOrigin] = useState<LatLng>(CENTER);
 
   useEffect(() => {
     // 공유 링크로 들어온 경우 그 가게를 열어준다. 마커 클릭마다 URL을 갱신하지는
@@ -68,17 +75,28 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     }
   }, [initialPlaceId]);
 
-  const visible = useMemo(() => {
+  const atOffice = origin.lat === CENTER.lat && origin.lng === CENTER.lng;
+
+  // 기준점에서의 거리를 붙여 가까운 순으로 정렬한다. 회사에 있을 때는 수집기가
+  // 미리 넣어둔 distance_km를 그대로 쓴다 — 같은 공식이지만 5,834번의 계산을 아낀다.
+  const ranked = useMemo(() => {
     const cats = group ? new Set(CATEGORY_GROUPS[group]) : null;
     // search the precomputed alias keys, not the raw name — this is what makes
     // "CU" find stores the source data spells "씨유", and "뉴창동" find "뉴(NEW)창동…"
     const q = normalizeQuery(query);
-    return all.filter(r =>
-      r.distance_km <= maxDist &&
-      (!cats || cats.has(r.category)) &&
-      (!q || r.search_keys.some(k => k.includes(q))),
-    );
-  }, [all, group, query, maxDist]);
+    const rows = [];
+    for (const r of all) {
+      if (cats && !cats.has(r.category)) continue;
+      if (q && !r.search_keys.some(k => k.includes(q))) continue;
+      const distanceKm = atOffice ? r.distance_km : haversineKm(origin, { lat: r.lat, lng: r.lng });
+      if (distanceKm > maxDist) continue;
+      rows.push({ place: r, distanceKm });
+    }
+    rows.sort((a, b) => a.distanceKm - b.distanceKm);
+    return rows;
+  }, [all, group, query, maxDist, origin, atOffice]);
+
+  const visible = useMemo(() => ranked.map(x => x.place), [ranked]);
 
   const resetFilters = () => { setGroup(null); setQuery(""); setMaxDist(RADIUS_KM); };
   const widenRadius = () => setMaxDist(Math.min(5, Math.round((maxDist + 1) * 10) / 10));
@@ -130,7 +148,21 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         count={visible.length}
       />
       <div className="relative flex-1">
-        <MapView restaurants={visible} maxDist={maxDist} onSelect={setSelected} />
+        <MapView
+          restaurants={visible}
+          maxDist={maxDist}
+          origin={origin}
+          onSelect={setSelected}
+          onPickOrigin={setOrigin}
+        />
+        {!atOffice && (
+          <button
+            className="absolute left-3 top-3 z-20 grid h-11 place-items-center rounded-xl border border-border bg-surface px-3 text-sm font-medium text-text-primary shadow-lg"
+            onClick={() => setOrigin(CENTER)}
+          >
+            ↺ {OFFICE_LABEL} 기준으로
+          </button>
+        )}
         <SiteFooter />
         {staleLink && (
           <div className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-border bg-surface px-4 py-3 text-center shadow-lg">
@@ -153,37 +185,23 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             </button>
           </div>
         )}
-        {all.length > 0 && visible.length === 0 && !selected && (
-          <div className="absolute inset-0 z-10 flex items-center justify-center px-6">
-            <div className="w-full max-w-xs rounded-xl border border-border bg-surface p-6 text-center shadow-lg">
-              <p className="text-lg font-bold text-text-primary">조건에 맞는 가게가 없어요</p>
-              <p className="mt-2 text-sm text-text-muted">
-                필터를 조정하거나 지도 반경을 넓혀보세요. 더 많은 맛집을 찾을 수 있습니다.
-              </p>
-              <div className="mt-4 flex flex-col gap-2">
-                <button
-                  className="grid h-11 place-items-center rounded-lg bg-ink text-sm font-bold text-white shadow-xs"
-                  onClick={widenRadius}
-                  disabled={maxDist >= 5}
-                >
-                  반경 넓히기
-                </button>
-                <button
-                  className="grid h-11 place-items-center rounded-lg bg-surface-muted text-sm font-bold text-text-primary"
-                  onClick={resetFilters}
-                >
-                  필터 초기화
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-        {selected && (
+        {/* 같은 자리를 나눠 쓴다: 고른 가게가 있으면 상세, 없으면 가까운 순 목록.
+            리뷰가 아직 없어 평점으로 고를 수가 없으니, 목록의 정렬 기준은 거리다. */}
+        {selected ? (
           <PlacePanel
             restaurant={selected}
             user={user}
             blogLink={blogLinks[selected.kakao_place_id]}
             onClose={() => setSelected(null)}
+          />
+        ) : all.length > 0 && (
+          <PlaceList
+            places={ranked}
+            originLabel={atOffice ? OFFICE_LABEL : "선택한 지점"}
+            onSelect={setSelected}
+            onWiden={widenRadius}
+            onReset={resetFilters}
+            canWiden={maxDist < RADIUS_KM}
           />
         )}
         {user && user.nickname === null && (
