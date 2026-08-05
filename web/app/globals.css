@@ -1,6 +1,12 @@
 @import "tailwindcss";
 
 :root {
+  /* 이 앱은 라이트 테마 하나로 설계돼 있다(모든 surface 토큰이 밝은 값이다).
+     이걸 선언하지 않으면 브라우저가 OS 설정을 따라 네이티브 컨트롤을 어둡게
+     그린다 — 반경 슬라이더의 빈 트랙이 검게 나와, 채워진 쪽보다 진해지면서
+     선택 방향이 거꾸로 읽혔다. */
+  color-scheme: light;
+
   --background: #ffffff;
   --foreground: #171717;
 

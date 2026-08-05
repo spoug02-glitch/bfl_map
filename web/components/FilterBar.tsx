@@ -80,13 +80,14 @@ export default function FilterBar({ group, onGroup, query, onQuery, maxDist, onM
         ))}
       </div>
       <div className="flex items-center gap-3">
-        {/* 반경 슬라이더는 보조 조작이다. ink(거의 검정)로 칠하면 필터 칩의
-            선택 상태보다 더 도드라져 시선을 먼저 가져간다. */}
+        {/* 채워진 쪽이 빈 쪽보다 진해야 "여기까지 선택됨"으로 읽힌다. 다만 ink
+            (거의 검정)까지 가면 필터 칩의 선택 상태보다 도드라져 시선을 먼저
+            가져가므로, 중간 톤 회색으로 둔다. */}
         <label className="flex h-11 flex-1 items-center gap-3 md:h-8">
           <span className="whitespace-nowrap font-medium text-text-muted">반경 {maxDist.toFixed(1)}km</span>
           <input
             type="range" min={0.5} max={5} step={0.5} value={maxDist}
-            className="h-11 flex-1 accent-border md:h-8"
+            className="h-11 flex-1 accent-text-muted md:h-8"
             onChange={e => onMaxDist(Number(e.target.value))}
           />
         </label>
