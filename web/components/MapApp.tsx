@@ -133,7 +133,19 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   return (
     <main className="flex h-dvh flex-col bg-surface-page">
       <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border-subtle bg-surface-page/80 px-4 shadow-xs backdrop-blur-md md:h-12">
-        <h1 className="text-lg font-bold tracking-tight text-text-primary">직장인 맛집지도</h1>
+        <h1 className="flex items-center gap-2 text-lg font-bold tracking-tight text-text-primary">
+          {/* 로고 파일을 쓰지 않고 인라인으로 둔다 — 헤더는 첫 화면에 반드시 뜨는
+              자리라 요청을 하나 더 태울 이유가 없다. */}
+          <svg viewBox="0 0 64 64" width="22" height="22" aria-hidden className="shrink-0">
+            <path d="M13 24h38c0 11-8.5 20-19 20s-19-9-19-20z" fill="currentColor" />
+            <path d="M23 44h18l-9 13z" fill="currentColor" />
+            <g stroke="#fe6b00" strokeWidth="3.2" strokeLinecap="round" fill="none">
+              <path d="M26 17c0-3 3-3 3-6" />
+              <path d="M35 17c0-3 3-3 3-6" />
+            </g>
+          </svg>
+          직장인 맛집지도
+        </h1>
         {user?.nickname ? (
           <div className="flex items-center gap-2 text-sm">
             <button

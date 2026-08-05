@@ -39,11 +39,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
   const title = shareTitle(place);
   const description = shareDescription(place);
+  // openGraph는 부모(layout)와 깊게 합쳐지지 않는다 — 여기서 다시 쓰면 레이아웃이
+  // 지정한 이미지가 통째로 사라지므로 카드 이미지를 함께 넣어준다.
+  const images = [{ url: "/og-card.png", width: 1200, height: 630 }];
   return {
     title,
     description,
-    openGraph: { title, description, siteName: SITE_NAME, type: "website", locale: "ko_KR" },
-    twitter: { card: "summary", title, description },
+    openGraph: { title, description, siteName: SITE_NAME, type: "website", locale: "ko_KR", images },
+    twitter: { card: "summary_large_image", title, description, images: ["/og-card.png"] },
   };
 }
 

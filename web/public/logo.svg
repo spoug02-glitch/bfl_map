@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="직장인 맛집지도">
+  <title>직장인 맛집지도</title>
+  <!-- 밥그릇 밑동이 그대로 지도 핀 끝으로 내려간다. 그릇과 핀 사이가 살짝
+       벌어지는데, 그게 그릇 굽처럼 읽힌다 — 의도된 형태다(2026-08-05 확정). -->
+  <path d="M13 24h38c0 11-8.5 20-19 20s-19-9-19-20z" fill="#041627"/>
+  <path d="M23 44h18l-9 13z" fill="#041627"/>
+  <g stroke="#fe6b00" stroke-width="3.2" stroke-linecap="round" fill="none">
+    <path d="M26 17c0-3 3-3 3-6"/>
+    <path d="M35 17c0-3 3-3 3-6"/>
+  </g>
+</svg>

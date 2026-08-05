@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- 파비콘 전용.
+       배경을 채우는 이유: 투명하게 두면 잉크색 마크가 다크 테마 탭 바에서 사라진다.
+       김 두 줄은 16px에서 뭉개지므로 주황 점 하나로 대신한다. -->
+  <rect width="64" height="64" rx="14" fill="#041627"/>
+  <g transform="translate(32 34) scale(0.74) translate(-32 -34)">
+    <path d="M13 22h38c0 11-8.5 20-19 20s-19-9-19-20z" fill="#ffffff"/>
+    <path d="M23 42h18l-9 13z" fill="#ffffff"/>
+    <circle cx="32" cy="11" r="4.4" fill="#fe6b00"/>
+  </g>
+</svg>
