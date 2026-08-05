@@ -76,9 +76,12 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
         <h3 className="text-xl font-bold text-text-primary">
           리뷰 {summary?.count ? `(${summary.count})` : ""}
         </h3>
+        {/* 별은 어디서나 text-star다. 요약만 다른 색을 쓰면 같은 지표가 위아래에서
+            달라 보인다 — 아래 리뷰 카드와 정확히 같은 표기를 쓴다. */}
         {summary && summary.count > 0 && (
           <p className="rounded-xl bg-surface-muted px-3 py-1.5 text-xs font-medium text-text-primary">
-            맛 ★{summary.avgTaste} · <span className="text-price">점심 웨이팅 ★{summary.avgWaiting}</span>
+            맛 <span className="text-star">★{summary.avgTaste}</span> ·{" "}
+            점심 웨이팅 <span className="text-star">★{summary.avgWaiting}</span>
           </p>
         )}
       </div>

@@ -1,12 +1,11 @@
 "use client";
 
-import { Restaurant, formatPrice } from "@/lib/constants";
+import { OFFICE_LABEL, Restaurant, formatPrice } from "@/lib/constants";
 
 export type ListedPlace = { place: Restaurant; distanceKm: number };
 
 type Props = {
   places: ListedPlace[];
-  originLabel: string;
   onSelect: (r: Restaurant) => void;
   onWiden: () => void;
   onReset: () => void;
@@ -22,9 +21,7 @@ function formatDistance(km: number): string {
 
 // 가게 상세(PlacePanel)와 같은 자리를 쓴다 — 모바일은 하단 바텀시트,
 // md 이상에서는 우측 사이드 패널. 가게를 고르면 이 자리가 상세로 바뀐다.
-export default function PlaceList({
-  places, originLabel, onSelect, onWiden, onReset, canWiden,
-}: Props) {
+export default function PlaceList({ places, onSelect, onWiden, onReset, canWiden }: Props) {
   const shown = places.slice(0, MAX_ROWS);
 
   return (
@@ -38,7 +35,7 @@ export default function PlaceList({
       style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
     >
       <p className="text-sm text-text-muted">
-        <span className="font-bold text-text-primary">{originLabel}</span> 기준 가까운 순
+        <span className="font-bold text-text-primary">{OFFICE_LABEL}</span> 기준 가까운 순
       </p>
 
       {shown.length === 0 ? (

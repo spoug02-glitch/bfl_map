@@ -12,16 +12,12 @@ import PlaceList from "@/components/PlaceList";
 import {
   BlogLink,
   CATEGORY_GROUPS,
-  CENTER,
   RADIUS_KM,
   Restaurant,
   SessionUser,
   normalizeQuery,
 } from "@/lib/constants";
-import { haversineKm, type LatLng } from "@/lib/geo";
 import { suggestNickname } from "@/lib/nickname";
-
-const OFFICE_LABEL = "창동씨드큐브";
 
 /**
  * `initialPlaceId`는 /place/[id]가 넘겨준다 — 그 경로만이 가게별 OG 태그를 달 수
@@ -39,8 +35,6 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [staleLink, setStaleLink] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [editingNickname, setEditingNickname] = useState(false);
-  // 거리 계산과 반경 원의 기준점. 지도를 찍으면 옮겨간다.
-  const [origin, setOrigin] = useState<LatLng>(CENTER);
 
   useEffect(() => {
     // 공유 링크로 들어온 경우 그 가게를 열어준다. 마커 클릭마다 URL을 갱신하지는
@@ -75,26 +69,21 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     }
   }, [initialPlaceId]);
 
-  const atOffice = origin.lat === CENTER.lat && origin.lng === CENTER.lng;
-
-  // 기준점에서의 거리를 붙여 가까운 순으로 정렬한다. 회사에 있을 때는 수집기가
-  // 미리 넣어둔 distance_km를 그대로 쓴다 — 같은 공식이지만 5,834번의 계산을 아낀다.
+  // 거리는 수집기가 회사 기준으로 미리 계산해 넣어둔 값을 그대로 쓴다.
   const ranked = useMemo(() => {
     const cats = group ? new Set(CATEGORY_GROUPS[group]) : null;
     // search the precomputed alias keys, not the raw name — this is what makes
     // "CU" find stores the source data spells "씨유", and "뉴창동" find "뉴(NEW)창동…"
     const q = normalizeQuery(query);
-    const rows = [];
-    for (const r of all) {
-      if (cats && !cats.has(r.category)) continue;
-      if (q && !r.search_keys.some(k => k.includes(q))) continue;
-      const distanceKm = atOffice ? r.distance_km : haversineKm(origin, { lat: r.lat, lng: r.lng });
-      if (distanceKm > maxDist) continue;
-      rows.push({ place: r, distanceKm });
-    }
-    rows.sort((a, b) => a.distanceKm - b.distanceKm);
-    return rows;
-  }, [all, group, query, maxDist, origin, atOffice]);
+    return all
+      .filter(r =>
+        r.distance_km <= maxDist &&
+        (!cats || cats.has(r.category)) &&
+        (!q || r.search_keys.some(k => k.includes(q))),
+      )
+      .map(place => ({ place, distanceKm: place.distance_km }))
+      .sort((a, b) => a.distanceKm - b.distanceKm);
+  }, [all, group, query, maxDist]);
 
   const visible = useMemo(() => ranked.map(x => x.place), [ranked]);
 
@@ -148,21 +137,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         count={visible.length}
       />
       <div className="relative flex-1">
-        <MapView
-          restaurants={visible}
-          maxDist={maxDist}
-          origin={origin}
-          onSelect={setSelected}
-          onPickOrigin={setOrigin}
-        />
-        {!atOffice && (
-          <button
-            className="absolute left-3 top-3 z-20 grid h-11 place-items-center rounded-xl border border-border bg-surface px-3 text-sm font-medium text-text-primary shadow-lg"
-            onClick={() => setOrigin(CENTER)}
-          >
-            ↺ {OFFICE_LABEL} 기준으로
-          </button>
-        )}
+        <MapView restaurants={visible} maxDist={maxDist} onSelect={setSelected} />
         <SiteFooter />
         {staleLink && (
           <div className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-border bg-surface px-4 py-3 text-center shadow-lg">
@@ -197,7 +172,6 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         ) : all.length > 0 && (
           <PlaceList
             places={ranked}
-            originLabel={atOffice ? OFFICE_LABEL : "선택한 지점"}
             onSelect={setSelected}
             onWiden={widenRadius}
             onReset={resetFilters}

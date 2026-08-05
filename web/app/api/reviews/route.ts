@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { kstDate } from "@/lib/kst";
 import { validateReviewInput } from "@/lib/reviews";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
+
+/** 같은 가게에 다시 쓰기까지 기다려야 하는 기간. */
+const REVIEW_COOLDOWN_DAYS = 7;
+const REVIEW_COOLDOWN_MS = REVIEW_COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
 
 export async function GET(req: NextRequest) {
   const placeId = req.nextUrl.searchParams.get("placeId") ?? "";
@@ -9,10 +14,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "placeId가 필요합니다." }, { status: 400 });
   }
   const reviews = await sql`
-    SELECT u.nickname, r.taste, r.waiting, r.body, r.updated_at
+    SELECT u.nickname, r.taste, r.waiting, r.body, r.created_at
     FROM reviews r JOIN users u ON u.user_id = r.user_id
     WHERE r.place_id = ${placeId}
-    ORDER BY r.updated_at DESC LIMIT 50`;
+    ORDER BY r.created_at DESC LIMIT 50`;
   const [summary] = await sql`
     SELECT count(*)::int AS count,
            round(avg(taste), 1)::float AS "avgTaste",
@@ -36,29 +41,38 @@ export async function POST(req: NextRequest) {
   const v = validateReviewInput(json);
   if (!v.ok) return NextResponse.json({ error: v.error }, { status: 400 });
   const { placeId, taste, waiting, body } = v.value;
-  // rate limit: max 5 writes to distinct places per user per minute, counted from the DB
-  // (serverless instances don't share memory, so an in-memory counter is useless)
-  // plus a per-place cooldown, since the POST upserts and repeatedly reviewing the
-  // SAME place would otherwise never move the distinct-place count
-  const [{ recent, tooSoon, hasNickname }] = await sql`
+  // 한 왕복으로 세 가지를 묻는다. 서버리스 인스턴스끼리 메모리를 공유하지 않으니
+  // 횟수 제한은 DB에서 세야 한다.
+  const [{ recent, lastHere, hasNickname }] = await sql`
     SELECT
       (SELECT count(*)::int FROM reviews
-        WHERE user_id = ${session.userId} AND updated_at > now() - interval '1 minute') AS recent,
-      (SELECT updated_at > now() - interval '10 seconds' FROM reviews
-        WHERE user_id = ${session.userId} AND place_id = ${placeId}) AS "tooSoon",
+        WHERE user_id = ${session.userId} AND created_at > now() - interval '1 minute') AS recent,
+      (SELECT max(created_at) FROM reviews
+        WHERE user_id = ${session.userId} AND place_id = ${placeId}) AS "lastHere",
       EXISTS (SELECT 1 FROM users WHERE user_id = ${session.userId}) AS "hasNickname"`;
   // 닉네임이 없으면 INSERT가 외래 키에서 터진다. 그 전에 읽을 수 있는 이유로 막는다.
   if (!hasNickname) {
     return NextResponse.json({ error: "닉네임을 먼저 설정해주세요." }, { status: 409 });
   }
-  if (recent >= 5 || tooSoon === true) {
+  // 같은 가게라도 다시 갔으면 다시 쓸 수 있다. 다만 일주일에 한 번이다 —
+  // 그 이상은 방문 기록이 아니라 평점 밀기가 된다.
+  if (lastHere) {
+    const nextAllowed = new Date(+new Date(lastHere) + REVIEW_COOLDOWN_MS);
+    if (Date.now() < nextAllowed.getTime()) {
+      return NextResponse.json(
+        {
+          error: `같은 가게 리뷰는 ${REVIEW_COOLDOWN_DAYS}일에 한 번만 쓸 수 있어요. ${kstDate(nextAllowed)}부터 가능해요.`,
+        },
+        { status: 429 },
+      );
+    }
+  }
+  if (recent >= 5) {
     return NextResponse.json({ error: "잠시 후 다시 시도해주세요." }, { status: 429 });
   }
+  // upsert가 아니라 INSERT다. 예전 리뷰를 덮지 않고 방문마다 쌓인다.
   await sql`
     INSERT INTO reviews (place_id, user_id, taste, waiting, body)
-    VALUES (${placeId}, ${session.userId}, ${taste}, ${waiting}, ${body})
-    ON CONFLICT (place_id, user_id)
-    DO UPDATE SET taste = EXCLUDED.taste, waiting = EXCLUDED.waiting,
-                  body = EXCLUDED.body, updated_at = now()`;
+    VALUES (${placeId}, ${session.userId}, ${taste}, ${waiting}, ${body})`;
   return NextResponse.json({ ok: true }, { status: 201 });
 }

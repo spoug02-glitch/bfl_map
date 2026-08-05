@@ -1,17 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { kstDate } from "@/lib/kst";
 import { validateNickname } from "@/lib/nickname";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 
 const RENAME_COOLDOWN_DAYS = 30;
 const RENAME_COOLDOWN_MS = RENAME_COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
-
-const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
-
-/** 사용자에게 보여줄 날짜는 한국 날짜여야 한다 — UTC로 찍으면 저녁에 하루 어긋난다. */
-function kstDate(d: Date): string {
-  return new Date(d.getTime() + KST_OFFSET_MS).toISOString().slice(0, 10);
-}
 
 function isDuplicateNickname(e: unknown): boolean {
   return typeof e === "object" && e !== null && (e as { code?: string }).code === "23505";

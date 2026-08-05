@@ -1,3 +1,4 @@
+export const OFFICE_LABEL = "창동씨드큐브";
 export const CENTER = { lat: 37.6545, lng: 127.0499 }; // 창동씨드큐브
 export const RADIUS_KM = 5.0;
 

@@ -18,10 +18,15 @@ CREATE TABLE IF NOT EXISTS reviews (
   waiting       SMALLINT NOT NULL CHECK (waiting BETWEEN 1 AND 5),
   body          VARCHAR(100) NOT NULL DEFAULT '',
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-  UNIQUE (place_id, user_id)
+  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+  -- 같은 사람이 같은 가게에 여러 번 쓸 수 있다. 같은 집을 또 가는 건 흔한 일이고
+  -- 그때의 감상은 별개의 기록이다. 7일에 한 번이라는 제한은 애플리케이션이 건다
+  -- (app/api/reviews/route.ts) — DB 제약으로 표현하기 어렵다.
 );
 CREATE INDEX IF NOT EXISTS idx_reviews_place ON reviews (place_id);
+-- 7일 쿨다운 조회: 이 사람이 이 가게에 마지막으로 쓴 시각
+CREATE INDEX IF NOT EXISTS idx_reviews_user_place
+  ON reviews (user_id, place_id, created_at DESC);
 
 -- DAU/MAU tracking. One row per visitor per day. visitor_id is an opaque
 -- random token the client generates and stores locally (no IP, no user
