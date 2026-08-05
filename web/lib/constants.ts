@@ -31,6 +31,21 @@ export function isConvenienceStore(category: string): boolean {
   return category === CONVENIENCE_CATEGORY;
 }
 
+/** 카페·빵집. 업종 목록은 CATEGORY_GROUPS 하나만 두고 여기서 끌어 쓴다. */
+export function isCafe(category: string): boolean {
+  return CATEGORY_GROUPS["카페·빵"].includes(category);
+}
+
+/**
+ * 사다리 랜덤이 뽑아도 되는 자리인가.
+ *
+ * 편의점과 카페는 "점심 뭐 먹지"의 답이 아니다 — 커피 한 잔이 뽑히면 다시
+ * 돌리게 된다. 검색으로 직접 담는 건 막지 않는다.
+ */
+export function isMealPlace(category: string): boolean {
+  return !isConvenienceStore(category) && !isCafe(category);
+}
+
 /** 진입 토스트와 푸터가 공유하는 주의 문구 (문구 중복 금지). */
 export const CONVENIENCE_NOTICE =
   "편의점은 회사 식권 정책에 따라 결제가 제한될 수 있어요. 사내 규정을 확인해주세요.";

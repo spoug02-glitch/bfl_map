@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import LadderBoard from "@/components/LadderBoard";
+import MenuLines from "@/components/MenuLines";
 import { Restaurant } from "@/lib/constants";
 import { buildLadder, followLeg } from "@/lib/ladder";
 import { sharePath } from "@/lib/share-copy";
@@ -65,15 +66,21 @@ export default function LadderResult({ draw }: { draw: LadderDraw | null }) {
         <LadderBoard ladder={ladder} names={labels} winner={draw.winner} start={start} />
       </div>
 
-      <div className="mt-6 rounded-lg bg-surface-muted p-5 text-center">
-        <p className="text-sm text-text-muted">오늘 점심은</p>
-        <p className="mt-1 text-2xl font-bold text-text-primary">
+      <div className="mt-6 rounded-lg bg-surface-muted p-5">
+        <p className="text-center text-sm text-text-muted">오늘 점심은</p>
+        <p className="mt-1 text-center text-2xl font-bold text-text-primary">
           {winnerPlace ? winnerPlace.name : names === null ? "…" : "사라진 가게"}
         </p>
         {winnerPlace && (
-          <p className="mt-1 text-sm text-text-muted">
-            {winnerPlace.category} · 씨드큐브에서 {winnerPlace.distance_km}km
-          </p>
+          <>
+            <p className="mt-1 text-center text-sm text-text-muted">
+              {winnerPlace.category} · 씨드큐브에서 {winnerPlace.distance_km}km
+            </p>
+            {/* 뭘 파는 곳인지 여기서 알려주지 않으면 결국 카카오맵을 다시 연다 */}
+            <div className="mt-4 border-t border-border-subtle pt-4">
+              <MenuLines menus={winnerPlace.menus} max={4} />
+            </div>
+          </>
         )}
       </div>
 

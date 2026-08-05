@@ -2,7 +2,8 @@
 
 import { useMemo, useState } from "react";
 import LadderBoard from "@/components/LadderBoard";
-import { Restaurant, isConvenienceStore, normalizeQuery } from "@/lib/constants";
+import MenuLines from "@/components/MenuLines";
+import { Restaurant, isMealPlace, normalizeQuery } from "@/lib/constants";
 import { buildLadder, followLeg } from "@/lib/ladder";
 import { MAX_LEGS, MIN_LEGS, encodeLadder } from "@/lib/ladder-link";
 
@@ -55,11 +56,10 @@ export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
       .slice(0, 6);
   }, [query, pool, picked]);
 
-  // 랜덤 후보는 걸어갈 거리 안의 밥집에서만 고른다. 편의점이 뽑히면 "점심 뭐 먹지"에
-  // 대한 답이 안 된다. 검색으로 직접 담는 건 두 제한을 다 받지 않는다 — 멀어도,
-  // 편의점이라도, 오늘 거기 가겠다는 건 본인이 아는 법이다.
+  // 랜덤 후보는 걸어갈 거리 안의 밥집에서만 고른다. 검색으로 직접 담는 건 거리도
+  // 업종도 제한하지 않는다 — 멀어도, 카페라도, 오늘 거기 가겠다는 건 본인이 안다.
   const nearby = useMemo(
-    () => pool.filter(r => r.distance_km <= RANDOM_RADIUS_KM && !isConvenienceStore(r.category)),
+    () => pool.filter(r => r.distance_km <= RANDOM_RADIUS_KM && isMealPlace(r.category)),
     [pool],
   );
 
@@ -153,8 +153,8 @@ export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
             </button>
           </div>
           <p className="mt-1 text-xs text-text-muted">
-            랜덤은 {RANDOM_RADIUS_KM * 1000}m 안 밥집 {nearby.length}곳에서 뽑아요 (편의점 제외).
-            검색으로 담는 건 제한이 없어요.
+            랜덤은 {RANDOM_RADIUS_KM * 1000}m 안 밥집 {nearby.length}곳에서 뽑아요
+            (편의점·카페 제외). 검색으로 담는 건 제한이 없어요.
           </p>
 
           <input
@@ -228,9 +228,20 @@ export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
           </div>
 
           {winner !== null && (
-            <div className="mt-5 rounded-lg bg-surface-muted p-4 text-center">
-              <p className="text-sm text-text-muted">오늘 점심은</p>
-              <p className="mt-1 text-xl font-bold text-text-primary">{picked[winner].name}</p>
+            <div className="mt-5 rounded-lg bg-surface-muted p-4">
+              <p className="text-center text-sm text-text-muted">오늘 점심은</p>
+              <p className="mt-1 text-center text-xl font-bold text-text-primary">
+                {picked[winner].name}
+              </p>
+              <p className="mt-1 text-center text-xs text-text-muted">
+                {picked[winner].category} ·{" "}
+                {picked[winner].distance_km < 1
+                  ? `${Math.round(picked[winner].distance_km * 1000)}m`
+                  : `${picked[winner].distance_km.toFixed(1)}km`}
+              </p>
+              <div className="mt-3 border-t border-border-subtle pt-3">
+                <MenuLines menus={picked[winner].menus} />
+              </div>
             </div>
           )}
 
