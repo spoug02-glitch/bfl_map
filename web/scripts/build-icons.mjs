@@ -26,10 +26,30 @@ const appIcon = (size) => `<svg xmlns="http://www.w3.org/2000/svg" width="${size
   </g>
 </svg>`;
 
-/** 1200x630 OG 카드. 마크만 가운데, 글자 없음. */
+/**
+ * 1200x630 공유 카드. 글자는 넣지 않는다 — 슬랙도 카톡도 제목과 설명을 이미지
+ * 옆에 텍스트로 따로 그리므로, 그림에 또 쓰면 같은 말을 두 번 하는 셈이다.
+ *
+ * 대신 뒤에 반경 링과 점을 깐다. 마크만 두면 검은 화면에 뜬 도형처럼 보이는데,
+ * 이 앱 화면의 5km 원을 흐리게 깔아주면 '지도 위의 밥집'이라는 맥락이 붙는다.
+ * 카톡은 2:1로 잘라 쓰므로 가운데 여백을 넉넉히 둔다.
+ */
 const ogCard = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <rect width="1200" height="630" fill="${INK}"/>
-  <g transform="translate(600 315) scale(4.6) translate(-32 -33)">
+  <g fill="none" stroke="#ffffff">
+    <circle cx="600" cy="315" r="286" stroke-width="2" opacity="0.06"/>
+    <circle cx="600" cy="315" r="212" stroke-width="2" opacity="0.09"/>
+    <circle cx="600" cy="315" r="140" stroke-width="2" opacity="0.13"/>
+  </g>
+  <g fill="#ffffff" opacity="0.34">
+    <circle cx="812" cy="196" r="7"/>
+    <circle cx="374" cy="253" r="7"/>
+    <circle cx="452" cy="470" r="7"/>
+    <circle cx="782" cy="452" r="7"/>
+    <circle cx="600" cy="60" r="7"/>
+  </g>
+  <circle cx="884" cy="330" r="9" fill="${STEAM}" opacity="0.75"/>
+  <g transform="translate(600 318) scale(3.7) translate(-32 -34)">
     <path d="M13 24h38c0 11-8.5 20-19 20s-19-9-19-20z" fill="#ffffff"/>
     <path d="M23 44h18l-9 13z" fill="#ffffff"/>
     <g stroke="${STEAM}" stroke-width="3.2" stroke-linecap="round" fill="none">

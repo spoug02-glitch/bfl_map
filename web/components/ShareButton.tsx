@@ -17,7 +17,12 @@ interface KakaoShareGlobal {
   Share?: {
     sendDefault(payload: {
       objectType: string;
-      content: { title: string; description: string; link: KakaoShareLink };
+      content: {
+        title: string;
+        description: string;
+        imageUrl: string;
+        link: KakaoShareLink;
+      };
       buttons: { title: string; link: KakaoShareLink }[];
     }): void;
   };
@@ -84,11 +89,18 @@ export default function ShareButton({ restaurant }: { restaurant: Restaurant }) 
     const title = shareTitle(restaurant);
     const description = shareDescription(restaurant);
     try {
-      // Feed 템플릿은 title/imageUrl/description 중 하나만 있으면 되므로 로고 없이도 동작한다.
-      // 로고가 생기면 content.imageUrl에 우리가 만든 이미지 1종을 추가한다(가게 사진 금지).
+      // 카카오는 imageUrl을 자기 서버로 가져가므로 반드시 절대 주소여야 한다.
+      // 가게 사진은 넣지 않는다 — 우리가 찍은 것도 아니고 권리도 없다. 카드에는
+      // 언제나 우리 마크 하나만 올라간다.
+      const base = process.env.NEXT_PUBLIC_BASE_URL ?? window.location.origin;
       window.Kakao.Share.sendDefault({
         objectType: "feed",
-        content: { title, description, link: { mobileWebUrl: url, webUrl: url } },
+        content: {
+          title,
+          description,
+          imageUrl: `${base}/og-card.png`,
+          link: { mobileWebUrl: url, webUrl: url },
+        },
         buttons: [{ title: "지도에서 보기", link: { mobileWebUrl: url, webUrl: url } }],
       });
     } catch {
