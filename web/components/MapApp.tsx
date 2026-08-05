@@ -8,6 +8,7 @@ import MapView from "@/components/MapView";
 import NicknameModal from "@/components/NicknameModal";
 import PlacePanel from "@/components/PlacePanel";
 import SiteFooter from "@/components/SiteFooter";
+import LadderPanel from "@/components/LadderPanel";
 import PlaceList, { type ListTab, type MyReview } from "@/components/PlaceList";
 import {
   BlogLink,
@@ -36,6 +37,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [loginError, setLoginError] = useState<string | null>(null);
   const [editingNickname, setEditingNickname] = useState(false);
   const [tab, setTab] = useState<ListTab>("near");
+  const [ladderOpen, setLadderOpen] = useState(false);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const [myReviews, setMyReviews] = useState<MyReview[]>([]);
 
@@ -236,6 +238,23 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             onWiden={widenRadius}
             onReset={resetFilters}
             canWiden={maxDist < RADIUS_KM}
+          />
+        )}
+        {/* 목록 위에 떠 있는 진입점. 고를 후보가 있을 때만 의미가 있어 목록이
+            비어 있으면 내보내지 않는다. */}
+        {!selected && !ladderOpen && ranked.length > 0 && (
+          <button
+            className="absolute bottom-[36dvh] right-3 z-20 h-11 rounded-full bg-ink px-4 text-sm font-bold text-white shadow-lg md:bottom-4 md:right-[calc(24rem+0.75rem)]"
+            onClick={() => setLadderOpen(true)}
+          >
+            🪜 사다리로 정하기
+          </button>
+        )}
+        {ladderOpen && (
+          <LadderPanel
+            pool={visible}
+            savedPlaces={savedPlaces}
+            onClose={() => setLadderOpen(false)}
           />
         )}
         {user && user.nickname === null && (
