@@ -150,6 +150,8 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     });
   }, []);
 
+  const logout = () => fetch("/api/auth/logout", { method: "POST" }).then(() => setUser(null));
+
   const resetFilters = () => {
     setGroup(null); setQuery(""); setMaxDist(RADIUS_KM); setCheapOnly(false);
   };
@@ -181,7 +183,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             </button>
             <button
               className="grid h-11 place-items-center rounded-lg border border-border px-3 text-text-primary md:h-9"
-              onClick={() => fetch("/api/auth/logout", { method: "POST" }).then(() => setUser(null))}
+              onClick={logout}
             >
               로그아웃
             </button>
@@ -190,9 +192,10 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
           // 로그인은 했지만 닉네임이 없는 상태: NicknameModal이 화면을 덮고 있어
           // 나갈 방법이 없다. DB 장애로 저장이 계속 실패하면 그대로 갇히므로,
           // 지도만이라도 보러 갈 수 있게 로그아웃 출구를 열어둔다.
+          // 같은 출구가 모달 안에도 있다 — 이 버튼은 마우스로만 닿는다.
           <button
             className="grid h-11 place-items-center rounded-lg border border-border px-3 text-sm text-text-primary md:h-9"
-            onClick={() => fetch("/api/auth/logout", { method: "POST" }).then(() => setUser(null))}
+            onClick={logout}
           >
             로그아웃
           </button>
@@ -280,6 +283,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             initial={suggestNickname()}
             onSaved={n => setUser({ ...user, nickname: n })}
             onClose={() => {}}
+            onLogout={logout}
           />
         )}
         {user?.nickname && editingNickname && (
