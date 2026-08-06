@@ -111,6 +111,15 @@ body {
   animation: ladder-trace 1.1s ease-out 0.3s forwards;
 }
 
+/* 출발을 고르면 가로줄이 그제야 놓인다 — 톡 나타나면 버그처럼 보여서 반 박자 띄운다. */
+@keyframes ladder-reveal {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.ladder-rungs {
+  animation: ladder-reveal 0.25s ease-out;
+}
+
 /* 도착한 칸이 한 번 튀어오른다. 선이 멈추는 순간과 답이 뜨는 순간을 붙여준다. */
 @keyframes ladder-land {
   0% { transform: scale(1); }
@@ -132,6 +141,9 @@ body {
   .ladder-intro {
     animation-duration: 0s;
     animation-delay: 0s;
+  }
+  .ladder-rungs {
+    animation-duration: 0s;
   }
   @keyframes ladder-land {
     0%, 100% { transform: none; }

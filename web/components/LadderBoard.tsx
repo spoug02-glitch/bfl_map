@@ -110,17 +110,24 @@ export default function LadderBoard({
             stroke="var(--color-border)" strokeWidth="3" strokeLinecap="round"
           />
         ))}
-        {ladder.map((row, r) =>
-          row.map((on, g) =>
-            on ? (
-              <line
-                key={`${r}-${g}`}
-                x1={PAD + g * COL} y1={PAD + (r + 1) * ROW}
-                x2={PAD + (g + 1) * COL} y2={PAD + (r + 1) * ROW}
-                stroke="var(--color-border)" strokeWidth="3" strokeLinecap="round"
-              />
-            ) : null,
-          ),
+        {/* 가로줄은 출발을 고른 뒤에야 놓인다. 미리 보여주면 눈으로 따라가
+            원하는 가게에 닿는 자리를 골라 시작할 수 있다 — 답이 보이는 사다리는
+            사다리가 아니다. */}
+        {start !== null && (
+          <g className="ladder-rungs">
+            {ladder.map((row, r) =>
+              row.map((on, g) =>
+                on ? (
+                  <line
+                    key={`${r}-${g}`}
+                    x1={PAD + g * COL} y1={PAD + (r + 1) * ROW}
+                    x2={PAD + (g + 1) * COL} y2={PAD + (r + 1) * ROW}
+                    stroke="var(--color-border)" strokeWidth="3" strokeLinecap="round"
+                  />
+                ) : null,
+              ),
+            )}
+          </g>
         )}
         {path && (
           <path
@@ -153,7 +160,9 @@ export default function LadderBoard({
           return (
             <span
               key={i}
-              className={`min-w-0 flex-1 break-keep px-1 text-center text-xs leading-tight ${
+              // break-keep만 두면 띄어쓰기 없는 긴 이름("본죽&비빔밥cafe")이 옆
+              // 칸을 뚫고 나간다. anywhere가 그런 토큰만 칸 안에서 꺾어준다.
+              className={`min-w-0 flex-1 break-keep px-1 text-center text-xs leading-tight [overflow-wrap:anywhere] ${
                 hit ? "font-bold text-text-primary" : "text-text-muted"
               }`}
               style={hit ? { animation: "ladder-land 0.45s ease-out" } : undefined}
