@@ -13,9 +13,11 @@ import PlaceList, { type ListTab, type MyReview } from "@/components/PlaceList";
 import {
   BlogLink,
   CATEGORY_GROUPS,
+  CHEAP_LIMIT,
   RADIUS_KM,
   Restaurant,
   SessionUser,
+  minMenuPrice,
   normalizeQuery,
 } from "@/lib/constants";
 import { suggestNickname } from "@/lib/nickname";
@@ -30,6 +32,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [group, setGroup] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [maxDist, setMaxDist] = useState(5.0);
+  const [cheapOnly, setCheapOnly] = useState(false);
   const [selected, setSelected] = useState<Restaurant | null>(null);
   const [user, setUser] = useState<SessionUser | null>(null);
   const [blogLinks, setBlogLinks] = useState<Record<string, BlogLink>>({});
@@ -75,20 +78,38 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   }, [initialPlaceId]);
 
   // 거리는 수집기가 회사 기준으로 미리 계산해 넣어둔 값을 그대로 쓴다.
-  const ranked = useMemo(() => {
+  // 가격은 여기서 거르지 않는다 — 가격 때문에 몇 곳이 빠졌는지 세려면 그 직전
+  // 상태가 필요하다.
+  const matched = useMemo(() => {
     const cats = group ? new Set(CATEGORY_GROUPS[group]) : null;
     // search the precomputed alias keys, not the raw name — this is what makes
     // "CU" find stores the source data spells "씨유", and "뉴창동" find "뉴(NEW)창동…"
     const q = normalizeQuery(query);
-    return all
-      .filter(r =>
-        r.distance_km <= maxDist &&
-        (!cats || cats.has(r.category)) &&
-        (!q || r.search_keys.some(k => k.includes(q))),
-      )
+    return all.filter(r =>
+      r.distance_km <= maxDist &&
+      (!cats || cats.has(r.category)) &&
+      (!q || r.search_keys.some(k => k.includes(q))),
+    );
+  }, [all, group, query, maxDist]);
+
+  // 씨드큐브 500m 안 196곳 중 88곳은 메뉴 가격이 아예 없다. 필터를 켜면 그만큼이
+  // 조용히 사라지므로 몇 곳인지 세어 목록이 알리게 한다.
+  const unpricedCount = useMemo(
+    () => (cheapOnly ? matched.filter(r => minMenuPrice(r.menus) === null).length : 0),
+    [matched, cheapOnly],
+  );
+
+  const ranked = useMemo(() => {
+    const kept = cheapOnly
+      ? matched.filter(r => {
+          const min = minMenuPrice(r.menus);
+          return min !== null && min <= CHEAP_LIMIT;
+        })
+      : matched;
+    return kept
       .map(place => ({ place, distanceKm: place.distance_km }))
       .sort((a, b) => a.distanceKm - b.distanceKm);
-  }, [all, group, query, maxDist]);
+  }, [matched, cheapOnly]);
 
   const visible = useMemo(() => ranked.map(x => x.place), [ranked]);
 
@@ -129,7 +150,9 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     });
   }, []);
 
-  const resetFilters = () => { setGroup(null); setQuery(""); setMaxDist(RADIUS_KM); };
+  const resetFilters = () => {
+    setGroup(null); setQuery(""); setMaxDist(RADIUS_KM); setCheapOnly(false);
+  };
   const widenRadius = () => setMaxDist(Math.min(5, Math.round((maxDist + 1) * 10) / 10));
 
   return (
@@ -188,6 +211,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         group={group} onGroup={setGroup}
         query={query} onQuery={setQuery}
         maxDist={maxDist} onMaxDist={setMaxDist}
+        cheapOnly={cheapOnly} onCheapOnly={setCheapOnly}
         count={visible.length}
       />
       <div className="relative flex-1">
@@ -234,21 +258,14 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             myReviews={user ? myReviews : []}
             placeById={placeById}
             loggedIn={user !== null}
+            cheapOnly={cheapOnly}
+            unpricedCount={unpricedCount}
             onSelect={setSelected}
             onWiden={widenRadius}
             onReset={resetFilters}
+            onLadder={() => setLadderOpen(true)}
             canWiden={maxDist < RADIUS_KM}
           />
-        )}
-        {/* 목록 위에 떠 있는 진입점. 고를 후보가 있을 때만 의미가 있어 목록이
-            비어 있으면 내보내지 않는다. */}
-        {!selected && !ladderOpen && ranked.length > 0 && (
-          <button
-            className="absolute bottom-[36dvh] right-3 z-20 h-11 rounded-full bg-ink px-4 text-sm font-bold text-white shadow-lg md:bottom-4 md:right-[calc(24rem+0.75rem)]"
-            onClick={() => setLadderOpen(true)}
-          >
-            🪜 사다리로 정하기
-          </button>
         )}
         {ladderOpen && (
           <LadderPanel

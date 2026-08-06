@@ -24,6 +24,37 @@ export function formatPrice(price: string): string | null {
   return Number.isFinite(n) && n > 0 ? `${n.toLocaleString("ko-KR")}원` : null;
 }
 
+/** 점심값 상한. 식대 지원 한도로 가장 흔한 값이다. */
+export const CHEAP_LIMIT = 10000;
+
+/** "1만원 이하". 좁은 화면에서 반경 슬라이더와 한 줄을 나눠 써야 해 짧게 쓴다. */
+export const CHEAP_LABEL = `${CHEAP_LIMIT / 10000}만원 이하`;
+
+/**
+ * 표시된 메뉴 중 가장 싼 값. 쓸 수 있는 가격이 하나도 없으면 null이다.
+ *
+ * 카카오가 주는 메뉴는 가게당 최대 5개라 이건 그 가게의 진짜 최저가가 아니라
+ * "표시된 메뉴 중 최저가"다. 화면 문구도 그 이상을 약속하지 않는다.
+ *
+ * 미공개(-1)와 빈 문자열을 반드시 걸러야 한다 — 그냥 Number()로 받으면 최저가가
+ * -1이 되어 모든 가게가 상한을 통과해버린다. formatPrice와 같은 기준이다.
+ */
+export function cheapestMenu<T extends { price: string }>(menus: T[]): T | null {
+  let best: T | null = null;
+  let min = Infinity;
+  for (const m of menus) {
+    const n = Number(m.price);
+    if (!Number.isFinite(n) || n <= 0) continue;
+    if (n < min) { min = n; best = m; }
+  }
+  return best;
+}
+
+export function minMenuPrice(menus: { price: string }[]): number | null {
+  const m = cheapestMenu(menus);
+  return m ? Number(m.price) : null;
+}
+
 export const CONVENIENCE_CATEGORY = "체인화 편의점";
 
 /** 편의점은 메뉴 개념이 없어 수집 단계에서 메뉴를 조회하지 않는다 → 메뉴 섹션 자체를 숨긴다. */

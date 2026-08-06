@@ -1,6 +1,6 @@
 "use client";
 
-import { OFFICE_LABEL, Restaurant, formatPrice } from "@/lib/constants";
+import { OFFICE_LABEL, Restaurant, cheapestMenu, formatPrice } from "@/lib/constants";
 
 export type ListedPlace = { place: Restaurant; distanceKm: number };
 export type MyReview = {
@@ -22,9 +22,14 @@ type Props = {
   myReviews: MyReview[];
   placeById: Map<string, Restaurant>;
   loggedIn: boolean;
+  /** 가격 필터가 켜져 있는지. 켜져 있으면 줄에 대표메뉴 대신 통과 근거가 된 메뉴를 쓴다. */
+  cheapOnly: boolean;
+  /** 가격 필터 때문에 빠진, 메뉴 가격을 모르는 가게 수. 0이면 알리지 않는다. */
+  unpricedCount: number;
   onSelect: (r: Restaurant) => void;
   onWiden: () => void;
   onReset: () => void;
+  onLadder: () => void;
   canWiden: boolean;
 };
 
@@ -65,7 +70,7 @@ function Empty({ children }: { children: React.ReactNode }) {
 // md 이상에서는 우측 사이드 패널. 가게를 고르면 이 자리가 상세로 바뀐다.
 export default function PlaceList({
   tab, onTab, places, savedPlaces, myReviews, placeById,
-  loggedIn, onSelect, onWiden, onReset, canWiden,
+  loggedIn, cheapOnly, unpricedCount, onSelect, onWiden, onReset, onLadder, canWiden,
 }: Props) {
   const shown = places.slice(0, MAX_ROWS);
 
@@ -79,20 +84,30 @@ export default function PlaceList({
         md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0 md:pt-4"
       style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
     >
-      <div className="flex gap-1" role="tablist">
-        {TABS.map(t => (
-          <button
-            key={t.key}
-            role="tab"
-            aria-selected={tab === t.key}
-            className={`h-11 flex-1 rounded-lg text-sm font-bold md:h-9 ${
-              tab === t.key ? "bg-ink text-white" : "bg-surface-muted text-text-muted"
-            }`}
-            onClick={() => onTab(t.key)}
-          >
-            {t.label}
-          </button>
-        ))}
+      <div className="flex gap-1">
+        <div className="flex min-w-0 flex-1 gap-1" role="tablist">
+          {TABS.map(t => (
+            <button
+              key={t.key}
+              role="tab"
+              aria-selected={tab === t.key}
+              className={`h-11 flex-1 rounded-lg text-sm font-bold md:h-9 ${
+                tab === t.key ? "bg-ink text-white" : "bg-surface-muted text-text-muted"
+              }`}
+              onClick={() => onTab(t.key)}
+            >
+              {t.label}
+            </button>
+          ))}
+        </div>
+        {/* 사다리는 지도 위에 떠 있었는데, 가게를 하나 고르면 사라져 아무도 다시
+            찾지 못했다. 후보를 고르는 눈이 이미 와 있는 자리로 옮긴다. */}
+        <button
+          className="flex h-11 shrink-0 items-center gap-1 rounded-lg bg-surface-muted px-3 text-sm font-bold text-text-primary md:h-9"
+          onClick={onLadder}
+        >
+          <span aria-hidden>🪜</span>사다리
+        </button>
       </div>
 
       {tab === "near" && (
@@ -100,6 +115,13 @@ export default function PlaceList({
           <p className="mt-3 text-sm text-text-muted">
             <span className="font-bold text-text-primary">{OFFICE_LABEL}</span> 기준 가까운 순
           </p>
+          {/* 가격 필터를 켜면 후보의 절반 가까이가 조용히 사라진다 — 메뉴 가격이
+              등록 안 된 곳이 그만큼 많다. 말없이 빼면 없는 줄 알게 된다. */}
+          {unpricedCount > 0 && (
+            <p className="mt-1 text-xs text-text-muted">
+              가격이 등록 안 된 {unpricedCount}곳은 빠졌어요.
+            </p>
+          )}
           {shown.length === 0 ? (
             <div className="py-6 text-center">
               <p className="text-base font-bold text-text-primary">조건에 맞는 가게가 없어요</p>
@@ -123,14 +145,17 @@ export default function PlaceList({
           ) : (
             <ul className="mt-1">
               {shown.map(({ place, distanceKm }) => {
-                const top = place.menus[0];
+                // 가격으로 걸렀으면 그 가게를 통과시킨 메뉴를 보여준다. 대표메뉴를
+                // 그대로 쓰면 "1만원 이하"를 켜놓고 15,000원이 떠서 필터가 고장 난
+                // 것처럼 읽힌다.
+                const top = cheapOnly ? cheapestMenu(place.menus) : place.menus[0];
                 const price = top ? formatPrice(top.price) : null;
                 return (
                   <Row
                     key={place.kakao_place_id}
                     lead={formatDistance(distanceKm)}
                     title={place.name}
-                    subtitle={place.category + (price ? ` · ${top.name} ${price}` : "")}
+                    subtitle={place.category + (top && price ? ` · ${top.name} ${price}` : "")}
                     onClick={() => onSelect(place)}
                   />
                 );
