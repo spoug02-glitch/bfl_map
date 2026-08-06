@@ -81,6 +81,16 @@ export function isMealPlace(category: string): boolean {
 export const CONVENIENCE_NOTICE =
   "편의점은 회사 식권 정책에 따라 결제가 제한될 수 있어요. 사내 규정을 확인해주세요.";
 
+/**
+ * 공유 카드 이미지 경로. 쿼리는 카카오 캐시를 깨는 버전이다.
+ *
+ * 카카오는 이미지를 자기 프록시로 가져가며 URL별로 결과를 캐시하는데, 실패도
+ * 캐시한다. 처음 배포된 날 Vercel Security Checkpoint(봇 차단)가 켜져 있어
+ * 카카오가 챌린지 응답을 물고 갔고, 그 뒤로 서버가 멀쩡해져도 카드에 이미지가
+ * 안 떴다. 파일을 바꾸면 반드시 버전을 올릴 것 — 같은 주소로는 다시 안 가져간다.
+ */
+export const OG_CARD_PATH = "/og-card.png?v=2";
+
 export const CREDIT = { author: "노에마", email: "obanaeodzb@naver.com" };
 
 /** Mirrors the character-stripping half of collector/brands.py `normalize`.

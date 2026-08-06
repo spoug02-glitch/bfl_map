@@ -2,7 +2,7 @@
 
 import Script from "next/script";
 import { useState } from "react";
-import { Restaurant } from "@/lib/constants";
+import { OG_CARD_PATH, Restaurant } from "@/lib/constants";
 import { shareDescription, sharePath, shareTitle } from "@/lib/share-copy";
 
 // SRI 값은 버전마다 다르다 — 공식 다운로드 페이지에서 복사해 넣을 것
@@ -98,7 +98,7 @@ export default function ShareButton({ restaurant }: { restaurant: Restaurant }) 
         content: {
           title,
           description,
-          imageUrl: `${base}/og-card.png`,
+          imageUrl: `${base}${OG_CARD_PATH}`,
           link: { mobileWebUrl: url, webUrl: url },
         },
         buttons: [{ title: "지도에서 보기", link: { mobileWebUrl: url, webUrl: url } }],

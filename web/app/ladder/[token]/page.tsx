@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import LadderResult from "@/components/LadderResult";
+import { OG_CARD_PATH } from "@/lib/constants";
 import { decodeLadder } from "@/lib/ladder-link";
 import type { ShareSubject } from "@/lib/share-copy";
 import shareIndex from "@/lib/share-index.json";
@@ -31,9 +32,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     description,
     openGraph: {
       title, description, siteName: SITE_NAME, type: "website", locale: "ko_KR",
-      images: [{ url: "/og-card.png", width: 1200, height: 630 }],
+      images: [{ url: OG_CARD_PATH, width: 1200, height: 630 }],
     },
-    twitter: { card: "summary_large_image", title, description, images: ["/og-card.png"] },
+    twitter: { card: "summary_large_image", title, description, images: [OG_CARD_PATH] },
   };
 }
 

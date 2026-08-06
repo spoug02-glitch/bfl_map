@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { OG_CARD_PATH } from "@/lib/constants";
 import "./globals.css";
 
 // No next/font/google here on purpose. This Next build's font dataset has NO
@@ -25,9 +26,9 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     type: "website",
     locale: "ko_KR",
-    images: [{ url: "/og-card.png", width: 1200, height: 630 }],
+    images: [{ url: OG_CARD_PATH, width: 1200, height: 630 }],
   },
-  twitter: { card: "summary_large_image", images: ["/og-card.png"] },
+  twitter: { card: "summary_large_image", images: [OG_CARD_PATH] },
 };
 
 export default function RootLayout({
