@@ -142,29 +142,32 @@ export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
             후보를 {MIN_LEGS}~{MAX_LEGS}곳 고르면 사다리를 놓아드려요.
           </p>
 
-          <div className="mt-4 flex gap-2">
+          {/* 담기 수단은 필터 칩과 같은 테두리 칩으로 둔다 — 회색 채움은 입력창과
+              CTA에 양보해서, 화면이 회색 사각형 네 개로 읽히지 않게 한다. */}
+          <p className="mt-5 text-xs font-bold text-text-muted">후보 담기</p>
+          <div className="mt-2 flex gap-2">
             <button
-              className="h-11 flex-1 rounded-lg bg-surface-muted text-sm font-bold text-text-primary disabled:opacity-50"
+              className="h-11 flex-1 rounded-xl border border-border bg-surface text-sm font-bold text-text-primary disabled:opacity-50"
               disabled={full || savedPlaces.length === 0}
               onClick={addSaved}
             >
-              저장한 곳 담기
+              <span aria-hidden>☆</span> 저장한 곳 담기
             </button>
             <button
-              className="h-11 flex-1 rounded-lg bg-surface-muted text-sm font-bold text-text-primary disabled:opacity-50"
+              className="h-11 flex-1 rounded-xl border border-border bg-surface text-sm font-bold text-text-primary disabled:opacity-50"
               disabled={full || nearby.length === 0}
               onClick={fillRandom}
             >
-              랜덤 {RANDOM_PICK}곳
+              <span aria-hidden>🎲</span> 랜덤 {RANDOM_PICK}곳
             </button>
           </div>
-          <p className="mt-1 text-xs text-text-muted">
-            랜덤은 {RANDOM_RADIUS_KM * 1000}m 안 밥집 {nearby.length}곳에서 뽑아요
-            (편의점·카페 제외). 검색으로 담는 건 제한이 없어요.
+          <p className="mt-1.5 text-xs text-text-muted">
+            랜덤은 {RANDOM_RADIUS_KM * 1000}m 안 밥집 {nearby.length}곳에서 뽑아요 ·
+            편의점·카페는 빼요 · 검색은 제한 없음
           </p>
 
           <input
-            className="mt-2 h-11 w-full rounded-lg bg-surface-muted px-3 text-base text-text-primary placeholder:text-text-muted"
+            className="mt-3 h-11 w-full rounded-lg bg-surface-muted px-3 text-base text-text-primary placeholder:text-text-muted"
             placeholder="가게 이름으로 찾아 담기"
             value={query}
             disabled={full}
@@ -188,26 +191,49 @@ export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
             </ul>
           )}
 
-          <ul className="mt-4 space-y-1">
-            {picked.map((r, i) => (
-              <li
-                key={r.kakao_place_id}
-                className="flex items-center gap-2 rounded-lg bg-surface-muted px-3 py-2"
-              >
-                <span className="w-5 shrink-0 text-xs font-bold text-text-muted">{i + 1}</span>
-                <span className="min-w-0 flex-1 truncate text-sm text-text-primary">{r.name}</span>
-                <button
-                  className="grid h-9 w-9 shrink-0 place-items-center text-text-muted"
-                  aria-label={`${r.name} 빼기`}
-                  onClick={() => remove(r.kakao_place_id)}
-                >
-                  ×
-                </button>
-              </li>
-            ))}
-          </ul>
-          {picked.length === 0 && (
-            <p className="py-6 text-center text-sm text-text-muted">아직 담은 곳이 없어요.</p>
+          {picked.length > 0 ? (
+            <>
+              <p className="mt-5 text-xs font-bold text-text-muted">
+                담은 후보 <span className="text-text-primary">{picked.length}</span>/{MAX_LEGS}
+              </p>
+              <ul className="mt-2 space-y-1">
+                {picked.map((r, i) => (
+                  <li
+                    key={r.kakao_place_id}
+                    className="flex items-center gap-2 rounded-lg bg-surface-muted px-3 py-2"
+                  >
+                    <span className="w-5 shrink-0 text-xs font-bold text-text-muted">{i + 1}</span>
+                    <span className="min-w-0 flex-1 truncate text-sm text-text-primary">{r.name}</span>
+                    <button
+                      className="grid h-9 w-9 shrink-0 place-items-center text-text-muted"
+                      aria-label={`${r.name} 빼기`}
+                      onClick={() => remove(r.kakao_place_id)}
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            /* 빈 자리에서 결과를 미리 보여준다 — 회색 사다리에 주황 선이 한 번
+               내려온다. "담으면 이걸 탄다"는 말을 그림이 대신한다. */
+            <div className="mt-5 grid place-items-center py-4">
+              <svg viewBox="0 0 132 96" width="132" height="96" aria-hidden>
+                <g stroke="var(--color-border)" strokeWidth="3" strokeLinecap="round">
+                  <path d="M18 8v80M66 8v80M114 8v80" />
+                  <path d="M18 30h48M66 54h48M18 76h48" />
+                </g>
+                <path
+                  className="ladder-intro"
+                  d="M66 8v22H18v46h48v12"
+                  fill="none" stroke="var(--color-star)" strokeWidth="4"
+                  strokeLinecap="round" strokeLinejoin="round"
+                  strokeDasharray="176" strokeDashoffset="176"
+                />
+              </svg>
+              <p className="mt-3 text-sm text-text-muted">담은 후보가 여기서 사다리를 타요.</p>
+            </div>
           )}
 
           <button
