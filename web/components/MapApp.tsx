@@ -221,14 +221,16 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         count={visible.length}
       />
       <div className="relative flex-1">
-        {/* 지도에 손을 대면 필터바를 접는다 — 모바일에서 펼친 바는 화면의 40%를
-            먹는데, 지도를 만지기 시작했다는 건 이제 지도를 보겠다는 뜻이다.
-            capture라 카카오 지도의 팬·줌은 그대로 이어진다. 데스크톱(md)은 바가
-            상주하는 자리라 건드리지 않는다. 목록 시트는 형제 요소라 안 걸린다. */}
+        {/* 지도에 손을 대면 필터바를 접는다 — 펼친 바는 화면의 40%를 먹는데,
+            지도를 만지기 시작했다는 건 이제 지도를 보겠다는 뜻이다. capture라
+            카카오 지도의 팬·줌은 그대로 이어지고, 목록 시트는 형제 요소라 안
+            걸린다. 화면 폭이 아니라 입력 종류로 가른다 — 폭이 데스크톱처럼
+            보고되는 폰(폴드류·인앱 브라우저)에서도 터치는 터치다. 마우스는
+            바가 상주하는 데스크톱이니 놔둔다. */}
         <div
           className="h-full w-full"
-          onPointerDownCapture={() => {
-            if (!window.matchMedia("(min-width: 48rem)").matches) setBarOpen(false);
+          onPointerDownCapture={e => {
+            if (e.pointerType !== "mouse") setBarOpen(false);
           }}
         >
           <MapView restaurants={visible} maxDist={maxDist} onSelect={setSelected} />

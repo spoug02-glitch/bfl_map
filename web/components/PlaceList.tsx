@@ -12,7 +12,7 @@ export type MyReview = {
   created_at: string;
 };
 
-export type ListTab = "near" | "saved" | "mine";
+export type ListTab = "near" | "me";
 
 type Props = {
   tab: ListTab;
@@ -35,12 +35,6 @@ type Props = {
 
 /** 한 번에 그리는 최대 개수. 5,834개를 다 그리면 스크롤이 버벅인다. */
 const MAX_ROWS = 50;
-
-const TABS: { key: ListTab; label: string }[] = [
-  { key: "near", label: "주변" },
-  { key: "saved", label: "저장" },
-  { key: "mine", label: "내 리뷰" },
-];
 
 function formatDistance(km: number): string {
   return km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)}km`;
@@ -84,29 +78,34 @@ export default function PlaceList({
         md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0 md:pt-4"
       style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
     >
+      {/* 주변 | 사다리 | 나. 사다리는 탭이 아니라 패널을 여는 버튼이지만 같은
+          줄에서 같은 크기로 산다 — 지도 위에 띄웠을 때는 가게를 하나 고르는
+          순간 사라져 아무도 다시 찾지 못했다. 탭이 둘뿐이라 role=tablist 대신
+          aria-current로 충분하다. */}
       <div className="flex gap-1">
-        <div className="flex min-w-0 flex-1 gap-1" role="tablist">
-          {TABS.map(t => (
-            <button
-              key={t.key}
-              role="tab"
-              aria-selected={tab === t.key}
-              className={`h-11 flex-1 rounded-lg text-sm font-bold md:h-9 ${
-                tab === t.key ? "bg-ink text-white" : "bg-surface-muted text-text-muted"
-              }`}
-              onClick={() => onTab(t.key)}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
-        {/* 사다리는 지도 위에 떠 있었는데, 가게를 하나 고르면 사라져 아무도 다시
-            찾지 못했다. 후보를 고르는 눈이 이미 와 있는 자리로 옮긴다. */}
         <button
-          className="flex h-11 shrink-0 items-center gap-1 rounded-lg bg-surface-muted px-3 text-sm font-bold text-text-primary md:h-9"
+          aria-current={tab === "near"}
+          className={`h-11 flex-1 rounded-lg text-sm font-bold md:h-9 ${
+            tab === "near" ? "bg-ink text-white" : "bg-surface-muted text-text-muted"
+          }`}
+          onClick={() => onTab("near")}
+        >
+          주변
+        </button>
+        <button
+          className="flex h-11 flex-1 items-center justify-center gap-1 rounded-lg bg-surface-muted text-sm font-bold text-text-primary md:h-9"
           onClick={onLadder}
         >
           <span aria-hidden>🪜</span>사다리
+        </button>
+        <button
+          aria-current={tab === "me"}
+          className={`h-11 flex-1 rounded-lg text-sm font-bold md:h-9 ${
+            tab === "me" ? "bg-ink text-white" : "bg-surface-muted text-text-muted"
+          }`}
+          onClick={() => onTab("me")}
+        >
+          나
         </button>
       </div>
 
@@ -170,49 +169,65 @@ export default function PlaceList({
         </>
       )}
 
-      {tab === "saved" &&
-        (!loggedIn ? (
-          <Empty>로그인하면 가게를 저장해둘 수 있어요.</Empty>
-        ) : savedPlaces.length === 0 ? (
-          <Empty>아직 저장한 가게가 없어요. 가게를 열고 ☆ 저장을 눌러보세요.</Empty>
-        ) : (
-          // 저장 목록은 필터와 반경을 따르지 않는다 — 저장해둔 건 언제나 보여야 한다.
-          <ul className="mt-1">
-            {savedPlaces.map(place => (
-              <Row
-                key={place.kakao_place_id}
-                lead={formatDistance(place.distance_km)}
-                title={place.name}
-                subtitle={place.category}
-                onClick={() => onSelect(place)}
-              />
-            ))}
-          </ul>
-        ))}
+      {tab === "me" && (
+        <>
+          {/* 거리의 기준점. 지금은 모두 같은 곳이라 바꿀 수는 없고, 어디 기준인지
+              보여주기만 한다. */}
+          <div className="mt-3 flex items-center gap-3 rounded-lg bg-surface-muted px-3 py-2.5">
+            <span className="shrink-0 text-xs font-bold text-text-muted">회사</span>
+            <span className="min-w-0 flex-1 truncate text-sm font-bold text-text-primary">{OFFICE_LABEL}</span>
+            <span className="shrink-0 text-xs text-text-muted">지금은 모두 여기 기준</span>
+          </div>
 
-      {tab === "mine" &&
-        (!loggedIn ? (
-          <Empty>로그인하면 내가 쓴 리뷰를 모아볼 수 있어요.</Empty>
-        ) : myReviews.length === 0 ? (
-          <Empty>아직 쓴 리뷰가 없어요.</Empty>
-        ) : (
-          <ul className="mt-1">
-            {myReviews.map(rv => {
-              const place = placeById.get(rv.place_id);
-              // 수집을 다시 돌려 사라진 가게의 리뷰는 열 곳이 없으니 건너뛴다.
-              if (!place) return null;
-              return (
-                <Row
-                  key={rv.id}
-                  lead={`★${rv.taste}`}
-                  title={place.name}
-                  subtitle={rv.body || `맛 ★${rv.taste} · 편의성 ★${rv.convenience}`}
-                  onClick={() => onSelect(place)}
-                />
-              );
-            })}
-          </ul>
-        ))}
+          {!loggedIn ? (
+            <Empty>로그인하면 저장한 맛집과 내가 쓴 리뷰가 여기 모여요.</Empty>
+          ) : (
+            <>
+              <h3 className="mt-4 text-sm font-bold text-text-primary">저장한 맛집</h3>
+              {savedPlaces.length === 0 ? (
+                <p className="mt-2 text-sm text-text-muted">
+                  아직 없어요. 가게를 열고 ☆ 저장을 눌러보세요.
+                </p>
+              ) : (
+                // 저장 목록은 필터와 반경을 따르지 않는다 — 저장해둔 건 언제나 보여야 한다.
+                <ul className="mt-1">
+                  {savedPlaces.map(place => (
+                    <Row
+                      key={place.kakao_place_id}
+                      lead={formatDistance(place.distance_km)}
+                      title={place.name}
+                      subtitle={place.category}
+                      onClick={() => onSelect(place)}
+                    />
+                  ))}
+                </ul>
+              )}
+
+              <h3 className="mt-4 text-sm font-bold text-text-primary">내 리뷰</h3>
+              {myReviews.length === 0 ? (
+                <p className="mt-2 text-sm text-text-muted">아직 쓴 리뷰가 없어요.</p>
+              ) : (
+                <ul className="mt-1">
+                  {myReviews.map(rv => {
+                    const place = placeById.get(rv.place_id);
+                    // 수집을 다시 돌려 사라진 가게의 리뷰는 열 곳이 없으니 건너뛴다.
+                    if (!place) return null;
+                    return (
+                      <Row
+                        key={rv.id}
+                        lead={`★${rv.taste}`}
+                        title={place.name}
+                        subtitle={rv.body || `맛 ★${rv.taste} · 편의성 ★${rv.convenience}`}
+                        onClick={() => onSelect(place)}
+                      />
+                    );
+                  })}
+                </ul>
+              )}
+            </>
+          )}
+        </>
+      )}
     </aside>
   );
 }
