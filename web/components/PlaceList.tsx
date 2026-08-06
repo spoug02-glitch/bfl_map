@@ -60,6 +60,15 @@ function Empty({ children }: { children: React.ReactNode }) {
   return <p className="py-8 text-center text-sm text-text-muted">{children}</p>;
 }
 
+/** "나" 탭의 구획 머리띠. 박스가 아니라 시트 폭을 꽉 채우는 회색 바다. */
+function SectionBar({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="-mx-4 mt-3 bg-surface-muted px-4 py-1.5 text-xs font-bold text-text-muted">
+      {children}
+    </div>
+  );
+}
+
 // 가게 상세(PlacePanel)와 같은 자리를 쓴다 — 모바일은 하단 바텀시트,
 // md 이상에서는 우측 사이드 패널. 가게를 고르면 이 자리가 상세로 바뀐다.
 export default function PlaceList({
@@ -92,8 +101,9 @@ export default function PlaceList({
         >
           주변
         </button>
+        {/* 색은 비선택 탭과 같게 — 혼자 진하면 셋 중 얘만 눌려 있는 걸로 읽힌다 */}
         <button
-          className="flex h-11 flex-1 items-center justify-center gap-1 rounded-lg bg-surface-muted text-sm font-bold text-text-primary md:h-9"
+          className="flex h-11 flex-1 items-center justify-center gap-1 rounded-lg bg-surface-muted text-sm font-bold text-text-muted md:h-9"
           onClick={onLadder}
         >
           <span aria-hidden>🪜</span>사다리
@@ -173,8 +183,8 @@ export default function PlaceList({
         <>
           {/* 거리의 기준점. 지금은 모두 같은 곳이라 바꿀 수는 없고, 어디 기준인지
               보여주기만 한다. */}
-          <div className="mt-3 flex items-center gap-3 rounded-lg bg-surface-muted px-3 py-2.5">
-            <span className="shrink-0 text-xs font-bold text-text-muted">회사</span>
+          <SectionBar>회사</SectionBar>
+          <div className="flex items-center justify-between gap-3 py-2.5">
             <span className="min-w-0 flex-1 truncate text-sm font-bold text-text-primary">{OFFICE_LABEL}</span>
             <span className="shrink-0 text-xs text-text-muted">지금은 모두 여기 기준</span>
           </div>
@@ -183,7 +193,7 @@ export default function PlaceList({
             <Empty>로그인하면 저장한 맛집과 내가 쓴 리뷰가 여기 모여요.</Empty>
           ) : (
             <>
-              <h3 className="mt-4 text-sm font-bold text-text-primary">저장한 맛집</h3>
+              <SectionBar>저장한 맛집</SectionBar>
               {savedPlaces.length === 0 ? (
                 <p className="mt-2 text-sm text-text-muted">
                   아직 없어요. 가게를 열고 ☆ 저장을 눌러보세요.
@@ -203,7 +213,7 @@ export default function PlaceList({
                 </ul>
               )}
 
-              <h3 className="mt-4 text-sm font-bold text-text-primary">내 리뷰</h3>
+              <SectionBar>내 리뷰</SectionBar>
               {myReviews.length === 0 ? (
                 <p className="mt-2 text-sm text-text-muted">아직 쓴 리뷰가 없어요.</p>
               ) : (
