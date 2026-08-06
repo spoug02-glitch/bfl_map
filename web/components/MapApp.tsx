@@ -33,6 +33,8 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [query, setQuery] = useState("");
   const [maxDist, setMaxDist] = useState(5.0);
   const [cheapOnly, setCheapOnly] = useState(false);
+  // null = 아직 아무도 안 정함(화면 폭이 정한다). 의미는 FilterBar 주석 참조.
+  const [barOpen, setBarOpen] = useState<boolean | null>(null);
   const [selected, setSelected] = useState<Restaurant | null>(null);
   const [user, setUser] = useState<SessionUser | null>(null);
   const [blogLinks, setBlogLinks] = useState<Record<string, BlogLink>>({});
@@ -215,10 +217,22 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         query={query} onQuery={setQuery}
         maxDist={maxDist} onMaxDist={setMaxDist}
         cheapOnly={cheapOnly} onCheapOnly={setCheapOnly}
+        open={barOpen} onOpenChange={setBarOpen}
         count={visible.length}
       />
       <div className="relative flex-1">
-        <MapView restaurants={visible} maxDist={maxDist} onSelect={setSelected} />
+        {/* 지도에 손을 대면 필터바를 접는다 — 모바일에서 펼친 바는 화면의 40%를
+            먹는데, 지도를 만지기 시작했다는 건 이제 지도를 보겠다는 뜻이다.
+            capture라 카카오 지도의 팬·줌은 그대로 이어진다. 데스크톱(md)은 바가
+            상주하는 자리라 건드리지 않는다. 목록 시트는 형제 요소라 안 걸린다. */}
+        <div
+          className="h-full w-full"
+          onPointerDownCapture={() => {
+            if (!window.matchMedia("(min-width: 48rem)").matches) setBarOpen(false);
+          }}
+        >
+          <MapView restaurants={visible} maxDist={maxDist} onSelect={setSelected} />
+        </div>
         <SiteFooter />
         {staleLink && (
           <div className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-border bg-surface px-4 py-3 text-center shadow-lg">

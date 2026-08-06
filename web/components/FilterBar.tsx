@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { CATEGORY_GROUPS, CHEAP_LABEL } from "@/lib/constants";
 
 type Props = {
@@ -8,6 +7,8 @@ type Props = {
   query: string; onQuery: (q: string) => void;
   maxDist: number; onMaxDist: (d: number) => void;
   cheapOnly: boolean; onCheapOnly: (v: boolean) => void;
+  /** 접힘 상태. 부모가 든다 — 지도를 만지면 접는 건 지도를 아는 쪽만 할 수 있다. */
+  open: boolean | null; onOpenChange: (v: boolean) => void;
   count: number;
 };
 
@@ -20,22 +21,22 @@ function summarize(query: string, group: string | null, maxDist: number, cheapOn
 }
 
 export default function FilterBar({
-  group, onGroup, query, onQuery, maxDist, onMaxDist, cheapOnly, onCheapOnly, count,
+  group, onGroup, query, onQuery, maxDist, onMaxDist, cheapOnly, onCheapOnly,
+  open, onOpenChange, count,
 }: Props) {
   /**
-   * 아직 아무도 접거나 펴지 않은 상태를 null로 둔다.
+   * 아직 아무도 접거나 펴지 않은 상태가 null이다.
    *
    * 모바일에서 이 바가 화면 위쪽 269px을 먹어 지도가 211px밖에 안 남았다. 그래서
    * 휴대폰에서는 접힌 채로 시작해야 하는데, 그 판단을 상태로 하면 서버가 화면
    * 폭을 몰라 하이드레이션 때 한 번 펼쳐졌다 접히는 게 보인다. null인 동안에는
-   * CSS가 폭을 보고 고르게 두고, 누르는 순간부터 그 선택이 CSS를 이긴다.
+   * CSS가 폭을 보고 고르게 두고, 정해지는 순간부터 그 값이 CSS를 이긴다.
    *
    * 클래스는 조립하지 않고 통째로 적는다 — Tailwind는 소스에 리터럴로 있는
    * 이름만 만들어내서, 템플릿으로 이어붙이면 md: 규칙이 아예 생성되지 않는다.
    */
-  const [override, setOverride] = useState<boolean | null>(null);
-  const summaryClass = override === null ? "flex md:hidden" : override ? "hidden" : "flex";
-  const bodyClass = override === null ? "hidden md:flex" : override ? "flex" : "hidden";
+  const summaryClass = open === null ? "flex md:hidden" : open ? "hidden" : "flex";
+  const bodyClass = open === null ? "hidden md:flex" : open ? "flex" : "hidden";
 
   return (
     <div className="shrink-0 border-b border-border-subtle bg-surface text-sm shadow-xs">
@@ -44,7 +45,7 @@ export default function FilterBar({
         className={`${summaryClass} h-11 w-full items-center justify-between gap-3 px-4`}
         aria-expanded={false}
         aria-label="검색과 필터 펼치기"
-        onClick={() => setOverride(true)}
+        onClick={() => onOpenChange(true)}
       >
         <span className="flex min-w-0 items-center gap-2">
           <span aria-hidden className="text-text-muted">⌕</span>
@@ -123,7 +124,7 @@ export default function FilterBar({
           className="-mx-4 flex h-11 items-center justify-center gap-1.5 border-t border-border-subtle text-text-muted md:h-8"
           aria-expanded
           aria-label="검색과 필터 접기"
-          onClick={() => setOverride(false)}
+          onClick={() => onOpenChange(false)}
         >
           <span className="font-medium">{count}곳</span>
           <span aria-hidden>▴</span>
