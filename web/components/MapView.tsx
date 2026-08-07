@@ -8,6 +8,30 @@ import { CENTER, OFFICE_LABEL, Restaurant } from "@/lib/constants";
  *  처음 마주치는 화면과 회사 버튼이 돌아오는 화면 둘 다 이 눈높이다. */
 const INITIAL_LEVEL = 3;
 
+/**
+ * 식당 마커. 카카오 기본 물방울 핀은 34px짜리라 100곳만 넘어가도 지도가 핀으로
+ * 덮인다 — 여기서 필요한 건 "가게가 있다"는 점 하나지, 핀 그림이 아니다.
+ */
+const DOT_ICON =
+  "data:image/svg+xml;charset=utf-8," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14">' +
+      '<circle cx="7" cy="7" r="4.5" fill="#2563eb" stroke="#fff" stroke-width="2"/></svg>',
+  );
+
+/** 뭉친 자리를 나타내는 원. 필터 칩과 같은 ink라 지도 위에서 우리 것으로 읽힌다. */
+const CLUSTER_STYLE = {
+  width: "34px",
+  height: "34px",
+  background: "rgba(4, 22, 39, 0.85)",
+  borderRadius: "17px",
+  color: "#fff",
+  textAlign: "center",
+  lineHeight: "34px",
+  fontSize: "13px",
+  fontWeight: "700",
+};
+
 // 카카오맵 JS SDK는 공식 @types 패키지가 없다 — 이 컴포넌트가 실제로 쓰는
 // 부분만 최소한으로 타입을 선언해 `any` 없이 사용한다.
 type KakaoLatLng = object;
@@ -41,7 +65,11 @@ interface KakaoMapsNamespace {
     strokeWeight: number; strokeColor: string; strokeOpacity: number;
     fillColor: string; fillOpacity: number;
   }) => KakaoCircle;
-  MarkerClusterer: new (opts: { map: KakaoMap; averageCenter: boolean; minLevel: number }) => KakaoClusterer;
+  MarkerClusterer: new (opts: {
+    map: KakaoMap; averageCenter: boolean; minLevel: number;
+    gridSize?: number; disableClickZoom?: boolean;
+    styles?: Record<string, string>[];
+  }) => KakaoClusterer;
   event: { addListener(target: KakaoMarker, type: string, handler: () => void): void };
 }
 
@@ -79,8 +107,13 @@ export default function MapView({ restaurants, maxDist, onSelect, apiRef }: Prop
         level: INITIAL_LEVEL,
       });
       mapRef.current = map;
+      // minLevel 5로 두면 한참 축소했을 때만 뭉쳐서, 정작 쓰는 줌(기본 3)에서는
+      // 196곳이 196개 핀으로 깔렸다. 1로 내려 모든 줌에서 켜두고, 실제로 뭉칠지는
+      // gridSize가 정한다 — 화면에서 60px 안에 겹친 것만 하나로 모으므로 가까이
+      // 당기면 알아서 풀린다.
       clustererRef.current = new window.kakao.maps.MarkerClusterer({
-        map, averageCenter: true, minLevel: 5,
+        map, averageCenter: true, minLevel: 1, gridSize: 32,
+        styles: [CLUSTER_STYLE],
       });
       // 회사는 식당과 같은 파란 핀이면 안 된다 — 핀 수백 개 사이에서 "여기가
       // 어디 기준인지"를 찾을 수 없었다. 우리 로고를 크게, 항상 맨 위에 둔다.
@@ -122,10 +155,18 @@ export default function MapView({ restaurants, maxDist, onSelect, apiRef }: Prop
       strokeWeight: 2, strokeColor: "#2563eb", strokeOpacity: 0.6,
       fillColor: "#2563eb", fillOpacity: 0.06,
     });
+    // 점 아이콘은 마커마다 새로 만들 필요가 없다 — 5,834개면 그 비용이 그대로 쌓인다.
+    const dot = new kakao.maps.MarkerImage(
+      DOT_ICON,
+      new kakao.maps.Size(14, 14),
+      // 물방울과 달리 점은 뾰족한 끝이 없어 한가운데를 좌표에 맞춘다
+      { offset: new kakao.maps.Point(7, 7) },
+    );
     const markers = restaurants.map(r => {
       const m = new kakao.maps.Marker({
         position: new kakao.maps.LatLng(r.lat, r.lng),
         title: r.name,
+        image: dot,
       });
       kakao.maps.event.addListener(m, "click", () => onSelect(r));
       return m;
