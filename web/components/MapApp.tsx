@@ -21,6 +21,7 @@ import {
   effectiveMinPrice,
   normalizeQuery,
 } from "@/lib/constants";
+import { dislikeKeywords, isDisliked, useDislikes } from "@/lib/dislikes";
 import { suggestNickname } from "@/lib/nickname";
 
 /**
@@ -119,27 +120,37 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     );
   }, [all, group, query, maxDist]);
 
+  // 안 먹는 음식은 필터가 아니라 그 사람의 상수라, 반경·업종을 통과한 뒤 한 번 더
+  // 거른다. 몇 곳이 빠졌는지는 설정 화면이 보여준다.
+  const dislikes = useDislikes();
+  const disliked = useMemo(() => dislikeKeywords(dislikes), [dislikes]);
+  const eatable = useMemo(
+    () => (disliked.length === 0 ? matched : matched.filter(r => !isDisliked(r, disliked))),
+    [matched, disliked],
+  );
+  const dislikedCount = matched.length - eatable.length;
+
   // 씨드큐브 500m 안 196곳 중 88곳은 메뉴 가격이 아예 없다. 필터를 켜면 그만큼이
   // 조용히 사라지므로 몇 곳인지 세어 목록이 알리게 한다.
   const unpricedCount = useMemo(
     () =>
       priceLimit !== null
-        ? matched.filter(r => effectiveMinPrice(r.menus, specialPrices.get(r.kakao_place_id)) === null).length
+        ? eatable.filter(r => effectiveMinPrice(r.menus, specialPrices.get(r.kakao_place_id)) === null).length
         : 0,
-    [matched, priceLimit, specialPrices],
+    [eatable, priceLimit, specialPrices],
   );
 
   const ranked = useMemo(() => {
     const kept = priceLimit !== null
-      ? matched.filter(r => {
+      ? eatable.filter(r => {
           const min = effectiveMinPrice(r.menus, specialPrices.get(r.kakao_place_id));
           return min !== null && min <= priceLimit;
         })
-      : matched;
+      : eatable;
     return kept
       .map(place => ({ place, distanceKm: place.distance_km }))
       .sort((a, b) => a.distanceKm - b.distanceKm);
-  }, [matched, priceLimit, specialPrices]);
+  }, [eatable, priceLimit, specialPrices]);
 
   const visible = useMemo(() => ranked.map(x => x.place), [ranked]);
 
@@ -320,6 +331,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             priceFiltered={priceLimit !== null}
             specialPrices={specialPrices}
             unpricedCount={unpricedCount}
+            dislikedCount={dislikedCount}
             onSelect={setSelected}
             onWiden={widenRadius}
             onReset={resetFilters}

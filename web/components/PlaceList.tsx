@@ -1,5 +1,6 @@
 "use client";
 
+import DislikeSettings from "@/components/DislikeSettings";
 import { OFFICE_LABEL, Restaurant, SpecialPrice, cheapestMenu, formatPrice, minMenuPrice } from "@/lib/constants";
 
 export type ListedPlace = { place: Restaurant; distanceKm: number };
@@ -28,6 +29,8 @@ type Props = {
   specialPrices: Map<string, SpecialPrice>;
   /** 가격 필터 때문에 빠진, 메뉴 가격을 모르는 가게 수. 0이면 알리지 않는다. */
   unpricedCount: number;
+  /** 안 먹는 음식 설정으로 빠진 가게 수. */
+  dislikedCount: number;
   onSelect: (r: Restaurant) => void;
   onWiden: () => void;
   onReset: () => void;
@@ -75,7 +78,8 @@ function SectionBar({ children }: { children: React.ReactNode }) {
 // md 이상에서는 우측 사이드 패널. 가게를 고르면 이 자리가 상세로 바뀐다.
 export default function PlaceList({
   tab, onTab, places, savedPlaces, myReviews, placeById,
-  loggedIn, priceFiltered, specialPrices, unpricedCount, onSelect, onWiden, onReset, onRoulette, canWiden,
+  loggedIn, priceFiltered, specialPrices, unpricedCount, dislikedCount,
+  onSelect, onWiden, onReset, onRoulette, canWiden,
 }: Props) {
   const shown = places.slice(0, MAX_ROWS);
 
@@ -199,6 +203,10 @@ export default function PlaceList({
             <span className="min-w-0 flex-1 truncate text-sm font-bold text-text-primary">{OFFICE_LABEL}</span>
             <span className="shrink-0 text-xs text-text-muted">지금은 모두 여기 기준</span>
           </div>
+
+          {/* 로그인과 무관한 개인 설정 — 이 브라우저에만 남는다 */}
+          <SectionBar>안 먹는 음식</SectionBar>
+          <DislikeSettings excludedCount={dislikedCount} />
 
           {!loggedIn ? (
             <Empty>로그인하면 저장한 맛집과 내가 쓴 리뷰가 여기 모여요.</Empty>
