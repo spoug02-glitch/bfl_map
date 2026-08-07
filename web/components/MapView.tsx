@@ -19,11 +19,17 @@ const DOT_ICON =
       '<circle cx="7" cy="7" r="4.5" fill="#2563eb" stroke="#fff" stroke-width="2"/></svg>',
   );
 
-/** 뭉친 자리를 나타내는 원. 필터 칩과 같은 ink라 지도 위에서 우리 것으로 읽힌다. */
+/**
+ * 뭉친 자리를 나타내는 원. 필터 칩과 같은 ink라 지도 위에서 우리 것으로 읽힌다.
+ *
+ * 0.6까지 묽힌다 — 0.85는 지도 위에서 검은 점처럼 튀어 지도를 읽는 걸 방해했다.
+ * 이 값이 하한이다: 흰 배경 위에서 흰 글자와의 대비가 4.83:1로 WCAG AA(4.5:1)를
+ * 겨우 넘긴다. 더 묽히면 숫자가 안 읽힌다.
+ */
 const CLUSTER_STYLE = {
   width: "34px",
   height: "34px",
-  background: "rgba(4, 22, 39, 0.85)",
+  background: "rgba(4, 22, 39, 0.6)",
   borderRadius: "17px",
   color: "#fff",
   textAlign: "center",
