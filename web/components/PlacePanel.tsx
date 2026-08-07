@@ -1,6 +1,7 @@
 "use client";
 
 import { BlogLink, Restaurant, formatPrice, isConvenienceStore } from "@/lib/constants";
+import HidePlaceButton from "@/components/HidePlaceButton";
 import ReviewSection from "@/components/ReviewSection";
 import SaveButton from "@/components/SaveButton";
 import SpecialSection from "@/components/SpecialSection";
@@ -58,6 +59,7 @@ export default function PlacePanel({
         onChange={onToggleSaved}
       />
       <ShareButton restaurant={r} />
+      <HidePlaceButton placeId={r.kakao_place_id} />
 
       {/* 편의점 결제 주의는 진입 토스트(EntryNotice)와 푸터가 담당한다.
           가게를 고를 때마다 같은 경고를 반복 노출하지 않는다. */}

@@ -124,11 +124,16 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   // 거른다. 몇 곳이 빠졌는지는 설정 화면이 보여준다.
   const dislikes = useDislikes();
   const disliked = useMemo(() => dislikeKeywords(dislikes), [dislikes]);
-  const eatable = useMemo(
-    () => (disliked.length === 0 ? matched : matched.filter(r => !isDisliked(r, disliked))),
+  const hiddenIds = useMemo(() => new Set(dislikes.places), [dislikes.places]);
+  const eatable = useMemo(() => {
+    const kept = hiddenIds.size === 0 ? matched : matched.filter(r => !hiddenIds.has(r.kakao_place_id));
+    return disliked.length === 0 ? kept : kept.filter(r => !isDisliked(r, disliked));
+  }, [matched, disliked, hiddenIds]);
+  // 음식으로 빠진 수만 센다 — 직접 뺀 가게는 설정에 이름으로 나열되니 셀 필요가 없다.
+  const dislikedCount = useMemo(
+    () => (disliked.length === 0 ? 0 : matched.filter(r => isDisliked(r, disliked)).length),
     [matched, disliked],
   );
-  const dislikedCount = matched.length - eatable.length;
 
   // 씨드큐브 500m 안 196곳 중 88곳은 메뉴 가격이 아예 없다. 필터를 켜면 그만큼이
   // 조용히 사라지므로 몇 곳인지 세어 목록이 알리게 한다.
@@ -157,6 +162,12 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const placeById = useMemo(
     () => new Map(all.map(r => [r.kakao_place_id, r])),
     [all],
+  );
+
+  // 직접 뺀 가게는 반경 밖이어도 설정에 나와야 한다 — 되돌릴 자리가 거기뿐이다.
+  const hiddenPlaces = useMemo(
+    () => [...hiddenIds].map(id => placeById.get(id)).filter((r): r is Restaurant => r !== undefined),
+    [hiddenIds, placeById],
   );
 
   // 저장 목록은 필터·반경과 무관하게 저장한 순서 그대로 보여준다.
@@ -332,6 +343,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             specialPrices={specialPrices}
             unpricedCount={unpricedCount}
             dislikedCount={dislikedCount}
+            hiddenPlaces={hiddenPlaces}
             onSelect={setSelected}
             onWiden={widenRadius}
             onReset={resetFilters}

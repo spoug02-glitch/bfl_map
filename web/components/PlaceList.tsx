@@ -31,6 +31,8 @@ type Props = {
   unpricedCount: number;
   /** 안 먹는 음식 설정으로 빠진 가게 수. */
   dislikedCount: number;
+  /** 직접 뺀 가게들. 설정에서 되돌릴 수 있게 이름째로 넘어온다. */
+  hiddenPlaces: Restaurant[];
   onSelect: (r: Restaurant) => void;
   onWiden: () => void;
   onReset: () => void;
@@ -78,7 +80,7 @@ function SectionBar({ children }: { children: React.ReactNode }) {
 // md 이상에서는 우측 사이드 패널. 가게를 고르면 이 자리가 상세로 바뀐다.
 export default function PlaceList({
   tab, onTab, places, savedPlaces, myReviews, placeById,
-  loggedIn, priceFiltered, specialPrices, unpricedCount, dislikedCount,
+  loggedIn, priceFiltered, specialPrices, unpricedCount, dislikedCount, hiddenPlaces,
   onSelect, onWiden, onReset, onRoulette, canWiden,
 }: Props) {
   const shown = places.slice(0, MAX_ROWS);
@@ -206,7 +208,7 @@ export default function PlaceList({
 
           {/* 로그인과 무관한 개인 설정 — 이 브라우저에만 남는다 */}
           <SectionBar>안 먹는 음식</SectionBar>
-          <DislikeSettings excludedCount={dislikedCount} />
+          <DislikeSettings excludedCount={dislikedCount} hiddenPlaces={hiddenPlaces} />
 
           {!loggedIn ? (
             <Empty>로그인하면 저장한 맛집과 내가 쓴 리뷰가 여기 모여요.</Empty>

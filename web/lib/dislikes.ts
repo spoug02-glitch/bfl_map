@@ -14,9 +14,16 @@ export type Dislikes = {
   presets: string[];
   /** 직접 적은 말들 */
   custom: string[];
+  /**
+   * 그냥 안 가고 싶은 가게의 kakao_place_id.
+   *
+   * 음식 종류로는 못 거르는 게 있다 — 저 집은 그냥 싫다든가, 지난번에 별로였다든가.
+   * 키워드를 짜내게 하는 대신 가게에서 바로 뺀다.
+   */
+  places: string[];
 };
 
-export const NO_DISLIKES: Dislikes = { presets: [], custom: [] };
+export const NO_DISLIKES: Dislikes = { presets: [], custom: [], places: [] };
 
 /**
  * 자주 갈리는 것들만 추린다. 키워드는 짧을수록 위험하다 — "회" 하나면
@@ -77,17 +84,35 @@ export function isDisliked(place: Restaurant, keywords: string[]): boolean {
 // useSyncExternalStore를 쓰는 이유는 use-reduced-motion과 같다: localStorage는
 // 서버에 없고, effect에서 상태를 세우면 첫 렌더가 지나간 뒤다.
 
-function read(): Dislikes {
+const strings = (v: unknown): string[] =>
+  Array.isArray(v) ? v.filter((x): x is string => typeof x === "string") : [];
+
+/**
+ * 저장된 문자열을 설정으로 되돌린다. 저장소와 떼어놔야 테스트할 수 있다.
+ *
+ * 칸마다 따로 확인한다 — places가 없던 시절에 저장된 설정도 그대로 열려야 하고,
+ * 손으로 고친 값이 들어와도 앱이 서면 안 된다.
+ */
+export function parseDislikes(raw: string | null): Dislikes {
+  if (!raw) return NO_DISLIKES;
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return NO_DISLIKES;
     const parsed = JSON.parse(raw) as Partial<Dislikes>;
+    if (typeof parsed !== "object" || parsed === null) return NO_DISLIKES;
     return {
-      presets: Array.isArray(parsed.presets) ? parsed.presets.filter(x => typeof x === "string") : [],
-      custom: Array.isArray(parsed.custom) ? parsed.custom.filter(x => typeof x === "string") : [],
+      presets: strings(parsed.presets),
+      custom: strings(parsed.custom),
+      places: strings(parsed.places),
     };
   } catch {
-    // 손상된 값이나 접근 차단(사생활 보호 모드)에서도 앱은 계속 떠야 한다
+    return NO_DISLIKES;
+  }
+}
+
+function read(): Dislikes {
+  try {
+    return parseDislikes(localStorage.getItem(STORAGE_KEY));
+  } catch {
+    // 사생활 보호 모드에서는 localStorage 접근 자체가 막힌다
     return NO_DISLIKES;
   }
 }
@@ -103,6 +128,16 @@ export function setDislikes(next: Dislikes): void {
     // 저장이 막혀도 이번 세션에서는 동작한다
   }
   listeners.forEach(fn => fn());
+}
+
+/** 이 가게를 빼거나 되돌린다. */
+export function setPlaceHidden(placeId: string, hidden: boolean): void {
+  const has = current.places.includes(placeId);
+  if (has === hidden) return;
+  setDislikes({
+    ...current,
+    places: hidden ? [...current.places, placeId] : current.places.filter(id => id !== placeId),
+  });
 }
 
 function subscribe(onChange: () => void): () => void {

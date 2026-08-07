@@ -1,13 +1,20 @@
 "use client";
 
 import { useState } from "react";
-import { DISLIKE_PRESETS, setDislikes, useDislikes } from "@/lib/dislikes";
+import { Restaurant } from "@/lib/constants";
+import { DISLIKE_PRESETS, setDislikes, setPlaceHidden, useDislikes } from "@/lib/dislikes";
 
 /**
  * 안 먹는 음식 설정. "나" 탭에만 있다 — 오늘 하루의 조건이 아니라 그 사람의
  * 상수라서, 매번 만지는 필터 바가 아니라 설정에 있어야 한다.
  */
-export default function DislikeSettings({ excludedCount }: { excludedCount: number }) {
+export default function DislikeSettings({
+  excludedCount, hiddenPlaces,
+}: {
+  excludedCount: number;
+  /** 직접 뺀 가게들. 이름을 보여주려면 가게가 필요해 부모가 찾아 넘긴다. */
+  hiddenPlaces: Restaurant[];
+}) {
   const dislikes = useDislikes();
   const [draft, setDraft] = useState("");
 
@@ -96,6 +103,27 @@ export default function DislikeSettings({ excludedCount }: { excludedCount: numb
           ? `지금 ${excludedCount}곳이 빠져 있어요. 그 음식이 그 집의 주 메뉴일 때만 빼요 — 한식집 메뉴에 초밥 한 줄 있다고 빼지는 않아요.`
           : "지금은 아무것도 빼고 있지 않아요. 고르면 지도·목록·룰렛에서 함께 빠지고, 이 브라우저에만 저장돼요."}
       </p>
+
+      {/* 가게에서 직접 뺀 것들. 여기 말고는 되돌릴 자리가 없다 — 지도에서
+          사라진 가게를 지도에서 다시 찾을 수는 없으니까. */}
+      {hiddenPlaces.length > 0 && (
+        <>
+          <p className="mt-4 text-xs font-bold text-text-muted">직접 뺀 가게</p>
+          <ul className="mt-1 space-y-1">
+            {hiddenPlaces.map(r => (
+              <li key={r.kakao_place_id} className="flex items-center gap-2">
+                <span className="min-w-0 flex-1 truncate text-sm text-text-primary">{r.name}</span>
+                <button
+                  className="h-9 shrink-0 rounded-lg bg-surface-muted px-3 text-xs font-bold text-text-primary"
+                  onClick={() => setPlaceHidden(r.kakao_place_id, false)}
+                >
+                  다시 보이기
+                </button>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </>
   );
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { DISLIKE_PRESETS, dislikeKeywords, isDisliked } from "@/lib/dislikes";
+import { DISLIKE_PRESETS, dislikeKeywords, isDisliked, parseDislikes } from "@/lib/dislikes";
 import type { Restaurant } from "@/lib/constants";
 import { normalizeQuery } from "@/lib/constants";
 
@@ -20,11 +20,11 @@ function place(name: string, menuNames: string[]): Restaurant {
   } as Restaurant;
 }
 
-const sushi = dislikeKeywords({ presets: ["sushi"], custom: [] });
+const sushi = dislikeKeywords({ presets: ["sushi"], custom: [], places: [] });
 
 describe("dislikeKeywords", () => {
   it("프리셋과 직접 입력을 함께 편다", () => {
-    const words = dislikeKeywords({ presets: ["pho"], custom: ["고수", "  "] });
+    const words = dislikeKeywords({ presets: ["pho"], custom: ["고수", "  "], places: [] });
     expect(words).toContain("쌀국수");
     expect(words).toContain("고수");
     // 공백만 있는 입력은 버린다 — 안 버리면 모든 가게가 걸린다
@@ -32,7 +32,38 @@ describe("dislikeKeywords", () => {
   });
 
   it("아무것도 안 고르면 빈 목록이다", () => {
-    expect(dislikeKeywords({ presets: [], custom: [] })).toEqual([]);
+    expect(dislikeKeywords({ presets: [], custom: [], places: [] })).toEqual([]);
+  });
+});
+
+describe("parseDislikes", () => {
+  const EMPTY = { presets: [], custom: [], places: [] };
+
+  // 가게 빼기(places)가 없던 때 저장된 값이 이미 브라우저에 남아 있다
+  it("places가 없던 예전 설정도 그대로 연다", () => {
+    expect(parseDislikes('{"presets":["sushi"],"custom":["고수"]}')).toEqual({
+      presets: ["sushi"], custom: ["고수"], places: [],
+    });
+  });
+
+  it("가게 목록을 읽는다", () => {
+    expect(parseDislikes('{"presets":[],"custom":[],"places":["123","456"]}').places)
+      .toEqual(["123", "456"]);
+  });
+
+  it("망가진 값에도 앱이 서지 않는다", () => {
+    expect(parseDislikes(null)).toEqual(EMPTY);
+    expect(parseDislikes("")).toEqual(EMPTY);
+    expect(parseDislikes("not json at all")).toEqual(EMPTY);
+    expect(parseDislikes("null")).toEqual(EMPTY);
+    expect(parseDislikes('"문자열"')).toEqual(EMPTY);
+    // 칸마다 따로 본다 — 하나가 망가져도 나머지는 산다
+    expect(parseDislikes('{"presets":"sushi","custom":null,"places":["1"]}')).toEqual({
+      presets: [], custom: [], places: ["1"],
+    });
+    // 배열 안의 이물질만 걸러낸다
+    expect(parseDislikes('{"presets":["sushi",7,null],"custom":[],"places":[]}').presets)
+      .toEqual(["sushi"]);
   });
 });
 
@@ -67,7 +98,7 @@ describe("isDisliked", () => {
   });
 
   it("띄어쓰기가 달라도 걸린다", () => {
-    const pho = dislikeKeywords({ presets: ["pho"], custom: [] });
+    const pho = dislikeKeywords({ presets: ["pho"], custom: [], places: [] });
     // 이름이 띄어져 있어도 정규화되어 걸린다
     expect(isDisliked(place("사이공 쌀 국수", ["볶음밥"]), pho)).toBe(true);
     // 메뉴 쪽도 마찬가지 — 5개 중 3개면 과반이다
