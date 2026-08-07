@@ -105,6 +105,16 @@ body {
   to { stroke-dashoffset: 0; }
 }
 
+/* 후보를 담으면 조각이 하나씩 앉는다. 랜덤으로 담았는데 직접 고른 줄 아는
+   오해가 이 시차에서 풀린다 — 한꺼번에 나타나면 그냥 그려진 그림이다. */
+@keyframes roulette-slice-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.roulette-slices > g {
+  animation: roulette-slice-in 0.28s ease-out backwards;
+}
+
 /* 사다리 패널 빈 화면의 미리보기 선. 같은 keyframes를 쓰지만 길이가 고정이라
    재생 시간이 인라인이 아닌 여기 있고, 그래서 reduce 블록이 !important 없이 끈다. */
 .ladder-intro {
@@ -144,6 +154,12 @@ body {
   }
   .ladder-rungs {
     animation-duration: 0s;
+  }
+  /* 조각은 보여야 하므로 시간만 0으로 — none으로 끄면 backwards가 풀려도
+     첫 프레임이 깜빡인다. */
+  .roulette-slices > g {
+    animation-duration: 0s;
+    animation-delay: 0s;
   }
   @keyframes ladder-land {
     0%, 100% { transform: none; }

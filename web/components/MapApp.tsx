@@ -8,7 +8,7 @@ import MapView, { type MapApi } from "@/components/MapView";
 import NicknameModal from "@/components/NicknameModal";
 import PlacePanel from "@/components/PlacePanel";
 import SiteFooter from "@/components/SiteFooter";
-import LadderPanel from "@/components/LadderPanel";
+import RoulettePanel from "@/components/RoulettePanel";
 import PlaceList, { type ListTab, type MyReview } from "@/components/PlaceList";
 import {
   BlogLink,
@@ -47,7 +47,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [loginError, setLoginError] = useState<string | null>(null);
   const [editingNickname, setEditingNickname] = useState(false);
   const [tab, setTab] = useState<ListTab>("near");
-  const [ladderOpen, setLadderOpen] = useState(false);
+  const [rouletteOpen, setRouletteOpen] = useState(false);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
   const [myReviews, setMyReviews] = useState<MyReview[]>([]);
 
@@ -265,7 +265,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         </div>
         {/* 카카오맵의 현위치 버튼 자리에 회사가 있다. 마커도 같은 일을 하지만
             전국 크기로 빼면 마커는 찾을 수 없다 — 버튼은 어디서든 그 자리다. */}
-        {!selected && !ladderOpen && (
+        {!selected && !rouletteOpen && (
           <button
             className="absolute bottom-[36dvh] right-3 z-20 flex h-11 items-center gap-1.5 rounded-full
               border border-border-subtle bg-surface px-4 text-sm font-bold text-text-primary shadow-lg
@@ -323,16 +323,16 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             onSelect={setSelected}
             onWiden={widenRadius}
             onReset={resetFilters}
-            onLadder={() => setLadderOpen(true)}
+            onRoulette={() => setRouletteOpen(true)}
             canWiden={maxDist < RADIUS_KM}
           />
         )}
-        {ladderOpen && (
-          <LadderPanel
+        {rouletteOpen && (
+          <RoulettePanel
             pool={visible}
             savedPlaces={savedPlaces}
             specialPrices={specialPrices}
-            onClose={() => setLadderOpen(false)}
+            onClose={() => setRouletteOpen(false)}
           />
         )}
         {user && user.nickname === null && (

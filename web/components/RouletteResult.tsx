@@ -1,29 +1,38 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
-import LadderBoard from "@/components/LadderBoard";
+import { useEffect, useState } from "react";
 import MenuLines from "@/components/MenuLines";
+import RouletteWheel from "@/components/RouletteWheel";
 import { Restaurant, SpecialPrice } from "@/lib/constants";
-import { buildLadder, followLeg } from "@/lib/ladder";
 import { sharePath } from "@/lib/share-copy";
 import type { LadderDraw } from "@/lib/ladder-link";
 
 /**
- * 공유 링크로 들어온 사람이 보는 화면. 링크에 담긴 seed로 같은 사다리를 다시
- * 그리고, 당첨 자리에 도착하는 출발 줄을 역산해 그 경로를 보여준다.
+ * 공유 링크로 들어온 사람이 보는 화면. 링크에 담긴 후보와 당첨으로 같은 원판을
+ * 다시 그리고, 눈앞에서 한 번 돌려 보여준다.
+ *
+ * 경로가 /ladder인 이유는 사다리 시절 링크가 이미 나가 있어서다 — 그 링크들이
+ * 계속 열려야 하므로 주소와 토큰 형식은 그대로 두고 화면만 바뀌었다.
  */
-export default function LadderResult({ draw }: { draw: LadderDraw | null }) {
+export default function RouletteResult({ draw }: { draw: LadderDraw | null }) {
   const [names, setNames] = useState<Map<string, Restaurant> | null>(null);
-  // 링크로 들어온 사람도 선이 내려가는 걸 보고 나서 답을 만난다.
   const [arrived, setArrived] = useState(false);
   const [special, setSpecial] = useState<SpecialPrice | undefined>(undefined);
+  // 링크로 들어온 사람도 돌아가는 걸 보고 나서 답을 만난다. 마운트 직후에 걸어야
+  // 첫 프레임의 정지 상태에서 회전이 시작된다.
+  const [spinning, setSpinning] = useState(false);
 
   useEffect(() => {
     fetch("/restaurants.json")
       .then(r => r.json())
       .then((data: Restaurant[]) => setNames(new Map(data.map(r => [r.kakao_place_id, r]))))
       .catch(() => setNames(new Map()));
+  }, []);
+
+  useEffect(() => {
+    const t = setTimeout(() => setSpinning(true), 400);
+    return () => clearTimeout(t);
   }, []);
 
   // 당첨 가게의 점심특선 제보. 이 화면은 MapApp 밖이라 요약 맵이 없어 직접 묻는다.
@@ -41,19 +50,7 @@ export default function LadderResult({ draw }: { draw: LadderDraw | null }) {
       .catch(() => {});
   }, [specialFor]);
 
-  const ladder = useMemo(
-    () => (draw ? buildLadder(draw.placeIds.length, draw.seed) : null),
-    [draw],
-  );
-  // 어느 줄에서 출발해야 그 결과가 나오는지. 사다리는 출발이 다르면 도착도 달라서
-  // 반드시 하나만 나온다.
-  const start = useMemo(() => {
-    if (!draw || !ladder) return null;
-    const i = draw.placeIds.findIndex((_, leg) => followLeg(ladder, leg) === draw.winner);
-    return i < 0 ? null : i;
-  }, [draw, ladder]);
-
-  if (!draw || !ladder) {
+  if (!draw) {
     return (
       <main className="grid min-h-dvh place-items-center bg-surface-page px-6 text-center">
         <div>
@@ -77,15 +74,13 @@ export default function LadderResult({ draw }: { draw: LadderDraw | null }) {
   return (
     <main className="mx-auto min-h-dvh max-w-md bg-surface px-5 py-8">
       <Link className="text-sm text-accent underline" href="/">← 지도로 가기</Link>
-      <h1 className="mt-5 text-2xl font-bold tracking-tight text-text-primary">사다리 결과</h1>
+      <h1 className="mt-5 text-2xl font-bold tracking-tight text-text-primary">룰렛 결과</h1>
       <p className="mt-1 text-sm text-text-muted">후보 {draw.placeIds.length}곳 중에 뽑혔어요.</p>
 
       <div className="mt-6">
-        <LadderBoard
-          ladder={ladder}
+        <RouletteWheel
           names={labels}
-          winner={draw.winner}
-          start={start}
+          winner={spinning ? draw.winner : null}
           arrived={arrived}
           onArrive={() => setArrived(true)}
         />
@@ -93,12 +88,12 @@ export default function LadderResult({ draw }: { draw: LadderDraw | null }) {
 
       <div className="mt-6 min-h-[7rem] rounded-lg bg-surface-muted p-5">
         <p className="text-center text-sm text-text-muted">
-          {arrived ? "오늘 점심은" : "내려가는 중…"}
+          {arrived ? "오늘 점심은" : "돌아가는 중…"}
         </p>
         {arrived && (
-        <p className="mt-1 text-center text-2xl font-bold text-text-primary">
-          {winnerPlace ? winnerPlace.name : names === null ? "…" : "사라진 가게"}
-        </p>
+          <p className="mt-1 text-center text-2xl font-bold text-text-primary">
+            {winnerPlace ? winnerPlace.name : names === null ? "…" : "사라진 가게"}
+          </p>
         )}
         {arrived && winnerPlace && (
           <>

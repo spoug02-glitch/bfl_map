@@ -1,11 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import LadderBoard from "@/components/LadderBoard";
 import MenuLines from "@/components/MenuLines";
+import RouletteWheel from "@/components/RouletteWheel";
 import { Restaurant, SpecialPrice, isMealPlace, normalizeQuery } from "@/lib/constants";
-import { buildLadder, followLeg } from "@/lib/ladder";
 import { MAX_LEGS, MIN_LEGS, encodeLadder } from "@/lib/ladder-link";
+import { sliceColor, sliceLabel } from "@/lib/roulette";
 
 type Props = {
   /** 현재 필터·반경을 통과한 가게들. "랜덤으로 채우기"가 여기서 뽑는다. */
@@ -19,27 +19,25 @@ type Props = {
 const RANDOM_PICK = 4;
 
 /**
- * 랜덤으로 뽑을 때만 적용하는 반경(km). 사다리로 정하는 건 "지금 나가서 먹을 곳"이라
+ * 랜덤으로 뽑을 때만 적용하는 반경(km). 룰렛으로 정하는 건 "지금 나가서 먹을 곳"이라
  * 걸어갈 거리 안이어야 한다.
  *
  * 실측(2026-08-05, 편의점 제외): 100m 10곳, 150m 38곳, 200m 64곳.
- * 100m로 두면 10곳에서 4곳을 뽑는 셈이라 돌릴 때마다 절반이 겹쳐 사다리를 돌리는
- * 재미가 없다. 150m면 조합이 매번 달라지고, 걸어서 2분이라 "지금 나가서 먹을 곳"이라는
- * 취지도 유지된다.
+ * 100m로 두면 10곳에서 4곳을 뽑는 셈이라 돌릴 때마다 절반이 겹쳐 돌리는 재미가
+ * 없다. 150m면 조합이 매번 달라지고, 걸어서 2분이라 취지도 유지된다.
  */
 const RANDOM_RADIUS_KM = 0.15;
 
-export default function LadderPanel({ pool, savedPlaces, specialPrices, onClose }: Props) {
+export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClose }: Props) {
   const [picked, setPicked] = useState<Restaurant[]>([]);
   const [query, setQuery] = useState("");
-  // start가 null이면 사다리는 놓였지만 아직 자리를 안 고른 상태다. -1 같은 값을
-  // 쓰면 followLeg가 그걸 그대로 돌려줘 "당첨 -1번"이 되어버린다.
-  const [draw, setDraw] = useState<{ seed: number; start: number | null } | null>(null);
-  // 선이 바닥에 닿기 전까지는 답을 감춘다. 미리 보여주면 사다리를 볼 이유가 없다.
+  const [draw, setDraw] = useState<{ seed: number; winner: number } | null>(null);
+  // 원판이 멈추기 전까지는 답을 감춘다. 미리 보여주면 돌릴 이유가 없다.
   const [arrived, setArrived] = useState(false);
   const [copied, setCopied] = useState(false);
 
   const full = picked.length >= MAX_LEGS;
+  const winner = draw?.winner ?? null;
 
   const add = (r: Restaurant) => {
     setQuery("");
@@ -84,32 +82,23 @@ export default function LadderPanel({ pool, savedPlaces, specialPrices, onClose 
     setPicked(prev => [...prev, ...rest.slice(0, MAX_LEGS - prev.length)]);
   };
 
-  const ladder = useMemo(
-    () => (draw ? buildLadder(picked.length, draw.seed) : null),
-    [draw, picked.length],
-  );
-  const winner =
-    ladder && draw && draw.start !== null ? followLeg(ladder, draw.start) : null;
-
-  const start = () => {
+  const spin = () => {
     setArrived(false);
-    setDraw({ seed: Math.floor(Math.random() * 1_000_000), start: null });
-  };
-
-  const pick = (leg: number) => {
-    if (!draw) return;
-    setArrived(false);
-    setDraw({ ...draw, start: leg });
+    setDraw({
+      seed: Math.floor(Math.random() * 1_000_000),
+      winner: Math.floor(Math.random() * picked.length),
+    });
   };
 
   const shareUrl = () => {
-    if (!draw || winner === null) return "";
+    if (!draw) return "";
     const base = process.env.NEXT_PUBLIC_BASE_URL ?? window.location.origin;
     const token = encodeLadder({
       placeIds: picked.map(p => p.kakao_place_id),
-      winner,
+      winner: draw.winner,
       seed: draw.seed,
     });
+    // 경로는 /ladder 그대로다 — 이미 나간 공유 링크가 계속 열려야 한다.
     return `${base}/ladder/${token}`;
   };
 
@@ -128,7 +117,7 @@ export default function LadderPanel({ pool, savedPlaces, specialPrices, onClose 
       style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
     >
       <div className="flex items-start justify-between gap-2">
-        <h2 className="text-xl font-bold text-text-primary">사다리로 정하기</h2>
+        <h2 className="text-xl font-bold text-text-primary">룰렛으로 정하기</h2>
         <button
           aria-label="닫기"
           className="grid h-11 w-11 shrink-0 place-items-center rounded-lg text-xl text-text-primary"
@@ -138,12 +127,25 @@ export default function LadderPanel({ pool, savedPlaces, specialPrices, onClose 
         </button>
       </div>
 
-      {!draw ? (
-        <>
-          <p className="mt-1 text-sm text-text-muted">
-            후보를 {MIN_LEGS}~{MAX_LEGS}곳 고르면 사다리를 놓아드려요.
-          </p>
+      <p className="mt-1 text-sm text-text-muted">
+        {draw === null
+          ? `후보를 ${MIN_LEGS}~${MAX_LEGS}곳 담고 돌리면 한 곳을 뽑아드려요.`
+          : arrived
+            ? "결과가 나왔어요."
+            : "돌아가는 중…"}
+      </p>
 
+      <div className="mt-4">
+        <RouletteWheel
+          names={picked.map(p => p.name)}
+          winner={winner}
+          arrived={arrived}
+          onArrive={() => setArrived(true)}
+        />
+      </div>
+
+      {draw === null ? (
+        <>
           {/* 담기 수단은 필터 칩과 같은 테두리 칩으로 둔다 — 회색 채움은 입력창과
               CTA에 양보해서, 화면이 회색 사각형 네 개로 읽히지 않게 한다. */}
           <p className="mt-5 text-xs font-bold text-text-muted">후보 담기</p>
@@ -193,7 +195,7 @@ export default function LadderPanel({ pool, savedPlaces, specialPrices, onClose 
             </ul>
           )}
 
-          {picked.length > 0 ? (
+          {picked.length > 0 && (
             <>
               <p className="mt-5 text-xs font-bold text-text-muted">
                 담은 후보 <span className="text-text-primary">{picked.length}</span>/{MAX_LEGS}
@@ -204,7 +206,13 @@ export default function LadderPanel({ pool, savedPlaces, specialPrices, onClose 
                     key={r.kakao_place_id}
                     className="flex items-center gap-2 rounded-lg bg-surface-muted px-3 py-2"
                   >
-                    <span className="w-5 shrink-0 text-xs font-bold text-text-muted">{i + 1}</span>
+                    {/* 목록의 글자와 원판의 조각을 같은 색으로 묶는다 */}
+                    <span
+                      className="grid h-6 w-6 shrink-0 place-items-center rounded-md text-xs font-bold text-white"
+                      style={{ background: sliceColor(i) }}
+                    >
+                      {sliceLabel(i)}
+                    </span>
                     <span className="min-w-0 flex-1 truncate text-sm text-text-primary">{r.name}</span>
                     <button
                       className="grid h-9 w-9 shrink-0 place-items-center text-text-muted"
@@ -217,56 +225,18 @@ export default function LadderPanel({ pool, savedPlaces, specialPrices, onClose 
                 ))}
               </ul>
             </>
-          ) : (
-            /* 빈 자리에서 결과를 미리 보여준다 — 회색 사다리에 주황 선이 한 번
-               내려온다. "담으면 이걸 탄다"는 말을 그림이 대신한다. */
-            <div className="mt-5 grid place-items-center py-4">
-              <svg viewBox="0 0 132 96" width="132" height="96" aria-hidden>
-                <g stroke="var(--color-border)" strokeWidth="3" strokeLinecap="round">
-                  <path d="M18 8v80M66 8v80M114 8v80" />
-                  <path d="M18 30h48M66 54h48M18 76h48" />
-                </g>
-                <path
-                  className="ladder-intro"
-                  d="M66 8v22H18v46h48v12"
-                  fill="none" stroke="var(--color-star)" strokeWidth="4"
-                  strokeLinecap="round" strokeLinejoin="round"
-                  strokeDasharray="176" strokeDashoffset="176"
-                />
-              </svg>
-              <p className="mt-3 text-sm text-text-muted">담은 후보가 여기서 사다리를 타요.</p>
-            </div>
           )}
 
           <button
             className="mt-4 grid h-11 w-full place-items-center rounded-lg bg-ink text-base font-bold text-white disabled:opacity-50"
             disabled={picked.length < MIN_LEGS}
-            onClick={start}
+            onClick={spin}
           >
-            {picked.length < MIN_LEGS ? `${MIN_LEGS}곳 이상 담아주세요` : "사다리 놓기"}
+            {picked.length < MIN_LEGS ? `${MIN_LEGS}곳 이상 담아주세요` : "돌리기"}
           </button>
         </>
       ) : (
         <>
-          <p className="mt-1 text-sm text-text-muted">
-            {draw.start === null
-              ? "판을 누르면 바로 시작해요. 번호를 골라도 돼요."
-              : arrived
-                ? "결과가 나왔어요."
-                : "내려가는 중…"}
-          </p>
-          <div className="mt-4">
-            <LadderBoard
-              ladder={ladder!}
-              names={picked.map(p => p.name)}
-              winner={winner}
-              start={draw.start}
-              arrived={arrived}
-              onPick={pick}
-              onArrive={() => setArrived(true)}
-            />
-          </div>
-
           {winner !== null && arrived && (
             <div className="mt-5 rounded-lg bg-surface-muted p-4">
               <p className="text-center text-sm text-text-muted">오늘 점심은</p>
@@ -291,18 +261,25 @@ export default function LadderPanel({ pool, savedPlaces, specialPrices, onClose 
           <div className="mt-4 flex gap-2">
             <button
               className="h-11 flex-1 rounded-lg bg-surface-muted text-sm font-bold text-text-primary"
-              onClick={() => setDraw(null)}
+              onClick={() => { setDraw(null); setArrived(false); }}
             >
               후보 고치기
             </button>
             <button
-              className="h-11 flex-1 rounded-lg bg-ink text-sm font-bold text-white disabled:opacity-50"
-              disabled={winner === null}
-              onClick={copy}
+              className="h-11 flex-1 rounded-lg bg-surface-muted text-sm font-bold text-text-primary disabled:opacity-50"
+              disabled={!arrived}
+              onClick={spin}
             >
-              {copied ? "복사했어요" : "결과 링크 복사"}
+              다시 돌리기
             </button>
           </div>
+          <button
+            className="mt-2 h-11 w-full rounded-lg bg-ink text-sm font-bold text-white disabled:opacity-50"
+            disabled={!arrived}
+            onClick={copy}
+          >
+            {copied ? "복사했어요" : "결과 링크 복사"}
+          </button>
         </>
       )}
     </aside>

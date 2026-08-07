@@ -31,7 +31,7 @@ type Props = {
   onSelect: (r: Restaurant) => void;
   onWiden: () => void;
   onReset: () => void;
-  onLadder: () => void;
+  onRoulette: () => void;
   canWiden: boolean;
 };
 
@@ -75,7 +75,7 @@ function SectionBar({ children }: { children: React.ReactNode }) {
 // md 이상에서는 우측 사이드 패널. 가게를 고르면 이 자리가 상세로 바뀐다.
 export default function PlaceList({
   tab, onTab, places, savedPlaces, myReviews, placeById,
-  loggedIn, priceFiltered, specialPrices, unpricedCount, onSelect, onWiden, onReset, onLadder, canWiden,
+  loggedIn, priceFiltered, specialPrices, unpricedCount, onSelect, onWiden, onReset, onRoulette, canWiden,
 }: Props) {
   const shown = places.slice(0, MAX_ROWS);
 
@@ -89,7 +89,7 @@ export default function PlaceList({
         md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0 md:pt-4"
       style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
     >
-      {/* 주변 | 사다리 | 나. 사다리는 탭이 아니라 패널을 여는 버튼이지만 같은
+      {/* 주변 | 룰렛 | 나. 룰렛은 탭이 아니라 패널을 여는 버튼이지만 같은
           줄에서 같은 크기로 산다 — 지도 위에 띄웠을 때는 가게를 하나 고르는
           순간 사라져 아무도 다시 찾지 못했다. 탭이 둘뿐이라 role=tablist 대신
           aria-current로 충분하다. */}
@@ -106,9 +106,9 @@ export default function PlaceList({
         {/* 색은 비선택 탭과 같게 — 혼자 진하면 셋 중 얘만 눌려 있는 걸로 읽힌다 */}
         <button
           className="flex h-11 flex-1 items-center justify-center gap-1 rounded-lg bg-surface-muted text-sm font-bold text-text-muted md:h-9"
-          onClick={onLadder}
+          onClick={onRoulette}
         >
-          <span aria-hidden>🪜</span>사다리
+          <span aria-hidden>🎯</span>룰렛
         </button>
         <button
           aria-current={tab === "me"}
