@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { formatPrice } from "@/lib/constants";
+import { SPECIAL_DISCLAIMER, formatPrice } from "@/lib/constants";
 import { SPECIAL_NAME_MAX, SPECIAL_NOTE_MAX } from "@/lib/specials";
 
 type Special = {
@@ -88,6 +88,7 @@ export default function SpecialSection({ placeId, loggedIn }: { placeId: string;
       <h3 className="border-b border-border-subtle pb-2 text-xl font-bold text-text-primary">
         점심 특선 <span className="text-sm font-medium text-text-muted">제보받아요</span>
       </h3>
+      <p className="mt-1.5 text-xs text-text-muted">{SPECIAL_DISCLAIMER}</p>
 
       {specials.length === 0 ? (
         <p className="mt-2 text-sm text-text-muted">

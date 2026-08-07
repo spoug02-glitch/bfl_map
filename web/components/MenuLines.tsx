@@ -1,4 +1,4 @@
-import { SpecialPrice, formatPrice } from "@/lib/constants";
+import { SPECIAL_DISCLAIMER, SpecialPrice, formatPrice } from "@/lib/constants";
 
 /**
  * 뽑힌 가게가 뭘 파는지 몇 줄로 보여준다. 이름만 나오면 "거기가 뭐 하는 데더라"로
@@ -23,12 +23,15 @@ export default function MenuLines({
     <ul className="space-y-0.5 text-xs">
       {/* 제보받은 점심특선이 있으면 맨 위에, 출처가 보이게 "특선"을 달고 */}
       {special && (
-        <li className="flex items-baseline justify-between gap-3">
-          <span className="min-w-0 truncate text-text-primary">
-            <span className="font-bold text-star">특선</span> {special.menuName}
-          </span>
-          <span className="shrink-0 text-price">{formatPrice(String(special.price))}</span>
-        </li>
+        <>
+          <li className="flex items-baseline justify-between gap-3">
+            <span className="min-w-0 truncate text-text-primary">
+              <span className="font-bold text-star">특선</span> {special.menuName}
+            </span>
+            <span className="shrink-0 text-price">{formatPrice(String(special.price))}</span>
+          </li>
+          <li className="text-[11px] leading-tight text-text-muted">{SPECIAL_DISCLAIMER}</li>
+        </>
       )}
       {priced.map(m => (
         <li key={m.name} className="flex items-baseline justify-between gap-3">

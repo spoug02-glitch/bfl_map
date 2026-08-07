@@ -70,6 +70,9 @@ export function minMenuPrice(menus: { price: string }[]): number | null {
 /** 가게별 최저가 점심특선 제보. /api/specials(전체)가 내려준다. */
 export type SpecialPrice = { menuName: string; price: number };
 
+/** 특선이 보이는 모든 자리에서 같은 문장으로 말한다 — 이건 검증된 값이 아니다. */
+export const SPECIAL_DISCLAIMER = "이용자 제보라 확인된 정보가 아니에요. 지금은 다를 수 있어요.";
+
 /**
  * 가격 필터가 보는 그 가게의 최저가. 카카오 메뉴와 제보 중 싼 쪽이다.
  * 오스시가 카카오에는 17,000원짜리로 보여도 1만원 특선 제보가 있으면
