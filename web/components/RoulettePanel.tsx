@@ -5,6 +5,7 @@ import MenuLines from "@/components/MenuLines";
 import RouletteWheel from "@/components/RouletteWheel";
 import Toast from "@/components/Toast";
 import { Restaurant, SpecialPrice, isMealPlace, normalizeQuery } from "@/lib/constants";
+import { dislikeKeywords, isDisliked, useDislikes } from "@/lib/dislikes";
 import { MAX_LEGS, MIN_LEGS, encodeLadder } from "@/lib/ladder-link";
 import { sliceColor, sliceLabel } from "@/lib/roulette";
 
@@ -68,9 +69,21 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
 
   // 랜덤 후보는 걸어갈 거리 안의 밥집에서만 고른다. 검색으로 직접 담는 건 거리도
   // 업종도 제한하지 않는다 — 멀어도, 카페라도, 오늘 거기 가겠다는 건 본인이 안다.
+  //
+  // "안 먹는 음식"도 여기서만 적용된다. 지도와 목록은 그 동네에 뭐가 있는지를
+  // 보여주는 화면이라 손대지 않는다 — 못 먹는 걸 뽑지 말라는 얘기지, 없는 셈
+  // 치라는 얘기가 아니다. 검색으로는 여전히 담을 수 있다.
+  const dislikes = useDislikes();
+  const disliked = useMemo(() => dislikeKeywords(dislikes), [dislikes]);
   const nearby = useMemo(
-    () => pool.filter(r => r.distance_km <= RANDOM_RADIUS_KM && isMealPlace(r.category)),
-    [pool],
+    () =>
+      pool.filter(
+        r =>
+          r.distance_km <= RANDOM_RADIUS_KM &&
+          isMealPlace(r.category) &&
+          !isDisliked(r, disliked),
+      ),
+    [pool, disliked],
   );
 
   const fillRandom = () => {

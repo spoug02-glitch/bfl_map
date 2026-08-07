@@ -7,28 +7,24 @@ import { Restaurant, normalizeQuery } from "@/lib/constants";
  * 안 먹는 음식. 개인 설정이라 계정이 아니라 이 브라우저에 남는다 —
  * 로그인 안 해도 쓸 수 있어야 하고, 서버가 알 이유도 없다.
  *
- * 이 값은 절대 서버로 보내지 않는다. 특히 places(직접 뺀 가게)는 모으는 순간
- * 성격이 바뀐다 — 한 사람의 화면 설정은 그냥 안 보기지만, 여러 명의 것을 합쳐
- * "N명이 이 가게를 뺐어요"가 되면 그건 가게에 대한 공개 평가이고 영업에 관한
- * 주장이 된다. 리뷰와 달리 이건 근거도 반론권도 없는 신호라, 집계하지 않는다.
+ * 이 값은 절대 서버로 보내지 않고 모으지도 않는다. 한 사람의 "나는 이거 안 먹어"는
+ * 취향이지만, 여러 명 것을 합쳐 "N명이 이 가게를 뺐어요"가 되면 그건 가게에 대한
+ * 공개 평가이자 영업에 관한 주장이 된다. 근거도 반론권도 없는 신호다.
+ *
+ * 같은 이유로 가게 화면에는 빼는 버튼을 두지 않는다. 자기 가게를 열어본 사장님
+ * 눈에는 그게 내 기기 설정으로 보이지 않는다. 빼고 싶으면 여기 이름을 적으면 되고,
+ * 그건 아무 화면에도 흔적을 남기지 않는다.
  */
 const STORAGE_KEY = "bfl.dislikes";
 
 export type Dislikes = {
   /** 고른 프리셋 key들 */
   presets: string[];
-  /** 직접 적은 말들 */
+  /** 직접 적은 말들. 가게 이름을 적으면 그 가게가 룰렛 랜덤에서 빠진다. */
   custom: string[];
-  /**
-   * 그냥 안 가고 싶은 가게의 kakao_place_id.
-   *
-   * 음식 종류로는 못 거르는 게 있다 — 저 집은 그냥 싫다든가, 지난번에 별로였다든가.
-   * 키워드를 짜내게 하는 대신 가게에서 바로 뺀다.
-   */
-  places: string[];
 };
 
-export const NO_DISLIKES: Dislikes = { presets: [], custom: [], places: [] };
+export const NO_DISLIKES: Dislikes = { presets: [], custom: [] };
 
 /**
  * 자주 갈리는 것들만 추린다. 키워드는 짧을수록 위험하다 — "회" 하나면
@@ -95,8 +91,9 @@ const strings = (v: unknown): string[] =>
 /**
  * 저장된 문자열을 설정으로 되돌린다. 저장소와 떼어놔야 테스트할 수 있다.
  *
- * 칸마다 따로 확인한다 — places가 없던 시절에 저장된 설정도 그대로 열려야 하고,
- * 손으로 고친 값이 들어와도 앱이 서면 안 된다.
+ * 칸마다 따로 확인하고, 모르는 칸은 조용히 버린다 — 잠깐 있었던 places(가게를
+ * 직접 빼던 기능)가 아직 남아 있는 브라우저가 있다. 손으로 고친 값이 들어와도
+ * 앱이 서면 안 된다.
  */
 export function parseDislikes(raw: string | null): Dislikes {
   if (!raw) return NO_DISLIKES;
@@ -106,7 +103,6 @@ export function parseDislikes(raw: string | null): Dislikes {
     return {
       presets: strings(parsed.presets),
       custom: strings(parsed.custom),
-      places: strings(parsed.places),
     };
   } catch {
     return NO_DISLIKES;
@@ -133,16 +129,6 @@ export function setDislikes(next: Dislikes): void {
     // 저장이 막혀도 이번 세션에서는 동작한다
   }
   listeners.forEach(fn => fn());
-}
-
-/** 이 가게를 빼거나 되돌린다. */
-export function setPlaceHidden(placeId: string, hidden: boolean): void {
-  const has = current.places.includes(placeId);
-  if (has === hidden) return;
-  setDislikes({
-    ...current,
-    places: hidden ? [...current.places, placeId] : current.places.filter(id => id !== placeId),
-  });
 }
 
 function subscribe(onChange: () => void): () => void {
