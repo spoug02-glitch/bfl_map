@@ -30,6 +30,10 @@ export const DISLIKE_PRESETS: { key: string; label: string; keywords: string[] }
   { key: "gopchang", label: "곱창·순대", keywords: ["곱창", "막창", "대창", "순대"] },
   { key: "mala", label: "마라·양꼬치", keywords: ["마라", "양꼬치", "훠궈", "훠거"] },
   { key: "burger", label: "햄버거", keywords: ["버거", "맥도날드", "롯데리아", "맘스터치"] },
+  // 브랜드 이름을 같이 넣는다. 카카오 업종은 "피자, 햄버거, 샌드위치 및 유사
+  // 음식점업" 한 칸에 15곳을 몰아넣어 써먹을 수 없고(샌드위치를 빼면 피자집이
+  // 사라진다), 써브웨이는 이름에도 메뉴("이탈리안 비엠티")에도 그 말이 없다.
+  { key: "sandwich", label: "샌드위치·토스트", keywords: ["샌드위치", "써브웨이", "subway", "토스트", "홍루이젠", "샐러드"] },
   { key: "raw", label: "육회·날것", keywords: ["육회", "육사시미", "생연어"] },
 ];
 
