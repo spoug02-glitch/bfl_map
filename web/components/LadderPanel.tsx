@@ -248,7 +248,7 @@ export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
         <>
           <p className="mt-1 text-sm text-text-muted">
             {draw.start === null
-              ? "출발할 자리를 골라주세요."
+              ? "판을 누르면 바로 시작해요. 번호를 골라도 돼요."
               : arrived
                 ? "결과가 나왔어요."
                 : "내려가는 중…"}
