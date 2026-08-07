@@ -112,7 +112,16 @@ export default function DislikeSettings({
           <ul className="mt-1 space-y-1">
             {hiddenPlaces.map(r => (
               <li key={r.kakao_place_id} className="flex items-center gap-2">
-                <span className="min-w-0 flex-1 truncate text-sm text-text-primary">{r.name}</span>
+                {/* 이름만으로는 못 고른다 — 이 동네에만 "의정부부대찌개"가 네 곳이다.
+                    업종과 거리를 붙여 어느 지점을 뺐는지 알 수 있게 한다. */}
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm text-text-primary">{r.name}</span>
+                  <span className="block truncate text-xs text-text-muted">
+                    {r.category} · {r.distance_km < 1
+                      ? `${Math.round(r.distance_km * 1000)}m`
+                      : `${r.distance_km.toFixed(1)}km`}
+                  </span>
+                </span>
                 <button
                   className="h-9 shrink-0 rounded-lg bg-surface-muted px-3 text-xs font-bold text-text-primary"
                   onClick={() => setPlaceHidden(r.kakao_place_id, false)}
