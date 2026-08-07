@@ -40,13 +40,18 @@ declare global {
   }
 }
 
+/** 지도에 시키는 일 중 부모가 버튼으로 노출하는 것. */
+export type MapApi = { recenter: () => void };
+
 type Props = {
   restaurants: Restaurant[];
   maxDist: number;
   onSelect: (r: Restaurant) => void;
+  /** 회사로 돌아가기를 지도 밖(떠 있는 버튼)에서 부를 수 있게 열어준다. */
+  apiRef?: React.RefObject<MapApi | null>;
 };
 
-export default function MapView({ restaurants, maxDist, onSelect }: Props) {
+export default function MapView({ restaurants, maxDist, onSelect, apiRef }: Props) {
   const mapEl = useRef<HTMLDivElement>(null);
   const mapRef = useRef<KakaoMap | null>(null);
   const clustererRef = useRef<KakaoClusterer | null>(null);
@@ -67,12 +72,14 @@ export default function MapView({ restaurants, maxDist, onSelect }: Props) {
         map, averageCenter: true, minLevel: 5,
       });
       const office = new window.kakao.maps.Marker({ map, position: center, title: OFFICE_LABEL });
-      // 회사 마커를 누르면 처음 화면으로 돌아온다. 지도를 헤매다 보면 회사가
-      // 어디였는지부터 잃어버리는데, 되돌아오는 길이 이 지도엔 없었다.
-      window.kakao.maps.event.addListener(office, "click", () => {
+      // 처음 화면으로 돌아오는 길. 마커 클릭에도 걸려 있지만, 전국 크기로 빼면
+      // 마커는 못 찾는다 — 그래서 같은 동작을 apiRef로도 열어 떠 있는 버튼이 쓴다.
+      const recenter = () => {
         map.setLevel(INITIAL_LEVEL);
         map.panTo(center);
-      });
+      };
+      window.kakao.maps.event.addListener(office, "click", recenter);
+      if (apiRef) apiRef.current = { recenter };
       setReady(true);
     });
   };

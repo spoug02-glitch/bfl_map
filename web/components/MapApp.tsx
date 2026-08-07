@@ -1,10 +1,10 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import EntryNotice from "@/components/EntryNotice";
 import VisitPing from "@/components/VisitPing";
 import FilterBar from "@/components/FilterBar";
-import MapView from "@/components/MapView";
+import MapView, { type MapApi } from "@/components/MapView";
 import NicknameModal from "@/components/NicknameModal";
 import PlacePanel from "@/components/PlacePanel";
 import SiteFooter from "@/components/SiteFooter";
@@ -35,6 +35,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [cheapOnly, setCheapOnly] = useState(false);
   // null = 아직 아무도 안 정함(화면 폭이 정한다). 의미는 FilterBar 주석 참조.
   const [barOpen, setBarOpen] = useState<boolean | null>(null);
+  const mapApi = useRef<MapApi | null>(null);
   const [selected, setSelected] = useState<Restaurant | null>(null);
   const [user, setUser] = useState<SessionUser | null>(null);
   const [blogLinks, setBlogLinks] = useState<Record<string, BlogLink>>({});
@@ -233,8 +234,20 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             if (e.pointerType !== "mouse") setBarOpen(false);
           }}
         >
-          <MapView restaurants={visible} maxDist={maxDist} onSelect={setSelected} />
+          <MapView restaurants={visible} maxDist={maxDist} onSelect={setSelected} apiRef={mapApi} />
         </div>
+        {/* 카카오맵의 현위치 버튼 자리에 회사가 있다. 마커도 같은 일을 하지만
+            전국 크기로 빼면 마커는 찾을 수 없다 — 버튼은 어디서든 그 자리다. */}
+        {!selected && !ladderOpen && (
+          <button
+            className="absolute bottom-[36dvh] right-3 z-20 flex h-11 items-center gap-1.5 rounded-full
+              border border-border-subtle bg-surface px-4 text-sm font-bold text-text-primary shadow-lg
+              md:bottom-4 md:right-[calc(24rem+0.75rem)]"
+            onClick={() => mapApi.current?.recenter()}
+          >
+            <span aria-hidden>🏢</span>회사
+          </button>
+        )}
         <SiteFooter />
         {staleLink && (
           <div className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-border bg-surface px-4 py-3 text-center shadow-lg">
