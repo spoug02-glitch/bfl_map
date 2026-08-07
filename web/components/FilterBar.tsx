@@ -125,9 +125,11 @@ export default function FilterBar({
             value={priceLimit ?? ""}
             onChange={e => onPriceLimit(e.target.value === "" ? null : Number(e.target.value))}
           >
-            <option value="">가격 전체</option>
+            {/* 펼친 메뉴는 항상 흰 바탕 — 색을 안 주면 닫힌 상태의 갈색을 물려받아
+                메뉴 전체가 갈색 덩어리로 펼쳐진다. */}
+            <option className="bg-surface text-text-primary" value="">가격 전체</option>
             {PRICE_LIMITS.map(l => (
-              <option key={l} value={l}>{priceLimitLabel(l)}</option>
+              <option className="bg-surface text-text-primary" key={l} value={l}>{priceLimitLabel(l)}</option>
             ))}
           </select>
         </div>

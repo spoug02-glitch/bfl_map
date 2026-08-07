@@ -5,7 +5,17 @@ import { validateSpecialInput } from "@/lib/specials";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 
 export async function GET(req: NextRequest) {
-  const placeId = req.nextUrl.searchParams.get("placeId") ?? "";
+  const placeId = req.nextUrl.searchParams.get("placeId");
+
+  // placeId 없이 부르면 가격 필터용 요약이다: 가게마다 가장 싼 제보 하나.
+  // 필터는 지도의 모든 가게를 한 번에 봐야 해서 가게별 왕복으로는 못 만든다.
+  if (placeId === null) {
+    const specials = await sql`
+      SELECT DISTINCT ON (place_id) place_id, menu_name, price
+      FROM lunch_specials ORDER BY place_id, price ASC`;
+    return NextResponse.json({ specials });
+  }
+
   if (!PLACE_ID_RE.test(placeId)) {
     return NextResponse.json({ error: "placeId가 필요합니다." }, { status: 400 });
   }

@@ -1,5 +1,7 @@
 import { describe, expect, it } from "vitest";
-import { PRICE_LIMITS, cheapestMenu, minMenuPrice, priceLimitLabel } from "@/lib/constants";
+import {
+  PRICE_LIMITS, cheapestMenu, effectiveMinPrice, minMenuPrice, priceLimitLabel,
+} from "@/lib/constants";
 
 const menu = (price: string) => ({ name: `${price}짜리`, price });
 
@@ -40,6 +42,18 @@ describe("minMenuPrice", () => {
 
   it("0원은 가격으로 치지 않는다", () => {
     expect(minMenuPrice([menu("0")])).toBeNull();
+  });
+
+  // 오스시 사례: 카카오 최저가 17,000이어도 1만원 특선 제보가 있으면 그게 최저가다.
+  it("점심특선 제보가 카카오 가격보다 싸면 그쪽이 최저가다", () => {
+    const menus = [menu("17000"), menu("20000")];
+    expect(effectiveMinPrice(menus, { menuName: "특선", price: 10000 })).toBe(10000);
+    expect(effectiveMinPrice(menus, undefined)).toBe(17000);
+    // 제보가 더 비싸면 카카오 값이 이긴다
+    expect(effectiveMinPrice(menus, { menuName: "특선", price: 19000 })).toBe(17000);
+    // 카카오 가격이 아예 없어도 제보만으로 가격 있는 가게가 된다
+    expect(effectiveMinPrice([menu("-1")], { menuName: "특선", price: 9000 })).toBe(9000);
+    expect(effectiveMinPrice([menu("-1")], undefined)).toBeNull();
   });
 
   it("상한 선택지와 라벨", () => {

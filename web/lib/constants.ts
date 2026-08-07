@@ -67,6 +67,23 @@ export function minMenuPrice(menus: { price: string }[]): number | null {
   return m ? Number(m.price) : null;
 }
 
+/** 가게별 최저가 점심특선 제보. /api/specials(전체)가 내려준다. */
+export type SpecialPrice = { menuName: string; price: number };
+
+/**
+ * 가격 필터가 보는 그 가게의 최저가. 카카오 메뉴와 제보 중 싼 쪽이다.
+ * 오스시가 카카오에는 17,000원짜리로 보여도 1만원 특선 제보가 있으면
+ * "1만원 이하"를 통과해야 한다 — 제보를 받는 이유가 그거다.
+ */
+export function effectiveMinPrice(
+  menus: { price: string }[],
+  special: SpecialPrice | undefined,
+): number | null {
+  const kakao = minMenuPrice(menus);
+  if (!special) return kakao;
+  return kakao === null ? special.price : Math.min(kakao, special.price);
+}
+
 export const CONVENIENCE_CATEGORY = "체인화 편의점";
 
 /** 편의점은 메뉴 개념이 없어 수집 단계에서 메뉴를 조회하지 않는다 → 메뉴 섹션 자체를 숨긴다. */

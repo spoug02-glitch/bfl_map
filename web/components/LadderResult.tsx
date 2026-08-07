@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import LadderBoard from "@/components/LadderBoard";
 import MenuLines from "@/components/MenuLines";
-import { Restaurant } from "@/lib/constants";
+import { Restaurant, SpecialPrice } from "@/lib/constants";
 import { buildLadder, followLeg } from "@/lib/ladder";
 import { sharePath } from "@/lib/share-copy";
 import type { LadderDraw } from "@/lib/ladder-link";
@@ -17,6 +17,7 @@ export default function LadderResult({ draw }: { draw: LadderDraw | null }) {
   const [names, setNames] = useState<Map<string, Restaurant> | null>(null);
   // 링크로 들어온 사람도 선이 내려가는 걸 보고 나서 답을 만난다.
   const [arrived, setArrived] = useState(false);
+  const [special, setSpecial] = useState<SpecialPrice | undefined>(undefined);
 
   useEffect(() => {
     fetch("/restaurants.json")
@@ -24,6 +25,21 @@ export default function LadderResult({ draw }: { draw: LadderDraw | null }) {
       .then((data: Restaurant[]) => setNames(new Map(data.map(r => [r.kakao_place_id, r]))))
       .catch(() => setNames(new Map()));
   }, []);
+
+  // 당첨 가게의 점심특선 제보. 이 화면은 MapApp 밖이라 요약 맵이 없어 직접 묻는다.
+  const specialFor = draw ? draw.placeIds[draw.winner] : null;
+  useEffect(() => {
+    if (!specialFor) return;
+    fetch(`/api/specials?placeId=${specialFor}`)
+      .then(r => r.json())
+      .then(d => {
+        const rows: { menu_name: string; price: number }[] = d.specials ?? [];
+        if (rows.length === 0) return;
+        const cheapest = rows.reduce((a, b) => (b.price < a.price ? b : a));
+        setSpecial({ menuName: cheapest.menu_name, price: cheapest.price });
+      })
+      .catch(() => {});
+  }, [specialFor]);
 
   const ladder = useMemo(
     () => (draw ? buildLadder(draw.placeIds.length, draw.seed) : null),
@@ -91,7 +107,7 @@ export default function LadderResult({ draw }: { draw: LadderDraw | null }) {
             </p>
             {/* 뭘 파는 곳인지 여기서 알려주지 않으면 결국 카카오맵을 다시 연다 */}
             <div className="mt-4 border-t border-border-subtle pt-4">
-              <MenuLines menus={winnerPlace.menus} max={4} />
+              <MenuLines menus={winnerPlace.menus} special={special} max={4} />
             </div>
           </>
         )}

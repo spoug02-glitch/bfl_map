@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import LadderBoard from "@/components/LadderBoard";
 import MenuLines from "@/components/MenuLines";
-import { Restaurant, isMealPlace, normalizeQuery } from "@/lib/constants";
+import { Restaurant, SpecialPrice, isMealPlace, normalizeQuery } from "@/lib/constants";
 import { buildLadder, followLeg } from "@/lib/ladder";
 import { MAX_LEGS, MIN_LEGS, encodeLadder } from "@/lib/ladder-link";
 
@@ -11,6 +11,8 @@ type Props = {
   /** 현재 필터·반경을 통과한 가게들. "랜덤으로 채우기"가 여기서 뽑는다. */
   pool: Restaurant[];
   savedPlaces: Restaurant[];
+  /** 가게별 최저가 점심특선 제보. 당첨 가게의 메뉴 줄에 얹는다. */
+  specialPrices: Map<string, SpecialPrice>;
   onClose: () => void;
 };
 
@@ -27,7 +29,7 @@ const RANDOM_PICK = 4;
  */
 const RANDOM_RADIUS_KM = 0.15;
 
-export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
+export default function LadderPanel({ pool, savedPlaces, specialPrices, onClose }: Props) {
   const [picked, setPicked] = useState<Restaurant[]>([]);
   const [query, setQuery] = useState("");
   // start가 null이면 사다리는 놓였지만 아직 자리를 안 고른 상태다. -1 같은 값을
@@ -278,7 +280,10 @@ export default function LadderPanel({ pool, savedPlaces, onClose }: Props) {
                   : `${picked[winner].distance_km.toFixed(1)}km`}
               </p>
               <div className="mt-3 border-t border-border-subtle pt-3">
-                <MenuLines menus={picked[winner].menus} />
+                <MenuLines
+                  menus={picked[winner].menus}
+                  special={specialPrices.get(picked[winner].kakao_place_id)}
+                />
               </div>
             </div>
           )}

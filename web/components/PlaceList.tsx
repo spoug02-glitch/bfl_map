@@ -1,6 +1,6 @@
 "use client";
 
-import { OFFICE_LABEL, Restaurant, cheapestMenu, formatPrice } from "@/lib/constants";
+import { OFFICE_LABEL, Restaurant, SpecialPrice, cheapestMenu, formatPrice, minMenuPrice } from "@/lib/constants";
 
 export type ListedPlace = { place: Restaurant; distanceKm: number };
 export type MyReview = {
@@ -24,6 +24,8 @@ type Props = {
   loggedIn: boolean;
   /** 가격 필터가 켜져 있는지. 켜져 있으면 줄에 대표메뉴 대신 통과 근거가 된 메뉴를 쓴다. */
   priceFiltered: boolean;
+  /** 가게별 최저가 점심특선 제보. 제보 덕에 통과한 줄에는 그 특선을 보여준다. */
+  specialPrices: Map<string, SpecialPrice>;
   /** 가격 필터 때문에 빠진, 메뉴 가격을 모르는 가게 수. 0이면 알리지 않는다. */
   unpricedCount: number;
   onSelect: (r: Restaurant) => void;
@@ -73,7 +75,7 @@ function SectionBar({ children }: { children: React.ReactNode }) {
 // md 이상에서는 우측 사이드 패널. 가게를 고르면 이 자리가 상세로 바뀐다.
 export default function PlaceList({
   tab, onTab, places, savedPlaces, myReviews, placeById,
-  loggedIn, priceFiltered, unpricedCount, onSelect, onWiden, onReset, onLadder, canWiden,
+  loggedIn, priceFiltered, specialPrices, unpricedCount, onSelect, onWiden, onReset, onLadder, canWiden,
 }: Props) {
   const shown = places.slice(0, MAX_ROWS);
 
@@ -156,15 +158,24 @@ export default function PlaceList({
               {shown.map(({ place, distanceKm }) => {
                 // 가격으로 걸렀으면 그 가게를 통과시킨 메뉴를 보여준다. 대표메뉴를
                 // 그대로 쓰면 "1만원 이하"를 켜놓고 15,000원이 떠서 필터가 고장 난
-                // 것처럼 읽힌다.
-                const top = priceFiltered ? cheapestMenu(place.menus) : place.menus[0];
-                const price = top ? formatPrice(top.price) : null;
+                // 것처럼 읽힌다. 제보 특선이 카카오 최저가보다 싸면 통과 근거는
+                // 특선이다 — 출처가 다르니 "특선"이라고 밝힌다.
+                const special = specialPrices.get(place.kakao_place_id);
+                const kakaoMin = minMenuPrice(place.menus);
+                let line = "";
+                if (priceFiltered && special && (kakaoMin === null || special.price <= kakaoMin)) {
+                  line = ` · 특선 ${special.menuName} ${formatPrice(String(special.price))}`;
+                } else {
+                  const top = priceFiltered ? cheapestMenu(place.menus) : place.menus[0];
+                  const price = top ? formatPrice(top.price) : null;
+                  if (top && price) line = ` · ${top.name} ${price}`;
+                }
                 return (
                   <Row
                     key={place.kakao_place_id}
                     lead={formatDistance(distanceKm)}
                     title={place.name}
-                    subtitle={place.category + (top && price ? ` · ${top.name} ${price}` : "")}
+                    subtitle={place.category + line}
                     onClick={() => onSelect(place)}
                   />
                 );

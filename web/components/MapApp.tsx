@@ -17,7 +17,8 @@ import {
   RADIUS_KM,
   Restaurant,
   SessionUser,
-  minMenuPrice,
+  SpecialPrice,
+  effectiveMinPrice,
   normalizeQuery,
 } from "@/lib/constants";
 import { suggestNickname } from "@/lib/nickname";
@@ -34,6 +35,8 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [maxDist, setMaxDist] = useState(DEFAULT_VIEW_RADIUS_KM);
   // null이면 가격으로 거르지 않는다.
   const [priceLimit, setPriceLimit] = useState<number | null>(null);
+  // 가게별 최저가 점심특선 제보. 가격 필터가 카카오 메뉴와 함께 본다.
+  const [specialPrices, setSpecialPrices] = useState<Map<string, SpecialPrice>>(new Map());
   // null = 아직 아무도 안 정함(화면 폭이 정한다). 의미는 FilterBar 주석 참조.
   const [barOpen, setBarOpen] = useState<boolean | null>(null);
   const mapApi = useRef<MapApi | null>(null);
@@ -72,6 +75,19 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
       .then(d => setUser(d.user ?? null))
       .catch(() => setUser(null));
     fetch("/blog_links.json").then(r => r.json()).then(setBlogLinks).catch(() => {});
+    fetch("/api/specials")
+      .then(r => r.json())
+      .then(d =>
+        setSpecialPrices(
+          new Map(
+            (d.specials ?? []).map((s: { place_id: string; menu_name: string; price: number }) => [
+              s.place_id,
+              { menuName: s.menu_name, price: s.price },
+            ]),
+          ),
+        ),
+      )
+      .catch(() => {});
 
     // A failed login used to bounce back here with no explanation, so it just
     // looked like nothing happened. The common cause is clicking login twice:
@@ -106,21 +122,24 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   // 씨드큐브 500m 안 196곳 중 88곳은 메뉴 가격이 아예 없다. 필터를 켜면 그만큼이
   // 조용히 사라지므로 몇 곳인지 세어 목록이 알리게 한다.
   const unpricedCount = useMemo(
-    () => (priceLimit !== null ? matched.filter(r => minMenuPrice(r.menus) === null).length : 0),
-    [matched, priceLimit],
+    () =>
+      priceLimit !== null
+        ? matched.filter(r => effectiveMinPrice(r.menus, specialPrices.get(r.kakao_place_id)) === null).length
+        : 0,
+    [matched, priceLimit, specialPrices],
   );
 
   const ranked = useMemo(() => {
     const kept = priceLimit !== null
       ? matched.filter(r => {
-          const min = minMenuPrice(r.menus);
+          const min = effectiveMinPrice(r.menus, specialPrices.get(r.kakao_place_id));
           return min !== null && min <= priceLimit;
         })
       : matched;
     return kept
       .map(place => ({ place, distanceKm: place.distance_km }))
       .sort((a, b) => a.distanceKm - b.distanceKm);
-  }, [matched, priceLimit]);
+  }, [matched, priceLimit, specialPrices]);
 
   const visible = useMemo(() => ranked.map(x => x.place), [ranked]);
 
@@ -299,6 +318,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             placeById={placeById}
             loggedIn={user !== null}
             priceFiltered={priceLimit !== null}
+            specialPrices={specialPrices}
             unpricedCount={unpricedCount}
             onSelect={setSelected}
             onWiden={widenRadius}
@@ -311,6 +331,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
           <LadderPanel
             pool={visible}
             savedPlaces={savedPlaces}
+            specialPrices={specialPrices}
             onClose={() => setLadderOpen(false)}
           />
         )}
