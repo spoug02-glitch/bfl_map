@@ -23,7 +23,7 @@ type Props = {
   placeById: Map<string, Restaurant>;
   loggedIn: boolean;
   /** 가격 필터가 켜져 있는지. 켜져 있으면 줄에 대표메뉴 대신 통과 근거가 된 메뉴를 쓴다. */
-  cheapOnly: boolean;
+  priceFiltered: boolean;
   /** 가격 필터 때문에 빠진, 메뉴 가격을 모르는 가게 수. 0이면 알리지 않는다. */
   unpricedCount: number;
   onSelect: (r: Restaurant) => void;
@@ -73,7 +73,7 @@ function SectionBar({ children }: { children: React.ReactNode }) {
 // md 이상에서는 우측 사이드 패널. 가게를 고르면 이 자리가 상세로 바뀐다.
 export default function PlaceList({
   tab, onTab, places, savedPlaces, myReviews, placeById,
-  loggedIn, cheapOnly, unpricedCount, onSelect, onWiden, onReset, onLadder, canWiden,
+  loggedIn, priceFiltered, unpricedCount, onSelect, onWiden, onReset, onLadder, canWiden,
 }: Props) {
   const shown = places.slice(0, MAX_ROWS);
 
@@ -157,7 +157,7 @@ export default function PlaceList({
                 // 가격으로 걸렀으면 그 가게를 통과시킨 메뉴를 보여준다. 대표메뉴를
                 // 그대로 쓰면 "1만원 이하"를 켜놓고 15,000원이 떠서 필터가 고장 난
                 // 것처럼 읽힌다.
-                const top = cheapOnly ? cheapestMenu(place.menus) : place.menus[0];
+                const top = priceFiltered ? cheapestMenu(place.menus) : place.menus[0];
                 const price = top ? formatPrice(top.price) : null;
                 return (
                   <Row

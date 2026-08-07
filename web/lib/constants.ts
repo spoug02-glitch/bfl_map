@@ -30,11 +30,17 @@ export function formatPrice(price: string): string | null {
   return Number.isFinite(n) && n > 0 ? `${n.toLocaleString("ko-KR")}원` : null;
 }
 
-/** 점심값 상한. 식대 지원 한도로 가장 흔한 값이다. */
-export const CHEAP_LIMIT = 10000;
+/**
+ * 가격 필터에서 고를 수 있는 상한들. 점심값의 실제 결정 단위다 — 식대 한도가
+ * 5천·8천·1만원인 회사가 흔하고, 그 위는 "오늘은 좀 쓰자"의 단위다.
+ */
+export const PRICE_LIMITS = [5000, 8000, 10000, 15000, 20000] as const;
 
-/** "1만원 이하". 좁은 화면에서 반경 슬라이더와 한 줄을 나눠 써야 해 짧게 쓴다. */
-export const CHEAP_LABEL = `${CHEAP_LIMIT / 10000}만원 이하`;
+/** 5000 → "5천원 이하", 15000 → "1.5만원 이하". 좁은 화면용으로 짧게 쓴다. */
+export function priceLimitLabel(limit: number): string {
+  const n = limit < 10000 ? `${limit / 1000}천원` : `${limit / 10000}만원`;
+  return `${n} 이하`;
+}
 
 /**
  * 표시된 메뉴 중 가장 싼 값. 쓸 수 있는 가격이 하나도 없으면 null이다.

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { CHEAP_LIMIT, cheapestMenu, minMenuPrice } from "@/lib/constants";
+import { PRICE_LIMITS, cheapestMenu, minMenuPrice, priceLimitLabel } from "@/lib/constants";
 
 const menu = (price: string) => ({ name: `${price}짜리`, price });
 
@@ -42,8 +42,12 @@ describe("minMenuPrice", () => {
     expect(minMenuPrice([menu("0")])).toBeNull();
   });
 
-  it("상한은 1만원이다", () => {
-    expect(CHEAP_LIMIT).toBe(10000);
-    expect(minMenuPrice([menu("10000")])).toBeLessThanOrEqual(CHEAP_LIMIT);
+  it("상한 선택지와 라벨", () => {
+    expect(PRICE_LIMITS).toContain(10000);
+    expect(priceLimitLabel(5000)).toBe("5천원 이하");
+    expect(priceLimitLabel(8000)).toBe("8천원 이하");
+    expect(priceLimitLabel(10000)).toBe("1만원 이하");
+    expect(priceLimitLabel(15000)).toBe("1.5만원 이하");
+    expect(priceLimitLabel(20000)).toBe("2만원 이하");
   });
 });

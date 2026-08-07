@@ -4,8 +4,9 @@ import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { CENTER, OFFICE_LABEL, Restaurant } from "@/lib/constants";
 
-/** Kakao zoom: smaller is closer. 4 ≈ the office block and its immediate street. */
-const INITIAL_LEVEL = 4;
+/** Kakao zoom: smaller is closer. 3이면 기본 반경 100m 원이 화면을 채운다 —
+ *  처음 마주치는 화면과 회사 버튼이 돌아오는 화면 둘 다 이 눈높이다. */
+const INITIAL_LEVEL = 3;
 
 // 카카오맵 JS SDK는 공식 @types 패키지가 없다 — 이 컴포넌트가 실제로 쓰는
 // 부분만 최소한으로 타입을 선언해 `any` 없이 사용한다.
@@ -88,10 +89,10 @@ export default function MapView({ restaurants, maxDist, onSelect, apiRef }: Prop
         position: center,
         title: OFFICE_LABEL,
         image: new window.kakao.maps.MarkerImage(
-          "/icon-192.png",
+          "/office-marker.png",
           new window.kakao.maps.Size(44, 44),
-          // 로고는 아래가 뾰족한 밥그릇 핀이라 그 꼭짓점을 좌표에 앉힌다
-          { offset: new window.kakao.maps.Point(22, 44) },
+          // 밥그릇 핀의 뾰족한 꼭짓점(viewBox 32,57 → 44px에서 22,39)을 좌표에 앉힌다
+          { offset: new window.kakao.maps.Point(22, 39) },
         ),
         zIndex: 10,
       });

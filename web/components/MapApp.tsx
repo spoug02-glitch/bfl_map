@@ -13,7 +13,6 @@ import PlaceList, { type ListTab, type MyReview } from "@/components/PlaceList";
 import {
   BlogLink,
   CATEGORY_GROUPS,
-  CHEAP_LIMIT,
   DEFAULT_VIEW_RADIUS_KM,
   RADIUS_KM,
   Restaurant,
@@ -33,7 +32,8 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [group, setGroup] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [maxDist, setMaxDist] = useState(DEFAULT_VIEW_RADIUS_KM);
-  const [cheapOnly, setCheapOnly] = useState(false);
+  // null이면 가격으로 거르지 않는다.
+  const [priceLimit, setPriceLimit] = useState<number | null>(null);
   // null = 아직 아무도 안 정함(화면 폭이 정한다). 의미는 FilterBar 주석 참조.
   const [barOpen, setBarOpen] = useState<boolean | null>(null);
   const mapApi = useRef<MapApi | null>(null);
@@ -57,8 +57,15 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
       const id = initialPlaceId ?? new URLSearchParams(window.location.search).get("place");
       if (!id) return;
       const found = data.find(r => r.kakao_place_id === id);
-      if (found) setSelected(found);
-      else setStaleLink(true);  // 데이터 갱신으로 사라진 가게일 수 있다
+      if (found) {
+        setSelected(found);
+        // 공유된 가게가 기본 100m 밖이면 반경을 그 가게까지 넓힌다. 안 그러면
+        // 상세를 닫는 순간 지도에도 목록에도 없는 가게가 된다. 0.1 단위로 올려
+        // 슬라이더 눈금과 어긋나지 않게 한다.
+        setMaxDist(d => Math.max(d, Math.ceil(found.distance_km * 10) / 10));
+      } else {
+        setStaleLink(true);  // 데이터 갱신으로 사라진 가게일 수 있다
+      }
     });
     fetch("/api/auth/me")
       .then(r => r.json())
@@ -99,21 +106,21 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   // 씨드큐브 500m 안 196곳 중 88곳은 메뉴 가격이 아예 없다. 필터를 켜면 그만큼이
   // 조용히 사라지므로 몇 곳인지 세어 목록이 알리게 한다.
   const unpricedCount = useMemo(
-    () => (cheapOnly ? matched.filter(r => minMenuPrice(r.menus) === null).length : 0),
-    [matched, cheapOnly],
+    () => (priceLimit !== null ? matched.filter(r => minMenuPrice(r.menus) === null).length : 0),
+    [matched, priceLimit],
   );
 
   const ranked = useMemo(() => {
-    const kept = cheapOnly
+    const kept = priceLimit !== null
       ? matched.filter(r => {
           const min = minMenuPrice(r.menus);
-          return min !== null && min <= CHEAP_LIMIT;
+          return min !== null && min <= priceLimit;
         })
       : matched;
     return kept
       .map(place => ({ place, distanceKm: place.distance_km }))
       .sort((a, b) => a.distanceKm - b.distanceKm);
-  }, [matched, cheapOnly]);
+  }, [matched, priceLimit]);
 
   const visible = useMemo(() => ranked.map(x => x.place), [ranked]);
 
@@ -157,7 +164,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const logout = () => fetch("/api/auth/logout", { method: "POST" }).then(() => setUser(null));
 
   const resetFilters = () => {
-    setGroup(null); setQuery(""); setMaxDist(RADIUS_KM); setCheapOnly(false);
+    setGroup(null); setQuery(""); setMaxDist(RADIUS_KM); setPriceLimit(null);
   };
   const widenRadius = () => setMaxDist(Math.min(5, Math.round((maxDist + 1) * 10) / 10));
 
@@ -218,7 +225,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         group={group} onGroup={setGroup}
         query={query} onQuery={setQuery}
         maxDist={maxDist} onMaxDist={setMaxDist}
-        cheapOnly={cheapOnly} onCheapOnly={setCheapOnly}
+        priceLimit={priceLimit} onPriceLimit={setPriceLimit}
         open={barOpen} onOpenChange={setBarOpen}
         count={visible.length}
       />
@@ -291,7 +298,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             myReviews={user ? myReviews : []}
             placeById={placeById}
             loggedIn={user !== null}
-            cheapOnly={cheapOnly}
+            priceFiltered={priceLimit !== null}
             unpricedCount={unpricedCount}
             onSelect={setSelected}
             onWiden={widenRadius}

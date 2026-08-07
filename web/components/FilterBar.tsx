@@ -1,12 +1,13 @@
 "use client";
 
-import { CATEGORY_GROUPS, CHEAP_LABEL } from "@/lib/constants";
+import { CATEGORY_GROUPS, PRICE_LIMITS, priceLimitLabel } from "@/lib/constants";
 
 type Props = {
   group: string | null; onGroup: (g: string | null) => void;
   query: string; onQuery: (q: string) => void;
   maxDist: number; onMaxDist: (d: number) => void;
-  cheapOnly: boolean; onCheapOnly: (v: boolean) => void;
+  /** 가격 상한. null이면 가격으로 거르지 않는다. */
+  priceLimit: number | null; onPriceLimit: (v: number | null) => void;
   /** 접힘 상태. 부모가 든다 — 지도를 만지면 접는 건 지도를 아는 쪽만 할 수 있다. */
   open: boolean | null; onOpenChange: (v: boolean) => void;
   count: number;
@@ -18,15 +19,15 @@ function formatRadius(km: number): string {
 }
 
 /** 접었을 때 지금 무엇이 걸려 있는지 한 줄로 알려준다. */
-function summarize(query: string, group: string | null, maxDist: number, cheapOnly: boolean): string {
+function summarize(query: string, group: string | null, maxDist: number, priceLimit: number | null): string {
   const parts = [group ?? "전체", `반경 ${formatRadius(maxDist)}`];
-  if (cheapOnly) parts.push(CHEAP_LABEL);
+  if (priceLimit !== null) parts.push(priceLimitLabel(priceLimit));
   if (query.trim()) parts.unshift(`"${query.trim()}"`);
   return parts.join(" · ");
 }
 
 export default function FilterBar({
-  group, onGroup, query, onQuery, maxDist, onMaxDist, cheapOnly, onCheapOnly,
+  group, onGroup, query, onQuery, maxDist, onMaxDist, priceLimit, onPriceLimit,
   open, onOpenChange, count,
 }: Props) {
   /**
@@ -55,7 +56,7 @@ export default function FilterBar({
         <span className="flex min-w-0 items-center gap-2">
           <span aria-hidden className="text-text-muted">⌕</span>
           <span className="truncate font-medium text-text-primary">
-            {summarize(query, group, maxDist, cheapOnly)}
+            {summarize(query, group, maxDist, priceLimit)}
           </span>
         </span>
         <span className="flex shrink-0 items-center gap-1 text-text-muted">
@@ -114,15 +115,21 @@ export default function FilterBar({
               onChange={e => onMaxDist(Number(e.target.value))}
             />
           </label>
-          <button
-            className={`flex h-11 shrink-0 items-center justify-center rounded-xl border px-3 font-bold md:h-9 ${
-              cheapOnly ? "border-price bg-price text-white" : "border-border bg-surface text-text-primary"
+          {/* 상한은 하나만 고르는 값이라 select가 정직하다 — 모바일에선 네이티브
+              휠이 뜨고, 고른 값이 칩 얼굴에 그대로 남는다. */}
+          <select
+            className={`h-11 shrink-0 rounded-xl border px-2.5 text-center font-bold md:h-9 ${
+              priceLimit !== null ? "border-price bg-price text-white" : "border-border bg-surface text-text-primary"
             }`}
-            aria-pressed={cheapOnly}
-            onClick={() => onCheapOnly(!cheapOnly)}
+            aria-label="가격 상한"
+            value={priceLimit ?? ""}
+            onChange={e => onPriceLimit(e.target.value === "" ? null : Number(e.target.value))}
           >
-            {CHEAP_LABEL}
-          </button>
+            <option value="">가격 전체</option>
+            {PRICE_LIMITS.map(l => (
+              <option key={l} value={l}>{priceLimitLabel(l)}</option>
+            ))}
+          </select>
         </div>
         {/* 접는 표적은 가로 전체다. 오른쪽 끝 작은 버튼으로 뒀더니 누를 수 있다는
             걸 아무도 몰라, 모바일에서 지도가 계속 211px에 갇혀 있었다.

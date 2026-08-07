@@ -69,12 +69,29 @@ const faviconPng = `<svg xmlns="http://www.w3.org/2000/svg" width="32" height="3
   </g>
 </svg>`;
 
+/** 지도 위 회사 마커. 앱 아이콘과 달리 배경 사각형이 없다 — 그대로 올리면 지도를
+ *  가리는 검은 상자가 된다(실제로 그랬다). 누끼 딴 마크에 흰 테두리를 둘러 어떤
+ *  지도 타일 위에서도 또렷하게 뜬다. 88px로 뽑아 44px로 그린다(레티나 2x). */
+const officeMarker = `<svg xmlns="http://www.w3.org/2000/svg" width="88" height="88" viewBox="0 0 64 64">
+  <g stroke="#ffffff" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" fill="#ffffff">
+    <path d="M13 24h38c0 11-8.5 20-19 20s-19-9-19-20z"/>
+    <path d="M23 44h18l-9 13z"/>
+    <path d="M26 17c0-3 3-3 3-6" fill="none"/><path d="M35 17c0-3 3-3 3-6" fill="none"/>
+  </g>
+  <path d="M13 24h38c0 11-8.5 20-19 20s-19-9-19-20z" fill="${INK}"/>
+  <path d="M23 44h18l-9 13z" fill="${INK}"/>
+  <g stroke="${STEAM}" stroke-width="3.2" stroke-linecap="round" fill="none">
+    <path d="M26 17c0-3 3-3 3-6"/><path d="M35 17c0-3 3-3 3-6"/>
+  </g>
+</svg>`;
+
 const targets = [
   { file: "app/icon.png", svg: faviconPng, w: 32, h: 32 },
   { file: "app/apple-icon.png", svg: appIcon(180), w: 180, h: 180 },
   { file: "public/icon-192.png", svg: appIcon(192), w: 192, h: 192 },
   { file: "public/icon-512.png", svg: appIcon(512), w: 512, h: 512 },
   { file: "public/og-card.png", svg: ogCard, w: 1200, h: 630 },
+  { file: "public/office-marker.png", svg: officeMarker, w: 88, h: 88 },
 ];
 
 for (const t of targets) {
