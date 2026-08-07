@@ -14,6 +14,7 @@ import {
   BlogLink,
   CATEGORY_GROUPS,
   CHEAP_LIMIT,
+  DEFAULT_VIEW_RADIUS_KM,
   RADIUS_KM,
   Restaurant,
   SessionUser,
@@ -31,7 +32,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [all, setAll] = useState<Restaurant[]>([]);
   const [group, setGroup] = useState<string | null>(null);
   const [query, setQuery] = useState("");
-  const [maxDist, setMaxDist] = useState(5.0);
+  const [maxDist, setMaxDist] = useState(DEFAULT_VIEW_RADIUS_KM);
   const [cheapOnly, setCheapOnly] = useState(false);
   // null = 아직 아무도 안 정함(화면 폭이 정한다). 의미는 FilterBar 주석 참조.
   const [barOpen, setBarOpen] = useState<boolean | null>(null);

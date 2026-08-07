@@ -2,6 +2,12 @@ export const OFFICE_LABEL = "창동씨드큐브";
 export const CENTER = { lat: 37.6545, lng: 127.0499 }; // 창동씨드큐브
 export const RADIUS_KM = 5.0;
 
+/**
+ * 처음 열었을 때의 반경. 데이터는 5km까지 있지만 그걸 다 그리면 파란 핀이
+ * 수백 개 깔려 정작 회사가 어딘지 안 보인다 — 점심은 사방 100m에서 시작한다.
+ */
+export const DEFAULT_VIEW_RADIUS_KM = 0.1;
+
 /** 브라우저가 아는 로그인 상태. `nickname`이 null이면 아직 닉네임을 안 정한 것이다. */
 export type SessionUser = { userId: string; nickname: string | null };
 

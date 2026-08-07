@@ -20,11 +20,21 @@ interface KakaoClusterer {
   clear(): void;
   addMarkers(markers: KakaoMarker[]): void;
 }
+type KakaoSize = object;
+type KakaoPoint = object;
+type KakaoMarkerImage = object;
+
 interface KakaoMapsNamespace {
   load(cb: () => void): void;
   Map: new (el: HTMLElement | null, opts: { center: KakaoLatLng; level: number }) => KakaoMap;
   LatLng: new (lat: number, lng: number) => KakaoLatLng;
-  Marker: new (opts: { map?: KakaoMap; position: KakaoLatLng; title?: string }) => KakaoMarker;
+  Size: new (w: number, h: number) => KakaoSize;
+  Point: new (x: number, y: number) => KakaoPoint;
+  MarkerImage: new (src: string, size: KakaoSize, opts?: { offset?: KakaoPoint }) => KakaoMarkerImage;
+  Marker: new (opts: {
+    map?: KakaoMap; position: KakaoLatLng; title?: string;
+    image?: KakaoMarkerImage; zIndex?: number;
+  }) => KakaoMarker;
   Circle: new (opts: {
     map: KakaoMap; center: KakaoLatLng; radius: number;
     strokeWeight: number; strokeColor: string; strokeOpacity: number;
@@ -71,7 +81,20 @@ export default function MapView({ restaurants, maxDist, onSelect, apiRef }: Prop
       clustererRef.current = new window.kakao.maps.MarkerClusterer({
         map, averageCenter: true, minLevel: 5,
       });
-      const office = new window.kakao.maps.Marker({ map, position: center, title: OFFICE_LABEL });
+      // 회사는 식당과 같은 파란 핀이면 안 된다 — 핀 수백 개 사이에서 "여기가
+      // 어디 기준인지"를 찾을 수 없었다. 우리 로고를 크게, 항상 맨 위에 둔다.
+      const office = new window.kakao.maps.Marker({
+        map,
+        position: center,
+        title: OFFICE_LABEL,
+        image: new window.kakao.maps.MarkerImage(
+          "/icon-192.png",
+          new window.kakao.maps.Size(44, 44),
+          // 로고는 아래가 뾰족한 밥그릇 핀이라 그 꼭짓점을 좌표에 앉힌다
+          { offset: new window.kakao.maps.Point(22, 44) },
+        ),
+        zIndex: 10,
+      });
       // 처음 화면으로 돌아오는 길. 마커 클릭에도 걸려 있지만, 전국 크기로 빼면
       // 마커는 못 찾는다 — 그래서 같은 동작을 apiRef로도 열어 떠 있는 버튼이 쓴다.
       const recenter = () => {

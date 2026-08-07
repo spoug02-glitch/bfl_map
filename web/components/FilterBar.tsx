@@ -12,9 +12,14 @@ type Props = {
   count: number;
 };
 
+/** 1km 아래는 미터로 읽는다 — "반경 0.1km"는 아무도 그렇게 말하지 않는다. */
+function formatRadius(km: number): string {
+  return km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)}km`;
+}
+
 /** 접었을 때 지금 무엇이 걸려 있는지 한 줄로 알려준다. */
 function summarize(query: string, group: string | null, maxDist: number, cheapOnly: boolean): string {
-  const parts = [group ?? "전체", `반경 ${maxDist.toFixed(1)}km`];
+  const parts = [group ?? "전체", `반경 ${formatRadius(maxDist)}`];
   if (cheapOnly) parts.push(CHEAP_LABEL);
   if (query.trim()) parts.unshift(`"${query.trim()}"`);
   return parts.join(" · ");
@@ -99,9 +104,12 @@ export default function FilterBar({
               (거의 검정)까지 가면 필터 칩의 선택 상태보다 도드라져 시선을 먼저
               가져가므로, 중간 톤 회색으로 둔다. */}
           <label className="flex h-11 min-w-0 flex-1 items-center gap-2 md:h-9">
-            <span className="whitespace-nowrap font-medium text-text-muted">반경 {maxDist.toFixed(1)}km</span>
+            {/* 자리 폭을 고정해 100m ↔ 5.0km 사이에서 슬라이더가 들썩이지 않게 */}
+            <span className="w-[4.5rem] shrink-0 whitespace-nowrap font-medium text-text-muted">
+              반경 {formatRadius(maxDist)}
+            </span>
             <input
-              type="range" min={0.5} max={5} step={0.5} value={maxDist}
+              type="range" min={0.1} max={5} step={0.1} value={maxDist}
               className="h-11 min-w-0 flex-1 accent-text-muted md:h-9"
               onChange={e => onMaxDist(Number(e.target.value))}
             />
