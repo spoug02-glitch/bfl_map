@@ -108,7 +108,7 @@ export default function DislikeSettings({
           사라진 가게를 지도에서 다시 찾을 수는 없으니까. */}
       {hiddenPlaces.length > 0 && (
         <>
-          <p className="mt-4 text-xs font-bold text-text-muted">직접 뺀 가게</p>
+          <p className="mt-4 text-xs font-bold text-text-muted">내 지도에서 숨긴 가게</p>
           <ul className="mt-1 space-y-1">
             {hiddenPlaces.map(r => (
               <li key={r.kakao_place_id} className="flex items-center gap-2">
