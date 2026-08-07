@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import MenuLines from "@/components/MenuLines";
 import RouletteWheel from "@/components/RouletteWheel";
+import Toast from "@/components/Toast";
 import { Restaurant, SpecialPrice, isMealPlace, normalizeQuery } from "@/lib/constants";
 import { MAX_LEGS, MIN_LEGS, encodeLadder } from "@/lib/ladder-link";
 import { sliceColor, sliceLabel } from "@/lib/roulette";
@@ -35,19 +36,26 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
   // 원판이 멈추기 전까지는 답을 감춘다. 미리 보여주면 돌릴 이유가 없다.
   const [arrived, setArrived] = useState(false);
   const [copied, setCopied] = useState(false);
+  // 랜덤이 요청한 만큼 못 채웠을 때만 뜨는 말. 잔글씨로 늘 깔아두면 안 읽힌다 —
+  // 실제로 걸린 그 순간에 말해야 "왜 4곳이 아니지"의 답이 된다.
+  const [fillNote, setFillNote] = useState<string | null>(null);
 
   const full = picked.length >= MAX_LEGS;
   const winner = draw?.winner ?? null;
 
   const add = (r: Restaurant) => {
     setQuery("");
+    setFillNote(null);
     setPicked(prev =>
       prev.length >= MAX_LEGS || prev.some(p => p.kakao_place_id === r.kakao_place_id)
         ? prev
         : [...prev, r],
     );
   };
-  const remove = (id: string) => setPicked(prev => prev.filter(p => p.kakao_place_id !== id));
+  const remove = (id: string) => {
+    setFillNote(null);
+    setPicked(prev => prev.filter(p => p.kakao_place_id !== id));
+  };
 
   const matches = useMemo(() => {
     const q = normalizeQuery(query);
@@ -73,7 +81,12 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
       const j = Math.floor(Math.random() * (i + 1));
       [rest[i], rest[j]] = [rest[j], rest[i]];
     }
-    setPicked(prev => [...prev, ...rest.slice(0, Math.min(RANDOM_PICK, MAX_LEGS - prev.length))]);
+    const room = Math.min(RANDOM_PICK, MAX_LEGS - picked.length);
+    const take = rest.slice(0, room);
+    setPicked(prev => [...prev, ...take]);
+    // 지도에는 핀이 남아 있는데 더 안 담기면 "고장 났나" 싶다. 남은 게 카페와
+    // 편의점이라 그렇다는 걸 그 자리에서 알려준다.
+    setFillNote(take.length < room ? "지도에 핀이 더 있어도 카페·편의점은 랜덤에서 빼요. 검색으로는 담을 수 있어요." : null);
   };
 
   const addSaved = () => {
@@ -116,6 +129,8 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
         md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0"
       style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
     >
+      {fillNote && <Toast message={fillNote} onDone={() => setFillNote(null)} />}
+
       <div className="flex items-start justify-between gap-2">
         <h2 className="text-xl font-bold text-text-primary">룰렛으로 정하기</h2>
         <button

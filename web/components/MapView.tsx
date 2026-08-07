@@ -4,8 +4,12 @@ import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { CENTER, OFFICE_LABEL, Restaurant } from "@/lib/constants";
 
-/** Kakao zoom: smaller is closer. 3이면 기본 반경 100m 원이 화면을 채운다 —
- *  처음 마주치는 화면과 회사 버튼이 돌아오는 화면 둘 다 이 눈높이다. */
+/**
+ * Kakao zoom: 숫자가 작을수록 가깝다. 3에서 기본 반경 200m 원은 지름 400px로
+ * 그려진다 — 375px 폭 화면을 좌우로 조금 넘고 세로(435px)로는 들어와, 원이
+ * 화면을 꽉 채운다. 한 단계 물러나면 지름이 절반이 되어 화면이 텅 빈다.
+ * 처음 마주치는 화면과 회사 버튼이 돌아오는 화면 둘 다 이 눈높이다.
+ */
 const INITIAL_LEVEL = 3;
 
 /**
