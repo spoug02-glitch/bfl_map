@@ -52,16 +52,17 @@ describe("DELETE /api/account", () => {
   it("removes everything in a single transaction", async () => {
     await withdraw();
     expect(sqlMock.transaction).toHaveBeenCalledTimes(1);
-    expect(batched()).toHaveLength(3);
+    expect(batched()).toHaveLength(4);
   });
 
   // users를 먼저 지우면 외래 키가 걸려 통째로 실패한다.
   it("clears the referencing rows before the user row", async () => {
     await withdraw();
-    const [first, second, third] = batched();
+    const [first, second, third, fourth] = batched();
     expect(first).toContain("saved_places");
     expect(second).toContain("reviews");
-    expect(third).toContain("users");
+    expect(third).toContain("lunch_specials");
+    expect(fourth).toContain("users");
   });
 
   it("ends the session so a deleted account keeps no cookie", async () => {

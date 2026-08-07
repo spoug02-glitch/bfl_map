@@ -42,6 +42,7 @@ export default function PrivacyPage() {
           <li><strong>카카오 회원번호</strong> — 같은 사람인지 알아보기 위해</li>
           <li><strong>이 서비스에서 직접 정한 닉네임</strong> — 리뷰에 표시되는 이름</li>
           <li><strong>작성한 리뷰</strong> — 별점 두 개와 100자 이내의 글</li>
+          <li><strong>점심특선 제보</strong> — 메뉴명, 가격, 맛별점, 비고. 닉네임 없이 내용만 공개됩니다</li>
           <li><strong>저장한 가게 목록</strong></li>
           <li><strong>방문 집계용 임의 토큰</strong> — 브라우저가 만든 무작위 값. 계정과 연결되지 않으며, 브라우저 데이터를 지우면 사라집니다</li>
         </ul>
@@ -79,7 +80,7 @@ export default function PrivacyPage() {
       <Section title="5. 탈퇴하려면">
         <p>
           지도 화면 오른쪽 위의 닉네임을 누르면 나오는 창에서 <strong>회원 탈퇴</strong>를 선택하세요.
-          계정, 작성한 리뷰, 저장한 가게가 모두 지워집니다. <strong>되돌릴 수 없습니다.</strong>
+          계정, 작성한 리뷰, 점심특선 제보, 저장한 가게가 모두 지워집니다. <strong>되돌릴 수 없습니다.</strong>
         </p>
         <p className="text-sm text-text-muted">
           탈퇴해도 카카오 계정과 이 서비스의 연결은 남아 있을 수 있습니다. 카카오톡 &gt; 더보기 &gt;

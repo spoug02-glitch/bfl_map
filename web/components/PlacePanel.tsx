@@ -3,6 +3,7 @@
 import { BlogLink, Restaurant, formatPrice, isConvenienceStore } from "@/lib/constants";
 import ReviewSection from "@/components/ReviewSection";
 import SaveButton from "@/components/SaveButton";
+import SpecialSection from "@/components/SpecialSection";
 import ShareButton from "@/components/ShareButton";
 import type { SessionUser } from "@/lib/constants";
 
@@ -79,6 +80,9 @@ export default function PlacePanel({
               ))}
             </ul>
           )}
+          {/* 카카오 메뉴에는 점심특선이 거의 안 올라온다 — 그 빈칸은 먹어본
+              사람이 채운다. 편의점 분기 안에 있는 이유: 특선은 밥집의 것이다. */}
+          <SpecialSection placeId={r.kakao_place_id} loggedIn={user !== null} />
         </>
       )}
 

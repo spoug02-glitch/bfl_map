@@ -34,7 +34,7 @@ export function formatPrice(price: string): string | null {
  * 가격 필터에서 고를 수 있는 상한들. 점심값의 실제 결정 단위다 — 식대 한도가
  * 5천·8천·1만원인 회사가 흔하고, 그 위는 "오늘은 좀 쓰자"의 단위다.
  */
-export const PRICE_LIMITS = [5000, 8000, 10000, 15000, 20000] as const;
+export const PRICE_LIMITS = [5000, 8000, 10000, 12000, 15000, 20000] as const;
 
 /** 5000 → "5천원 이하", 15000 → "1.5만원 이하". 좁은 화면용으로 짧게 쓴다. */
 export function priceLimitLabel(limit: number): string {

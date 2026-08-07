@@ -155,7 +155,7 @@ export default function NicknameModal({
       <Dialog labelledBy={titleId} onEscape={backFromWithdraw} initialFocus={cancelWithdrawRef}>
         <h2 id={titleId} className="text-lg font-bold text-text-primary">정말 탈퇴하시겠어요?</h2>
         <p className="mt-2 text-sm text-text-muted">
-          계정과 함께 <strong className="text-text-primary">작성한 리뷰</strong>와{" "}
+          계정과 함께 <strong className="text-text-primary">작성한 리뷰·점심특선 제보</strong>와{" "}
           <strong className="text-text-primary">저장한 가게</strong>가 모두 지워집니다.
           되돌릴 수 없어요.
         </p>

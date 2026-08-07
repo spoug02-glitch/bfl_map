@@ -27,6 +27,7 @@ export async function DELETE(req: NextRequest) {
   await sql.transaction([
     sql`DELETE FROM saved_places WHERE user_id = ${session.userId}`,
     sql`DELETE FROM reviews WHERE user_id = ${session.userId}`,
+    sql`DELETE FROM lunch_specials WHERE user_id = ${session.userId}`,
     sql`DELETE FROM users WHERE user_id = ${session.userId}`,
   ]);
 
