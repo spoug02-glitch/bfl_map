@@ -18,7 +18,7 @@ describe("generateMetadata for /place/[id]", () => {
 
   it("falls back to the app card for an id that is not in the index", async () => {
     const meta = await generateMetadata(params("99999999999"));
-    expect(meta.title).toBe("직장인 맛집지도");
+    expect(meta.title).toBe("직장인 맛창고");
     expect(meta.openGraph).toBeUndefined();
   });
 
@@ -28,7 +28,7 @@ describe("generateMetadata for /place/[id]", () => {
     "falls back instead of crashing on the inherited key %s",
     async (key) => {
       const meta = await generateMetadata(params(key));
-      expect(meta.title).toBe("직장인 맛집지도");
+      expect(meta.title).toBe("직장인 맛창고");
       expect(meta.openGraph).toBeUndefined();
     },
   );
@@ -37,7 +37,7 @@ describe("generateMetadata for /place/[id]", () => {
     "falls back on the malformed id %j",
     async (id) => {
       const meta = await generateMetadata(params(id));
-      expect(meta.title).toBe("직장인 맛집지도");
+      expect(meta.title).toBe("직장인 맛창고");
     },
   );
 });

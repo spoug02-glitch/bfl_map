@@ -3,8 +3,8 @@ import Link from "next/link";
 import { CREDIT } from "@/lib/constants";
 
 export const metadata: Metadata = {
-  title: "개인정보 처리방침 · 직장인 맛집지도",
-  description: "직장인 맛집지도가 무엇을 받고, 무엇을 저장하지 않으며, 언제 지우는지",
+  title: "개인정보 처리방침 · 직장인 맛창고",
+  description: "직장인 맛창고가 무엇을 받고, 무엇을 저장하지 않으며, 언제 지우는지",
 };
 
 const UPDATED = "2026-08-05";

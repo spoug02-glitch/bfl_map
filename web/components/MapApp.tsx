@@ -205,7 +205,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
               <path d="M35 17c0-3 3-3 3-6" />
             </g>
           </svg>
-          직장인 맛집지도
+          직장인 맛창고
         </h1>
         {user?.nickname ? (
           <div className="flex items-center gap-2 text-sm">

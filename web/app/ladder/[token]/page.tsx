@@ -9,7 +9,7 @@ import shareIndex from "@/lib/share-index.json";
 // 되고, 서버가 조회할 것도 만료시킬 것도 없다.
 
 const index = shareIndex as Record<string, ShareSubject>;
-const SITE_NAME = "직장인 맛집지도";
+const SITE_NAME = "직장인 맛창고";
 
 type Props = { params: Promise<{ token: string }> };
 

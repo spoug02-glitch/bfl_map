@@ -11,7 +11,7 @@ import "./globals.css";
 // served from a CDN instead — it is the de-facto Korean UI font and matches
 // the Figma design's intent far better than a platform-dependent fallback.
 
-const SITE_NAME = "직장인 맛집지도";
+const SITE_NAME = "직장인 맛창고";
 const DESCRIPTION = "창동씨드큐브 반경 5km 비플페이(제로페이) 맛집 지도";
 
 export const metadata: Metadata = {
@@ -21,7 +21,7 @@ export const metadata: Metadata = {
   title: SITE_NAME,
   description: DESCRIPTION,
   manifest: "/manifest.webmanifest",
-  appleWebApp: { capable: true, title: "맛집지도", statusBarStyle: "default" },
+  appleWebApp: { capable: true, title: "맛창고", statusBarStyle: "default" },
   openGraph: {
     siteName: SITE_NAME,
     type: "website",

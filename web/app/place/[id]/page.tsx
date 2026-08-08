@@ -11,7 +11,7 @@ import shareIndex from "@/lib/share-index.json";
 
 const index = shareIndex as Record<string, ShareSubject>;
 
-const SITE_NAME = "직장인 맛집지도";
+const SITE_NAME = "직장인 맛창고";
 
 type Props = { params: Promise<{ id: string }> };
 
