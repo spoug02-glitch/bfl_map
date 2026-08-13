@@ -23,7 +23,7 @@ Task 12(정지 집행)가 기존 리뷰 수정·닉네임 라우트의 sql 호�
 - `/api/admin/users` 검색은 **`limit`(기본 20, 최대 100)·`offset`을 항상 강제**한다. 무제한 스캔을 허용하지 않는다.
 - 정지 걸기/해제의 두 테이블 쓰기(`users` + `user_suspensions`)는 **`sql.transaction([...])`로 묶는다.** 하나만 성공하는 상태를 만들지 않는다.
 - 정지는 **리뷰 작성(POST)·리뷰 수정(PATCH)·닉네임 변경(PUT)만** 막는다. 리뷰 삭제·저장·지도 열람·로그인은 그대로 둔다.
-- 정지 안내 문구는 **서버 403 응답과 프론트 사전 배너가 같은 함수(`suspensionMessage`)를 써서 동일한 텍스트**를 낸다. 문의처는 기존 footer 이메일(`CREDIT.email`)을 가리키는 문장으로 쓴다 — 이 서비스엔 별도 고객센터가 없다.
+- 정지 안내 문구는 **새로 만들지 않는다.** `feature/bfl-map-nickname` 브랜치에 footer/약관 작업(`72e2273a`)이 이미 `web/lib/legal.ts`에 `suspensionNotice(until: string | null)`(제한 문구)와 `CONTACT_LINE`(문의 안내, `CREDIT.email` 사용)을 만들어 뒀다. `lib/suspension.ts`는 **기간 계산·검증 같은 순수 로직만** 담당하고 문구를 만드는 헬퍼(`suspensionMessage`류)는 어떤 이름으로도 추가하지 않는다. 호출부(라우트·컴포넌트)가 `isPermanentSuspension(until) ? null : kstDateTime(until)`로 문자열을 만들어 `suspensionNotice()`에 직접 넘기고, 문의 안내가 필요한 화면(프론트 배너)에서는 `CONTACT_LINE`을 별도 줄로 덧붙인다. API 403 응답 본문은 `suspensionNotice(...)` 결과만 담고 `CONTACT_LINE`은 붙이지 않는다(문의는 UI에서만 보조 정보로).
 - 최고관리자는 **자기 자신과 마지막 남은 최고관리자를 비활성화할 수 없다.**
 - 모든 API 에러 응답은 `{ "error": "<한국어 문장>" }` 모양으로 통일한다(기존 라우트와 동일 관례).
 - 작업 디렉터리는 전부 `Bfl_map/web/`. 명령은 그 안에서 실행한다.
@@ -43,7 +43,7 @@ Task 12(정지 집행)가 기존 리뷰 수정·닉네임 라우트의 sql 호�
 | `web/__tests__/admin-auth.test.ts` | 위 모듈 테스트 |
 | `web/lib/admin-session.ts` | 운영자 세션 JWT + `requireAdmin()` 가드 |
 | `web/__tests__/admin-session.test.ts` | 위 모듈 테스트 |
-| `web/lib/suspension.ts` | 순수 로직: 기간→만료시각 계산, 유효성 검사, 안내 문구. DB 없음 — 클라이언트 컴포넌트도 import 가능 |
+| `web/lib/suspension.ts` | 순수 로직: 기간→만료시각 계산, 유효성 검사만(안내 문구는 기존 `lib/legal.ts` 재사용). DB 없음 — 클라이언트 컴포넌트도 import 가능 |
 | `web/__tests__/suspension.test.ts` | 위 모듈 테스트 |
 | `web/lib/suspension-server.ts` | `isSuspended(userId)` — DB 조회 |
 | `web/__tests__/suspension-server.test.ts` | 위 모듈 테스트 |
@@ -484,7 +484,8 @@ git commit -m "feat(bfl-map): add separate admin session cookie and requireAdmin
   - `isValidDurationLabel(v: unknown): v is DurationLabel`
   - `isPermanentSuspension(until: Date): boolean`
   - `isSuspensionActive(until: Date | null): boolean`
-  - `suspensionMessage(until: Date): string`
+
+이 파일은 **순수 기간 계산/검증만** 맡는다. 사용자에게 보여줄 문구는 만들지 않는다 — `feature/bfl-map-nickname`의 footer/약관 작업(`72e2273a`)이 이미 `web/lib/legal.ts`에 `suspensionNotice(until: string | null): string`과 `CONTACT_LINE`을 만들어 뒀고, 이 계획은 그걸 그대로 재사용한다. 호출부는 `suspensionNotice(isPermanentSuspension(until) ? null : kstDateTime(until))` 형태로 직접 조합한다.
 
 - [ ] **Step 1: `kst.ts`에 시:분 포맷 추가**
 
@@ -515,7 +516,6 @@ import {
   isPermanentSuspension,
   isSuspensionActive,
   isValidDurationLabel,
-  suspensionMessage,
 } from "@/lib/suspension";
 
 const NOW = new Date("2026-08-13T00:00:00Z");
@@ -562,21 +562,6 @@ describe("isPermanentSuspension / isSuspensionActive", () => {
     expect(isSuspensionActive(null)).toBe(false);
   });
 });
-
-describe("suspensionMessage", () => {
-  it("names the expiry time for a timed suspension", () => {
-    const msg = suspensionMessage(new Date("2026-08-14T06:30:00Z"));
-    expect(msg).toContain("2026년 8월 14일 15:30"); // KST = UTC+9
-    expect(msg).toContain("리뷰 작성과 닉네임 변경");
-    expect(msg).toContain("지도 열람과 기존 리뷰 삭제");
-  });
-
-  it("uses permanent copy for the permanent constant, without a date", () => {
-    const msg = suspensionMessage(PERMANENT_SUSPENSION_UNTIL);
-    expect(msg).toContain("영구 정지");
-    expect(msg).not.toMatch(/\d{4}년/);
-  });
-});
 ```
 
 - [ ] **Step 3: Run test to verify it fails**
@@ -589,8 +574,6 @@ Expected: FAIL — `Failed to resolve import "@/lib/suspension"`
 Create `web/lib/suspension.ts`:
 
 ```ts
-import { kstDateTime } from "@/lib/kst";
-
 export type DurationLabel = "1h" | "3h" | "1d" | "3d" | "7d" | "permanent";
 
 /** 영구 정지는 이 값을 그대로 저장한다 — `suspended_until > now()` 하나로 정지
@@ -621,24 +604,14 @@ export function isPermanentSuspension(until: Date): boolean {
 export function isSuspensionActive(until: Date | null): boolean {
   return until !== null && until.getTime() > Date.now();
 }
-
-/** 서버 403 응답과 프론트 사전 안내 배너가 같은 문구를 쓴다. DB를 건드리지
- * 않으므로 "use client" 컴포넌트도 그대로 import할 수 있다. */
-export function suspensionMessage(until: Date): string {
-  if (isPermanentSuspension(until)) {
-    return "이 계정은 영구 정지되어 리뷰 작성과 닉네임 변경이 제한됩니다. 문의사항은 하단 이메일로 연락해 주세요.";
-  }
-  return (
-    `정지된 계정입니다. ${kstDateTime(until)}까지 리뷰 작성과 닉네임 변경이 제한됩니다. ` +
-    `지도 열람과 기존 리뷰 삭제는 계속 이용할 수 있어요. 문의사항은 하단 이메일로 연락해 주세요.`
-  );
-}
 ```
+
+문구를 만드는 함수는 이 파일에 두지 않는다 — 호출부가 `suspensionNotice(isPermanentSuspension(until) ? null : kstDateTime(until))`(`@/lib/legal`, `@/lib/kst`)를 직접 조합해서 쓴다. `kstDateTime`은 Task 12/13의 호출부에서 import한다.
 
 - [ ] **Step 5: Run test to verify it passes**
 
 Run: `cd Bfl_map/web && npm test -- suspension.test.ts`
-Expected: PASS (9개 테스트 통과)
+Expected: PASS (7개 테스트 통과)
 
 - [ ] **Step 6: Commit**
 
@@ -1814,7 +1787,7 @@ git commit -m "feat(bfl-map): add operator account management routes with safegu
 - Test: `web/__tests__/suspension-enforcement.test.ts`
 
 **Interfaces:**
-- Consumes: `isSuspended` (`@/lib/suspension-server`), `suspensionMessage` (`@/lib/suspension`)
+- Consumes: `isSuspended` (`@/lib/suspension-server`), `isPermanentSuspension` (`@/lib/suspension`), `kstDateTime` (`@/lib/kst`), `suspensionNotice` (`@/lib/legal`)
 
 정지 체크는 **auth(401) → 입력 검증(400) → 정지 체크(403) → 비즈니스 로직 쿼리** 순서로 넣는다. 이 순서를 지켜야 "잘못된 입력은 DB를 안 건드린다"는 기존 테스트들이 그대로 통과한다.
 
@@ -1826,13 +1799,14 @@ git commit -m "feat(bfl-map): add operator account management routes with safegu
 import { NextRequest, NextResponse } from "next/server";
 import { PLACE_ID_RE } from "@/lib/constants";
 import { sql } from "@/lib/db";
-import { kstDate } from "@/lib/kst";
+import { kstDate, kstDateTime } from "@/lib/kst";
+import { suspensionNotice } from "@/lib/legal";
 import { validateReviewInput } from "@/lib/reviews";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
-import { suspensionMessage } from "@/lib/suspension";
+import { isPermanentSuspension } from "@/lib/suspension";
 import { isSuspended } from "@/lib/suspension-server";
 ```
-(import 블록 교체 — 기존 5줄에 마지막 두 줄 추가)
+(import 블록 교체 — 기존 `kstDate` 옆에 `kstDateTime` 추가, 나머지 세 줄 신규)
 
 `POST` 함수 안, 기존:
 ```ts
@@ -1844,7 +1818,9 @@ import { isSuspended } from "@/lib/suspension-server";
 ```ts
   const suspension = await isSuspended(session.userId);
   if (suspension.suspended) {
-    return NextResponse.json({ error: suspensionMessage(suspension.until!) }, { status: 403 });
+    const until = suspension.until!;
+    const notice = suspensionNotice(isPermanentSuspension(until) ? null : kstDateTime(until));
+    return NextResponse.json({ error: notice }, { status: 403 });
   }
 ```
 
@@ -1852,7 +1828,9 @@ import { isSuspended } from "@/lib/suspension-server";
 
 `web/app/api/reviews/[id]/route.ts` 상단 import에 추가:
 ```ts
-import { suspensionMessage } from "@/lib/suspension";
+import { kstDateTime } from "@/lib/kst";
+import { suspensionNotice } from "@/lib/legal";
+import { isPermanentSuspension } from "@/lib/suspension";
 import { isSuspended } from "@/lib/suspension-server";
 ```
 
@@ -1865,7 +1843,9 @@ import { isSuspended } from "@/lib/suspension-server";
 ```ts
   const suspension = await isSuspended(ctx.userId);
   if (suspension.suspended) {
-    return NextResponse.json({ error: suspensionMessage(suspension.until!) }, { status: 403 });
+    const until = suspension.until!;
+    const notice = suspensionNotice(isPermanentSuspension(until) ? null : kstDateTime(until));
+    return NextResponse.json({ error: notice }, { status: 403 });
   }
 ```
 `DELETE` 함수는 그대로 둔다.
@@ -1874,7 +1854,9 @@ import { isSuspended } from "@/lib/suspension-server";
 
 `web/app/api/auth/nickname/route.ts` 상단 import에 추가:
 ```ts
-import { suspensionMessage } from "@/lib/suspension";
+import { kstDateTime } from "@/lib/kst";
+import { suspensionNotice } from "@/lib/legal";
+import { isPermanentSuspension } from "@/lib/suspension";
 import { isSuspended } from "@/lib/suspension-server";
 ```
 
@@ -1887,7 +1869,9 @@ import { isSuspended } from "@/lib/suspension-server";
 ```ts
   const suspension = await isSuspended(session.userId);
   if (suspension.suspended) {
-    return NextResponse.json({ error: suspensionMessage(suspension.until!) }, { status: 403 });
+    const until = suspension.until!;
+    const notice = suspensionNotice(isPermanentSuspension(until) ? null : kstDateTime(until));
+    return NextResponse.json({ error: notice }, { status: 403 });
   }
 ```
 
@@ -2218,7 +2202,7 @@ git commit -m "feat(bfl-map): enforce suspension on review write and nickname ch
 - Modify: `web/components/MapApp.tsx`
 
 **Interfaces:**
-- Consumes: `isSuspensionActive`, `suspensionMessage` (`@/lib/suspension`)
+- Consumes: `isSuspensionActive`, `isPermanentSuspension` (`@/lib/suspension`), `kstDateTime` (`@/lib/kst`), `suspensionNotice`, `CONTACT_LINE` (`@/lib/legal`)
 - Produces: `SessionUser.suspendedUntil: string | null`
 
 `/api/auth/me`는 이미 `req.cookies`를 읽어 매 요청 동적 렌더링이라 별도 캐시 무효화 작업이 필요 없다 — 정지 해제 직후 바로 반영된다.
@@ -2265,13 +2249,18 @@ export async function GET(req: NextRequest) {
 
 `web/components/ReviewSection.tsx` 상단 import에 추가:
 ```ts
-import { isSuspensionActive, suspensionMessage } from "@/lib/suspension";
+import { kstDateTime } from "@/lib/kst";
+import { CONTACT_LINE, suspensionNotice } from "@/lib/legal";
+import { isPermanentSuspension, isSuspensionActive } from "@/lib/suspension";
 ```
 
 `ReviewSection` 함수 본문, `const [listError, setListError] = useState("");` 바로 뒤에 추가:
 ```ts
   const suspendedUntilDate = user?.suspendedUntil ? new Date(user.suspendedUntil) : null;
   const suspended = isSuspensionActive(suspendedUntilDate);
+  const suspendedNotice = suspendedUntilDate
+    ? suspensionNotice(isPermanentSuspension(suspendedUntilDate) ? null : kstDateTime(suspendedUntilDate))
+    : "";
 ```
 
 작성 폼(`{user ? (...) : (...)}` 블록의 `user`가 참인 쪽) 전체를 다음으로 교체:
@@ -2279,9 +2268,11 @@ import { isSuspensionActive, suspensionMessage } from "@/lib/suspension";
       {user ? (
         <div className="mt-4 space-y-4 rounded-lg border border-border bg-surface p-4 shadow-xs">
           <h4 className="font-bold text-text-primary">내 리뷰 작성</h4>
-          {suspended && suspendedUntilDate && (
+          {suspended && (
             <p role="alert" className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
-              {suspensionMessage(suspendedUntilDate)}
+              {suspendedNotice}
+              <br />
+              {CONTACT_LINE}
             </p>
           )}
           <fieldset disabled={suspended} className="space-y-4">
@@ -2367,7 +2358,9 @@ import { isSuspensionActive, suspensionMessage } from "@/lib/suspension";
 
 `web/components/NicknameModal.tsx` 상단 import에 추가:
 ```ts
-import { isSuspensionActive, suspensionMessage } from "@/lib/suspension";
+import { kstDateTime } from "@/lib/kst";
+import { CONTACT_LINE, suspensionNotice } from "@/lib/legal";
+import { isPermanentSuspension, isSuspensionActive } from "@/lib/suspension";
 ```
 
 `Props` 타입에 추가:
@@ -2386,13 +2379,18 @@ export default function NicknameModal({
 ```ts
   const suspendedUntilDate = suspendedUntil ? new Date(suspendedUntil) : null;
   const suspended = isSuspensionActive(suspendedUntilDate);
+  const suspendedNotice = suspendedUntilDate
+    ? suspensionNotice(isPermanentSuspension(suspendedUntilDate) ? null : kstDateTime(suspendedUntilDate))
+    : "";
 ```
 
 edit 모드 폼의 안내 문단(`<p className="mt-2 text-sm text-text-muted">리뷰에 이 이름으로...`) 바로 뒤에 추가:
 ```tsx
-      {suspended && suspendedUntilDate && (
+      {suspended && (
         <p role="alert" className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
-          {suspensionMessage(suspendedUntilDate)}
+          {suspendedNotice}
+          <br />
+          {CONTACT_LINE}
         </p>
       )}
 ```
@@ -3021,5 +3019,6 @@ git commit -m "feat(bfl-map): add operator account management page"
 
 - **스펙 커버리지:** 운영자 로그인/등급(Task 3,7,11,14,16), 유저 검색/상세(Task 9,15), 정지/해제/이력(Task 10,15), 글쓰기만 차단(Task 12,13), DAU/WAU/MAU(Task 8,15), 6가지 보강(아이디 정규화-Task2·해시 포맷-Task2·영구정지 상수-Task4·페이지네이션 필수-Task9·트랜잭션-Task10·아이디 길이 체크-Task1) 모두 태스크로 연결됨. UX 보강 4가지(문구 개선-Task4, 사전 배너-Task13, 캐시 프레시니스-Task13에서 근거 명시, 운영자 상세 정보-Task9/15) 반영됨.
 - **드롭한 항목:** "정지 이력에 최근 로그인 시각" — `users` 행이 첫 닉네임 설정 때만 생기고 카카오 콜백은 그 행을 건드리지 않는 구조라, 로그인마다 갱신하려면 OAuth 콜백에 upsert를 넣어야 한다. 정지 기능과 무관한 인증 경로를 건드리는 리스크가 이득보다 커서 이번 범위에서 뺐다.
-- **`reason` 필드:** 유저에게 보여줄 문구를 따로 저장하지 않는다 — 정지 문구는 `suspensionMessage()`가 상태(기간/영구)만으로 계산해서 낸다. `reason`은 운영자 간 내부 기록 전용으로만 쓴다. 운영자가 매번 두 문구를 타이핑할 필요가 없고, 내부 사유가 실수로 유저에게 노출될 일도 없다.
+- **`reason` 필드:** 유저에게 보여줄 문구를 따로 저장하지 않는다 — 정지 문구는 호출부가 상태(기간/영구)만으로 `suspensionNotice()`(`@/lib/legal`, 기존 코드)를 조합해서 낸다. `reason`은 운영자 간 내부 기록 전용으로만 쓴다. 운영자가 매번 두 문구를 타이핑할 필요가 없고, 내부 사유가 실수로 유저에게 노출될 일도 없다.
+- **문구 중복 제거:** 애초 초안은 `lib/suspension.ts`에 독자적인 `suspensionMessage()`를 만들 계획이었으나, 구현 착수 직전 `feature/bfl-map-nickname`에 이미 같은 역할의 `lib/legal.ts`(`suspensionNotice`/`CONTACT_LINE`, 커밋 `72e2273a`)가 올라와 있는 걸 발견해 계획을 이 문서에서 수정했다. `lib/suspension.ts`에는 문구 함수를 두지 않고, 모든 호출부(Task 12 라우트 3곳, Task 13 컴포넌트 2곳)가 기존 `suspensionNotice`/`CONTACT_LINE`을 직접 쓴다 — 동일 역할 함수가 두 벌 존재하지 않는다.
 - **타입 일관성:** `SuspensionStatus`, `AdminSession`, `AdminRole`, `DurationLabel`이 정의된 파일(Task 3~5)과 그걸 쓰는 라우트(Task 7~13)에서 이름이 그대로 일치하는지 재확인함.
