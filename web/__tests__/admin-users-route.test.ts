@@ -29,7 +29,9 @@ describe("GET /api/admin/users", () => {
     const { GET } = await import("@/app/api/admin/users/route");
     const { NextRequest } = await import("next/server");
     const token = await adminToken();
-    sqlMock.mockResolvedValueOnce([]);
+    sqlMock
+      .mockResolvedValueOnce([{ is_active: true }]) // requireAdmin is_active check
+      .mockResolvedValueOnce([]); // user search
     const res = await GET(
       new NextRequest("http://localhost/api/admin/users?limit=99999", { headers: { cookie: `bfl_admin_session=${token}` } }),
     );
@@ -41,7 +43,9 @@ describe("GET /api/admin/users", () => {
     const { GET } = await import("@/app/api/admin/users/route");
     const { NextRequest } = await import("next/server");
     const token = await adminToken();
-    sqlMock.mockResolvedValueOnce([{ user_id: "kakao:1", nickname: "점심러1", created_at: "2026-01-01", suspended_until: null }]);
+    sqlMock
+      .mockResolvedValueOnce([{ is_active: true }]) // requireAdmin is_active check
+      .mockResolvedValueOnce([{ user_id: "kakao:1", nickname: "점심러1", created_at: "2026-01-01", suspended_until: null }]); // user search
     const res = await GET(
       new NextRequest("http://localhost/api/admin/users?q=점심", { headers: { cookie: `bfl_admin_session=${token}` } }),
     );
@@ -65,16 +69,19 @@ describe("GET /api/admin/users/[userId]", () => {
   }
 
   it("returns 404 for a user that doesn't exist", async () => {
-    sqlMock.mockResolvedValueOnce([]);
+    sqlMock
+      .mockResolvedValueOnce([{ is_active: true }]) // requireAdmin is_active check
+      .mockResolvedValueOnce([]); // user lookup
     const res = await call("kakao:ghost");
     expect(res.status).toBe(404);
   });
 
   it("returns user detail, recent reviews, and suspension history", async () => {
     sqlMock
-      .mockResolvedValueOnce([{ user_id: "kakao:1", nickname: "점심러1", created_at: "2026-01-01", suspended_until: null, reviewCount: 3 }])
-      .mockResolvedValueOnce([{ id: 5, place_id: "abc", taste: 4, convenience: 3, body: "굿", created_at: "2026-08-01" }])
-      .mockResolvedValueOnce([{ id: 1, reason: "욕설", duration_label: "1d", suspended_until: "2026-08-02", created_at: "2026-08-01", lifted_at: null, adminUsername: "owner" }]);
+      .mockResolvedValueOnce([{ is_active: true }]) // requireAdmin is_active check
+      .mockResolvedValueOnce([{ user_id: "kakao:1", nickname: "점심러1", created_at: "2026-01-01", suspended_until: null, reviewCount: 3 }]) // user lookup
+      .mockResolvedValueOnce([{ id: 5, place_id: "abc", taste: 4, convenience: 3, body: "굿", created_at: "2026-08-01" }]) // recent reviews
+      .mockResolvedValueOnce([{ id: 1, reason: "욕설", duration_label: "1d", suspended_until: "2026-08-02", created_at: "2026-08-01", lifted_at: null, adminUsername: "owner" }]); // suspension history
     const res = await call("kakao:1");
     expect(res.status).toBe(200);
     const body = await res.json();

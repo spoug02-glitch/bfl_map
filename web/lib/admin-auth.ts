@@ -13,6 +13,11 @@ const scrypt = promisify(scryptCallback) as (
 const SCRYPT_N = 16384;
 const KEY_LEN = 64;
 
+/** Dummy hash used for timing-attack mitigation when user is not found or inactive.
+ * Format must match real hash so verifyPassword takes similar time. */
+export const DUMMY_HASH =
+  "scrypt:16384:0000000000000000000000000000000000000000000000000000000000000000:0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+
 /** Format: "scrypt:<N>:<salt_hex>:<hash_hex>". */
 export async function hashPassword(password: string): Promise<string> {
   const salt = randomBytes(16);

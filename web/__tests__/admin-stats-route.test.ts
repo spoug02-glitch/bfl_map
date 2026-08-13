@@ -29,7 +29,9 @@ describe("GET /api/admin/stats", () => {
   it("returns dau/wau/mau for a logged-in admin", async () => {
     const { createAdminSessionToken } = await import("@/lib/admin-session");
     const token = await createAdminSessionToken(1, "operator");
-    sqlMock.mockResolvedValueOnce([{ dau: 3, wau: 10, mau: 40 }]);
+    sqlMock
+      .mockResolvedValueOnce([{ is_active: true }]) // requireAdmin is_active check
+      .mockResolvedValueOnce([{ dau: 3, wau: 10, mau: 40 }]); // stats query
     const res = await call(token);
     expect(res.status).toBe(200);
     const body = await res.json();

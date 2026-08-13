@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { normalizeUsername, verifyPassword } from "@/lib/admin-auth";
+import { normalizeUsername, verifyPassword, DUMMY_HASH } from "@/lib/admin-auth";
 import { ADMIN_SESSION_COOKIE, adminSessionCookieOptions, createAdminSessionToken } from "@/lib/admin-session";
 import { sql } from "@/lib/db";
 
@@ -24,7 +24,11 @@ export async function POST(req: NextRequest) {
     FROM admin_users WHERE lower(trim(username)) = ${normalized}`;
   const invalid = () => NextResponse.json({ error: "아이디 또는 비밀번호가 올바르지 않습니다." }, { status: 401 });
 
-  if (!row || !row.is_active) return invalid();
+  // Timing-safe check: run password verification even if user not found or inactive
+  if (!row || !row.is_active) {
+    await verifyPassword(o.password, DUMMY_HASH);
+    return invalid();
+  }
   if (row.locked_until && new Date(row.locked_until).getTime() > Date.now()) {
     return NextResponse.json(
       { error: "로그인 시도가 많아 잠시 잠겼습니다. 15분 후 다시 시도해주세요." },

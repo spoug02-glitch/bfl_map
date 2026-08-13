@@ -1,5 +1,6 @@
 import { SignJWT, jwtVerify } from "jose";
 import { NextRequest, NextResponse } from "next/server";
+import { sql } from "@/lib/db";
 
 export type AdminRole = "super_admin" | "operator";
 export type AdminSession = { adminId: number; role: AdminRole };
@@ -59,6 +60,13 @@ export async function requireAdmin(
   if (!session) {
     return { ok: false, response: NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 }) };
   }
+
+  // Check if admin is still active in the DB (immediately revoked if deactivated)
+  const [adminRow] = await sql`SELECT is_active FROM admin_users WHERE id = ${session.adminId}`;
+  if (!adminRow || !adminRow.is_active) {
+    return { ok: false, response: NextResponse.json({ error: "로그인이 필요합니다." }, { status: 401 }) };
+  }
+
   if (opts.requireRole === "super_admin" && session.role !== "super_admin") {
     return { ok: false, response: NextResponse.json({ error: "권한이 없습니다." }, { status: 403 }) };
   }

@@ -1,7 +1,14 @@
-import { beforeAll, describe, expect, it } from "vitest";
+import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
+
+const { sqlMock } = vi.hoisted(() => ({ sqlMock: vi.fn() }));
+vi.mock("@/lib/db", () => ({ sql: sqlMock }));
 
 beforeAll(() => {
   process.env.ADMIN_SESSION_SECRET ??= "test-admin-secret-at-least-32-chars!!";
+});
+
+beforeEach(() => {
+  sqlMock.mockReset();
 });
 
 describe("admin session tokens", () => {
@@ -48,6 +55,7 @@ describe("requireAdmin", () => {
   it("passes for any admin when no role is required", async () => {
     const { createAdminSessionToken, requireAdmin } = await import("@/lib/admin-session");
     const token = await createAdminSessionToken(3, "operator");
+    sqlMock.mockResolvedValueOnce([{ is_active: true }]);
     const ctx = await requireAdmin(await reqWithCookie(token));
     expect(ctx).toEqual({ ok: true, session: { adminId: 3, role: "operator" } });
   });
@@ -55,6 +63,7 @@ describe("requireAdmin", () => {
   it("returns 403 when an operator hits a super_admin-only route", async () => {
     const { createAdminSessionToken, requireAdmin } = await import("@/lib/admin-session");
     const token = await createAdminSessionToken(3, "operator");
+    sqlMock.mockResolvedValueOnce([{ is_active: true }]);
     const ctx = await requireAdmin(await reqWithCookie(token), { requireRole: "super_admin" });
     if (ctx.ok) throw new Error("expected ok:false");
     expect(ctx.response.status).toBe(403);
@@ -63,7 +72,26 @@ describe("requireAdmin", () => {
   it("passes a super_admin through a super_admin-only route", async () => {
     const { createAdminSessionToken, requireAdmin } = await import("@/lib/admin-session");
     const token = await createAdminSessionToken(9, "super_admin");
+    sqlMock.mockResolvedValueOnce([{ is_active: true }]);
     const ctx = await requireAdmin(await reqWithCookie(token), { requireRole: "super_admin" });
     expect(ctx).toEqual({ ok: true, session: { adminId: 9, role: "super_admin" } });
+  });
+
+  it("returns 401 when admin is deactivated in the DB", async () => {
+    const { createAdminSessionToken, requireAdmin } = await import("@/lib/admin-session");
+    const token = await createAdminSessionToken(5, "operator");
+    sqlMock.mockResolvedValueOnce([{ is_active: false }]);
+    const ctx = await requireAdmin(await reqWithCookie(token));
+    if (ctx.ok) throw new Error("expected ok:false");
+    expect(ctx.response.status).toBe(401);
+  });
+
+  it("returns 401 when admin row is missing in the DB", async () => {
+    const { createAdminSessionToken, requireAdmin } = await import("@/lib/admin-session");
+    const token = await createAdminSessionToken(99, "operator");
+    sqlMock.mockResolvedValueOnce([]);
+    const ctx = await requireAdmin(await reqWithCookie(token));
+    if (ctx.ok) throw new Error("expected ok:false");
+    expect(ctx.response.status).toBe(401);
   });
 });
