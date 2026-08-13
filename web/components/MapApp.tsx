@@ -356,6 +356,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
           <NicknameModal
             mode="edit"
             initial={user.nickname}
+            suspendedUntil={user.suspendedUntil}
             onSaved={n => { setUser({ ...user, nickname: n }); setEditingNickname(false); }}
             onClose={() => setEditingNickname(false)}
             onWithdrawn={() => {

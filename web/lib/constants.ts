@@ -12,7 +12,7 @@ export const RADIUS_KM = 5.0;
 export const DEFAULT_VIEW_RADIUS_KM = 0.2;
 
 /** 브라우저가 아는 로그인 상태. `nickname`이 null이면 아직 닉네임을 안 정한 것이다. */
-export type SessionUser = { userId: string; nickname: string | null };
+export type SessionUser = { userId: string; nickname: string | null; suspendedUntil: string | null };
 
 /** blog_links.json: kakao_place_id -> 만든 이가 쓴 후기 */
 export interface BlogLink {

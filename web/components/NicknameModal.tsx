@@ -3,6 +3,9 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { NICKNAME_MAX_LEN, WITHDRAWN_NICKNAME } from "@/lib/nickname";
 import { REJOIN_BLOCK_DAYS } from "@/lib/rejoin";
+import { kstDateTime } from "@/lib/kst";
+import { CONTACT_LINE, suspensionNotice } from "@/lib/legal";
+import { isPermanentSuspension, isSuspensionActive } from "@/lib/suspension";
 
 type Props = {
   mode: "create" | "edit";
@@ -19,6 +22,8 @@ type Props = {
    * 있어야 한다.
    */
   onLogout?: () => void;
+  /** edit 모드에서만 쓴다. 정지 중이면 배너를 보여주고 입력을 잠근다. */
+  suspendedUntil?: string | null;
 };
 
 const FOCUSABLE =
@@ -96,13 +101,19 @@ function Dialog({
 }
 
 export default function NicknameModal({
-  mode, initial, onSaved, onClose, onWithdrawn, onLogout,
+  mode, initial, suspendedUntil = null, onSaved, onClose, onWithdrawn, onLogout,
 }: Props) {
   const [value, setValue] = useState(initial);
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
   // 되돌릴 수 없는 동작이라 한 번 더 묻는다. 실수로 눌러 계정이 날아가면 안 된다.
   const [confirmingWithdraw, setConfirmingWithdraw] = useState(false);
+
+  const suspendedUntilDate = suspendedUntil ? new Date(suspendedUntil) : null;
+  const suspended = isSuspensionActive(suspendedUntilDate);
+  const suspendedNotice = suspendedUntilDate
+    ? suspensionNotice(isPermanentSuspension(suspendedUntilDate) ? null : kstDateTime(suspendedUntilDate))
+    : "";
 
   const titleId = useId();
   const inputRef = useRef<HTMLInputElement | null>(null);
@@ -205,24 +216,32 @@ export default function NicknameModal({
       <p className="mt-2 text-sm text-text-muted">
         리뷰에 이 이름으로 표시돼요. 카카오·구글 이름은 쓰지 않아요.
       </p>
+      {suspended && (
+        <p role="alert" className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+          {suspendedNotice}
+          <br />
+          {CONTACT_LINE}
+        </p>
+      )}
       {/* form으로 감싸야 입력칸에서 Enter가 저장으로 간다. 버튼까지 Tab으로
           내려가야만 저장되는 건 키보드로 쓰는 사람에게만 붙는 통행료다. */}
       <form onSubmit={e => { e.preventDefault(); if (!busy) save(); }}>
         <input
           ref={inputRef}
-          className="mt-4 h-11 w-full rounded-lg bg-surface-muted px-3 text-base text-text-primary"
+          className="mt-4 h-11 w-full rounded-lg bg-surface-muted px-3 text-base text-text-primary disabled:opacity-50"
           value={value}
           maxLength={NICKNAME_MAX_LEN}
           onChange={e => setValue(e.target.value)}
           aria-label="닉네임"
           aria-invalid={error !== ""}
+          disabled={suspended}
         />
         {error && <p role="alert" className="mt-2 text-xs text-red-600">{error}</p>}
         <div className="mt-4 flex flex-col gap-2">
           <button
             type="submit"
             className="grid h-11 place-items-center rounded-lg bg-ink text-sm font-bold text-white disabled:opacity-50"
-            disabled={busy}
+            disabled={busy || suspended}
           >
             {busy ? "저장 중…" : "확인"}
           </button>

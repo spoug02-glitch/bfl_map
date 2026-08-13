@@ -8,8 +8,12 @@ export async function GET(req: NextRequest) {
   if (!session) return NextResponse.json({ user: null });
 
   // 표시 이름의 출처는 여기 하나뿐이다. nickname이 null이면 프론트가 설정 모달을 띄운다.
-  const [row] = await sql`SELECT nickname FROM users WHERE user_id = ${session.userId}`;
+  const [row] = await sql`SELECT nickname, suspended_until FROM users WHERE user_id = ${session.userId}`;
   return NextResponse.json({
-    user: { userId: session.userId, nickname: row?.nickname ?? null },
+    user: {
+      userId: session.userId,
+      nickname: row?.nickname ?? null,
+      suspendedUntil: row?.suspended_until ?? null,
+    },
   });
 }

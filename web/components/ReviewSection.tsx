@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { SessionUser } from "@/lib/constants";
+import { kstDateTime } from "@/lib/kst";
+import { CONTACT_LINE, suspensionNotice } from "@/lib/legal";
+import { isPermanentSuspension, isSuspensionActive } from "@/lib/suspension";
 
 type Review = {
   id: number;
@@ -114,6 +117,12 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
   const [editing, setEditing] = useState<number | null>(null);
   const [listError, setListError] = useState("");
 
+  const suspendedUntilDate = user?.suspendedUntil ? new Date(user.suspendedUntil) : null;
+  const suspended = isSuspensionActive(suspendedUntilDate);
+  const suspendedNotice = suspendedUntilDate
+    ? suspensionNotice(isPermanentSuspension(suspendedUntilDate) ? null : kstDateTime(suspendedUntilDate))
+    : "";
+
   const load = useCallback(() => {
     fetch(`/api/reviews?placeId=${placeId}`)
       .then(r => r.json())
@@ -172,26 +181,35 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
       {user ? (
         <div className="mt-4 space-y-4 rounded-lg border border-border bg-surface p-4 shadow-xs">
           <h4 className="font-bold text-text-primary">내 리뷰 작성</h4>
-          <Stars label="맛" value={taste} onChange={setTaste} />
-          <Stars label="점심 편의성" value={convenience} onChange={setConvenience} />
-          <textarea
-            className="w-full rounded-lg bg-surface-muted p-3 text-base text-text-primary placeholder:text-text-muted"
-            rows={2}
-            maxLength={MAX_LEN}
-            placeholder="100자 이내로 짧게(사진은 나중에, 우리는 직장인이라 바쁘니까)"
-            value={body}
-            onChange={e => setBody(e.target.value.slice(0, MAX_LEN))}
-          />
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-medium text-text-muted">{[...body].length}/{MAX_LEN}</span>
-            <button
-              className="h-11 rounded-lg bg-ink px-6 text-sm font-bold text-white disabled:opacity-50"
-              disabled={busy}
-              onClick={submit}
-            >
-              {busy ? "저장 중…" : "리뷰 남기기"}
-            </button>
-          </div>
+          {suspended && (
+            <p role="alert" className="rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+              {suspendedNotice}
+              <br />
+              {CONTACT_LINE}
+            </p>
+          )}
+          <fieldset disabled={suspended} className="space-y-4">
+            <Stars label="맛" value={taste} onChange={setTaste} />
+            <Stars label="점심 편의성" value={convenience} onChange={setConvenience} />
+            <textarea
+              className="w-full rounded-lg bg-surface-muted p-3 text-base text-text-primary placeholder:text-text-muted disabled:opacity-50"
+              rows={2}
+              maxLength={MAX_LEN}
+              placeholder="100자 이내로 짧게(사진은 나중에, 우리는 직장인이라 바쁘니까)"
+              value={body}
+              onChange={e => setBody(e.target.value.slice(0, MAX_LEN))}
+            />
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-medium text-text-muted">{[...body].length}/{MAX_LEN}</span>
+              <button
+                className="h-11 rounded-lg bg-ink px-6 text-sm font-bold text-white disabled:opacity-50"
+                disabled={busy || suspended}
+                onClick={submit}
+              >
+                {busy ? "저장 중…" : "리뷰 남기기"}
+              </button>
+            </div>
+          </fieldset>
           {error && <p className="text-xs text-red-600">{error}</p>}
         </div>
       ) : (
@@ -226,12 +244,14 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
                 {rv.body && <p className="mt-2 text-base text-text-primary">{rv.body}</p>}
                 {rv.mine && (
                   <div className="mt-2 flex justify-end gap-1">
-                    <button
-                      className="h-11 rounded-lg px-3 text-sm font-medium text-text-muted"
-                      onClick={() => setEditing(rv.id)}
-                    >
-                      수정
-                    </button>
+                    {!suspended && (
+                      <button
+                        className="h-11 rounded-lg px-3 text-sm font-medium text-text-muted"
+                        onClick={() => setEditing(rv.id)}
+                      >
+                        수정
+                      </button>
+                    )}
                     <button
                       className="h-11 rounded-lg px-3 text-sm font-medium text-text-muted"
                       onClick={() => remove(rv.id)}
