@@ -114,4 +114,13 @@ describe("POST /api/admin/operators/[id]/deactivate", () => {
     const res = await call("2", 1);
     expect(res.status).toBe(200);
   });
+
+  it("deactivates a super_admin when not the last one", async () => {
+    sqlMock
+      .mockResolvedValueOnce([{ role: "super_admin", is_active: true }])
+      .mockResolvedValueOnce([{ count: 2 }])
+      .mockResolvedValueOnce([]);
+    const res = await call("3", 1);
+    expect(res.status).toBe(200);
+  });
 });
