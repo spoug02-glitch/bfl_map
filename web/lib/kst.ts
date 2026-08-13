@@ -9,3 +9,14 @@ const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
 export function kstDate(d: Date): string {
   return new Date(d.getTime() + KST_OFFSET_MS).toISOString().slice(0, 10);
 }
+
+/** "2026년 8월 14일 15:30" — 정지 만료 안내처럼 시:분까지 보여줘야 할 때 쓴다. */
+export function kstDateTime(d: Date): string {
+  const kst = new Date(d.getTime() + KST_OFFSET_MS);
+  const y = kst.getUTCFullYear();
+  const m = kst.getUTCMonth() + 1;
+  const day = kst.getUTCDate();
+  const hh = String(kst.getUTCHours()).padStart(2, "0");
+  const mm = String(kst.getUTCMinutes()).padStart(2, "0");
+  return `${y}년 ${m}월 ${day}일 ${hh}:${mm}`;
+}
