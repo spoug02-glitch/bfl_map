@@ -22,6 +22,13 @@ describe("hashPassword / verifyPassword", () => {
     await expect(verifyPassword("anything", "bcrypt:10:x:y")).resolves.toBe(false);
   });
 
+  it("rejects invalid scrypt parameters (N not power of 2) instead of throwing", async () => {
+    // N=15 is not a power of 2, should be rejected gracefully
+    await expect(
+      verifyPassword("anything", "scrypt:15:1234567890abcdef1234567890abcdef:abcdef1234567890abcdef1234567890"),
+    ).resolves.toBe(false);
+  });
+
   it("produces a different salt each time", async () => {
     const a = await hashPassword("same password");
     const b = await hashPassword("same password");

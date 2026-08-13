@@ -30,9 +30,13 @@ export async function verifyPassword(password: string, stored: string): Promise<
   const salt = Buffer.from(saltHex, "hex");
   const expected = Buffer.from(hashHex, "hex");
   if (salt.length === 0 || expected.length === 0) return false;
-  const derived = await scrypt(password, salt, expected.length, { N: n });
-  if (derived.length !== expected.length) return false;
-  return timingSafeEqual(derived, expected);
+  try {
+    const derived = await scrypt(password, salt, expected.length, { N: n });
+    if (derived.length !== expected.length) return false;
+    return timingSafeEqual(derived, expected);
+  } catch {
+    return false;
+  }
 }
 
 /** 아이디는 가입·로그인 모두 이 기준으로 비교한다. */
