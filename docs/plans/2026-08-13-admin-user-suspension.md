@@ -1002,7 +1002,7 @@ export async function POST() {
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `cd Bfl_map/web && npm test -- admin-login-route.test.ts`
-Expected: PASS (8개 테스트 통과)
+Expected: PASS (7개 테스트 통과)
 
 - [ ] **Step 5: Commit**
 
