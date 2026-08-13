@@ -64,62 +64,74 @@ describe("PUT /api/auth/nickname", () => {
   });
 
   it("accepts the first nickname a new account picks", async () => {
-    sqlMock.mockResolvedValueOnce([]).mockResolvedValueOnce([]);
+    sqlMock.mockResolvedValueOnce([{ suspended_until: null }]).mockResolvedValueOnce([]).mockResolvedValueOnce([]);
     const res = await putNickname("점심러482913");
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ nickname: "점심러482913" });
-    expect(sqlMock).toHaveBeenCalledTimes(2);
+    expect(sqlMock).toHaveBeenCalledTimes(3);
   });
 
   it("treats resubmitting the current nickname as a no-op instead of a rename", async () => {
     // Otherwise a double-click on 확인 would burn the user's one free rename.
-    sqlMock.mockResolvedValueOnce([userRow({ nickname: "점심러482913", renamed: true, agoDays: 0 })]);
+    sqlMock
+      .mockResolvedValueOnce([{ suspended_until: null }])
+      .mockResolvedValueOnce([userRow({ nickname: "점심러482913", renamed: true, agoDays: 0 })]);
     const res = await putNickname("점심러482913");
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ nickname: "점심러482913" });
-    expect(sqlMock).toHaveBeenCalledTimes(1); // no write
+    expect(sqlMock).toHaveBeenCalledTimes(2); // no write
   });
 
   it("allows the first rename even if the name was set moments ago", async () => {
     // People accept the auto-suggested name, then think better of it. Locking
     // them out for a month over that would be punishing the wrong behaviour.
     sqlMock
+      .mockResolvedValueOnce([{ suspended_until: null }])
       .mockResolvedValueOnce([userRow({ nickname: "점심러482913", renamed: false, agoDays: 0 })])
       .mockResolvedValueOnce([]);
     const res = await putNickname("돈까스러버");
     expect(res.status).toBe(200);
-    expect(sqlMock).toHaveBeenCalledTimes(2);
+    expect(sqlMock).toHaveBeenCalledTimes(3);
   });
 
   it("blocks a second rename inside the 30 day window and names the date", async () => {
-    sqlMock.mockResolvedValueOnce([userRow({ nickname: "돈까스러버", renamed: true, agoDays: 3 })]);
+    sqlMock
+      .mockResolvedValueOnce([{ suspended_until: null }])
+      .mockResolvedValueOnce([userRow({ nickname: "돈까스러버", renamed: true, agoDays: 3 })]);
     const res = await putNickname("국밥러버");
     expect(res.status).toBe(429);
     const { error } = await res.json();
     expect(error).toContain("30일에 한 번");
     const expected = new Date(Date.now() + 27 * DAY_MS + 9 * 60 * 60 * 1000).toISOString().slice(0, 10);
     expect(error).toContain(expected);
-    expect(sqlMock).toHaveBeenCalledTimes(1); // rejected before the write
+    expect(sqlMock).toHaveBeenCalledTimes(2); // rejected before the write
   });
 
   it("allows a rename once the 30 day window has passed", async () => {
     sqlMock
+      .mockResolvedValueOnce([{ suspended_until: null }])
       .mockResolvedValueOnce([userRow({ nickname: "돈까스러버", renamed: true, agoDays: 31 })])
       .mockResolvedValueOnce([]);
     const res = await putNickname("국밥러버");
     expect(res.status).toBe(200);
-    expect(sqlMock).toHaveBeenCalledTimes(2);
+    expect(sqlMock).toHaveBeenCalledTimes(3);
   });
 
   it("reports a nickname already taken by someone else as 409", async () => {
-    sqlMock.mockResolvedValueOnce([]).mockRejectedValueOnce(uniqueViolation());
+    sqlMock
+      .mockResolvedValueOnce([{ suspended_until: null }])
+      .mockResolvedValueOnce([])
+      .mockRejectedValueOnce(uniqueViolation());
     const res = await putNickname("점심러482913");
     expect(res.status).toBe(409);
     expect(await res.json()).toEqual({ error: "이미 사용 중인 닉네임이에요." });
   });
 
   it("does not swallow an unrelated database failure", async () => {
-    sqlMock.mockResolvedValueOnce([]).mockRejectedValueOnce(new Error("connection reset"));
+    sqlMock
+      .mockResolvedValueOnce([{ suspended_until: null }])
+      .mockResolvedValueOnce([])
+      .mockRejectedValueOnce(new Error("connection reset"));
     await expect(putNickname("점심러482913")).rejects.toThrow("connection reset");
   });
 });

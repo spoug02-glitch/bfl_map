@@ -1,7 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { kstDateTime } from "@/lib/kst";
+import { suspensionNotice } from "@/lib/legal";
 import { validateReviewBody } from "@/lib/reviews";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
+import { isPermanentSuspension } from "@/lib/suspension";
+import { isSuspended } from "@/lib/suspension-server";
 
 const REVIEW_ID_RE = /^\d{1,19}$/;
 
@@ -46,6 +50,12 @@ export async function PATCH(req: NextRequest, { params }: Params) {
   }
   const v = validateReviewBody(json);
   if (!v.ok) return NextResponse.json({ error: v.error }, { status: 400 });
+  const suspension = await isSuspended(ctx.userId);
+  if (suspension.suspended) {
+    const until = suspension.until!;
+    const notice = suspensionNotice(isPermanentSuspension(until) ? null : kstDateTime(until));
+    return NextResponse.json({ error: notice }, { status: 403 });
+  }
 
   // created_at은 그대로 둔다 — 방문 시점은 바뀌지 않았고, 7일 쿨다운도 그 값을 본다.
   const rows = await sql`

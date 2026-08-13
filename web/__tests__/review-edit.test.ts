@@ -55,15 +55,21 @@ describe("PATCH /api/reviews/[id]", () => {
   });
 
   it("updates the caller's own review", async () => {
-    sqlMock.mockResolvedValueOnce([{ id: 7 }]);
+    sqlMock.mockResolvedValueOnce([{ suspended_until: null }]).mockResolvedValueOnce([{ id: 7 }]);
     const res = await call("PATCH", "7");
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ ok: true });
   });
 
+  it("blocks an edit while the caller is suspended", async () => {
+    sqlMock.mockResolvedValueOnce([{ suspended_until: new Date(Date.now() + 60_000).toISOString() }]);
+    const res = await call("PATCH", "7");
+    expect(res.status).toBe(403);
+  });
+
   // 소유권은 WHERE 절이 판정한다 — 남의 리뷰면 갱신된 행이 0개로 돌아온다.
   it("reports someone else's review as not found rather than forbidden", async () => {
-    sqlMock.mockResolvedValueOnce([]);
+    sqlMock.mockResolvedValueOnce([{ suspended_until: null }]).mockResolvedValueOnce([]);
     const res = await call("PATCH", "7");
     expect(res.status).toBe(404);
     expect(await res.json()).toEqual({ error: "찾을 수 없습니다." });

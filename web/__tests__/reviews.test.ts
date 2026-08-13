@@ -82,6 +82,7 @@ const daysAgo = (n: number) => new Date(Date.now() - n * DAY_MS).toISOString();
 describe("POST /api/reviews weekly cooldown", () => {
   it("accepts the first review a user writes for a place", async () => {
     sqlMock
+      .mockResolvedValueOnce([{ suspended_until: null }])
       .mockResolvedValueOnce([{ recent: 0, lastHere: null, hasNickname: true }])
       .mockResolvedValueOnce([]);
     const res = await postReview("user-first-review");
@@ -89,7 +90,9 @@ describe("POST /api/reviews weekly cooldown", () => {
   });
 
   it("blocks a second review for the same place inside 7 days and names the date", async () => {
-    sqlMock.mockResolvedValueOnce([{ recent: 1, lastHere: daysAgo(2), hasNickname: true }]);
+    sqlMock
+      .mockResolvedValueOnce([{ suspended_until: null }])
+      .mockResolvedValueOnce([{ recent: 1, lastHere: daysAgo(2), hasNickname: true }]);
     const res = await postReview("user-too-soon");
     expect(res.status).toBe(429);
     const { error } = await res.json();
@@ -97,12 +100,13 @@ describe("POST /api/reviews weekly cooldown", () => {
     const expected = new Date(Date.now() + 5 * DAY_MS + 9 * 60 * 60 * 1000)
       .toISOString().slice(0, 10);
     expect(error).toContain(expected);
-    expect(sqlMock).toHaveBeenCalledTimes(1); // rejected before the insert round trip
+    expect(sqlMock).toHaveBeenCalledTimes(2); // rejected before the insert round trip
   });
 
   it("lets the same person review the same place again after 7 days", async () => {
     // 같은 집을 또 가는 건 흔한 일이다 — 예전 리뷰를 덮지 않고 새로 쌓인다.
     sqlMock
+      .mockResolvedValueOnce([{ suspended_until: null }])
       .mockResolvedValueOnce([{ recent: 0, lastHere: daysAgo(8), hasNickname: true }])
       .mockResolvedValueOnce([]);
     const res = await postReview("user-revisit");
@@ -110,20 +114,24 @@ describe("POST /api/reviews weekly cooldown", () => {
   });
 
   it("still rejects once a user has written to 5 places in the last minute", async () => {
-    sqlMock.mockResolvedValueOnce([{ recent: 5, lastHere: null, hasNickname: true }]);
+    sqlMock
+      .mockResolvedValueOnce([{ suspended_until: null }])
+      .mockResolvedValueOnce([{ recent: 5, lastHere: null, hasNickname: true }]);
     const res = await postReview("user-crossplace-limit");
     expect(res.status).toBe(429);
-    expect(sqlMock).toHaveBeenCalledTimes(1);
+    expect(sqlMock).toHaveBeenCalledTimes(2);
   });
 });
 
 // 모달을 우회해 API를 직접 호출한 경우에 대한 방어
 describe("POST /api/reviews nickname guard", () => {
   it("blocks a session that has not set a nickname yet", async () => {
-    sqlMock.mockResolvedValueOnce([{ recent: 0, lastHere: null, hasNickname: false }]);
+    sqlMock
+      .mockResolvedValueOnce([{ suspended_until: null }])
+      .mockResolvedValueOnce([{ recent: 0, lastHere: null, hasNickname: false }]);
     const res = await postReview("user-without-nickname");
     expect(res.status).toBe(409);
     expect(await res.json()).toEqual({ error: "닉네임을 먼저 설정해주세요." });
-    expect(sqlMock).toHaveBeenCalledTimes(1); // rejected before the insert round trip
+    expect(sqlMock).toHaveBeenCalledTimes(2); // rejected before the insert round trip
   });
 });

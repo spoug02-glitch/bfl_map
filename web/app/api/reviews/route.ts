@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PLACE_ID_RE } from "@/lib/constants";
 import { sql } from "@/lib/db";
-import { kstDate } from "@/lib/kst";
+import { kstDate, kstDateTime } from "@/lib/kst";
+import { suspensionNotice } from "@/lib/legal";
 import { validateReviewInput } from "@/lib/reviews";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
+import { isPermanentSuspension } from "@/lib/suspension";
+import { isSuspended } from "@/lib/suspension-server";
 
 /** 같은 가게에 다시 쓰기까지 기다려야 하는 기간. */
 const REVIEW_COOLDOWN_DAYS = 7;
@@ -48,6 +51,12 @@ export async function POST(req: NextRequest) {
   const v = validateReviewInput(json);
   if (!v.ok) return NextResponse.json({ error: v.error }, { status: 400 });
   const { placeId, taste, convenience, body } = v.value;
+  const suspension = await isSuspended(session.userId);
+  if (suspension.suspended) {
+    const until = suspension.until!;
+    const notice = suspensionNotice(isPermanentSuspension(until) ? null : kstDateTime(until));
+    return NextResponse.json({ error: notice }, { status: 403 });
+  }
   // 한 왕복으로 세 가지를 묻는다. 서버리스 인스턴스끼리 메모리를 공유하지 않으니
   // 횟수 제한은 DB에서 세야 한다.
   const [{ recent, lastHere, hasNickname }] = await sql`

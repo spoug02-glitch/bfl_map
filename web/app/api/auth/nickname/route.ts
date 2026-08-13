@@ -1,8 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
-import { kstDate } from "@/lib/kst";
+import { kstDate, kstDateTime } from "@/lib/kst";
+import { suspensionNotice } from "@/lib/legal";
 import { validateNickname } from "@/lib/nickname";
 import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
+import { isPermanentSuspension } from "@/lib/suspension";
+import { isSuspended } from "@/lib/suspension-server";
 
 const RENAME_COOLDOWN_DAYS = 30;
 const RENAME_COOLDOWN_MS = RENAME_COOLDOWN_DAYS * 24 * 60 * 60 * 1000;
@@ -29,6 +32,12 @@ export async function PUT(req: NextRequest) {
       : undefined;
   const v = validateNickname(raw);
   if (!v.ok) return NextResponse.json({ error: v.error }, { status: 400 });
+  const suspension = await isSuspended(session.userId);
+  if (suspension.suspended) {
+    const until = suspension.until!;
+    const notice = suspensionNotice(isPermanentSuspension(until) ? null : kstDateTime(until));
+    return NextResponse.json({ error: notice }, { status: 403 });
+  }
 
   const [me] = await sql`
     SELECT nickname, created_at, updated_at FROM users WHERE user_id = ${session.userId}`;
