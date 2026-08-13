@@ -1,7 +1,7 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 
 const { sqlMock, transactionMock } = vi.hoisted(() => ({ sqlMock: vi.fn(), transactionMock: vi.fn() }));
-sqlMock.transaction = transactionMock;
+(sqlMock as unknown as { transaction: typeof transactionMock }).transaction = transactionMock;
 vi.mock("@/lib/db", () => ({ sql: sqlMock }));
 
 beforeAll(() => {
