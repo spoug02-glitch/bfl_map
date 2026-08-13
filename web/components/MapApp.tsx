@@ -95,6 +95,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     // each attempt issues a new state token and invalidates the previous one.
     const err = new URLSearchParams(window.location.search).get("login_error");
     if (err) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLoginError(
         err === "state"
           ? "로그인이 만료됐어요. 버튼을 한 번만 누르고 기다려주세요."

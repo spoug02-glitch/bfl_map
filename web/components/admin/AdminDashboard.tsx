@@ -44,7 +44,14 @@ function UserDetailPanel({ userId, onChanged }: { userId: string; onChanged: () 
       .finally(() => setLoading(false));
   }, [userId]);
 
-  useEffect(load, [load]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLoading(true);
+    fetch(`/api/admin/users/${encodeURIComponent(userId)}`)
+      .then(r => r.json())
+      .then(setDetail)
+      .finally(() => setLoading(false));
+  }, [userId]);
 
   const suspend = async () => {
     setError("");
@@ -187,7 +194,14 @@ export default function AdminDashboard({ role }: { role: "super_admin" | "operat
       .finally(() => setSearching(false));
   }, [query]);
 
-  useEffect(search, [search]);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setSearching(true);
+    fetch(`/api/admin/users?q=${encodeURIComponent(query)}`)
+      .then(r => r.json())
+      .then(d => setUsers(d.users ?? []))
+      .finally(() => setSearching(false));
+  }, [query]);
 
   const logout = async () => {
     await fetch("/api/admin/auth/logout", { method: "POST" }).catch(() => null);
