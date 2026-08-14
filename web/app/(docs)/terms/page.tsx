@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: `${SERVICE.name}을 이용할 때의 약속`,
 };
 
-const UPDATED = "2026-08-10";
+const UPDATED = "2026-08-13";
 
 export default function TermsPage() {
   return (
@@ -107,7 +107,14 @@ export default function TermsPage() {
         </p>
       </DocSection>
 
-      <DocSection title="9. 문의">
+      <DocSection title="9. 데이터 수집 금지">
+        <p>
+          허가 없이 서비스의 정보(가게 목록, 리뷰 등)를 자동화된 방법으로 대량 수집·복제하는 것을
+          금지합니다. 위반이 확인되면 접근을 제한할 수 있습니다.
+        </p>
+      </DocSection>
+
+      <DocSection title="10. 문의">
         <p>
           약관에 대해 궁금한 점은{" "}
           <Link className="text-accent underline" href="/contact">문의</Link>로 알려주세요.
