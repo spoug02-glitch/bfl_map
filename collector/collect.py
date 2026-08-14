@@ -8,6 +8,7 @@ import argparse
 import json
 import sys
 import time
+from datetime import datetime, timezone
 from pathlib import Path
 
 import brands
@@ -23,6 +24,10 @@ UNRESOLVED_PATH = Path(__file__).resolve().parent / "unresolved.json"
 OUT_OF_RADIUS_PATH = Path(__file__).resolve().parent / "out_of_radius.json"
 CHECKPOINT_PATH = Path(__file__).resolve().parent / ".checkpoint.jsonl"
 DISTRICTS = ["도봉구", "노원구", "강북구"]
+# Vercel 배포는 web/ 서브트리만 분리해서 올라간다(collector/는 배포 결과물에
+# 없음) — 그래서 어드민이 읽을 이력은 web/ 안에 둔다. public/은 아니다: 정적
+# 파일은 인증 없이 그대로 노출된다(restaurants.json이 겪은 문제와 같다).
+HISTORY_PATH = Path(__file__).resolve().parent.parent / "web" / "collector-runs.json"
 
 
 def _load_checkpoint(path: Path) -> tuple[list, list, list, set]:
@@ -195,8 +200,23 @@ def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3,
     return rows, unresolved
 
 
+def _append_run_history(path: Path, record: dict) -> None:
+    """실행 요약 한 건을 JSON 배열에 append한다.
+
+    데이터 수집이 이력 기록보다 중요하다 — 쓰기 실패(권한 등)로 몇 시간짜리
+    크롤링 결과를 날릴 수는 없으므로 예외를 삼키고 경고만 남긴다.
+    """
+    try:
+        history = json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
+        history.append(record)
+        path.write_text(json.dumps(history, ensure_ascii=False, indent=1), encoding="utf-8")
+    except OSError as e:
+        print(f"[history] failed to record run history: {e}", flush=True)
+
+
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
+    started_at = datetime.now(timezone.utc).isoformat()
     ap = argparse.ArgumentParser()
     all_codes = {**zeropay.FOOD_CODES, **zeropay.CONVENIENCE_CODES}
     ap.add_argument("--districts", default=",".join(DISTRICTS))
@@ -256,6 +276,17 @@ def main() -> None:
               flush=True)
     # the run finished, so the resume log has served its purpose
     CHECKPOINT_PATH.unlink(missing_ok=True)
+    _append_run_history(HISTORY_PATH, {
+        "startedAt": started_at,
+        "finishedAt": datetime.now(timezone.utc).isoformat(),
+        "districts": args.districts.split(","),
+        "codes": args.codes.split(","),
+        "crawled": n,
+        "matched": a,
+        "unresolved": b,
+        "outOfRadius": c,
+        "duplicates": d,
+    })
 
 
 if __name__ == "__main__":

@@ -273,3 +273,39 @@ def test_dedupe_by_place_id_noop_when_unique():
     rows = [{"kakao_place_id": str(i)} for i in range(3)]
     out, merged = collect.dedupe_by_place_id(rows)
     assert merged == 0 and len(out) == 3
+
+
+# --- run history --------------------------------------------------------
+
+def test_append_run_history_creates_file_with_one_record(tmp_path):
+    path = tmp_path / "collector-runs.json"
+    record = {"startedAt": "2026-08-14T00:00:00Z", "finishedAt": "2026-08-14T00:01:00Z",
+               "districts": ["도봉구"], "codes": ["56191"],
+               "crawled": 3, "matched": 2, "unresolved": 1, "outOfRadius": 0, "duplicates": 0}
+    collect._append_run_history(path, record)
+    saved = json.loads(path.read_text(encoding="utf-8"))
+    assert saved == [record]
+
+
+def test_append_run_history_appends_to_existing_records(tmp_path):
+    path = tmp_path / "collector-runs.json"
+    first = {"startedAt": "2026-08-13T00:00:00Z", "finishedAt": "2026-08-13T00:01:00Z",
+              "districts": ["노원구"], "codes": ["56191"],
+              "crawled": 1, "matched": 1, "unresolved": 0, "outOfRadius": 0, "duplicates": 0}
+    path.write_text(json.dumps([first], ensure_ascii=False), encoding="utf-8")
+    second = {"startedAt": "2026-08-14T00:00:00Z", "finishedAt": "2026-08-14T00:01:00Z",
+               "districts": ["강북구"], "codes": ["56221"],
+               "crawled": 5, "matched": 4, "unresolved": 1, "outOfRadius": 0, "duplicates": 0}
+    collect._append_run_history(path, second)
+    saved = json.loads(path.read_text(encoding="utf-8"))
+    assert saved == [first, second]
+
+
+def test_append_run_history_does_not_raise_on_write_failure(tmp_path, capsys):
+    # path is a directory, not a file -- write_text must fail, but the crawl
+    # itself must not be aborted over a history-logging problem
+    directory_as_path = tmp_path
+    record = {"startedAt": "x", "finishedAt": "y", "districts": [], "codes": [],
+               "crawled": 0, "matched": 0, "unresolved": 0, "outOfRadius": 0, "duplicates": 0}
+    collect._append_run_history(directory_as_path, record)  # must not raise
+    assert "[history]" in capsys.readouterr().out
