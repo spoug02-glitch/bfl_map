@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  outputFileTracingIncludes: {
+    "/api/admin/crawl-runs": ["./collector-runs.json"],
+  },
 };
 
 export default nextConfig;
