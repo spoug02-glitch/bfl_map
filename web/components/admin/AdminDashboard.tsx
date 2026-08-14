@@ -14,6 +14,17 @@ type UserDetail = {
   history: SuspensionRecord[];
 };
 type Stats = { dau: number; wau: number; mau: number };
+type CrawlRun = {
+  startedAt: string;
+  finishedAt: string;
+  districts: string[];
+  codes: string[];
+  crawled: number;
+  matched: number;
+  unresolved: number;
+  outOfRadius: number;
+  duplicates: number;
+};
 
 const DURATIONS = [
   { label: "1시간", value: "1h" },
@@ -173,6 +184,7 @@ function UserDetailPanel({ userId, onChanged }: { userId: string; onChanged: () 
 
 export default function AdminDashboard({ role }: { role: "super_admin" | "operator" }) {
   const [stats, setStats] = useState<Stats | null>(null);
+  const [crawlRuns, setCrawlRuns] = useState<CrawlRun[]>([]);
   const [query, setQuery] = useState("");
   const [users, setUsers] = useState<UserRow[]>([]);
   const [selected, setSelected] = useState<string | null>(null);
@@ -180,6 +192,10 @@ export default function AdminDashboard({ role }: { role: "super_admin" | "operat
 
   useEffect(() => {
     fetch("/api/admin/stats").then(r => r.json()).then(setStats);
+  }, []);
+
+  useEffect(() => {
+    fetch("/api/admin/crawl-runs").then(r => r.json()).then(d => setCrawlRuns(d.runs ?? []));
   }, []);
 
   const search = useCallback(() => {
@@ -216,6 +232,36 @@ export default function AdminDashboard({ role }: { role: "super_admin" | "operat
         <p className="mt-4 rounded-xl bg-surface-muted px-3 py-1.5 text-xs font-medium text-text-primary">
           DAU {stats.dau} · WAU {stats.wau} · MAU {stats.mau}
         </p>
+      )}
+
+      {crawlRuns.length > 0 && (
+        <div className="mt-6">
+          <h2 className="text-sm font-bold text-text-primary">크롤링 이력</h2>
+          <div className="mt-2 overflow-x-auto rounded-lg border border-border">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-surface-muted text-text-muted">
+                <tr>
+                  <th className="px-3 py-2 font-medium">실행 시각</th>
+                  <th className="px-3 py-2 font-medium">지역</th>
+                  <th className="px-3 py-2 font-medium">수집/매칭/미해결/반경밖/중복</th>
+                </tr>
+              </thead>
+              <tbody>
+                {crawlRuns.slice(0, 20).map(run => (
+                  <tr key={run.startedAt} className="border-t border-border-subtle">
+                    <td className="px-3 py-2 text-text-primary">
+                      {run.startedAt.slice(0, 16).replace("T", " ")} ~ {run.finishedAt.slice(11, 16)}
+                    </td>
+                    <td className="px-3 py-2 text-text-muted">{run.districts.join(", ")}</td>
+                    <td className="px-3 py-2 text-text-muted">
+                      {run.crawled}/{run.matched}/{run.unresolved}/{run.outOfRadius}/{run.duplicates}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
       )}
 
       <div className="mt-6">
