@@ -208,9 +208,11 @@ def _append_run_history(path: Path, record: dict) -> None:
     """
     try:
         history = json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
+        if not isinstance(history, list):
+            history = []
         history.append(record)
         path.write_text(json.dumps(history, ensure_ascii=False, indent=1), encoding="utf-8")
-    except OSError as e:
+    except (OSError, json.JSONDecodeError) as e:
         print(f"[history] failed to record run history: {e}", flush=True)
 
 

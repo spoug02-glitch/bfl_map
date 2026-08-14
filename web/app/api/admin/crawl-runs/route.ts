@@ -24,7 +24,8 @@ export async function GET(req: NextRequest) {
   let runs: CrawlRun[] = [];
   try {
     const raw = await readFile(HISTORY_PATH, "utf-8");
-    runs = JSON.parse(raw) as CrawlRun[];
+    const parsed: unknown = JSON.parse(raw);
+    if (Array.isArray(parsed)) runs = parsed as CrawlRun[];
   } catch {
     runs = [];
   }
