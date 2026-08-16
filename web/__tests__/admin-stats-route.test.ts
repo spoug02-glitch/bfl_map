@@ -26,18 +26,22 @@ describe("GET /api/admin/stats", () => {
     expect(sqlMock).not.toHaveBeenCalled();
   });
 
-  it("returns dau/wau/mau for a logged-in admin", async () => {
+  it("returns dau/wau/mau and the two weekly retention counts for a logged-in admin", async () => {
     const { createAdminSessionToken } = await import("@/lib/admin-session");
     const token = await createAdminSessionToken(1, "operator");
     sqlMock
       .mockResolvedValueOnce([{ is_active: true }]) // requireAdmin is_active check
-      .mockResolvedValueOnce([{ dau: 3, wau: 10, mau: 40 }]); // stats query
+      .mockResolvedValueOnce([
+        { dau: 3, wau: 10, mau: 40, weeklyRepeat: 2, weeklyReturning: 4 },
+      ]); // stats query
     const res = await call(token);
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.dau).toBe(3);
     expect(body.wau).toBe(10);
     expect(body.mau).toBe(40);
+    expect(body.weeklyRepeat).toBe(2);
+    expect(body.weeklyReturning).toBe(4);
     expect(typeof body.asOf).toBe("string");
   });
 });

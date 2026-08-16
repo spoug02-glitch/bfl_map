@@ -13,7 +13,15 @@ type UserDetail = {
   recentReviews: { id: number; place_id: string; taste: number; convenience: number; body: string; created_at: string }[];
   history: SuspensionRecord[];
 };
-type Stats = { dau: number; wau: number; mau: number };
+type Stats = {
+  dau: number;
+  wau: number;
+  mau: number;
+  /** 최근 7일 안에 2일 이상 방문한 사람 — 이번 주에 얼마나 자주 왔는지. */
+  weeklyRepeat: number;
+  /** 최근 7일에 왔고 그 이전에도 온 적이 있는 사람 — 신규가 아닌 사람. */
+  weeklyReturning: number;
+};
 type CrawlRun = {
   startedAt: string;
   finishedAt: string;
@@ -228,10 +236,17 @@ export default function AdminDashboard({ role }: { role: "super_admin" | "operat
         </div>
       </div>
 
+      {/* 트래픽 양과 재방문 질은 성격이 달라 줄을 나눈다 — 다섯 개를 한 줄에
+          몰면 좁은 화면에서 어느 숫자가 무엇인지 읽히지 않는다. */}
       {stats && (
-        <p className="mt-4 rounded-xl bg-surface-muted px-3 py-1.5 text-xs font-medium text-text-primary">
-          DAU {stats.dau} · WAU {stats.wau} · MAU {stats.mau}
-        </p>
+        <div className="mt-4 space-y-1">
+          <p className="rounded-xl bg-surface-muted px-3 py-1.5 text-xs font-medium text-text-primary">
+            DAU {stats.dau} · WAU {stats.wau} · MAU {stats.mau}
+          </p>
+          <p className="rounded-xl bg-surface-muted px-3 py-1.5 text-xs font-medium text-text-primary">
+            이번 주 2일 이상 {stats.weeklyRepeat} · 이전에도 방문 {stats.weeklyReturning}
+          </p>
+        </div>
       )}
 
       {crawlRuns.length > 0 && (
