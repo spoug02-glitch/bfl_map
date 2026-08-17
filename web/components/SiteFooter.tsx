@@ -30,8 +30,8 @@ export default function SiteFooter({ overlay = false }: { overlay?: boolean }) {
   if (overlay) {
     return (
       <footer
-        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 bg-surface-page/50 px-3 py-1
-          text-[11px] leading-tight text-text-muted backdrop-blur-[2px]"
+        className="pointer-events-none absolute inset-x-0 bottom-0 z-0 bg-surface/50 px-3 py-1
+          text-[11px] leading-tight text-on-surface-variant backdrop-blur-[2px]"
         style={{ paddingBottom: "max(0.25rem, env(safe-area-inset-bottom))" }}
       >
         {links}
@@ -41,15 +41,15 @@ export default function SiteFooter({ overlay = false }: { overlay?: boolean }) {
   }
 
   return (
-    <footer className="mt-12 border-t border-border-subtle pt-6 text-sm text-text-muted">
-      <p className="font-bold text-text-primary">{SERVICE.name}</p>
+    <footer className="mt-12 border-t border-outline-variant pt-6 text-sm text-on-surface-variant">
+      <p className="font-bold text-on-surface">{SERVICE.name}</p>
       <p className="mt-0.5">{SERVICE.tagline}</p>
 
       <div className="mt-4">{links}</div>
 
       <p className="mt-4">
         문의{" "}
-        <a className="text-accent underline" href={`mailto:${CREDIT.email}`}>
+        <a className="text-primary underline" href={`mailto:${CREDIT.email}`}>
           {CREDIT.email}
         </a>
       </p>

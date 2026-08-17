@@ -32,10 +32,10 @@ export default function AdminLoginForm() {
 
   return (
     <div className="mx-auto mt-24 max-w-xs px-6">
-      <h1 className="text-lg font-bold text-text-primary">운영자 로그인</h1>
+      <h1 className="text-lg font-bold text-on-surface">운영자 로그인</h1>
       <form onSubmit={submit} className="mt-6 space-y-3">
         <input
-          className="h-11 w-full rounded-lg bg-surface-muted px-3 text-base text-text-primary"
+          className="h-11 w-full rounded-lg bg-surface-container px-3 text-base text-on-surface"
           placeholder="아이디"
           value={username}
           onChange={e => setUsername(e.target.value)}
@@ -43,7 +43,7 @@ export default function AdminLoginForm() {
         />
         <input
           type="password"
-          className="h-11 w-full rounded-lg bg-surface-muted px-3 text-base text-text-primary"
+          className="h-11 w-full rounded-lg bg-surface-container px-3 text-base text-on-surface"
           placeholder="비밀번호"
           value={password}
           onChange={e => setPassword(e.target.value)}
@@ -52,7 +52,7 @@ export default function AdminLoginForm() {
         {error && <p role="alert" className="text-xs text-red-600">{error}</p>}
         <button
           type="submit"
-          className="h-11 w-full rounded-lg bg-ink text-sm font-bold text-white disabled:opacity-50"
+          className="h-11 w-full rounded-lg bg-primary text-sm font-bold text-on-primary disabled:opacity-50"
           disabled={busy || !username || !password}
         >
           {busy ? "로그인 중…" : "로그인"}

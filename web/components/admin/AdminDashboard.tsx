@@ -98,16 +98,16 @@ function UserDetailPanel({ userId, onChanged }: { userId: string; onChanged: () 
     onChanged();
   };
 
-  if (loading) return <p className="p-4 text-sm text-text-muted">불러오는 중…</p>;
+  if (loading) return <p className="p-4 text-sm text-on-surface-variant">불러오는 중…</p>;
   if (!detail) return <p className="p-4 text-sm text-red-600">불러오지 못했어요.</p>;
 
   const suspended = isActive(detail.user.suspended_until);
 
   return (
-    <div className="space-y-4 rounded-lg border border-border bg-surface p-4">
+    <div className="space-y-4 rounded-lg border border-outline bg-surface-container-lowest p-4">
       <div>
-        <h3 className="font-bold text-text-primary">{detail.user.nickname}</h3>
-        <p className="text-xs text-text-muted">
+        <h3 className="font-bold text-on-surface">{detail.user.nickname}</h3>
+        <p className="text-xs text-on-surface-variant">
           {detail.user.user_id} · 가입 {detail.user.created_at.slice(0, 10)} · 리뷰 {detail.user.reviewCount}개
         </p>
         <p className="mt-1 text-sm font-medium">
@@ -123,7 +123,7 @@ function UserDetailPanel({ userId, onChanged }: { userId: string; onChanged: () 
 
       {suspended ? (
         <button
-          className="h-11 rounded-lg bg-surface-muted px-4 text-sm font-bold text-text-primary disabled:opacity-50"
+          className="h-11 rounded-lg bg-surface-container px-4 text-sm font-bold text-on-surface disabled:opacity-50"
           disabled={busy}
           onClick={unsuspend}
         >
@@ -132,7 +132,7 @@ function UserDetailPanel({ userId, onChanged }: { userId: string; onChanged: () 
       ) : (
         <div className="space-y-2">
           <select
-            className="h-11 w-full rounded-lg bg-surface-muted px-3 text-sm text-text-primary"
+            className="h-11 w-full rounded-lg bg-surface-container px-3 text-sm text-on-surface"
             value={duration}
             onChange={e => setDuration(e.target.value)}
           >
@@ -141,7 +141,7 @@ function UserDetailPanel({ userId, onChanged }: { userId: string; onChanged: () 
             ))}
           </select>
           <textarea
-            className="w-full rounded-lg bg-surface-muted p-3 text-sm text-text-primary"
+            className="w-full rounded-lg bg-surface-container p-3 text-sm text-on-surface"
             rows={2}
             placeholder="정지 사유 (내부 기록용)"
             value={reason}
@@ -159,11 +159,11 @@ function UserDetailPanel({ userId, onChanged }: { userId: string; onChanged: () 
       {error && <p role="alert" className="text-xs text-red-600">{error}</p>}
 
       <div>
-        <h4 className="text-sm font-bold text-text-primary">최근 리뷰</h4>
+        <h4 className="text-sm font-bold text-on-surface">최근 리뷰</h4>
         {detail.recentReviews.length === 0 ? (
-          <p className="text-xs text-text-muted">없음</p>
+          <p className="text-xs text-on-surface-variant">없음</p>
         ) : (
-          <ul className="mt-1 space-y-1 text-xs text-text-muted">
+          <ul className="mt-1 space-y-1 text-xs text-on-surface-variant">
             {detail.recentReviews.map(r => (
               <li key={r.id}>{r.created_at.slice(0, 10)} · {r.place_id} · ★{r.taste}/{r.convenience} · {r.body}</li>
             ))}
@@ -172,11 +172,11 @@ function UserDetailPanel({ userId, onChanged }: { userId: string; onChanged: () 
       </div>
 
       <div>
-        <h4 className="text-sm font-bold text-text-primary">정지 이력</h4>
+        <h4 className="text-sm font-bold text-on-surface">정지 이력</h4>
         {detail.history.length === 0 ? (
-          <p className="text-xs text-text-muted">없음</p>
+          <p className="text-xs text-on-surface-variant">없음</p>
         ) : (
-          <ul className="mt-1 space-y-1 text-xs text-text-muted">
+          <ul className="mt-1 space-y-1 text-xs text-on-surface-variant">
             {detail.history.map(h => (
               <li key={h.id}>
                 {h.created_at.slice(0, 10)} · {h.duration_label} · {h.reason} · by {h.adminUsername}
@@ -227,12 +227,12 @@ export default function AdminDashboard({ role }: { role: "super_admin" | "operat
   return (
     <div className="mx-auto max-w-2xl px-6 py-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-lg font-bold text-text-primary">어드민</h1>
+        <h1 className="text-lg font-bold text-on-surface">어드민</h1>
         <div className="flex items-center gap-3">
           {role === "super_admin" && (
-            <a href="/admin/operators" className="text-sm text-accent underline">운영자 관리</a>
+            <a href="/admin/operators" className="text-sm text-primary underline">운영자 관리</a>
           )}
-          <button className="text-sm text-text-muted underline" onClick={logout}>로그아웃</button>
+          <button className="text-sm text-on-surface-variant underline" onClick={logout}>로그아웃</button>
         </div>
       </div>
 
@@ -240,10 +240,10 @@ export default function AdminDashboard({ role }: { role: "super_admin" | "operat
           몰면 좁은 화면에서 어느 숫자가 무엇인지 읽히지 않는다. */}
       {stats && (
         <div className="mt-4 space-y-1">
-          <p className="rounded-xl bg-surface-muted px-3 py-1.5 text-xs font-medium text-text-primary">
+          <p className="rounded-xl bg-surface-container px-3 py-1.5 text-xs font-medium text-on-surface">
             DAU {stats.dau} · WAU {stats.wau} · MAU {stats.mau}
           </p>
-          <p className="rounded-xl bg-surface-muted px-3 py-1.5 text-xs font-medium text-text-primary">
+          <p className="rounded-xl bg-surface-container px-3 py-1.5 text-xs font-medium text-on-surface">
             이번 주 2일 이상 {stats.weeklyRepeat} · 이전에도 방문 {stats.weeklyReturning}
           </p>
         </div>
@@ -251,10 +251,10 @@ export default function AdminDashboard({ role }: { role: "super_admin" | "operat
 
       {crawlRuns.length > 0 && (
         <div className="mt-6">
-          <h2 className="text-sm font-bold text-text-primary">크롤링 이력</h2>
-          <div className="mt-2 overflow-x-auto rounded-lg border border-border">
+          <h2 className="text-sm font-bold text-on-surface">크롤링 이력</h2>
+          <div className="mt-2 overflow-x-auto rounded-lg border border-outline">
             <table className="w-full text-left text-xs">
-              <thead className="bg-surface-muted text-text-muted">
+              <thead className="bg-surface-container text-on-surface-variant">
                 <tr>
                   <th className="px-3 py-2 font-medium">실행 시각</th>
                   <th className="px-3 py-2 font-medium">지역</th>
@@ -263,12 +263,12 @@ export default function AdminDashboard({ role }: { role: "super_admin" | "operat
               </thead>
               <tbody>
                 {crawlRuns.slice(0, 20).map(run => (
-                  <tr key={run.startedAt} className="border-t border-border-subtle">
-                    <td className="px-3 py-2 text-text-primary">
+                  <tr key={run.startedAt} className="border-t border-outline-variant">
+                    <td className="px-3 py-2 text-on-surface">
                       {run.startedAt.slice(0, 16).replace("T", " ")} ~ {run.finishedAt.slice(11, 16)}
                     </td>
-                    <td className="px-3 py-2 text-text-muted">{run.districts.join(", ")}</td>
-                    <td className="px-3 py-2 text-text-muted">
+                    <td className="px-3 py-2 text-on-surface-variant">{run.districts.join(", ")}</td>
+                    <td className="px-3 py-2 text-on-surface-variant">
                       {run.crawled}/{run.matched}/{run.unresolved}/{run.outOfRadius}/{run.duplicates}
                     </td>
                   </tr>
@@ -281,18 +281,18 @@ export default function AdminDashboard({ role }: { role: "super_admin" | "operat
 
       <div className="mt-6">
         <input
-          className="h-11 w-full rounded-lg bg-surface-muted px-3 text-base text-text-primary"
+          className="h-11 w-full rounded-lg bg-surface-container px-3 text-base text-on-surface"
           placeholder="닉네임 또는 유저 ID 검색"
           value={query}
           onChange={e => setQuery(e.target.value)}
         />
-        {searching && <p className="mt-2 text-xs text-text-muted">검색 중…</p>}
+        {searching && <p className="mt-2 text-xs text-on-surface-variant">검색 중…</p>}
         <ul className="mt-2 space-y-1">
           {users.map(u => (
             <li key={u.user_id}>
               <button
                 className={`h-11 w-full rounded-lg px-3 text-left text-sm ${
-                  selected === u.user_id ? "bg-ink text-white" : "bg-surface-muted text-text-primary"
+                  selected === u.user_id ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface"
                 }`}
                 onClick={() => setSelected(u.user_id)}
               >

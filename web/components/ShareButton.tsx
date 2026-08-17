@@ -121,7 +121,7 @@ export default function ShareButton({ restaurant }: { restaurant: Restaurant }) 
         {/* 슬랙·디스코드에는 붙여넣기가 곧 공유다 — 링크에 가게별 OG 태그가 붙어
             있어 채널에 그대로 카드가 그려진다. */}
         <button
-          className="grid h-11 flex-1 place-items-center rounded border border-border text-base font-medium text-text-primary shadow-xs"
+          className="grid h-11 flex-1 place-items-center rounded border border-outline text-base font-medium text-on-surface shadow-xs"
           onClick={copyLink}
         >
           {copied ? "복사했어요" : "링크 복사"}
@@ -129,11 +129,11 @@ export default function ShareButton({ restaurant }: { restaurant: Restaurant }) 
       </div>
       {manualUrl && (
         <div className="mt-2">
-          <p className="text-xs text-text-muted">자동 복사가 막혔어요. 아래 주소를 직접 복사해주세요.</p>
+          <p className="text-xs text-on-surface-variant">자동 복사가 막혔어요. 아래 주소를 직접 복사해주세요.</p>
           <input
             readOnly
             aria-label="공유 주소"
-            className="mt-1 h-11 w-full rounded bg-surface-muted px-3 text-sm text-text-primary"
+            className="mt-1 h-11 w-full rounded bg-surface-container px-3 text-sm text-on-surface"
             value={manualUrl}
             onFocus={e => e.currentTarget.select()}
           />

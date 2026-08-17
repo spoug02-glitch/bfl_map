@@ -62,7 +62,7 @@ export default function RouletteWheel({ names, winner, arrived, onArrive }: Prop
         >
           {n === 0 ? (
             // 아직 아무도 안 담았을 때. 회색 빈 원이 "여기가 채워질 자리"라고 말한다.
-            <circle cx={C} cy={C} r={R} fill="var(--color-surface-muted)" />
+            <circle cx={C} cy={C} r={R} fill="var(--md-sys-color-surface-container)" />
           ) : (
             // key로 다시 마운트시켜, 후보가 늘 때마다 조각이 하나씩 앉는 게 보인다.
             // 랜덤으로 담았는데 직접 고른 줄 아는 오해가 여기서 풀린다.
@@ -89,19 +89,19 @@ export default function RouletteWheel({ names, winner, arrived, onArrive }: Prop
             </g>
           )}
           {/* 가운데 축 */}
-          <circle cx={C} cy={C} r={26} fill="var(--color-surface)" />
+          <circle cx={C} cy={C} r={26} fill="var(--md-sys-color-surface-container-lowest)" />
         </g>
 
         {/* 바늘은 원판 밖에 있다 — 12시에 고정돼 돌지 않는다 */}
         <path
           d={`M ${C - 11} 6 L ${C + 11} 6 L ${C} 30 Z`}
-          fill="var(--color-ink)"
+          fill="var(--md-sys-color-primary)"
         />
       </svg>
 
       {/* 축 위의 글자. 원판과 같이 돌면 안 읽혀서 SVG 밖에 얹는다. */}
       <span
-        className="pointer-events-none absolute grid place-items-center text-sm font-bold text-text-primary"
+        className="pointer-events-none absolute grid place-items-center text-sm font-bold text-on-surface"
         style={{ inset: 0 }}
         aria-hidden
       >

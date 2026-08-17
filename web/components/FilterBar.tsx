@@ -45,7 +45,7 @@ export default function FilterBar({
   const bodyClass = open === null ? "hidden md:flex" : open ? "flex" : "hidden";
 
   return (
-    <div className="shrink-0 border-b border-border-subtle bg-surface text-sm shadow-xs">
+    <div className="shrink-0 border-b border-outline-variant bg-surface-container-lowest text-sm shadow-xs">
       {/* 접힌 줄 — 줄 전체가 펴는 표적이다 */}
       <button
         className={`${summaryClass} h-11 w-full items-center justify-between gap-3 px-4`}
@@ -54,23 +54,23 @@ export default function FilterBar({
         onClick={() => onOpenChange(true)}
       >
         <span className="flex min-w-0 items-center gap-2">
-          <span aria-hidden className="text-text-muted">⌕</span>
-          <span className="truncate font-medium text-text-primary">
+          <span aria-hidden className="text-on-surface-variant">⌕</span>
+          <span className="truncate font-medium text-on-surface">
             {summarize(query, group, maxDist, priceLimit)}
           </span>
         </span>
-        <span className="flex shrink-0 items-center gap-1 text-text-muted">
+        <span className="flex shrink-0 items-center gap-1 text-on-surface-variant">
           {count}곳<span aria-hidden>▾</span>
         </span>
       </button>
 
       <div className={`${bodyClass} flex-col gap-2 px-4 pt-2`}>
         <div className="relative">
-          <span aria-hidden className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-text-muted">
+          <span aria-hidden className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant">
             ⌕
           </span>
           <input
-            className="h-11 w-full rounded-lg border-0 bg-surface-muted pl-10 pr-4 text-base md:h-9 text-text-primary placeholder:text-text-muted focus:outline-2 focus:outline-accent"
+            className="h-11 w-full rounded-lg border-0 bg-surface-container pl-10 pr-4 text-base md:h-9 text-on-surface placeholder:text-on-surface-variant focus:outline-2 focus:outline-primary"
             placeholder="가게 이름 검색"
             value={query}
             onChange={e => onQuery(e.target.value)}
@@ -79,7 +79,7 @@ export default function FilterBar({
         <div className="flex flex-wrap gap-2">
           <button
             className={`flex h-11 min-w-11 items-center justify-center rounded-xl border px-3.5 font-bold md:h-9 md:min-w-9 ${
-              group === null ? "border-ink bg-ink text-white" : "border-border bg-surface text-text-primary"
+              group === null ? "border-primary bg-primary text-on-primary" : "border-outline bg-surface-container-lowest text-on-surface"
             }`}
             onClick={() => onGroup(null)}
           >
@@ -89,7 +89,7 @@ export default function FilterBar({
             <button
               key={g}
               className={`flex h-11 min-w-11 items-center justify-center rounded-xl border px-3.5 font-bold md:h-9 md:min-w-9 ${
-                group === g ? "border-ink bg-ink text-white" : "border-border bg-surface text-text-primary"
+                group === g ? "border-primary bg-primary text-on-primary" : "border-outline bg-surface-container-lowest text-on-surface"
               }`}
               onClick={() => onGroup(group === g ? null : g)}
             >
@@ -106,12 +106,12 @@ export default function FilterBar({
               가져가므로, 중간 톤 회색으로 둔다. */}
           <label className="flex h-11 min-w-0 flex-1 items-center gap-2 md:h-9">
             {/* 자리 폭을 고정해 100m ↔ 5.0km 사이에서 슬라이더가 들썩이지 않게 */}
-            <span className="w-[4.5rem] shrink-0 whitespace-nowrap font-medium text-text-muted">
+            <span className="w-[4.5rem] shrink-0 whitespace-nowrap font-medium text-on-surface-variant">
               반경 {formatRadius(maxDist)}
             </span>
             <input
               type="range" min={0.1} max={5} step={0.1} value={maxDist}
-              className="h-11 min-w-0 flex-1 accent-text-muted md:h-9"
+              className="h-11 min-w-0 flex-1 accent-on-surface-variant md:h-9"
               onChange={e => onMaxDist(Number(e.target.value))}
             />
           </label>
@@ -119,7 +119,7 @@ export default function FilterBar({
               휠이 뜨고, 고른 값이 칩 얼굴에 그대로 남는다. */}
           <select
             className={`h-11 shrink-0 rounded-xl border px-2.5 text-center font-bold md:h-9 ${
-              priceLimit !== null ? "border-price bg-price text-white" : "border-border bg-surface text-text-primary"
+              priceLimit !== null ? "border-price bg-price text-white" : "border-outline bg-surface-container-lowest text-on-surface"
             }`}
             aria-label="가격 상한"
             value={priceLimit ?? ""}
@@ -127,9 +127,9 @@ export default function FilterBar({
           >
             {/* 펼친 메뉴는 항상 흰 바탕 — 색을 안 주면 닫힌 상태의 갈색을 물려받아
                 메뉴 전체가 갈색 덩어리로 펼쳐진다. */}
-            <option className="bg-surface text-text-primary" value="">가격 전체</option>
+            <option className="bg-surface-container-lowest text-on-surface" value="">가격 전체</option>
             {PRICE_LIMITS.map(l => (
-              <option className="bg-surface text-text-primary" key={l} value={l}>{priceLimitLabel(l)}</option>
+              <option className="bg-surface-container-lowest text-on-surface" key={l} value={l}>{priceLimitLabel(l)}</option>
             ))}
           </select>
         </div>
@@ -138,7 +138,7 @@ export default function FilterBar({
             펼친 상태에서 바 전체를 표적으로 삼지는 않는다 — 검색창을 누르려다
             접히기 때문이다. */}
         <button
-          className="-mx-4 flex h-11 items-center justify-center gap-1.5 border-t border-border-subtle text-text-muted md:h-8"
+          className="-mx-4 flex h-11 items-center justify-center gap-1.5 border-t border-outline-variant text-on-surface-variant md:h-8"
           aria-expanded
           aria-label="검색과 필터 접기"
           onClick={() => onOpenChange(false)}

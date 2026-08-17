@@ -92,7 +92,7 @@ function Dialog({
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledBy}
-        className="w-full max-w-xs rounded-xl border border-border bg-surface p-6 shadow-lg"
+        className="w-full max-w-xs rounded-xl border border-outline bg-surface-container-lowest p-6 shadow-lg"
       >
         {children}
       </div>
@@ -165,20 +165,20 @@ export default function NicknameModal({
       // 처음 열릴 때 초점은 "그만둘래요"에 둔다. 되돌릴 수 없는 쪽에 초점을 두면
       // Enter 한 번에 계정이 날아간다.
       <Dialog labelledBy={titleId} onEscape={backFromWithdraw} initialFocus={cancelWithdrawRef}>
-        <h2 id={titleId} className="text-lg font-bold text-text-primary">정말 탈퇴하시겠어요?</h2>
-        <p className="mt-2 text-sm text-text-muted">
-          계정과 <strong className="text-text-primary">저장한 가게</strong>는 지워집니다.
-          남긴 <strong className="text-text-primary">리뷰와 점심특선 제보</strong>는{" "}
-          <strong className="text-text-primary">{WITHDRAWN_NICKNAME}</strong>로 남습니다.
+        <h2 id={titleId} className="text-lg font-bold text-on-surface">정말 탈퇴하시겠어요?</h2>
+        <p className="mt-2 text-sm text-on-surface-variant">
+          계정과 <strong className="text-on-surface">저장한 가게</strong>는 지워집니다.
+          남긴 <strong className="text-on-surface">리뷰와 점심특선 제보</strong>는{" "}
+          <strong className="text-on-surface">{WITHDRAWN_NICKNAME}</strong>로 남습니다.
         </p>
         {/* 탈퇴하면 본인 글도 못 지운다. 누구 글인지 아무도 모르게 되기 때문인데,
             그건 지우고 나서 알면 늦는 사실이라 누르기 전에 말한다. */}
-        <p className="mt-2 text-sm text-text-muted">
-          계정과의 연결이 끊겨 <strong className="text-text-primary">나중에 고치거나 지울 수
+        <p className="mt-2 text-sm text-on-surface-variant">
+          계정과의 연결이 끊겨 <strong className="text-on-surface">나중에 고치거나 지울 수
           없습니다.</strong> 지우고 싶은 글이 있다면 탈퇴 전에 지워주세요.
         </p>
-        <p className="mt-2 text-sm text-text-muted">
-          탈퇴 후 <strong className="text-text-primary">{REJOIN_BLOCK_DAYS}일간</strong>은 다시
+        <p className="mt-2 text-sm text-on-surface-variant">
+          탈퇴 후 <strong className="text-on-surface">{REJOIN_BLOCK_DAYS}일간</strong>은 다시
           가입할 수 없습니다.
         </p>
         {error && <p role="alert" className="mt-2 text-xs text-red-600">{error}</p>}
@@ -194,7 +194,7 @@ export default function NicknameModal({
           <button
             ref={cancelWithdrawRef}
             type="button"
-            className="grid h-11 place-items-center rounded-lg bg-surface-muted text-sm font-bold text-text-primary"
+            className="grid h-11 place-items-center rounded-lg bg-surface-container text-sm font-bold text-on-surface"
             onClick={backFromWithdraw}
           >
             그만둘래요
@@ -210,10 +210,10 @@ export default function NicknameModal({
       onEscape={mode === "edit" ? onClose : undefined}
       initialFocus={inputRef}
     >
-      <h2 id={titleId} className="text-lg font-bold text-text-primary">
+      <h2 id={titleId} className="text-lg font-bold text-on-surface">
         {mode === "create" ? "쓸 이름을 정해주세요" : "닉네임 변경"}
       </h2>
-      <p className="mt-2 text-sm text-text-muted">
+      <p className="mt-2 text-sm text-on-surface-variant">
         리뷰에 이 이름으로 표시돼요. 카카오·구글 이름은 쓰지 않아요.
       </p>
       {suspended && (
@@ -228,7 +228,7 @@ export default function NicknameModal({
       <form onSubmit={e => { e.preventDefault(); if (!busy) save(); }}>
         <input
           ref={inputRef}
-          className="mt-4 h-11 w-full rounded-lg bg-surface-muted px-3 text-base text-text-primary disabled:opacity-50"
+          className="mt-4 h-11 w-full rounded-lg bg-surface-container px-3 text-base text-on-surface disabled:opacity-50"
           value={value}
           maxLength={NICKNAME_MAX_LEN}
           onChange={e => setValue(e.target.value)}
@@ -240,7 +240,7 @@ export default function NicknameModal({
         <div className="mt-4 flex flex-col gap-2">
           <button
             type="submit"
-            className="grid h-11 place-items-center rounded-lg bg-ink text-sm font-bold text-white disabled:opacity-50"
+            className="grid h-11 place-items-center rounded-lg bg-primary text-sm font-bold text-on-primary disabled:opacity-50"
             disabled={busy || suspended}
           >
             {busy ? "저장 중…" : "확인"}
@@ -248,7 +248,7 @@ export default function NicknameModal({
           {mode === "edit" && (
             <button
               type="button"
-              className="grid h-11 place-items-center rounded-lg bg-surface-muted text-sm font-bold text-text-primary"
+              className="grid h-11 place-items-center rounded-lg bg-surface-container text-sm font-bold text-on-surface"
               onClick={onClose}
             >
               취소
@@ -258,10 +258,10 @@ export default function NicknameModal({
       </form>
       {/* 탈퇴는 계정 설정에 속한다. 처음 이름을 정하는 화면에는 둘 이유가 없다. */}
       {mode === "edit" && onWithdrawn && (
-        <div className="mt-4 border-t border-border-subtle pt-3 text-center">
+        <div className="mt-4 border-t border-outline-variant pt-3 text-center">
           <button
             type="button"
-            className="h-9 px-2 text-xs text-text-muted underline"
+            className="h-9 px-2 text-xs text-on-surface-variant underline"
             onClick={() => setConfirmingWithdraw(true)}
           >
             회원 탈퇴
@@ -269,10 +269,10 @@ export default function NicknameModal({
         </div>
       )}
       {mode === "create" && onLogout && (
-        <div className="mt-4 border-t border-border-subtle pt-3 text-center">
+        <div className="mt-4 border-t border-outline-variant pt-3 text-center">
           <button
             type="button"
-            className="h-9 px-2 text-xs text-text-muted underline"
+            className="h-9 px-2 text-xs text-on-surface-variant underline"
             onClick={onLogout}
           >
             나중에 할게요 (로그아웃)

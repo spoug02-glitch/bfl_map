@@ -47,12 +47,12 @@ function Row({
   title, subtitle, lead, onClick,
 }: { title: string; subtitle: string; lead: string; onClick: () => void }) {
   return (
-    <li className="border-b border-border-subtle/60 last:border-b-0">
+    <li className="border-b border-outline-variant/60 last:border-b-0">
       <button className="flex w-full items-center gap-3 py-3 text-left" onClick={onClick}>
-        <span className="w-14 shrink-0 text-sm font-bold text-accent">{lead}</span>
+        <span className="w-14 shrink-0 text-sm font-bold text-primary">{lead}</span>
         <span className="min-w-0 flex-1">
-          <span className="block truncate text-base font-medium text-text-primary">{title}</span>
-          <span className="block truncate text-xs text-text-muted">{subtitle}</span>
+          <span className="block truncate text-base font-medium text-on-surface">{title}</span>
+          <span className="block truncate text-xs text-on-surface-variant">{subtitle}</span>
         </span>
       </button>
     </li>
@@ -60,13 +60,13 @@ function Row({
 }
 
 function Empty({ children }: { children: React.ReactNode }) {
-  return <p className="py-8 text-center text-sm text-text-muted">{children}</p>;
+  return <p className="py-8 text-center text-sm text-on-surface-variant">{children}</p>;
 }
 
 /** "나" 탭의 구획 머리띠. 박스가 아니라 시트 폭을 꽉 채우는 회색 바다. */
 function SectionBar({ children }: { children: React.ReactNode }) {
   return (
-    <div className="-mx-4 mt-3 bg-surface-muted px-4 py-1.5 text-xs font-bold text-text-muted">
+    <div className="-mx-4 mt-3 bg-surface-container px-4 py-1.5 text-xs font-bold text-on-surface-variant">
       {children}
     </div>
   );
@@ -86,7 +86,7 @@ export default function PlaceList({
       // 모바일에서 이 시트가 커지면 지도가 사라진다. 헤더와 필터 바가 이미
       // 화면 위쪽을 많이 차지하므로 시트는 3분의 1 남짓으로 묶어 둔다.
       className="fixed inset-x-0 bottom-0 z-10 max-h-[34dvh] w-full overflow-y-auto
-        rounded-t-2xl border-t border-border-subtle bg-surface px-4 pt-3 shadow-lg
+        rounded-t-2xl border-t border-outline-variant bg-surface-container-lowest px-4 pt-3 shadow-lg
         md:absolute md:inset-x-auto md:inset-y-0 md:right-0 md:top-0 md:h-full md:max-h-none
         md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0 md:pt-4"
       style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
@@ -99,7 +99,7 @@ export default function PlaceList({
         <button
           aria-current={tab === "near"}
           className={`h-11 flex-1 rounded-lg text-sm font-bold md:h-9 ${
-            tab === "near" ? "bg-ink text-white" : "bg-surface-muted text-text-muted"
+            tab === "near" ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface-variant"
           }`}
           onClick={() => onTab("near")}
         >
@@ -107,7 +107,7 @@ export default function PlaceList({
         </button>
         {/* 색은 비선택 탭과 같게 — 혼자 진하면 셋 중 얘만 눌려 있는 걸로 읽힌다 */}
         <button
-          className="flex h-11 flex-1 items-center justify-center gap-1 rounded-lg bg-surface-muted text-sm font-bold text-text-muted md:h-9"
+          className="flex h-11 flex-1 items-center justify-center gap-1 rounded-lg bg-surface-container text-sm font-bold text-on-surface-variant md:h-9"
           onClick={onRoulette}
         >
           <span aria-hidden>🎯</span>룰렛
@@ -115,7 +115,7 @@ export default function PlaceList({
         <button
           aria-current={tab === "me"}
           className={`h-11 flex-1 rounded-lg text-sm font-bold md:h-9 ${
-            tab === "me" ? "bg-ink text-white" : "bg-surface-muted text-text-muted"
+            tab === "me" ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface-variant"
           }`}
           onClick={() => onTab("me")}
         >
@@ -125,30 +125,30 @@ export default function PlaceList({
 
       {tab === "near" && (
         <>
-          <p className="mt-3 text-sm text-text-muted">
-            <span className="font-bold text-text-primary">{OFFICE_LABEL}</span> 기준 가까운 순
+          <p className="mt-3 text-sm text-on-surface-variant">
+            <span className="font-bold text-on-surface">{OFFICE_LABEL}</span> 기준 가까운 순
           </p>
           {/* 가격 필터를 켜면 후보의 절반 가까이가 조용히 사라진다 — 메뉴 가격이
               등록 안 된 곳이 그만큼 많다. 말없이 빼면 없는 줄 알게 된다. */}
           {unpricedCount > 0 && (
-            <p className="mt-1 text-xs text-text-muted">
+            <p className="mt-1 text-xs text-on-surface-variant">
               가격이 등록 안 된 {unpricedCount}곳은 빠졌어요.
             </p>
           )}
           {shown.length === 0 ? (
             <div className="py-6 text-center">
-              <p className="text-base font-bold text-text-primary">조건에 맞는 가게가 없어요</p>
-              <p className="mt-1 text-sm text-text-muted">반경을 넓히거나 필터를 풀어보세요.</p>
+              <p className="text-base font-bold text-on-surface">조건에 맞는 가게가 없어요</p>
+              <p className="mt-1 text-sm text-on-surface-variant">반경을 넓히거나 필터를 풀어보세요.</p>
               <div className="mx-auto mt-4 flex max-w-xs flex-col gap-2">
                 <button
-                  className="grid h-11 place-items-center rounded-lg bg-ink text-sm font-bold text-white shadow-xs disabled:opacity-50"
+                  className="grid h-11 place-items-center rounded-lg bg-primary text-sm font-bold text-on-primary shadow-xs disabled:opacity-50"
                   onClick={onWiden}
                   disabled={!canWiden}
                 >
                   반경 넓히기
                 </button>
                 <button
-                  className="grid h-11 place-items-center rounded-lg bg-surface-muted text-sm font-bold text-text-primary"
+                  className="grid h-11 place-items-center rounded-lg bg-surface-container text-sm font-bold text-on-surface"
                   onClick={onReset}
                 >
                   필터 초기화
@@ -185,7 +185,7 @@ export default function PlaceList({
             </ul>
           )}
           {places.length > shown.length && (
-            <p className="py-3 text-center text-xs text-text-muted">
+            <p className="py-3 text-center text-xs text-on-surface-variant">
               가까운 {MAX_ROWS}곳만 보여주고 있어요 · 전체 {places.length}곳
             </p>
           )}
@@ -198,8 +198,8 @@ export default function PlaceList({
               보여주기만 한다. */}
           <SectionBar>회사</SectionBar>
           <div className="flex items-center justify-between gap-3 py-2.5">
-            <span className="min-w-0 flex-1 truncate text-sm font-bold text-text-primary">{OFFICE_LABEL}</span>
-            <span className="shrink-0 text-xs text-text-muted">지금은 모두 여기 기준</span>
+            <span className="min-w-0 flex-1 truncate text-sm font-bold text-on-surface">{OFFICE_LABEL}</span>
+            <span className="shrink-0 text-xs text-on-surface-variant">지금은 모두 여기 기준</span>
           </div>
 
           {/* 로그인과 무관한 개인 설정 — 이 브라우저에만 남는다 */}
@@ -212,7 +212,7 @@ export default function PlaceList({
             <>
               <SectionBar>저장한 맛집</SectionBar>
               {savedPlaces.length === 0 ? (
-                <p className="mt-2 text-sm text-text-muted">
+                <p className="mt-2 text-sm text-on-surface-variant">
                   아직 없어요. 가게를 열고 ☆ 저장을 눌러보세요.
                 </p>
               ) : (
@@ -232,7 +232,7 @@ export default function PlaceList({
 
               <SectionBar>내 리뷰</SectionBar>
               {myReviews.length === 0 ? (
-                <p className="mt-2 text-sm text-text-muted">아직 쓴 리뷰가 없어요.</p>
+                <p className="mt-2 text-sm text-on-surface-variant">아직 쓴 리뷰가 없어요.</p>
               ) : (
                 <ul className="mt-1">
                   {myReviews.map(rv => {

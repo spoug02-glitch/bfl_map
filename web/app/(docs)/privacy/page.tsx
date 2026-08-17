@@ -15,10 +15,10 @@ const UPDATED = "2026-08-16";
 export default function PrivacyPage() {
   return (
     <>
-      <h1 className="mt-6 text-2xl font-bold tracking-tight text-text-primary">개인정보처리방침</h1>
-      <p className="mt-1 text-sm text-text-muted">최종 수정일 {UPDATED}</p>
+      <h1 className="mt-6 text-2xl font-bold tracking-tight text-on-surface">개인정보처리방침</h1>
+      <p className="mt-1 text-sm text-on-surface-variant">최종 수정일 {UPDATED}</p>
 
-      <p className="mt-6 rounded-lg bg-surface-muted p-4 text-sm">
+      <p className="mt-6 rounded-lg bg-surface-container p-4 text-sm">
         개인이 만들어 운영하는 서비스입니다. <strong>지금은 광고가 없고</strong>, 수집한 정보를
         판매하지 않습니다. 다만 어떤 경로로 들어와 무엇을 보는지 파악하기 위해{" "}
         <strong>구글 애널리틱스</strong>를 사용하며, 이때 방문 기록이 구글로 전송됩니다(아래 6항).
@@ -58,7 +58,7 @@ export default function PrivacyPage() {
           저장하지도 않습니다. 지도의 거리는 모두 창동씨드큐브라는 고정된 지점을 기준으로 미리
           계산된 값이라, 사용자의 현재 위치를 알 필요가 없습니다.
         </p>
-        <p className="text-sm text-text-muted">
+        <p className="text-sm text-on-surface-variant">
           지도 화면은 카카오맵을 이용해 그립니다. 지도를 보는 과정에서 카카오가 자체적으로 수집하는
           정보는 카카오의 방침을 따릅니다.
         </p>
@@ -71,7 +71,7 @@ export default function PrivacyPage() {
           <li><strong>호스팅</strong> — Vercel (미국). 서비스 실행과 접속 로그</li>
           <li><strong>방문 분석</strong> — Google Analytics (구글, 미국). 접속 경로와 화면 이용 기록</li>
         </ul>
-        <p className="text-sm text-text-muted">
+        <p className="text-sm text-on-surface-variant">
           이 서비스를 이용하면 위 국외 이전에 동의하는 것이 됩니다. 동의하지 않으시면 로그인 없이도
           지도와 가게 정보는 그대로 보실 수 있습니다.
         </p>
@@ -93,7 +93,7 @@ export default function PrivacyPage() {
           보관하고, {REJOIN_BLOCK_DAYS}일이 지나면 지웁니다. 이 값으로는 누구인지 알 수 없고,
           로그인하는 계정과 대조하는 용도로만 씁니다.
         </p>
-        <p className="text-sm text-text-muted">
+        <p className="text-sm text-on-surface-variant">
           방문 집계용 토큰은 계정과 무관하게 날짜별로만 쌓입니다.
         </p>
       </DocSection>
@@ -114,7 +114,7 @@ export default function PrivacyPage() {
           <strong>닉네임, 카카오 회원번호, 리뷰 내용은 구글로 보내지 않습니다.</strong> 수집된
           기록은 <strong>14개월</strong> 후 삭제됩니다.
         </p>
-        <p className="text-sm text-text-muted">
+        <p className="text-sm text-on-surface-variant">
           브라우저의 쿠키 차단 기능이나 광고 차단 확장 프로그램을 쓰시면 이 수집을 거부할 수
           있으며, 거부하셔도 서비스 이용에는 아무런 제한이 없습니다.
         </p>
@@ -130,7 +130,7 @@ export default function PrivacyPage() {
           방법이 없어지기 때문입니다. 지우고 싶은 글이 있다면 <strong>탈퇴하기 전에</strong> 각 가게
           화면에서 지워주세요.
         </p>
-        <p className="text-sm text-text-muted">
+        <p className="text-sm text-on-surface-variant">
           탈퇴해도 카카오 계정과 이 서비스의 연결은 남아 있을 수 있습니다. 카카오톡 &gt; 더보기 &gt;
           설정 &gt; 개인/보안 &gt; 카카오 계정 &gt; 연결된 서비스 관리에서 직접 해제하실 수 있습니다.
         </p>
@@ -147,7 +147,7 @@ export default function PrivacyPage() {
         <p>
           저장된 내 정보를 보거나 고치거나 지울 수 있습니다. 닉네임은 지도 화면에서 바로 바꿀 수
           있고, 리뷰는 각 가게 화면에서 수정·삭제할 수 있습니다. 그 밖의 요청은{" "}
-          <Link className="text-accent underline" href="/contact">문의</Link>로 알려주시면 확인해
+          <Link className="text-primary underline" href="/contact">문의</Link>로 알려주시면 확인해
           처리하겠습니다.
         </p>
       </DocSection>
@@ -156,18 +156,18 @@ export default function PrivacyPage() {
         <p>
           가게 목록은 제로페이(비플페이) 가맹점 공개 정보와 카카오맵의 장소 정보를 모아 만들었습니다.
           가게 사진은 쓰지 않습니다. 정보가 실제와 다르거나 노출을 원하지 않는 가게가 있다면{" "}
-          <Link className="text-accent underline" href="/contact">문의</Link>로 알려주세요.
+          <Link className="text-primary underline" href="/contact">문의</Link>로 알려주세요.
         </p>
       </DocSection>
 
       <DocSection title="11. 문의">
         <p>
           {CREDIT.author} ·{" "}
-          <a className="text-accent underline" href={`mailto:${CREDIT.email}`}>{CREDIT.email}</a>
+          <a className="text-primary underline" href={`mailto:${CREDIT.email}`}>{CREDIT.email}</a>
         </p>
       </DocSection>
 
-      <p className="mt-10 border-t border-border-subtle pt-4 text-sm text-text-muted">
+      <p className="mt-10 border-t border-outline-variant pt-4 text-sm text-on-surface-variant">
         방침이 바뀌면 이 페이지의 최종 수정일을 갱신합니다.
       </p>
     </>

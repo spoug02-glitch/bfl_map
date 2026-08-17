@@ -42,7 +42,7 @@ export default function SaveButton({ placeId, saved, loggedIn, onChange }: Props
     <>
       <button
         className={`mt-4 grid h-11 w-full place-items-center rounded border text-base font-medium shadow-xs disabled:opacity-50 ${
-          saved ? "border-ink bg-ink text-white" : "border-border bg-surface text-text-primary"
+          saved ? "border-primary bg-primary text-on-primary" : "border-outline bg-surface-container-lowest text-on-surface"
         }`}
         aria-pressed={saved}
         disabled={busy}

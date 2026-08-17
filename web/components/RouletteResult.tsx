@@ -52,12 +52,12 @@ export default function RouletteResult({ draw }: { draw: LadderDraw | null }) {
 
   if (!draw) {
     return (
-      <main className="grid min-h-dvh place-items-center bg-surface-page px-6 text-center">
+      <main className="grid min-h-dvh place-items-center bg-surface px-6 text-center">
         <div>
-          <p className="text-lg font-bold text-text-primary">읽을 수 없는 링크예요</p>
-          <p className="mt-2 text-sm text-text-muted">주소가 잘리거나 바뀐 것 같아요.</p>
+          <p className="text-lg font-bold text-on-surface">읽을 수 없는 링크예요</p>
+          <p className="mt-2 text-sm text-on-surface-variant">주소가 잘리거나 바뀐 것 같아요.</p>
           <Link
-            className="mt-6 inline-grid h-11 place-items-center rounded-lg bg-ink px-5 text-sm font-bold text-white"
+            className="mt-6 inline-grid h-11 place-items-center rounded-lg bg-primary px-5 text-sm font-bold text-on-primary"
             href="/"
           >
             지도로 가기
@@ -72,10 +72,10 @@ export default function RouletteResult({ draw }: { draw: LadderDraw | null }) {
   const winnerPlace = names?.get(winnerId) ?? null;
 
   return (
-    <main className="mx-auto min-h-dvh max-w-md bg-surface px-5 py-8">
-      <Link className="text-sm text-accent underline" href="/">← 지도로 가기</Link>
-      <h1 className="mt-5 text-2xl font-bold tracking-tight text-text-primary">룰렛 결과</h1>
-      <p className="mt-1 text-sm text-text-muted">후보 {draw.placeIds.length}곳 중에 뽑혔어요.</p>
+    <main className="mx-auto min-h-dvh max-w-md bg-surface-container-lowest px-5 py-8">
+      <Link className="text-sm text-primary underline" href="/">← 지도로 가기</Link>
+      <h1 className="mt-5 text-2xl font-bold tracking-tight text-on-surface">룰렛 결과</h1>
+      <p className="mt-1 text-sm text-on-surface-variant">후보 {draw.placeIds.length}곳 중에 뽑혔어요.</p>
 
       <div className="mt-6">
         <RouletteWheel
@@ -86,22 +86,22 @@ export default function RouletteResult({ draw }: { draw: LadderDraw | null }) {
         />
       </div>
 
-      <div className="mt-6 min-h-[7rem] rounded-lg bg-surface-muted p-5">
-        <p className="text-center text-sm text-text-muted">
+      <div className="mt-6 min-h-[7rem] rounded-lg bg-surface-container p-5">
+        <p className="text-center text-sm text-on-surface-variant">
           {arrived ? "오늘 점심은" : "돌아가는 중…"}
         </p>
         {arrived && (
-          <p className="mt-1 text-center text-2xl font-bold text-text-primary">
+          <p className="mt-1 text-center text-2xl font-bold text-on-surface">
             {winnerPlace ? winnerPlace.name : names === null ? "…" : "사라진 가게"}
           </p>
         )}
         {arrived && winnerPlace && (
           <>
-            <p className="mt-1 text-center text-sm text-text-muted">
+            <p className="mt-1 text-center text-sm text-on-surface-variant">
               {winnerPlace.category} · 씨드큐브에서 {winnerPlace.distance_km}km
             </p>
             {/* 뭘 파는 곳인지 여기서 알려주지 않으면 결국 카카오맵을 다시 연다 */}
-            <div className="mt-4 border-t border-border-subtle pt-4">
+            <div className="mt-4 border-t border-outline-variant pt-4">
               <MenuLines menus={winnerPlace.menus} special={special} max={4} />
             </div>
           </>
@@ -110,7 +110,7 @@ export default function RouletteResult({ draw }: { draw: LadderDraw | null }) {
 
       {arrived && winnerPlace && (
         <Link
-          className="mt-4 grid h-11 w-full place-items-center rounded-lg bg-ink text-base font-bold text-white"
+          className="mt-4 grid h-11 w-full place-items-center rounded-lg bg-primary text-base font-bold text-on-primary"
           href={sharePath(winnerId)}
         >
           가게 보러 가기

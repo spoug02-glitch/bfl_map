@@ -50,25 +50,25 @@ export default function OperatorsPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-8">
-      <a href="/admin" className="text-sm text-accent underline">← 대시보드</a>
-      <h1 className="mt-2 text-lg font-bold text-text-primary">운영자 관리</h1>
+      <a href="/admin" className="text-sm text-primary underline">← 대시보드</a>
+      <h1 className="mt-2 text-lg font-bold text-on-surface">운영자 관리</h1>
 
-      <div className="mt-6 space-y-2 rounded-lg border border-border p-4">
+      <div className="mt-6 space-y-2 rounded-lg border border-outline p-4">
         <input
-          className="h-11 w-full rounded-lg bg-surface-muted px-3 text-base text-text-primary"
+          className="h-11 w-full rounded-lg bg-surface-container px-3 text-base text-on-surface"
           placeholder="아이디 (3자 이상)"
           value={username}
           onChange={e => setUsername(e.target.value)}
         />
         <input
           type="password"
-          className="h-11 w-full rounded-lg bg-surface-muted px-3 text-base text-text-primary"
+          className="h-11 w-full rounded-lg bg-surface-container px-3 text-base text-on-surface"
           placeholder="비밀번호 (8자 이상)"
           value={password}
           onChange={e => setPassword(e.target.value)}
         />
         <select
-          className="h-11 w-full rounded-lg bg-surface-muted px-3 text-sm text-text-primary"
+          className="h-11 w-full rounded-lg bg-surface-container px-3 text-sm text-on-surface"
           value={role}
           onChange={e => setRole(e.target.value as "super_admin" | "operator")}
         >
@@ -77,7 +77,7 @@ export default function OperatorsPage() {
         </select>
         {error && <p role="alert" className="text-xs text-red-600">{error}</p>}
         <button
-          className="h-11 rounded-lg bg-ink px-4 text-sm font-bold text-white disabled:opacity-50"
+          className="h-11 rounded-lg bg-primary px-4 text-sm font-bold text-on-primary disabled:opacity-50"
           disabled={busy || username.trim().length < 3 || password.length < 8}
           onClick={create}
         >
@@ -87,10 +87,10 @@ export default function OperatorsPage() {
 
       <ul className="mt-6 space-y-2">
         {operators.map(op => (
-          <li key={op.id} className="flex items-center justify-between rounded-lg border border-border p-3">
+          <li key={op.id} className="flex items-center justify-between rounded-lg border border-outline p-3">
             <div>
-              <p className="text-sm font-bold text-text-primary">{op.username}</p>
-              <p className="text-xs text-text-muted">
+              <p className="text-sm font-bold text-on-surface">{op.username}</p>
+              <p className="text-xs text-on-surface-variant">
                 {op.role === "super_admin" ? "최고관리자" : "운영자"} · {op.is_active ? "활성" : "비활성"}
               </p>
             </div>

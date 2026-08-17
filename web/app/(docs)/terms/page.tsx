@@ -14,10 +14,10 @@ const UPDATED = "2026-08-13";
 export default function TermsPage() {
   return (
     <>
-      <h1 className="mt-6 text-2xl font-bold tracking-tight text-text-primary">이용약관</h1>
-      <p className="mt-1 text-sm text-text-muted">최종 수정일 {UPDATED}</p>
+      <h1 className="mt-6 text-2xl font-bold tracking-tight text-on-surface">이용약관</h1>
+      <p className="mt-1 text-sm text-on-surface-variant">최종 수정일 {UPDATED}</p>
 
-      <p className="mt-6 rounded-lg bg-surface-muted p-4 text-sm">
+      <p className="mt-6 rounded-lg bg-surface-container p-4 text-sm">
         초기 서비스라 최소한의 내용만 담은 초안입니다. 서비스가 바뀌면 이 문서도 함께 고치고,
         수정일을 갱신합니다.
       </p>
@@ -79,7 +79,7 @@ export default function TermsPage() {
           다른 이용자가 보고 있던 가게 평가가 통째로 사라지지 않게 하기 위해서입니다. 계정과의
           연결이 끊어지므로 탈퇴 후에는 고치거나 지울 수 없습니다 — 지우고 싶은 글은 탈퇴 전에
           지워주세요. 자세한 내용은{" "}
-          <Link className="text-accent underline" href="/privacy">개인정보처리방침</Link>에 있습니다.
+          <Link className="text-primary underline" href="/privacy">개인정보처리방침</Link>에 있습니다.
         </p>
       </DocSection>
 
@@ -117,7 +117,7 @@ export default function TermsPage() {
       <DocSection title="10. 문의">
         <p>
           약관에 대해 궁금한 점은{" "}
-          <Link className="text-accent underline" href="/contact">문의</Link>로 알려주세요.
+          <Link className="text-primary underline" href="/contact">문의</Link>로 알려주세요.
         </p>
       </DocSection>
     </>

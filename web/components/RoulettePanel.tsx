@@ -137,7 +137,7 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
   return (
     <aside
       className="fixed inset-x-0 bottom-0 z-20 max-h-[75dvh] w-full overflow-y-auto
-        rounded-t-2xl border-t border-border-subtle bg-surface p-4 shadow-lg
+        rounded-t-2xl border-t border-outline-variant bg-surface-container-lowest p-4 shadow-lg
         md:absolute md:inset-x-auto md:inset-y-0 md:right-0 md:top-0 md:h-full md:max-h-none
         md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0"
       style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
@@ -145,17 +145,17 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
       {fillNote && <Toast message={fillNote} onDone={() => setFillNote(null)} />}
 
       <div className="flex items-start justify-between gap-2">
-        <h2 className="text-xl font-bold text-text-primary">룰렛으로 정하기</h2>
+        <h2 className="text-xl font-bold text-on-surface">룰렛으로 정하기</h2>
         <button
           aria-label="닫기"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-lg text-xl text-text-primary"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-lg text-xl text-on-surface"
           onClick={onClose}
         >
           ×
         </button>
       </div>
 
-      <p className="mt-1 text-sm text-text-muted">
+      <p className="mt-1 text-sm text-on-surface-variant">
         {draw === null
           ? `후보를 ${MIN_LEGS}~${MAX_LEGS}곳 담고 돌리면 한 곳을 뽑아드려요.`
           : arrived
@@ -176,47 +176,47 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
         <>
           {/* 담기 수단은 필터 칩과 같은 테두리 칩으로 둔다 — 회색 채움은 입력창과
               CTA에 양보해서, 화면이 회색 사각형 네 개로 읽히지 않게 한다. */}
-          <p className="mt-5 text-xs font-bold text-text-muted">후보 담기</p>
+          <p className="mt-5 text-xs font-bold text-on-surface-variant">후보 담기</p>
           <div className="mt-2 flex gap-2">
             <button
-              className="h-11 flex-1 rounded-xl border border-border bg-surface text-sm font-bold text-text-primary disabled:opacity-50"
+              className="h-11 flex-1 rounded-xl border border-outline bg-surface-container-lowest text-sm font-bold text-on-surface disabled:opacity-50"
               disabled={full || savedPlaces.length === 0}
               onClick={addSaved}
             >
               <span aria-hidden>☆</span> 저장한 곳 담기
             </button>
             <button
-              className="h-11 flex-1 rounded-xl border border-border bg-surface text-sm font-bold text-text-primary disabled:opacity-50"
+              className="h-11 flex-1 rounded-xl border border-outline bg-surface-container-lowest text-sm font-bold text-on-surface disabled:opacity-50"
               disabled={full || nearby.length === 0}
               onClick={fillRandom}
             >
               <span aria-hidden>🎲</span> 랜덤 {RANDOM_PICK}곳
             </button>
           </div>
-          <p className="mt-1.5 text-xs text-text-muted">
+          <p className="mt-1.5 text-xs text-on-surface-variant">
             랜덤은 {RANDOM_RADIUS_KM * 1000}m 안 밥집 {nearby.length}곳에서 뽑아요 ·
             편의점·카페는 빼요 · 검색은 제한 없음
           </p>
 
           <input
-            className="mt-3 h-11 w-full rounded-lg bg-surface-muted px-3 text-base text-text-primary placeholder:text-text-muted"
+            className="mt-3 h-11 w-full rounded-lg bg-surface-container px-3 text-base text-on-surface placeholder:text-on-surface-variant"
             placeholder="가게 이름으로 찾아 담기"
             value={query}
             disabled={full}
             onChange={e => setQuery(e.target.value)}
           />
           {matches.length > 0 && (
-            <ul className="mt-1 rounded-lg border border-border-subtle">
+            <ul className="mt-1 rounded-lg border border-outline-variant">
               {matches.map(r => (
-                <li key={r.kakao_place_id} className="border-b border-border-subtle/60 last:border-b-0">
+                <li key={r.kakao_place_id} className="border-b border-outline-variant/60 last:border-b-0">
                   <button
                     className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm"
                     onClick={() => add(r)}
                   >
-                    <span className="w-12 shrink-0 font-bold text-accent">
+                    <span className="w-12 shrink-0 font-bold text-primary">
                       {r.distance_km < 1 ? `${Math.round(r.distance_km * 1000)}m` : `${r.distance_km.toFixed(1)}km`}
                     </span>
-                    <span className="min-w-0 flex-1 truncate text-text-primary">{r.name}</span>
+                    <span className="min-w-0 flex-1 truncate text-on-surface">{r.name}</span>
                   </button>
                 </li>
               ))}
@@ -225,14 +225,14 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
 
           {picked.length > 0 && (
             <>
-              <p className="mt-5 text-xs font-bold text-text-muted">
-                담은 후보 <span className="text-text-primary">{picked.length}</span>/{MAX_LEGS}
+              <p className="mt-5 text-xs font-bold text-on-surface-variant">
+                담은 후보 <span className="text-on-surface">{picked.length}</span>/{MAX_LEGS}
               </p>
               <ul className="mt-2 space-y-1">
                 {picked.map((r, i) => (
                   <li
                     key={r.kakao_place_id}
-                    className="flex items-center gap-2 rounded-lg bg-surface-muted px-3 py-2"
+                    className="flex items-center gap-2 rounded-lg bg-surface-container px-3 py-2"
                   >
                     {/* 목록의 글자와 원판의 조각을 같은 색으로 묶는다 */}
                     <span
@@ -241,9 +241,9 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
                     >
                       {sliceLabel(i)}
                     </span>
-                    <span className="min-w-0 flex-1 truncate text-sm text-text-primary">{r.name}</span>
+                    <span className="min-w-0 flex-1 truncate text-sm text-on-surface">{r.name}</span>
                     <button
-                      className="grid h-9 w-9 shrink-0 place-items-center text-text-muted"
+                      className="grid h-9 w-9 shrink-0 place-items-center text-on-surface-variant"
                       aria-label={`${r.name} 빼기`}
                       onClick={() => remove(r.kakao_place_id)}
                     >
@@ -256,7 +256,7 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
           )}
 
           <button
-            className="mt-4 grid h-11 w-full place-items-center rounded-lg bg-ink text-base font-bold text-white disabled:opacity-50"
+            className="mt-4 grid h-11 w-full place-items-center rounded-lg bg-primary text-base font-bold text-on-primary disabled:opacity-50"
             disabled={picked.length < MIN_LEGS}
             onClick={spin}
           >
@@ -266,18 +266,18 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
       ) : (
         <>
           {winner !== null && arrived && (
-            <div className="mt-5 rounded-lg bg-surface-muted p-4">
-              <p className="text-center text-sm text-text-muted">오늘 점심은</p>
-              <p className="mt-1 text-center text-xl font-bold text-text-primary">
+            <div className="mt-5 rounded-lg bg-surface-container p-4">
+              <p className="text-center text-sm text-on-surface-variant">오늘 점심은</p>
+              <p className="mt-1 text-center text-xl font-bold text-on-surface">
                 {picked[winner].name}
               </p>
-              <p className="mt-1 text-center text-xs text-text-muted">
+              <p className="mt-1 text-center text-xs text-on-surface-variant">
                 {picked[winner].category} ·{" "}
                 {picked[winner].distance_km < 1
                   ? `${Math.round(picked[winner].distance_km * 1000)}m`
                   : `${picked[winner].distance_km.toFixed(1)}km`}
               </p>
-              <div className="mt-3 border-t border-border-subtle pt-3">
+              <div className="mt-3 border-t border-outline-variant pt-3">
                 <MenuLines
                   menus={picked[winner].menus}
                   special={specialPrices.get(picked[winner].kakao_place_id)}
@@ -288,13 +288,13 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
 
           <div className="mt-4 flex gap-2">
             <button
-              className="h-11 flex-1 rounded-lg bg-surface-muted text-sm font-bold text-text-primary"
+              className="h-11 flex-1 rounded-lg bg-surface-container text-sm font-bold text-on-surface"
               onClick={() => { setDraw(null); setArrived(false); }}
             >
               후보 고치기
             </button>
             <button
-              className="h-11 flex-1 rounded-lg bg-surface-muted text-sm font-bold text-text-primary disabled:opacity-50"
+              className="h-11 flex-1 rounded-lg bg-surface-container text-sm font-bold text-on-surface disabled:opacity-50"
               disabled={!arrived}
               onClick={spin}
             >
@@ -302,7 +302,7 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
             </button>
           </div>
           <button
-            className="mt-2 h-11 w-full rounded-lg bg-ink text-sm font-bold text-white disabled:opacity-50"
+            className="mt-2 h-11 w-full rounded-lg bg-primary text-sm font-bold text-on-primary disabled:opacity-50"
             disabled={!arrived}
             onClick={copy}
           >

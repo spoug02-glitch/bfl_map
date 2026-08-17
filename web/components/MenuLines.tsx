@@ -16,7 +16,7 @@ export default function MenuLines({
     .slice(0, max);
 
   if (priced.length === 0 && !special) {
-    return <p className="text-xs text-text-muted">메뉴 정보가 없어요</p>;
+    return <p className="text-xs text-on-surface-variant">메뉴 정보가 없어요</p>;
   }
 
   return (
@@ -25,17 +25,17 @@ export default function MenuLines({
       {special && (
         <>
           <li className="flex items-baseline justify-between gap-3">
-            <span className="min-w-0 truncate text-text-primary">
+            <span className="min-w-0 truncate text-on-surface">
               <span className="font-bold text-star">특선</span> {special.menuName}
             </span>
             <span className="shrink-0 text-price">{formatPrice(String(special.price))}</span>
           </li>
-          <li className="text-[11px] leading-tight text-text-muted">{SPECIAL_DISCLAIMER}</li>
+          <li className="text-[11px] leading-tight text-on-surface-variant">{SPECIAL_DISCLAIMER}</li>
         </>
       )}
       {priced.map(m => (
         <li key={m.name} className="flex items-baseline justify-between gap-3">
-          <span className="min-w-0 truncate text-text-primary">{m.name}</span>
+          <span className="min-w-0 truncate text-on-surface">{m.name}</span>
           <span className="shrink-0 text-price">{m.price}</span>
         </li>
       ))}

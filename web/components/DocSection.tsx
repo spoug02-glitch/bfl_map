@@ -4,8 +4,8 @@ export default function DocSection({
 }: { title: string; children: React.ReactNode }) {
   return (
     <section className="mt-8">
-      <h2 className="text-lg font-bold text-text-primary">{title}</h2>
-      <div className="mt-2 space-y-2 text-text-primary">{children}</div>
+      <h2 className="text-lg font-bold text-on-surface">{title}</h2>
+      <div className="mt-2 space-y-2 text-on-surface">{children}</div>
     </section>
   );
 }

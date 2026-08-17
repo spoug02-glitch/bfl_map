@@ -197,9 +197,9 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const widenRadius = () => setMaxDist(Math.min(5, Math.round((maxDist + 1) * 10) / 10));
 
   return (
-    <main className="flex h-dvh flex-col bg-surface-page">
-      <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-border-subtle bg-surface-page/80 px-4 shadow-xs backdrop-blur-md md:h-12">
-        <h1 className="flex items-center gap-2 text-lg font-bold tracking-tight text-text-primary">
+    <main className="flex h-dvh flex-col bg-surface">
+      <header className="flex h-14 shrink-0 items-center justify-between gap-2 border-b border-outline-variant bg-surface/80 px-4 shadow-xs backdrop-blur-md md:h-12">
+        <h1 className="flex items-center gap-2 text-lg font-bold tracking-tight text-on-surface">
           {/* 로고 파일을 쓰지 않고 인라인으로 둔다 — 헤더는 첫 화면에 반드시 뜨는
               자리라 요청을 하나 더 태울 이유가 없다. */}
           <svg viewBox="0 0 64 64" width="22" height="22" aria-hidden className="shrink-0">
@@ -215,13 +215,13 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         {user?.nickname ? (
           <div className="flex items-center gap-2 text-sm">
             <button
-              className="grid h-11 place-items-center rounded-lg px-2 text-text-primary md:h-9"
+              className="grid h-11 place-items-center rounded-lg px-2 text-on-surface md:h-9"
               onClick={() => setEditingNickname(true)}
             >
               {user.nickname}님
             </button>
             <button
-              className="grid h-11 place-items-center rounded-lg border border-border px-3 text-text-primary md:h-9"
+              className="grid h-11 place-items-center rounded-lg border border-outline px-3 text-on-surface md:h-9"
               onClick={logout}
             >
               로그아웃
@@ -233,7 +233,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
           // 지도만이라도 보러 갈 수 있게 로그아웃 출구를 열어둔다.
           // 같은 출구가 모달 안에도 있다 — 이 버튼은 마우스로만 닿는다.
           <button
-            className="grid h-11 place-items-center rounded-lg border border-border px-3 text-sm text-text-primary md:h-9"
+            className="grid h-11 place-items-center rounded-lg border border-outline px-3 text-sm text-on-surface md:h-9"
             onClick={logout}
           >
             로그아웃
@@ -242,7 +242,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
           // 로그인 수단은 카카오 하나뿐이다. 구글도 열어두면 한 사람이 계정을
           // 두 개 갖게 되고, 같은 가게에 리뷰를 두 번 남겨 평점을 밀 수 있다.
           <a
-            className="grid h-11 place-items-center rounded-lg bg-ink px-4 text-sm font-bold text-white shadow-xs md:h-9"
+            className="grid h-11 place-items-center rounded-lg bg-primary px-4 text-sm font-bold text-on-primary shadow-xs md:h-9"
             href="/api/auth/kakao"
           >
             카카오 로그인
@@ -277,7 +277,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         {!selected && !rouletteOpen && (
           <button
             className="absolute bottom-[36dvh] right-3 z-20 flex h-11 items-center gap-1.5 rounded-full
-              border border-border-subtle bg-surface px-4 text-sm font-bold text-text-primary shadow-lg
+              border border-outline-variant bg-surface-container-lowest px-4 text-sm font-bold text-on-surface shadow-lg
               md:bottom-4 md:right-[calc(24rem+0.75rem)]"
             onClick={() => mapApi.current?.recenter()}
           >
@@ -286,20 +286,20 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         )}
         <SiteFooter overlay />
         {staleLink && (
-          <div className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-border bg-surface px-4 py-3 text-center shadow-lg">
-            <p className="font-bold text-text-primary">공유된 가게를 찾지 못했어요</p>
-            <p className="mt-1 text-sm text-text-muted">가게 정보가 갱신되었거나 잘못된 링크일 수 있어요.</p>
+          <div className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-outline bg-surface-container-lowest px-4 py-3 text-center shadow-lg">
+            <p className="font-bold text-on-surface">공유된 가게를 찾지 못했어요</p>
+            <p className="mt-1 text-sm text-on-surface-variant">가게 정보가 갱신되었거나 잘못된 링크일 수 있어요.</p>
           </div>
         )}
         {loginError && (
           <div
             role="alert"
-            className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-border bg-surface px-4 py-3 text-center shadow-lg"
+            className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-outline bg-surface-container-lowest px-4 py-3 text-center shadow-lg"
           >
-            <p className="font-bold text-text-primary">로그인하지 못했어요</p>
-            <p className="mt-1 text-sm text-text-muted">{loginError}</p>
+            <p className="font-bold text-on-surface">로그인하지 못했어요</p>
+            <p className="mt-1 text-sm text-on-surface-variant">{loginError}</p>
             <button
-              className="mt-3 grid h-11 w-full place-items-center rounded-lg bg-ink text-sm font-bold text-white"
+              className="mt-3 grid h-11 w-full place-items-center rounded-lg bg-primary text-sm font-bold text-on-primary"
               onClick={() => setLoginError(null)}
             >
               확인

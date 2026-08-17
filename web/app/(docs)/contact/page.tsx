@@ -10,13 +10,13 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <>
-      <h1 className="mt-6 text-2xl font-bold tracking-tight text-text-primary">문의</h1>
+      <h1 className="mt-6 text-2xl font-bold tracking-tight text-on-surface">문의</h1>
 
       {/* 별도 고객센터를 두지 않는다. 혼자 운영하는 서비스에서 접수 시스템을
           만들어두면 답이 늦을 때 오히려 방치된 창구가 된다. */}
-      <p className="mt-6 rounded-lg bg-surface-muted p-4">
+      <p className="mt-6 rounded-lg bg-surface-container p-4">
         확인이 필요한 내용은{" "}
-        <a className="font-bold text-accent underline" href={`mailto:${CREDIT.email}`}>
+        <a className="font-bold text-primary underline" href={`mailto:${CREDIT.email}`}>
           {CREDIT.email}
         </a>
         로 보내주세요.
@@ -37,7 +37,7 @@ export default function ContactPage() {
           가게에 관한 내용이면 <strong>가게 이름</strong>을, 리뷰나 제보에 관한 내용이면 어느
           가게의 어떤 글인지 함께 적어주시면 빠르게 확인할 수 있습니다.
         </p>
-        <p className="text-sm text-text-muted">
+        <p className="text-sm text-on-surface-variant">
           개인이 운영하는 서비스라 답변까지 며칠 걸릴 수 있습니다. 급한 일이라면 그 사정도 함께
           적어주세요.
         </p>

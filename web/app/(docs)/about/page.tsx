@@ -11,10 +11,10 @@ export const metadata: Metadata = {
 export default function AboutPage() {
   return (
     <>
-      <h1 className="mt-6 text-2xl font-bold tracking-tight text-text-primary">서비스 소개</h1>
-      <p className="mt-1 text-sm text-text-muted">{SERVICE.tagline}</p>
+      <h1 className="mt-6 text-2xl font-bold tracking-tight text-on-surface">서비스 소개</h1>
+      <p className="mt-1 text-sm text-on-surface-variant">{SERVICE.tagline}</p>
 
-      <p className="mt-6 rounded-lg bg-surface-muted p-4 text-sm">
+      <p className="mt-6 rounded-lg bg-surface-container p-4 text-sm">
         점심시간마다 &ldquo;오늘 뭐 먹지&rdquo; 하고 멈추는 시간을 줄여보려고 만들었습니다.
         회사 주변 밥집을 지도에 모아두고, 못 정하겠을 때는 룰렛이 대신 골라줍니다.
       </p>
@@ -34,7 +34,7 @@ export default function AboutPage() {
           지도에 실린 가게는 <strong>제로페이(비플페이) 가맹점 공개 정보</strong>를 바탕으로
           모았습니다. 그래서 결제 수단을 신경 쓰는 분이 가게를 찾는 데 도움이 됩니다.
         </p>
-        <p className="rounded-lg bg-surface-muted p-4 text-sm">
+        <p className="rounded-lg bg-surface-container p-4 text-sm">
           다만 이 서비스는 <strong>비플페이·제로페이와 아무 관계가 없는 개인 서비스</strong>입니다.
           제휴하거나 위탁받아 만든 것이 아니고, 운영 주체도 다릅니다. 가맹점 여부와 실제 결제
           가능 여부는 <strong>가게에서 직접 확인해 주세요</strong> — 공개 정보와 실제가 다를 수
@@ -50,7 +50,7 @@ export default function AboutPage() {
         </p>
         <p>
           정보가 실제와 다르거나 노출을 원하지 않는 가게가 있다면{" "}
-          <Link className="text-accent underline" href="/contact">문의</Link>로 알려주세요.
+          <Link className="text-primary underline" href="/contact">문의</Link>로 알려주세요.
         </p>
       </DocSection>
 

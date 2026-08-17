@@ -48,8 +48,8 @@ export default function DislikeSettings() {
               aria-pressed={picked}
               className={`flex h-9 items-center gap-1 rounded-xl border px-3 text-xs font-bold ${
                 picked
-                  ? "border-ink bg-ink text-white"
-                  : "border-border-subtle bg-surface text-text-muted"
+                  ? "border-primary bg-primary text-on-primary"
+                  : "border-outline-variant bg-surface-container-lowest text-on-surface-variant"
               }`}
               onClick={() => toggle(p.key)}
             >
@@ -62,7 +62,7 @@ export default function DislikeSettings() {
 
       <div className="flex gap-2">
         <input
-          className="h-11 min-w-0 flex-1 rounded-lg bg-surface-muted px-3 text-base text-text-primary placeholder:text-text-muted"
+          className="h-11 min-w-0 flex-1 rounded-lg bg-surface-container px-3 text-base text-on-surface placeholder:text-on-surface-variant"
           // 브랜드 이름도 먹지만 예시로는 쓰지 않는다 — 특정 가게를 앱이 지목하는
           // 모양이 된다. 음식 이름으로만 예를 든다.
           placeholder="직접 적기 (예: 고수, 오이)"
@@ -72,7 +72,7 @@ export default function DislikeSettings() {
           onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addCustom(); } }}
         />
         <button
-          className="h-11 shrink-0 rounded-lg bg-surface-muted px-4 text-sm font-bold text-text-primary disabled:opacity-50"
+          className="h-11 shrink-0 rounded-lg bg-surface-container px-4 text-sm font-bold text-on-surface disabled:opacity-50"
           disabled={draft.trim().length === 0}
           onClick={addCustom}
         >
@@ -85,7 +85,7 @@ export default function DislikeSettings() {
           {dislikes.custom.map(w => (
             <button
               key={w}
-              className="flex h-9 items-center gap-1.5 rounded-xl border border-ink bg-ink px-3 text-xs font-bold text-white"
+              className="flex h-9 items-center gap-1.5 rounded-xl border border-primary bg-primary px-3 text-xs font-bold text-on-primary"
               aria-label={`${w} 빼기`}
               onClick={() => removeCustom(w)}
             >
@@ -95,7 +95,7 @@ export default function DislikeSettings() {
         </div>
       )}
 
-      <p className="mt-2 text-xs text-text-muted">
+      <p className="mt-2 text-xs text-on-surface-variant">
         {on
           ? "룰렛 랜덤에서 빼요. 그 음식이 그 집의 주 메뉴일 때만 빼고, 지도와 목록에는 그대로 있어요. 검색으로는 담을 수 있어요."
           : "지금은 아무것도 빼고 있지 않아요. 고르면 룰렛 랜덤에서 빠지고, 이 브라우저에만 저장돼요."}
