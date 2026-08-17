@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { OG_CARD_PATH } from "@/lib/constants";
+import GoogleAnalytics from "@/components/GoogleAnalytics";
 import "./globals.css";
 
 // No next/font/google here on purpose. This Next build's font dataset has NO
@@ -45,7 +46,10 @@ export default function RootLayout({
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
       </head>
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <GoogleAnalytics />
+        {children}
+      </body>
     </html>
   );
 }
