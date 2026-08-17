@@ -363,8 +363,22 @@ git commit -m "fix(bfl-map): remove dark-mode remnant that broke docs pages unde
 | `var(--color-surface)` | `var(--md-sys-color-surface-container-lowest)` | `RouletteWheel.tsx` SVG `fill` 속성 |
 | `var(--color-ink)` | `var(--md-sys-color-primary)` | `RouletteWheel.tsx` SVG `fill` 속성 |
 
-**대상 파일 21개** (구 토큰 클래스 사용 파일 전부, `grep -rlE` 로 확정):
-`components/DislikeSettings.tsx` `components/DocSection.tsx` `components/EntryNotice.tsx` `components/FilterBar.tsx` `components/MapApp.tsx` `components/MenuLines.tsx` `components/NicknameModal.tsx` `components/PlaceList.tsx` `components/PlacePanel.tsx` `components/ReviewSection.tsx` `components/RoulettePanel.tsx` `components/RouletteResult.tsx` `components/RouletteWheel.tsx` `components/SaveButton.tsx` `components/ShareButton.tsx` `components/SiteFooter.tsx` `components/SpecialSection.tsx` `components/admin/AdminDashboard.tsx` `components/admin/AdminLoginForm.tsx` `components/admin/OperatorsPage.tsx` `app/(docs)/layout.tsx`
+**대상 파일 25개.**
+
+> **손으로 적은 목록을 믿지 말 것 (2026-08-17 실행 중 발견).** 이 계획의 초안은
+> 21개만 적었고 `components/RouletteWheel.tsx` 와 docs 4개 페이지
+> (`about` `contact` `privacy` `terms`)가 빠져 있었다. 원인은 목록을 뽑을 때 쓴
+> 셸 글롭 `"app/(docs)"/*.tsx` 의 따옴표가 확장을 막아 `layout.tsx` 만 잡힌 것이다.
+> **아래 명령으로 목록을 그때그때 다시 뽑아 쓴다** — 하드코딩된 목록은 조용히 낡는다.
+
+```bash
+cd Bfl_map/web
+mapfile -t FILES < <(grep -rlE '\b(bg-surface-page|bg-surface-muted|bg-surface|border-border-subtle|border-border|text-text-primary|text-text-muted|bg-ink|border-ink|text-accent|outline-accent|accent-text-muted|text-border)\b' components app --include="*.tsx" | sort)
+printf '%s\n' "${FILES[@]}"; echo "총 ${#FILES[@]}개"
+```
+
+참고로 2026-08-17 시점 실제 목록은 다음 25개였다:
+`components/DislikeSettings.tsx` `components/DocSection.tsx` `components/EntryNotice.tsx` `components/FilterBar.tsx` `components/MapApp.tsx` `components/MenuLines.tsx` `components/NicknameModal.tsx` `components/PlaceList.tsx` `components/PlacePanel.tsx` `components/ReviewSection.tsx` `components/RoulettePanel.tsx` `components/RouletteResult.tsx` `components/RouletteWheel.tsx` `components/SaveButton.tsx` `components/ShareButton.tsx` `components/SiteFooter.tsx` `components/SpecialSection.tsx` `components/admin/AdminDashboard.tsx` `components/admin/AdminLoginForm.tsx` `components/admin/OperatorsPage.tsx` `app/(docs)/layout.tsx` `app/(docs)/about/page.tsx` `app/(docs)/contact/page.tsx` `app/(docs)/privacy/page.tsx` `app/(docs)/terms/page.tsx`
 
 - [ ] **Step 1: `app/globals.css`에서 `surface`·`star` 값 flip**
 
@@ -472,17 +486,33 @@ grep -rn 'var(--color-surface\|var(--color-ink)' components --include="*.tsx"
 ```
 Expected: 둘 다 결과 없음(exit 시 아무 줄도 안 나옴).
 
-- [ ] **Step 5: bg-primary와 짝을 이루는 text-white를 text-on-primary로 정리**
+- [ ] **Step 5: bg-primary와 짝을 이루는 text-white만 text-on-primary로**
 
-`bg-primary`(구 `bg-ink`)와 나란히 쓰인 `text-white`를 `text-on-primary`로 바꾼다(값은 둘 다 `#ffffff`라 동작은 같지만, 역할 이름 일관성을 위해). 대상은 Step 4의 결과에서 `bg-primary`가 있는 줄과 같은 `className` 문자열 안의 `text-white`다. 다음 파일에서 확인:
-- `components/FilterBar.tsx` (전체 칩, 업종 칩 선택 상태)
-- `components/PlaceList.tsx` (탭 pill, 반경 넓히기 버튼)
-- `components/NicknameModal.tsx` (확인 버튼)
-- `components/RoulettePanel.tsx` (돌리기, 결과 링크 복사 버튼)
-- `components/SaveButton.tsx` (저장됨 상태)
-- `components/MapApp.tsx` (카카오 로그인 버튼, 로그인 실패 배너 확인 버튼)
+값은 둘 다 `#ffffff`라 화면은 그대로지만, 역할 이름을 맞춰 둬야 나중에 primary 위 글자색을 조정할 때 한 곳만 고치면 된다.
 
-각 파일에서 `bg-primary`가 포함된 `className`(또는 템플릿 리터럴) 안의 `text-white`를 `text-on-primary`로 손으로 바꾼다(정규식 일괄 치환은 위험하다 — `text-white`가 `bg-primary`와 무관한 자리에도 있을 수 있는지 각 줄을 눈으로 확인하며 바꾼다. 이번 코드베이스는 위 6개 파일 각각 확인 결과 `text-white`가 전부 `bg-ink`/`bg-primary`와 짝이었다).
+**전면 치환은 안 된다** — `text-white`는 primary가 아닌 배경 위에도 쓰인다. sed의 주소(address)로 `bg-primary`가 같은 줄에 있을 때만 바꾼다:
+
+```bash
+cd Bfl_map/web
+grep -rl 'text-white' components app --include="*.tsx" | while read -r f; do
+  sed -i '/bg-primary/ s/text-white/text-on-primary/g' "$f"
+done
+# 남은 text-white 는 전부 primary 가 아닌 배경 위여야 한다.
+grep -rn 'text-white' components app --include="*.tsx"
+grep -rn 'text-white' components app --include="*.tsx" | grep 'bg-primary' || echo "no primary-paired text-white left"
+```
+
+2026-08-17 실행 결과 남아야 하는(=바꾸면 안 되는) 5곳:
+
+| 위치 | 배경 | 왜 남기나 |
+|---|---|---|
+| `admin/AdminDashboard.tsx` | `bg-red-600` | 관리자 화면은 색 치환만 받는다(Global Constraints) |
+| `NicknameModal.tsx` | `bg-red-600` | Task 10이 `bg-error`/`text-on-error`로 따로 바꾼다 |
+| `FilterBar.tsx` | `bg-price` | price는 값 불변 확장색 |
+| `RoulettePanel.tsx` | 인라인 `sliceColor(i)` | 조각 색이 런타임에 정해진다 |
+| `Toast.tsx` | `bg-black/80` | Task 11이 inverse 토큰으로 바꾼다 |
+
+(초안은 대상을 6개 파일로 적었지만 실제로는 `ReviewSection` `SpecialSection` `DislikeSettings` `RouletteResult` `admin/*` 까지 걸쳐 있었다. 줄 단위 sed 주소를 쓰면 목록을 셀 필요가 없다.)
 
 - [ ] **Step 6: 타입 체크 + 린트 + 테스트**
 
