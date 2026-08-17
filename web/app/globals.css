@@ -39,6 +39,56 @@
 
   --color-brand-kakao: #fee500;
   --color-brand-kakao-text: #000000;
+
+  /* ---- Material 3 색 역할 토큰 ----
+     docs/specs/2026-08-16-m3-design-system-design.md의 "색 토큰" 표에서 그대로 옮겼다.
+     Terracotta #A9501C / Riviera Blue #183451 / Sand Linen #D4AF83 을 앵커로
+     @material/material-color-utilities 가 계산한 값이다. 중립 채도는 M3 기본값(4)이
+     아니라 12(중립)/16(중립 변형)이다 — 기본값을 쓰면 Sand Linen 의 따뜻함이 날아가
+     표면이 차가운 회색이 된다(스펙 "중립 채도를 M3 기본값에서 올린 것" 참고).
+
+     구 토큰과 공존하는 단계라 아직 어떤 컴포넌트도 이 변수를 쓰지 않는다. */
+  --md-sys-color-primary: #9b4511;
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: #ffdbcb;
+  --md-sys-color-on-primary-container: #341100;
+  --md-sys-color-secondary: #0661a4;
+  --md-sys-color-on-secondary: #ffffff;
+  --md-sys-color-secondary-container: #d2e4ff;
+  --md-sys-color-on-secondary-container: #001d36;
+  --md-sys-color-tertiary: #655f31;
+  --md-sys-color-on-tertiary: #ffffff;
+  --md-sys-color-tertiary-container: #ece4aa;
+  --md-sys-color-on-tertiary-container: #1f1c00;
+  --md-sys-color-error: #ba1a1a;
+  --md-sys-color-on-error: #ffffff;
+  --md-sys-color-error-container: #ffdad6;
+  --md-sys-color-on-error-container: #410002;
+
+  --md-sys-color-surface: #fff8f4;
+  --md-sys-color-on-surface: #25190a;
+  --md-sys-color-surface-variant: #fcdebc;
+  --md-sys-color-on-surface-variant: #57432b;
+  --md-sys-color-surface-dim: #edd6be;
+  --md-sys-color-surface-bright: #fff8f4;
+  --md-sys-color-surface-container-lowest: #ffffff;
+  --md-sys-color-surface-container-low: #fff1e5;
+  --md-sys-color-surface-container: #ffebd6;
+  --md-sys-color-surface-container-high: #fce4cc;
+  --md-sys-color-surface-container-highest: #f6dfc6;
+
+  --md-sys-color-outline: #8b7357;
+  --md-sys-color-outline-variant: #dec2a2;
+  --md-sys-color-inverse-surface: #3c2e1d;
+  --md-sys-color-inverse-on-surface: #ffeede;
+  --md-sys-color-inverse-primary: #ffb692;
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-shadow: #000000;
+
+  /* 별점 색은 값이 바뀌므로(#fe6b00 → #c85300) 새 이름공간에 둔다. 기존 #fe6b00 은
+     따뜻해진 표면 위에서 대비가 2.73 이라 의미 있는 그래픽 요소 기준(3:1)에 미달했다.
+     price/brand-kakao 는 스펙상 값이 그대로라 여기 옮기지 않는다. */
+  --md-color-star: #c85300;
 }
 
 @theme inline {
@@ -77,6 +127,47 @@
 
   --color-brand-kakao: var(--color-brand-kakao);
   --color-brand-kakao-text: var(--color-brand-kakao-text);
+
+  /* ---- M3 역할 이름을 Tailwind 유틸리티로 노출 ----
+     `surface` 하나만 여기 없다 — 구 --color-surface(#ffffff, 흰 카드)와 이름이 겹치고,
+     M3 의 surface 는 앱 바탕(#fff8f4)이라 의미가 다르다. 그 이름은 컴포넌트를 한꺼번에
+     옮기는 단계에서 값과 함께 바꾼다. 나머지는 구 어휘와 겹치지 않아 지금 노출해도
+     쓰는 곳이 없어 화면이 바뀌지 않는다. */
+  --color-primary: var(--md-sys-color-primary);
+  --color-on-primary: var(--md-sys-color-on-primary);
+  --color-primary-container: var(--md-sys-color-primary-container);
+  --color-on-primary-container: var(--md-sys-color-on-primary-container);
+  --color-secondary: var(--md-sys-color-secondary);
+  --color-on-secondary: var(--md-sys-color-on-secondary);
+  --color-secondary-container: var(--md-sys-color-secondary-container);
+  --color-on-secondary-container: var(--md-sys-color-on-secondary-container);
+  --color-tertiary: var(--md-sys-color-tertiary);
+  --color-on-tertiary: var(--md-sys-color-on-tertiary);
+  --color-tertiary-container: var(--md-sys-color-tertiary-container);
+  --color-on-tertiary-container: var(--md-sys-color-on-tertiary-container);
+  --color-error: var(--md-sys-color-error);
+  --color-on-error: var(--md-sys-color-on-error);
+  --color-error-container: var(--md-sys-color-error-container);
+  --color-on-error-container: var(--md-sys-color-on-error-container);
+
+  --color-on-surface: var(--md-sys-color-on-surface);
+  --color-surface-variant: var(--md-sys-color-surface-variant);
+  --color-on-surface-variant: var(--md-sys-color-on-surface-variant);
+  --color-surface-dim: var(--md-sys-color-surface-dim);
+  --color-surface-bright: var(--md-sys-color-surface-bright);
+  --color-surface-container-lowest: var(--md-sys-color-surface-container-lowest);
+  --color-surface-container-low: var(--md-sys-color-surface-container-low);
+  --color-surface-container: var(--md-sys-color-surface-container);
+  --color-surface-container-high: var(--md-sys-color-surface-container-high);
+  --color-surface-container-highest: var(--md-sys-color-surface-container-highest);
+
+  --color-outline: var(--md-sys-color-outline);
+  --color-outline-variant: var(--md-sys-color-outline-variant);
+  --color-inverse-surface: var(--md-sys-color-inverse-surface);
+  --color-inverse-on-surface: var(--md-sys-color-inverse-on-surface);
+  --color-inverse-primary: var(--md-sys-color-inverse-primary);
+  --color-scrim: var(--md-sys-color-scrim);
+  --color-shadow: var(--md-sys-color-shadow);
 
   /* Figma type scale uses a consistent 1.5x line-height at 12/14/18px;
      16px and 20px already match Tailwind's default text-base/text-xl. */
