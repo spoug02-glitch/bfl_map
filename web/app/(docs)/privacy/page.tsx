@@ -103,7 +103,8 @@ export default function PrivacyPage() {
           어떤 경로로 들어온 분들이 어떤 가게를 보는지 파악하기 위해 <strong>구글 애널리틱스
           (Google Analytics 4)</strong>를 사용합니다. 서비스 개선을 위한 통계 목적입니다.
         </p>
-        <p>구글로 전송되는 것은 다음과 같은 <strong>익명 정보</strong>입니다.</p>
+        <p>구글로 전송되는 것은 다음과 같은 정보입니다. 이름·연락처처럼 개인을 직접
+          알아볼 수 있는 정보는 포함되지 않습니다.</p>
         <ul className="ml-5 list-disc space-y-1">
           <li>어디에서 들어왔는지(검색·링크 등 유입 경로)</li>
           <li>어떤 화면을 보고 어떤 가게를 열었는지</li>
