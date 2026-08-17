@@ -1,6 +1,6 @@
 # GA4 이벤트 트래킹
 
-2026-08-16
+2026-08-16 (2026-08-16 개정 — Codex 교차검토 반영)
 
 ## 왜
 
@@ -22,15 +22,45 @@
 지도에서 가게를 훑다가 "카카오맵에서 보기 ↗"를 누르는 것은 곧 *그 집에 가보겠다*는
 뜻이다. 이것이 이 서비스의 진짜 전환이다.
 
+## ⛔ 선행 조건: 개인정보처리방침 개정
+
+**이 작업은 코드보다 문서가 먼저다.** 지금의 처리방침(`app/(docs)/privacy/page.tsx`)은
+정직하고 구체적으로 쓰여 있어서, GA4를 붙이는 순간 **문서가 거짓이 된다.** 고쳐야 할 곳:
+
+| 위치 | 현재 문장 | 왜 충돌하는가 |
+|---|---|---|
+| 22–23줄 | "수집한 정보를 판매하거나 **제3자에게 제공하지 않습니다**" | GA4는 방문 데이터를 구글(제3자)로 보낸다 |
+| 1항 | "실제로 저장되는 항목은 **다음이 전부**입니다" | `_ga`·`_ga_*` 쿠키가 목록에 없다 |
+| 4항 국외 이전 | Neon·Vercel **만** 나열 | 구글(미국)이 빠져 있다 |
+| 5항 보관 기간 | GA4 언급 없음 | GA4 보존 기간(14개월)을 밝혀야 한다 |
+
+과거에 광고를 붙이려다 같은 함정을 만난 적이 있다(처리방침의 "광고를 붙이지 않는다"가
+먼저 걸렸다). **문서를 먼저 고치고 배포한 뒤에 GA4를 켠다.**
+
+### 동의 방식 (결정 필요)
+
+이 서비스는 이미 국외 이전에 대해 *"이용하면 동의한 것으로 본다"* 모델을 쓰고 있다
+(4항). GA4도 같은 모델로 갈지, 별도 쿠키 동의 배너를 둘지는 **범위가 크게 달라지는
+결정**이라 구현 전에 정한다.
+
+- **A. 처리방침 고지만** — 기존 모델과 일관. 구현 비용 없음. 국내 개인 서비스에서 흔한 수준
+- **B. 쿠키 동의 배너 + GA4 Consent Mode** — 더 안전하지만 배너 UI·동의 저장·거부 시
+  스크립트 미로드까지 별도 작업이 필요하고, 거부한 사용자 데이터는 아예 안 잡힌다
+
 ## 결정적 제약: 가게 상세는 page_view로 안 잡힌다
 
 `PlacePanel`은 라우트가 아니라 `MapApp` 안의 `<aside>` 패널이고, 가게 선택은
-`setSelected` React state만 바꾼다 — **URL이 바뀌지 않는다**(`MapApp.tsx`의 유일한
-`replaceState`는 공유 링크로 들어왔을 때 URL을 정리하는 용도다).
+`setSelected` React state만 바꾼다 — **URL이 바뀌지 않는다**(`MapApp.tsx:108`의 유일한
+`replaceState`는 로그인 에러 쿼리를 지우는 용도다).
 
 따라서 **GA4 기본 page_view로는 "어떤 가게를 봤는가"를 영원히 알 수 없다.** 이 설계에서
 `place_view` 커스텀 이벤트가 없으면 탐색 깊이를 측정할 수단이 아예 존재하지 않는다.
 이것이 이 문서 전체의 출발점이다.
+
+`/place/[id]`는 별도 처리가 필요 없다 — `<MapApp initialPlaceId={id} />`로 같은 컴포넌트를
+재사용하므로(`app/place/[id]/page.tsx:55`) PlacePanel이 자동으로 열리고 `place_view`가
+그대로 발화한다. 다만 *마커를 눌러 도달한 것*과 *공유 링크로 도달한 것*은 의미가 다르므로
+`entry_context` 파라미터로 구분한다.
 
 ## 기존 analytics와의 관계
 
@@ -43,32 +73,38 @@
 | 목적 | 어드민 대시보드의 규모 지표 | 유입별 행동/전환 분석 |
 | 집계 단위 | 기기별 1일 1회 핑 | 세션·이벤트 |
 
-**두 숫자는 절대 일치하지 않는다.** 집계 기준이 다르므로 서로 대조하지 않는다.
+**두 숫자는 절대 일치하지 않는다.** 집계 기준이 다르고, 여기에 더해 **광고 차단기가 GA4만
+막는다**(자체 추적은 자사 도메인이라 안 막힌다). GA4 쪽이 구조적으로 더 적게 나온다 —
+둘을 대조해서 "어느 쪽이 틀렸나"를 따지지 않는다.
 
-## 이벤트 (8개)
+## 이벤트 (9개)
 
 GA4가 자동 수집하는 값(source / medium / referrer / page_location / landing page /
 engagement time)은 **어느 이벤트에도 복제하지 않는다.**
 
 | 이벤트 | 발생 조건 | parameter | 목적 |
 |---|---|---|---|
-| `place_view` | `PlacePanel`이 새 가게로 열릴 때(가게 id가 바뀔 때 1회) | `place_id`, `place_category` | 탐색 깊이. 세션당 발생 수 = 몇 곳을 비교했나 |
+| `place_view` | `PlacePanel`이 새 가게로 열릴 때(가게 id가 바뀔 때 1회) | `place_id`, `place_category`, `entry_context` | 탐색 깊이 + 도달 경로 |
 | `place_map_open` | 카카오맵 링크 클릭 | `place_id`, `place_category` | **핵심 전환** |
-| `blog_review_click` | 만든 이 블로그 후기 클릭 | `place_id` | 내가 쓴 콘텐츠가 실제로 읽히는가 |
-| `place_share` | 공유 성공 시 | `place_id`, `method`(`kakao`\|`web_share`\|`copy`) | 바이럴 |
+| `blog_review_click` | 만든 이 블로그 후기 클릭 | `place_id`, `place_category` | 내가 쓴 콘텐츠가 읽히는가 |
+| `place_share` | 가게 공유 성공 시 | `place_id`, `method`(`kakao`\|`web_share`\|`copy`) | 바이럴 |
+| `roulette_share` | 룰렛 결과 링크 복사 성공 시 | `pool_size` | **신규 유입을 만드는 행동** |
 | `review_submit` | 리뷰 작성 성공 시 | `place_id`, `place_category` | 가장 무거운 참여(로그인 필요) |
-| `place_engage` | 저장·점심특선 제보 성공 시 | `place_id`, `action`(`save`\|`special`) | 참여 깊이 |
+| `place_engage` | 저장(**해제 제외**)·점심특선 제보 성공 시 | `place_id`, `action`(`save`\|`special`) | 참여 깊이 |
 | `login_start` | 카카오 로그인 버튼 클릭 | `trigger`(`header`\|`review`) | 퍼널 관문 |
-| `roulette_result` | 룰렛 결과 확정 | `pool_size` | 시그니처 기능 사용률 |
+| `roulette_result` | 룰렛 결과 확정 | `pool_size`, `winner_category` | 시그니처 기능 사용률 |
 
-모두 성공 시점에 발화한다(실패한 시도는 세지 않는다). 단 `login_start`와
-`place_map_open` / `blog_review_click`은 결과를 알 수 없는 이탈이므로 클릭 시점에 발화한다.
+`entry_context` 값: `marker`(지도 마커) | `list`(목록) | `shared_link`(`/place/[id]` 진입) |
+`roulette`(룰렛 결과에서 선택)
+
+모두 성공 시점에 발화한다(실패한 시도는 세지 않는다). 단 `login_start`,
+`place_map_open`, `blog_review_click`은 결과를 알 수 없는 이탈이므로 클릭 시점에 발화한다.
 
 ### parameter 선택 근거
 
 - **`place_name`을 넣지 않는다.** `place_id`로 `restaurants.json`에서 조회할 수 있어
   정보가 늘지 않는데 고유값만 5,834개 늘린다.
-- **`place_category`를 넣는다.** 업종은 고유값이 수십 개뿐이라 카디널리티가 안전하면서,
+- **`place_category`를 넣는다.** 업종은 고유값이 12개뿐이라 카디널리티가 안전하면서,
   *"ChatGPT 유입은 어떤 업종을 보는가"* 같은 집계를 가능하게 한다. 실질적인 분석은
   이쪽이 담당한다.
 - **세션 내 조회 순번(view_index)은 넣지 않는다.** GA4가 세션당 이벤트 수를 이미 제공하므로
@@ -78,12 +114,17 @@ engagement time)은 **어느 이벤트에도 복제하지 않는다.**
 
 1. **맞춤 정의 등록** — 커스텀 파라미터는 등록해야만 리포트에 나타나고 **소급 적용되지
    않는다.** 배포 전에 등록한다.
-   - 맞춤 측정기준(이벤트 범위): `place_id`, `place_category`, `method`, `action`, `trigger`
+   - 맞춤 측정기준(이벤트 범위): `place_id`, `place_category`, `entry_context`,
+     `method`, `action`, `trigger`, `winner_category`
    - 맞춤 측정항목(단위: 표준): `pool_size`
-2. **향상된 측정** — 스크롤 수집은 끈다(vanity, 이벤트 스트림만 지저분해진다). 이탈 클릭
+2. **`place_map_open`을 주요 이벤트(key event)로 지정** — 이것도 **소급 적용되지 않으므로**
+   데이터가 쌓이기 전에 먼저 해둔다. 전환율 리포트가 이걸 기준으로 만들어진다.
+3. **데이터 보존 기간을 14개월로 변경** — GA4 기본값은 **2개월**이라 그대로 두면 작년
+   대비 분석이 불가능해진다. 관리 → 데이터 설정 → 데이터 보존.
+4. **향상된 측정** — 스크롤 수집은 끈다(vanity, 이벤트 스트림만 지저분해진다). 이탈 클릭
    자동 수집은 켜 두어도 되지만, 자동 `click` 이벤트에는 *어느 가게인지*가 없으므로
    `place_map_open` / `blog_review_click`을 대체하지 못한다.
-3. **AI 유입 채널 그룹** — `session_source`가 `chatgpt.com`, `perplexity.ai`, `claude.ai`
+5. **AI 유입 채널 그룹** — `session_source`가 `chatgpt.com`, `perplexity.ai`, `claude.ai`
    등이면 "AI Referral"로 묶는 맞춤 채널 그룹을 만든다.
 
 ## 추적하지 않는 것과 그 이유
@@ -94,19 +135,20 @@ engagement time)은 **어느 이벤트에도 복제하지 않는다.**
   필요하면 그걸 보되, 성과 지표로 삼지 않는다.
 - **로그인 성공** — 카카오 리다이렉트라 성공 시점 추적이 복잡한 데 비해, 관문 통과율은
   `login_start`만으로 충분히 보인다.
+- **저장 해제** — 저장과 같은 핸들러에서 일어나지만 관심의 *철회*다. 같은 이벤트로 세면
+  신호가 오염되므로 저장(`next === true`)일 때만 발화한다.
 - **싫어하는 음식 설정** — 저빈도이고 퍼널과 무관하다.
-- **`contact_click`(mailto)** — 문서 페이지에만 있고 `/contact` 도달 자체가 page_view로
-  잡히므로 이벤트가 중복된다. 필요해지면 그때 추가한다.
+- **`contact_click`(mailto)** — 이 서비스의 분석 목표(*어느 유입이 가게에 관심을 보이는가*)
+  밖이다. 문의 메일은 지표로 관리할 만큼 발생하지 않는다. (초안에서 "「/contact` page_view와
+  중복"이라 적었던 것은 **틀린 근거**였다 — 푸터 mailto는 모든 페이지에 있어 page_view로
+  잡히지 않는다. 근거를 정정하되 제외 결론은 유지한다.)
 
 ## 개인정보
 
-GA4로 보내는 값은 `place_id`, `place_category`, `method`, `action`, `trigger`,
-`pool_size`뿐이다. 전부 공개 정보이거나 열거형 상수다.
+GA4로 보내는 값은 `place_id`, `place_category`, `entry_context`, `method`, `action`,
+`trigger`, `winner_category`, `pool_size`뿐이다. 전부 공개 정보이거나 열거형 상수다.
 
 **보내지 않는다:** 닉네임, `user_id`(`kakao:123`), 리뷰 본문, 이메일.
-
-`/ladder/[token]`의 토큰은 개인정보가 아니지만(가게 id + seed 인코딩) 토큰마다 고유해
-`page_location` 카디널리티를 키운다 — 알려진 한계로 남긴다.
 
 ## 기술적 요구사항
 
@@ -115,9 +157,12 @@ GA4로 보내는 값은 `place_id`, `place_category`, `method`, `action`, `trigg
   `usePathname()`으로 판별하는 클라이언트 컴포넌트가 필요하다.
 - **개발/프리뷰 트래픽 배제** — `NEXT_PUBLIC_GA_ID`가 있을 때만 스크립트를 렌더하고, 이
   환경변수는 Vercel **Production 환경에만** 설정한다. 로컬과 preview 배포는 자동으로 제외된다.
-- **⚠️ SPA page_view 확인 필요** — Next.js App Router는 클라이언트 라우팅 시 page_view가
-  자동 발화하지 않을 수 있다. `/`↔문서 페이지 이동(`SiteFooter`의 `<Link>`)이 실제로
-  page_view를 남기는지 **실측 확인 후** 수동 발화 필요 여부를 결정한다.
+- **page_view는 자동/수동 중 하나만 쓴다(중복 금지).** Next.js App Router 자체는 page_view를
+  보내지 않는다 — 보내는 주체는 Google 태그의 향상된 측정 중 *"브라우저 기록 이벤트 기반
+  페이지 변경"*이다. 따라서 둘 중 하나로 고정한다:
+  - **(권장) 자동**: 해당 옵션을 켜 두고 수동 발화를 **넣지 않는다**
+  - **수동**: `send_page_view: false` + 해당 옵션을 끄고 `usePathname()`으로 직접 발화
+  둘 다 켜면 page_view가 두 번 잡힌다.
 - **중복 발화 방지** — `place_view`의 `useEffect`는 가게 id에만 의존시킨다(패널 리렌더마다
   발화하면 안 된다). `ShareButton`은 `navigator.share` → Kakao → 클립보드로 분기하므로
   **성공한 경로 하나에서만** 발화해야 한다.
@@ -133,15 +178,21 @@ GA4로 보내는 값은 `place_id`, `place_category`, `method`, `action`, `trigg
 1. 세션 시작 → 2. `place_view` ≥1 → 3. `place_view` ≥2(여러 곳 비교) → 4. `place_map_open`
 
 이 퍼널을 `session_source`별로 쪼개면 *"어느 유입이 실제 관심으로 이어지는가"*가 나온다.
+`entry_context`를 더하면 *"공유 링크로 들어온 사람이 다른 가게까지 보는가"*도 답할 수 있다.
 
 ## 알려진 한계
 
 - **ChatGPT 유입 구분은 코드로 완전히 풀 수 없다.** AI 챗봇 유입은 referrer가 없거나
   direct로 뭉개지는 경우가 흔해 실제보다 과소 집계된다. "AI 유입 N명"을 정확한 수치로
   믿으면 안 된다.
+- **광고 차단기가 GA4를 막는다.** 실제 트래픽의 일부(보통 10~30%)는 GA4에 아예 안 잡힌다.
+  절대 수치가 아니라 **유입 출처 간 비교**에만 쓴다.
 - **`place_id`는 고유값 5,834개로 GA4의 고카디널리티 경고 대상이다.** 현재 트래픽
   (DAU 10, MAU 84)에서는 실질적 문제가 없지만, 트래픽이 커지면 리포트에서 `(other)`로
   뭉개질 수 있다. 그때는 `place_category` 중심 분석으로 옮긴다.
+- **`/ladder/[token]`은 토큰마다 URL이 고유하다.** 개인정보는 아니지만(가게 id + seed
+  인코딩) `page_location` 고유값을 계속 늘린다. 리포트에서는 개별 URL을 보지 말고
+  **"`/ladder/`를 포함"** 필터로 묶어서 본다.
 - **`place_view`는 "봤다"를 과대평가한다.** 지도 마커를 잘못 눌러도 발생한다. 체류 조건
   (예: 2초)을 걸 수도 있으나 복잡도 대비 이득이 불확실해 두지 않는다.
 - **`place_engage` 통합의 대가** — 저장과 특선 제보를 한 이벤트로 묶어 개수를 줄인 대신,
