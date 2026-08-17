@@ -48,7 +48,7 @@ export default function DislikeSettings() {
               aria-pressed={picked}
               className={`flex h-9 items-center gap-1 rounded-xl border px-3 text-xs font-bold ${
                 picked
-                  ? "border-primary bg-primary text-on-primary"
+                  ? "border-primary bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-on-primary"
                   : "border-outline-variant bg-surface-container-lowest text-on-surface-variant"
               }`}
               onClick={() => toggle(p.key)}
@@ -85,7 +85,7 @@ export default function DislikeSettings() {
           {dislikes.custom.map(w => (
             <button
               key={w}
-              className="flex h-9 items-center gap-1.5 rounded-xl border border-primary bg-primary px-3 text-xs font-bold text-on-primary"
+              className="flex h-9 items-center gap-1.5 rounded-xl border border-primary bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 px-3 text-xs font-bold text-on-primary"
               aria-label={`${w} 빼기`}
               onClick={() => removeCustom(w)}
             >

@@ -256,7 +256,7 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
           )}
 
           <button
-            className="mt-4 grid h-11 w-full place-items-center rounded-lg bg-primary text-base font-bold text-on-primary disabled:opacity-50"
+            className="mt-4 grid h-11 w-full place-items-center rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-base font-bold text-on-primary disabled:opacity-50"
             disabled={picked.length < MIN_LEGS}
             onClick={spin}
           >
@@ -302,7 +302,7 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
             </button>
           </div>
           <button
-            className="mt-2 h-11 w-full rounded-lg bg-primary text-sm font-bold text-on-primary disabled:opacity-50"
+            className="mt-2 h-11 w-full rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-sm font-bold text-on-primary disabled:opacity-50"
             disabled={!arrived}
             onClick={copy}
           >

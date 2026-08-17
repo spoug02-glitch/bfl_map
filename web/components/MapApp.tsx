@@ -242,7 +242,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
           // 로그인 수단은 카카오 하나뿐이다. 구글도 열어두면 한 사람이 계정을
           // 두 개 갖게 되고, 같은 가게에 리뷰를 두 번 남겨 평점을 밀 수 있다.
           <a
-            className="grid h-11 place-items-center rounded-lg bg-primary px-4 text-sm font-bold text-on-primary shadow-xs md:h-9"
+            className="grid h-11 place-items-center rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 px-4 text-sm font-bold text-on-primary shadow-xs md:h-9"
             href="/api/auth/kakao"
           >
             카카오 로그인
@@ -299,7 +299,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             <p className="font-bold text-on-surface">로그인하지 못했어요</p>
             <p className="mt-1 text-sm text-on-surface-variant">{loginError}</p>
             <button
-              className="mt-3 grid h-11 w-full place-items-center rounded-lg bg-primary text-sm font-bold text-on-primary"
+              className="mt-3 grid h-11 w-full place-items-center rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-sm font-bold text-on-primary"
               onClick={() => setLoginError(null)}
             >
               확인

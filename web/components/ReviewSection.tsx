@@ -95,7 +95,7 @@ function ReviewEditor({
           취소
         </button>
         <button
-          className="h-11 rounded-lg bg-primary px-4 text-sm font-bold text-on-primary disabled:opacity-50"
+          className="h-11 rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 px-4 text-sm font-bold text-on-primary disabled:opacity-50"
           disabled={busy}
           onClick={save}
         >
@@ -202,7 +202,7 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
             <div className="flex items-center justify-between">
               <span className="text-xs font-medium text-on-surface-variant">{[...body].length}/{MAX_LEN}</span>
               <button
-                className="h-11 rounded-lg bg-primary px-6 text-sm font-bold text-on-primary disabled:opacity-50"
+                className="h-11 rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 px-6 text-sm font-bold text-on-primary disabled:opacity-50"
                 disabled={busy || suspended}
                 onClick={submit}
               >
@@ -216,7 +216,7 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
         <div className="mt-4 space-y-4 rounded-lg border border-outline p-4 text-center shadow-xs">
           <p className="text-base text-on-surface-variant">리뷰를 남기려면 로그인이 필요합니다.</p>
           <a
-            className="grid h-11 place-items-center rounded-lg bg-primary text-center text-base font-bold text-on-primary"
+            className="grid h-11 place-items-center rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-center text-base font-bold text-on-primary"
             href="/api/auth/kakao"
           >
             카카오로 로그인하고 리뷰 남기기

@@ -77,7 +77,7 @@ export default function OperatorsPage() {
         </select>
         {error && <p role="alert" className="text-xs text-red-600">{error}</p>}
         <button
-          className="h-11 rounded-lg bg-primary px-4 text-sm font-bold text-on-primary disabled:opacity-50"
+          className="h-11 rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 px-4 text-sm font-bold text-on-primary disabled:opacity-50"
           disabled={busy || username.trim().length < 3 || password.length < 8}
           onClick={create}
         >

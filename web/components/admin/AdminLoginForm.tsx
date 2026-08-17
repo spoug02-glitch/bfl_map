@@ -52,7 +52,7 @@ export default function AdminLoginForm() {
         {error && <p role="alert" className="text-xs text-red-600">{error}</p>}
         <button
           type="submit"
-          className="h-11 w-full rounded-lg bg-primary text-sm font-bold text-on-primary disabled:opacity-50"
+          className="h-11 w-full rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-sm font-bold text-on-primary disabled:opacity-50"
           disabled={busy || !username || !password}
         >
           {busy ? "로그인 중…" : "로그인"}

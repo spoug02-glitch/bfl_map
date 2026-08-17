@@ -292,7 +292,7 @@ export default function AdminDashboard({ role }: { role: "super_admin" | "operat
             <li key={u.user_id}>
               <button
                 className={`h-11 w-full rounded-lg px-3 text-left text-sm ${
-                  selected === u.user_id ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface"
+                  selected === u.user_id ? "bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-on-primary" : "bg-surface-container text-on-surface"
                 }`}
                 onClick={() => setSelected(u.user_id)}
               >

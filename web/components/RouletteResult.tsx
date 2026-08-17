@@ -57,7 +57,7 @@ export default function RouletteResult({ draw }: { draw: LadderDraw | null }) {
           <p className="text-lg font-bold text-on-surface">읽을 수 없는 링크예요</p>
           <p className="mt-2 text-sm text-on-surface-variant">주소가 잘리거나 바뀐 것 같아요.</p>
           <Link
-            className="mt-6 inline-grid h-11 place-items-center rounded-lg bg-primary px-5 text-sm font-bold text-on-primary"
+            className="mt-6 inline-grid h-11 place-items-center rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 px-5 text-sm font-bold text-on-primary"
             href="/"
           >
             지도로 가기
@@ -110,7 +110,7 @@ export default function RouletteResult({ draw }: { draw: LadderDraw | null }) {
 
       {arrived && winnerPlace && (
         <Link
-          className="mt-4 grid h-11 w-full place-items-center rounded-lg bg-primary text-base font-bold text-on-primary"
+          className="mt-4 grid h-11 w-full place-items-center rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-base font-bold text-on-primary"
           href={sharePath(winnerId)}
         >
           가게 보러 가기

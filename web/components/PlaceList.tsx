@@ -99,7 +99,7 @@ export default function PlaceList({
         <button
           aria-current={tab === "near"}
           className={`h-11 flex-1 rounded-lg text-sm font-bold md:h-9 ${
-            tab === "near" ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface-variant"
+            tab === "near" ? "bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-on-primary" : "bg-surface-container text-on-surface-variant"
           }`}
           onClick={() => onTab("near")}
         >
@@ -115,7 +115,7 @@ export default function PlaceList({
         <button
           aria-current={tab === "me"}
           className={`h-11 flex-1 rounded-lg text-sm font-bold md:h-9 ${
-            tab === "me" ? "bg-primary text-on-primary" : "bg-surface-container text-on-surface-variant"
+            tab === "me" ? "bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-on-primary" : "bg-surface-container text-on-surface-variant"
           }`}
           onClick={() => onTab("me")}
         >
@@ -141,7 +141,7 @@ export default function PlaceList({
               <p className="mt-1 text-sm text-on-surface-variant">반경을 넓히거나 필터를 풀어보세요.</p>
               <div className="mx-auto mt-4 flex max-w-xs flex-col gap-2">
                 <button
-                  className="grid h-11 place-items-center rounded-lg bg-primary text-sm font-bold text-on-primary shadow-xs disabled:opacity-50"
+                  className="grid h-11 place-items-center rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-sm font-bold text-on-primary shadow-xs disabled:opacity-50"
                   onClick={onWiden}
                   disabled={!canWiden}
                 >

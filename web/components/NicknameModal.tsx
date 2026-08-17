@@ -240,7 +240,7 @@ export default function NicknameModal({
         <div className="mt-4 flex flex-col gap-2">
           <button
             type="submit"
-            className="grid h-11 place-items-center rounded-lg bg-primary text-sm font-bold text-on-primary disabled:opacity-50"
+            className="grid h-11 place-items-center rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-sm font-bold text-on-primary disabled:opacity-50"
             disabled={busy || suspended}
           >
             {busy ? "저장 중…" : "확인"}

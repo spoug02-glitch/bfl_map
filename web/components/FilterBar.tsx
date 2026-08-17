@@ -79,7 +79,7 @@ export default function FilterBar({
         <div className="flex flex-wrap gap-2">
           <button
             className={`flex h-11 min-w-11 items-center justify-center rounded-xl border px-3.5 font-bold md:h-9 md:min-w-9 ${
-              group === null ? "border-primary bg-primary text-on-primary" : "border-outline bg-surface-container-lowest text-on-surface"
+              group === null ? "border-primary bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-on-primary" : "border-outline bg-surface-container-lowest text-on-surface"
             }`}
             onClick={() => onGroup(null)}
           >
@@ -89,7 +89,7 @@ export default function FilterBar({
             <button
               key={g}
               className={`flex h-11 min-w-11 items-center justify-center rounded-xl border px-3.5 font-bold md:h-9 md:min-w-9 ${
-                group === g ? "border-primary bg-primary text-on-primary" : "border-outline bg-surface-container-lowest text-on-surface"
+                group === g ? "border-primary bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-on-primary" : "border-outline bg-surface-container-lowest text-on-surface"
               }`}
               onClick={() => onGroup(group === g ? null : g)}
             >

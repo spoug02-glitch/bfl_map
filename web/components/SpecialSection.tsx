@@ -156,7 +156,7 @@ export default function SpecialSection({ placeId, loggedIn }: { placeId: string;
             </button>
             <button
               type="submit"
-              className="h-11 flex-1 rounded-lg bg-primary text-sm font-bold text-on-primary disabled:opacity-50"
+              className="h-11 flex-1 rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-sm font-bold text-on-primary disabled:opacity-50"
               disabled={busy || menuName.trim().length === 0 || price.length === 0}
             >
               {busy ? "보내는 중…" : "제보하기"}
