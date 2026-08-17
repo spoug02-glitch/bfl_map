@@ -182,6 +182,21 @@ git commit -m "feat(bfl-map): add M3 sys-color role tokens alongside existing to
 - Produces: Tailwind 텍스트 유틸리티 15종(`text-display-large` … `text-label-small`) — 모두 신규 이름이라 충돌 없음. Tailwind 그림자 유틸리티 6종(`shadow-elevation-0` … `shadow-elevation-5`).
 - Consumes: 없음 (Task 1과 독립).
 
+> **2026-08-17 실측으로 확인한 Tailwind v4 `@theme inline` 동작** (probe 페이지를 만들어
+> 빌드 후 생성된 CSS를 직접 확인):
+> - `--text-<name>--line-height` / `--text-<name>--letter-spacing` 문법은 유효하다.
+>   `--text-title-medium` 3종을 넣으면
+>   `.text-title-medium{font-size:1rem;line-height:var(--tw-leading,1.5rem);letter-spacing:var(--tw-tracking,.009375rem)}`
+>   가 정확히 생성된다.
+> - **폰트 크기 토큰은 `:root`에 CSS 커스텀 프로퍼티로 방출되지 않는다** — 값이 유틸리티에
+>   인라인된다. 그러니 컴포넌트에서 `var(--text-title-medium)`을 쓰면 안 된다(정의가 없어
+>   무효가 된다). 반드시 `text-title-medium` 유틸리티 클래스로만 소비한다.
+> - **그림자 토큰은 `:root`에 방출된다** — `--shadow-elevation-3: 0 1px 3px 0 #0000004d, …`가
+>   실제로 들어간다. 그래서 `shadow-elevation-3`(유틸리티)과
+>   `shadow-[var(--shadow-elevation-3)]`(임의값) 둘 다 동작한다. **유틸리티 형태를 쓴다** —
+>   짧고, `shadow-<color>` 수식어와 조합되며(`--tw-shadow-color` 지원),
+>   임의값 형태는 그 조합이 깨진다.
+
 - [ ] **Step 1: `@theme inline`에 M3 타입 스케일 추가**
 
 `app/globals.css`의 `@theme inline` 블록 끝(`--text-lg--line-height: 1.5;` 다음, 86번째 줄 `}` 직전)에 삽입:
@@ -370,34 +385,67 @@ git commit -m "fix(bfl-map): remove dark-mode remnant that broke docs pages unde
 
 `:root` 블록에서 이제 아무도 참조하지 않게 될 예정인 구 `--color-surface: #ffffff;`, `--color-star: #fe6b00;` 줄은 **이 Task에서는 지우지 않는다** — Task 5에서 전체 구 토큰과 함께 한 번에 지운다(다른 old-token 값들과 삭제 시점을 맞춰 diff를 하나로 모은다).
 
-- [ ] **Step 2: 스크립트로 전체 파일 일괄 치환**
+- [ ] **Step 2: 스크립트로 전체 파일 일괄 치환 (2단계 sentinel 방식)**
+
+> **왜 단순 순차 sed가 아니라 2단계인가 (2026-08-17 실측으로 확인된 함정):**
+> `sed -e A -e B`는 **같은 줄에 A의 결과를 다시 B에 통과시킨다.** 그리고 GNU sed의
+> `\b`는 **하이픈 앞에서도 단어 경계로 매칭된다** — 즉 `\bbg-surface\b`는
+> `bg-surface-container` 안의 `bg-surface`에도 걸린다. 그래서 "긴 것부터 순서대로"
+> 만으로는 이중치환을 막지 못한다. 실제로 순차 방식을 실행하면:
+> - `bg-surface-muted` → `bg-surface-container` → **`bg-surface-container-lowest-container`** (존재하지 않는 클래스 → 배경 소멸)
+> - `bg-surface-page` → `bg-surface` → **`bg-surface-container-lowest`** (앱 바탕이 흰 카드색으로 뒤바뀜)
+>
+> 아래처럼 **1단계에서 전부 고유 sentinel로 바꾼 뒤 2단계에서 최종 이름으로 푼다.**
+> sentinel(`@@S<n>@@`)은 어떤 치환 규칙에도 걸리지 않으므로 연쇄가 원천 차단된다.
 
 `Bfl_map/web/`에서 실행:
 
 ```bash
 cd Bfl_map/web
-FILES="components/DislikeSettings.tsx components/DocSection.tsx components/EntryNotice.tsx components/FilterBar.tsx components/MapApp.tsx components/MenuLines.tsx components/NicknameModal.tsx components/PlaceList.tsx components/PlacePanel.tsx components/ReviewSection.tsx components/RoulettePanel.tsx components/RouletteResult.tsx components/SaveButton.tsx components/ShareButton.tsx components/SiteFooter.tsx components/SpecialSection.tsx components/admin/AdminDashboard.tsx components/admin/AdminLoginForm.tsx components/admin/OperatorsPage.tsx app/\(docs\)/layout.tsx"
+FILES="components/DislikeSettings.tsx components/DocSection.tsx components/EntryNotice.tsx components/FilterBar.tsx components/MapApp.tsx components/MenuLines.tsx components/NicknameModal.tsx components/PlaceList.tsx components/PlacePanel.tsx components/ReviewSection.tsx components/RoulettePanel.tsx components/RouletteResult.tsx components/SaveButton.tsx components/ShareButton.tsx components/SiteFooter.tsx components/SpecialSection.tsx components/admin/AdminDashboard.tsx components/admin/AdminLoginForm.tsx components/admin/OperatorsPage.tsx app/(docs)/layout.tsx"
 
 for f in $FILES; do
+  # PHASE 1 — 긴 이름부터 고유 sentinel로. 접두 관계가 있는 짝(bg-surface-page /
+  # bg-surface-muted / bg-surface, border-border-subtle / border-border)은 반드시
+  # 긴 쪽이 먼저 와야 짧은 규칙이 긴 이름을 잘라먹지 않는다.
   sed -i \
-    -e 's/bg-surface-page/bg-surface/g' \
-    -e 's/bg-surface-muted/bg-surface-container/g' \
-    -e 's/\bbg-surface\b/bg-surface-container-lowest/g' \
-    -e 's/border-border-subtle/border-outline-variant/g' \
-    -e 's/\bborder-border\b/border-outline/g' \
-    -e 's/text-text-primary/text-on-surface/g' \
-    -e 's/text-text-muted/text-on-surface-variant/g' \
-    -e 's/\bbg-ink\b/bg-primary/g' \
-    -e 's/\bborder-ink\b/border-primary/g' \
-    -e 's/text-accent/text-primary/g' \
-    -e 's/outline-accent/outline-primary/g' \
-    -e 's/accent-text-muted/accent-on-surface-variant/g' \
-    -e 's/text-border\b/text-outline-variant/g' \
+    -e 's/bg-surface-page/@@S1@@/g' \
+    -e 's/bg-surface-muted/@@S2@@/g' \
+    -e 's/bg-surface/@@S3@@/g' \
+    -e 's/border-border-subtle/@@S4@@/g' \
+    -e 's/border-border/@@S5@@/g' \
+    -e 's/text-text-primary/@@S6@@/g' \
+    -e 's/accent-text-muted/@@S7@@/g' \
+    -e 's/text-text-muted/@@S8@@/g' \
+    -e 's/text-border/@@S9@@/g' \
+    -e 's/outline-accent/@@S10@@/g' \
+    -e 's/text-accent/@@S11@@/g' \
+    -e 's/border-ink/@@S12@@/g' \
+    -e 's/bg-ink/@@S13@@/g' \
+    "$f"
+  # PHASE 2 — sentinel을 최종 M3 역할 이름으로.
+  sed -i \
+    -e 's/@@S1@@/bg-surface/g' \
+    -e 's/@@S2@@/bg-surface-container/g' \
+    -e 's/@@S3@@/bg-surface-container-lowest/g' \
+    -e 's/@@S4@@/border-outline-variant/g' \
+    -e 's/@@S5@@/border-outline/g' \
+    -e 's/@@S6@@/text-on-surface/g' \
+    -e 's/@@S7@@/accent-on-surface-variant/g' \
+    -e 's/@@S8@@/text-on-surface-variant/g' \
+    -e 's/@@S9@@/text-outline-variant/g' \
+    -e 's/@@S10@@/outline-primary/g' \
+    -e 's/@@S11@@/text-primary/g' \
+    -e 's/@@S12@@/border-primary/g' \
+    -e 's/@@S13@@/bg-primary/g' \
     "$f"
 done
+
+# sentinel이 하나라도 남으면 2단계가 빠진 것이다 — 즉시 중단하고 원인을 찾는다.
+grep -rn '@@S[0-9]*@@' components app --include="*.tsx" && echo "!! SENTINEL LEAK !!" || echo "sentinel clean"
 ```
 
-`bg-surface-page`는 `bg-surface-muted`/`bg-surface` 치환보다 먼저 실행해야 한다(순서상 위 스크립트가 이미 그렇게 되어 있다 — `bg-surface-page`를 먼저 치환해 임시로 `bg-surface`가 된 결과가 그다음 줄의 `\bbg-surface\b` 규칙에 다시 걸려 `bg-surface-container-lowest`로 잘못 치환되지 않도록, **`bg-surface-page` 규칙과 `bg-surface-muted` 규칙을 먼저 실행하고 `\bbg-surface\b` 규칙을 마지막에 실행**한다. 위 sed 커맨드 순서가 이미 그 순서다 — `bg-surface-page` → `bg-surface-muted` → `bg-surface`. 실행 후 Step 3에서 결과를 검증한다.)
+**이 스크립트는 2026-08-17에 실제 코드 9개 표본으로 검증됐다** — 변형 접두사(`placeholder:text-text-muted`, `focus:outline-accent`), 투명도 접미사(`bg-surface-page/80`, `border-border-subtle/60`), 삼항 템플릿 리터럴 안의 문자열, 그리고 건드리면 안 되는 `text-star`가 전부 올바르게 처리되는 것을 확인했다.
 
 - [ ] **Step 3: `components/RouletteWheel.tsx`의 인라인 `var()` 3곳 치환**
 
@@ -879,7 +927,7 @@ git commit -m "feat(bfl-map): add M3 list-item state layers and tab pill tones t
 -        md:absolute md:inset-x-auto md:inset-y-0 md:right-0 md:top-0 md:h-full md:max-h-none
 -        md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0"
 +      className="fixed inset-x-0 bottom-0 z-10 max-h-[75dvh] w-full overflow-y-auto
-+        rounded-t-2xl border-t border-outline-variant bg-surface-container-low p-4 shadow-[var(--shadow-elevation-3)]
++        rounded-t-2xl border-t border-outline-variant bg-surface-container-low p-4 shadow-elevation-3
 +        md:absolute md:inset-x-auto md:inset-y-0 md:right-0 md:top-0 md:h-full md:max-h-none
 +        md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0"
        style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
@@ -903,7 +951,7 @@ git commit -m "feat(bfl-map): add M3 list-item state layers and tab pill tones t
 -        md:absolute md:inset-x-auto md:inset-y-0 md:right-0 md:top-0 md:h-full md:max-h-none
 -        md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0"
 +      className="fixed inset-x-0 bottom-0 z-20 max-h-[75dvh] w-full overflow-y-auto
-+        rounded-t-2xl border-t border-outline-variant bg-surface-container-low p-4 shadow-[var(--shadow-elevation-5)]
++        rounded-t-2xl border-t border-outline-variant bg-surface-container-low p-4 shadow-elevation-5
 +        md:absolute md:inset-x-auto md:inset-y-0 md:right-0 md:top-0 md:h-full md:max-h-none
 +        md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0"
        style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
@@ -956,7 +1004,7 @@ M3 Dialog는 elevation 3 컨테이너 + scrim(반투명 어두운 배경)을 쓴
          aria-modal="true"
          aria-labelledby={labelledBy}
 -        className="w-full max-w-xs rounded-xl border border-border bg-surface p-6 shadow-lg"
-+        className="w-full max-w-xs rounded-xl bg-surface-container-high p-6 shadow-[var(--shadow-elevation-3)]"
++        className="w-full max-w-xs rounded-xl bg-surface-container-high p-6 shadow-elevation-3"
        >
          {children}
        </div>
@@ -1015,7 +1063,7 @@ M3 Snackbar는 `inverse-surface`(어두운 반전 표면) 배경에 `inverse-on-
 -        max-w-[min(90vw,22rem)] rounded-xl bg-black/80 px-4 py-2.5 text-center
 -        text-sm font-medium text-white shadow-lg"
 +        max-w-[min(90vw,22rem)] rounded-lg bg-inverse-surface px-4 py-2.5 text-center
-+        text-sm font-medium text-inverse-on-surface shadow-[var(--shadow-elevation-3)]"
++        text-sm font-medium text-inverse-on-surface shadow-elevation-3"
      >
 ```
 
