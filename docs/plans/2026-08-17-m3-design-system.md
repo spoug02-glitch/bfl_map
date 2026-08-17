@@ -10,6 +10,25 @@
 
 **Spec:** `Bfl_map/docs/specs/2026-08-16-m3-design-system-design.md`
 
+## 이 워크트리에서 검증할 때의 함정 (2026-08-17 실측)
+
+- **`.env.local` 이 없다.** 그냥 `npm run build` 하면 페이지 데이터 수집 단계에서
+  `DATABASE_URL is not set` 로 죽는다. CSS 컴파일은 그 전에 끝나므로 스타일만 볼 거면
+  무시해도 되지만, 풀 빌드가 필요하면 더미를 넣는다:
+  ```bash
+  DATABASE_URL="postgres://u:p@localhost:5432/db" ADMIN_SESSION_SECRET="x" SESSION_SECRET="x" npm run build
+  ```
+- **dev 서버를 켜둔 채 `vitest` 를 돌리면 16개가 5초 타임아웃으로 실패한다.** 코드 문제가
+  아니라 CPU·파일워처 경합이다. 서버를 끄면 266개 전부 통과한다. 테스트가 갑자기
+  무더기로 깨지면 이것부터 의심할 것.
+- **dev 서버가 떠 있는 동안 `rm -rf .next` 를 하면 서버가 자기 산출물을 잃고 모든 요청에
+  500을 뱉는다.** (`routes-manifest.json ENOENT`) 서버를 먼저 끄고 지운다.
+- **생성된 CSS를 grep 할 때 `grep -c` 는 쓸모없다** — 번들이 한 줄이라 항상 1이 나온다.
+  `grep -o ... | wc -l` 을 쓰고, 클래스 이름은 CSS에서 이스케이프된다는 걸 감안한다
+  (`hover:bg-on-surface/8` → `.hover\:bg-on-surface\/8`). 잘라 읽으면 오독한다 —
+  Tailwind의 `box-shadow` 는 앞에 빈 슬롯 4개가 붙어서, 앞부분만 보면 그림자가 없는
+  것처럼 보인다.
+
 ## Global Constraints
 
 - **카카오 노랑 `#fee500`과 그 글자색은 절대 변경 금지** — 브랜드 자산 (스펙 "절대 바뀌지 않는 것")
