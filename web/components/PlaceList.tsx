@@ -48,7 +48,10 @@ function Row({
 }: { title: string; subtitle: string; lead: string; onClick: () => void }) {
   return (
     <li className="border-b border-outline-variant/60 last:border-b-0">
-      <button className="flex w-full items-center gap-3 py-3 text-left" onClick={onClick}>
+      <button
+        className="flex w-full items-center gap-3 py-3 text-left transition-colors hover:bg-on-surface/8 active:bg-on-surface/10"
+        onClick={onClick}
+      >
         <span className="w-14 shrink-0 text-sm font-bold text-primary">{lead}</span>
         <span className="min-w-0 flex-1">
           <span className="block truncate text-base font-medium text-on-surface">{title}</span>
@@ -98,8 +101,10 @@ export default function PlaceList({
       <div className="flex gap-1">
         <button
           aria-current={tab === "near"}
-          className={`h-11 flex-1 rounded-lg text-sm font-bold md:h-9 ${
-            tab === "near" ? "bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-on-primary" : "bg-surface-container text-on-surface-variant"
+          className={`h-11 flex-1 rounded-lg text-sm font-bold transition-colors md:h-9 ${
+            tab === "near"
+              ? "bg-primary hover:bg-primary/90 active:bg-primary/80 text-on-primary"
+              : "bg-surface-container text-on-surface-variant hover:bg-on-surface/8 active:bg-on-surface/10"
           }`}
           onClick={() => onTab("near")}
         >
@@ -107,15 +112,17 @@ export default function PlaceList({
         </button>
         {/* 색은 비선택 탭과 같게 — 혼자 진하면 셋 중 얘만 눌려 있는 걸로 읽힌다 */}
         <button
-          className="flex h-11 flex-1 items-center justify-center gap-1 rounded-lg bg-surface-container text-sm font-bold text-on-surface-variant md:h-9"
+          className="flex h-11 flex-1 items-center justify-center gap-1 rounded-lg bg-surface-container text-sm font-bold text-on-surface-variant transition-colors hover:bg-on-surface/8 active:bg-on-surface/10 md:h-9"
           onClick={onRoulette}
         >
           <span aria-hidden>🎯</span>룰렛
         </button>
         <button
           aria-current={tab === "me"}
-          className={`h-11 flex-1 rounded-lg text-sm font-bold md:h-9 ${
-            tab === "me" ? "bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-on-primary" : "bg-surface-container text-on-surface-variant"
+          className={`h-11 flex-1 rounded-lg text-sm font-bold transition-colors md:h-9 ${
+            tab === "me"
+              ? "bg-primary hover:bg-primary/90 active:bg-primary/80 text-on-primary"
+              : "bg-surface-container text-on-surface-variant hover:bg-on-surface/8 active:bg-on-surface/10"
           }`}
           onClick={() => onTab("me")}
         >
@@ -148,7 +155,7 @@ export default function PlaceList({
                   반경 넓히기
                 </button>
                 <button
-                  className="grid h-11 place-items-center rounded-lg bg-surface-container text-sm font-bold text-on-surface"
+                  className="grid h-11 place-items-center rounded-lg bg-surface-container text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10"
                   onClick={onReset}
                 >
                   필터 초기화
