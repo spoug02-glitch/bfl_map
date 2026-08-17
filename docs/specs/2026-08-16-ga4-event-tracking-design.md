@@ -93,8 +93,11 @@ engagement time)은 **어느 이벤트에도 복제하지 않는다.**
 | `login_start` | 카카오 로그인 버튼 클릭 | `trigger`(`header`\|`review`) | 퍼널 관문 |
 | `roulette_result` | 룰렛 결과 확정 | `pool_size`, `winner_category` | 시그니처 기능 사용률 |
 
-`entry_context` 값: `marker`(지도 마커) | `list`(목록) | `shared_link`(`/place/[id]` 진입) |
-`roulette`(룰렛 결과에서 선택)
+`entry_context` 값: `marker`(지도 마커) | `list`(목록) | `shared_link`(공유 링크 —
+`/place/[id]` 또는 `?place=` 쿼리로 진입)
+
+세 개뿐인 이유: `RoulettePanel`에는 `onSelect`가 없어 룰렛 결과가 `PlacePanel`로 이어지지
+않는다. 룰렛 링크(`/ladder/*`)를 타고 온 사람이 가게를 열면 그것도 `shared_link`다.
 
 모두 성공 시점에 발화한다(실패한 시도는 세지 않는다). 단 `login_start`,
 `place_map_open`, `blog_review_click`은 결과를 알 수 없는 이탈이므로 클릭 시점에 발화한다.
