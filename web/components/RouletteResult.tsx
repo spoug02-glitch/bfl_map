@@ -72,7 +72,7 @@ export default function RouletteResult({ draw }: { draw: LadderDraw | null }) {
   const winnerPlace = names?.get(winnerId) ?? null;
 
   return (
-    <main className="mx-auto min-h-dvh max-w-md bg-surface-container-lowest px-5 py-8">
+    <main className="mx-auto min-h-dvh max-w-md bg-surface px-5 py-8">
       <Link className="text-sm text-primary underline" href="/">← 지도로 가기</Link>
       <h1 className="mt-5 text-2xl font-bold tracking-tight text-on-surface">룰렛 결과</h1>
       <p className="mt-1 text-sm text-on-surface-variant">후보 {draw.placeIds.length}곳 중에 뽑혔어요.</p>

@@ -38,7 +38,7 @@ function Stars({ value, onChange, label }: { value: number; onChange: (v: number
             className="grid h-11 w-9 place-items-center text-xl min-[360px]:w-11"
             onClick={() => onChange(n)}
           >
-            <span className={n <= value ? "text-star" : "text-outline-variant"}>★</span>
+            <span className={n <= value ? "text-star" : "text-outline"}>★</span>
           </button>
         ))}
       </div>
@@ -168,12 +168,14 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
         <h3 className="text-xl font-bold text-on-surface">
           리뷰 {summary?.count ? `(${summary.count})` : ""}
         </h3>
-        {/* 별은 어디서나 text-star다. 요약만 다른 색을 쓰면 같은 지표가 위아래에서
-            달라 보인다 — 아래 리뷰 카드와 정확히 같은 표기를 쓴다. */}
+        {/* ★ 글리프만 text-star고 숫자는 본문색이다. 별색 #c85300 은 아이콘 기준(3:1)에
+            맞춘 값이라 작은 글씨에 쓰면 텍스트 기준(4.5:1)에 미달한다 — surface-container
+            위에서 3.86:1. 더 어둡게 하면 가격색과 구분이 사라지므로, 색을 바꾸는 대신
+            색을 입히는 범위를 줄였다. 아래 리뷰 카드도 같은 표기를 쓴다. */}
         {summary && summary.count > 0 && (
           <p className="rounded-xl bg-surface-container px-3 py-1.5 text-xs font-medium text-on-surface">
-            맛 <span className="text-star">★{summary.avgTaste}</span> ·{" "}
-            점심 편의성 <span className="text-star">★{summary.avgConvenience}</span>
+            맛 <span className="text-star">★</span>{summary.avgTaste} ·{" "}
+            점심 편의성 <span className="text-star">★</span>{summary.avgConvenience}
           </p>
         )}
       </div>
@@ -230,7 +232,7 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
             <div className="flex items-center justify-between">
               <span className="font-bold text-on-surface">{rv.nickname}</span>
               <span className="text-xs font-medium text-on-surface-variant">
-                맛 <span className="text-star">★{rv.taste}</span> · 편의성 <span className="text-star">★{rv.convenience}</span>
+                맛 <span className="text-star">★</span>{rv.taste} · 편의성 <span className="text-star">★</span>{rv.convenience}
               </span>
             </div>
             {editing === rv.id ? (

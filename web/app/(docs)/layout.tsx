@@ -10,7 +10,7 @@ import SiteFooter from "@/components/SiteFooter";
  */
 export default function DocsLayout({ children }: { children: React.ReactNode }) {
   return (
-    <main className="mx-auto min-h-dvh max-w-2xl bg-surface-container-lowest px-5 py-10 text-base leading-relaxed">
+    <main className="mx-auto min-h-dvh max-w-2xl bg-surface px-5 py-10 text-base leading-relaxed">
       <Link className="text-sm text-primary underline" href="/">← 지도로 돌아가기</Link>
       {children}
       <SiteFooter />

@@ -13,6 +13,13 @@ import { CENTER, OFFICE_LABEL, Restaurant } from "@/lib/constants";
 const INITIAL_LEVEL = 3;
 
 /**
+ * 지도 위 표시색. 카카오맵 SDK는 색을 문자열 옵션으로 받고 data URI 안에도 들어가서
+ * Tailwind 클래스도 var()도 쓸 수 없다 — 그래서 여기만 리터럴이다.
+ * 값은 --md-sys-color-primary 와 같아야 한다. 팔레트를 바꾸면 여기도 같이 고칠 것.
+ */
+const MAP_PRIMARY = "#9b4511";
+
+/**
  * 식당 마커. 카카오 기본 물방울 핀은 34px짜리라 100곳만 넘어가도 지도가 핀으로
  * 덮인다 — 여기서 필요한 건 "가게가 있다"는 점 하나지, 핀 그림이 아니다.
  */
@@ -20,20 +27,23 @@ const DOT_ICON =
   "data:image/svg+xml;charset=utf-8," +
   encodeURIComponent(
     '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14">' +
-      '<circle cx="7" cy="7" r="4.5" fill="#2563eb" stroke="#fff" stroke-width="2"/></svg>',
+      `<circle cx="7" cy="7" r="4.5" fill="${MAP_PRIMARY}" stroke="#fff" stroke-width="2"/></svg>`,
   );
 
 /**
- * 뭉친 자리를 나타내는 원. 필터 칩과 같은 ink라 지도 위에서 우리 것으로 읽힌다.
+ * 뭉친 자리를 나타내는 원. 필터 칩과 같은 primary라 지도 위에서 우리 것으로 읽힌다.
  *
- * 0.6까지 묽힌다 — 0.85는 지도 위에서 검은 점처럼 튀어 지도를 읽는 걸 방해했다.
- * 이 값이 하한이다: 흰 배경 위에서 흰 글자와의 대비가 4.83:1로 WCAG AA(4.5:1)를
- * 겨우 넘긴다. 더 묽히면 숫자가 안 읽힌다.
+ * 불투명도 0.85가 하한이다 — 흰 배경 위에서 흰 글자와의 대비가 4.70:1로 WCAG AA를
+ * 넘긴다. 0.6이면 2.81:1까지 떨어져 숫자가 안 읽힌다.
+ *
+ * 예전 남색(ink)일 때는 반대로 0.6이 상한이었다. 0.85로 올리면 지도 위에서 검은 점처럼
+ * 튀었기 때문인데, 그 문제는 색이 거의 검정이라서 생긴 것이라 따뜻한 중간 톤인 지금
+ * 색(합성하면 rgb(170,97,53))에는 해당하지 않는다.
  */
 const CLUSTER_STYLE = {
   width: "34px",
   height: "34px",
-  background: "rgba(4, 22, 39, 0.6)",
+  background: "rgba(155, 69, 17, 0.85)",
   borderRadius: "17px",
   color: "#fff",
   textAlign: "center",
@@ -162,8 +172,8 @@ export default function MapView({ restaurants, maxDist, onSelect, apiRef }: Prop
       map,
       center: new kakao.maps.LatLng(CENTER.lat, CENTER.lng),
       radius: maxDist * 1000,
-      strokeWeight: 2, strokeColor: "#2563eb", strokeOpacity: 0.6,
-      fillColor: "#2563eb", fillOpacity: 0.06,
+      strokeWeight: 2, strokeColor: MAP_PRIMARY, strokeOpacity: 0.6,
+      fillColor: MAP_PRIMARY, fillOpacity: 0.06,
     });
     // 점 아이콘은 마커마다 새로 만들 필요가 없다 — 5,834개면 그 비용이 그대로 쌓인다.
     const dot = new kakao.maps.MarkerImage(

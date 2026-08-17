@@ -205,7 +205,9 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
           <svg viewBox="0 0 64 64" width="22" height="22" aria-hidden className="shrink-0">
             <path d="M13 24h38c0 11-8.5 20-19 20s-19-9-19-20z" fill="currentColor" />
             <path d="M23 44h18l-9 13z" fill="currentColor" />
-            <g stroke="#fe6b00" strokeWidth="3.2" strokeLinecap="round" fill="none">
+            {/* 별점과 같은 값이어야 한다 — 로고만 옛 주황을 쓰면 헤더와 본문의
+                같은 강조색이 어긋난다. --md-color-star 와 맞출 것. */}
+            <g stroke="#c85300" strokeWidth="3.2" strokeLinecap="round" fill="none">
               <path d="M26 17c0-3 3-3 3-6" />
               <path d="M35 17c0-3 3-3 3-6" />
             </g>

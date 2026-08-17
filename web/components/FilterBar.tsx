@@ -44,8 +44,10 @@ export default function FilterBar({
   const summaryClass = open === null ? "flex md:hidden" : open ? "hidden" : "flex";
   const bodyClass = open === null ? "hidden md:flex" : open ? "flex" : "hidden";
 
+  // 바탕은 헤더와 이어지는 상단 영역이라 같은 surface 다 — 순백으로 두면 바로 위 헤더의
+  // 따뜻한 바탕과 경계선 없이 색만 갈려 이음매가 보인다.
   return (
-    <div className="shrink-0 border-b border-outline-variant bg-surface-container-lowest text-sm shadow-xs">
+    <div className="shrink-0 border-b border-outline-variant bg-surface text-sm shadow-xs">
       {/* 접힌 줄 — 줄 전체가 펴는 표적이다 */}
       <button
         className={`${summaryClass} h-11 w-full items-center justify-between gap-3 px-4`}

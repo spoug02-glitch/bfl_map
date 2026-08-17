@@ -25,7 +25,7 @@ function OptionalStars({ value, onChange }: { value: number | null; onChange: (v
           className="grid h-9 w-8 place-items-center text-lg"
           onClick={() => onChange(value === n ? null : n)}
         >
-          <span className={value !== null && n <= value ? "text-star" : "text-outline-variant"}>★</span>
+          <span className={value !== null && n <= value ? "text-star" : "text-outline"}>★</span>
         </button>
       ))}
       <span className="text-xs text-on-surface-variant">(선택)</span>
@@ -100,7 +100,10 @@ export default function SpecialSection({ placeId, loggedIn }: { placeId: string;
             <li key={i} className="border-b border-outline-variant/50 py-3 last:border-b-0">
               <div className="flex items-center justify-between gap-2 text-base">
                 <span className="min-w-0 flex-1 truncate text-on-surface">{s.menu_name}</span>
-                {s.taste !== null && <span className="shrink-0 text-sm text-star">★{s.taste}</span>}
+                {/* ★ 만 별색이다 — 이유는 ReviewSection 의 요약 배지 주석 참고 */}
+                {s.taste !== null && (
+                  <span className="shrink-0 text-sm text-on-surface"><span className="text-star">★</span>{s.taste}</span>
+                )}
                 <span className="shrink-0 text-price">{formatPrice(String(s.price))}</span>
               </div>
               {s.note && <p className="mt-1 text-sm text-on-surface-variant">{s.note}</p>}
