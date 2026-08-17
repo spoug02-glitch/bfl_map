@@ -23,9 +23,10 @@ export default function Toast({ message, onDone }: { message: string; onDone: ()
       aria-live="polite"
       // 시트(z-20)보다 위. 헤더와 필터 바를 피해 위쪽에 띄운다 — 아래는 패널이
       // 차지하고 있어 가릴 자리가 없다.
+      // inverse-on-surface(#ffeede) on inverse-surface(#3c2e1d) 대비 11.6:1 — 기준 4.5:1 여유 있게 통과.
       className="toast pointer-events-none fixed inset-x-0 top-20 z-30 mx-auto w-fit
-        max-w-[min(90vw,22rem)] rounded-xl bg-black/80 px-4 py-2.5 text-center
-        text-sm font-medium text-white shadow-lg"
+        max-w-[min(90vw,22rem)] rounded-lg bg-inverse-surface px-4 py-2.5 text-center
+        text-sm font-medium text-inverse-on-surface shadow-elevation-3"
     >
       {message}
     </div>
