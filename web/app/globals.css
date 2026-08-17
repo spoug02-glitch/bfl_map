@@ -10,32 +10,19 @@
   --background: #ffffff;
   --foreground: #171717;
 
-  /* Design tokens extracted from Figma (b9gbWpJfrQxNBV9ikYVo3y),
-     desktop style guide (1:966) + mobile map main (1:514). */
-  --color-surface: #ffffff;
-  --color-surface-page: #f8f9fb;
-  --color-surface-muted: #f2f4f6;
-  --color-surface-map: #e6e8ea;
+  /* 표면·글자·테두리·강조는 전부 아래 M3 역할 토큰이 맡는다. Figma에서 뽑았던
+     구 토큰(surface-page / surface-muted / border / text-primary / accent / ink …)은
+     쓰는 곳이 하나도 남지 않아 지웠다.
 
-  --color-border: #c4c6cd;
-  --color-border-subtle: #e0e3e5;
-
-  --color-text-primary: #191c1e;
-  --color-text-muted: #6b7280;
-
-  --color-accent: #2563eb;
-  --color-accent-soft: rgba(37, 99, 235, 0.1);
-
+     아래 셋만 M3 스킴 밖에 남는다:
+     - warning: 진입 안내 배너 전용. M3 팔레트에 대응 역할이 없다.
+     - price:   가격 표시 전용 확장색. 값이 그대로다.
+     - brand-kakao: 브랜드 자산. 절대 바꾸지 않는다. */
   --color-warning: #eab308;        /* border/accent only — full-strength yellow */
   --color-warning-soft: #fef9c3;   /* the surface an entry banner actually uses */
   --color-warning-text: #713f12;
 
-  /* Primary CTA / selected-chip background — distinct dark navy from
-     --color-text-primary, used across chips, buttons, and badges. */
-  --color-ink: #041627;
-
   --color-price: #a04100;
-  --color-star: #fe6b00;
 
   --color-brand-kakao: #fee500;
   --color-brand-kakao-text: #000000;
@@ -103,24 +90,10 @@
   --font-mono: var(--font-geist-mono);
 
   --color-surface: var(--md-sys-color-surface);
-  --color-surface-page: var(--color-surface-page);
-  --color-surface-muted: var(--color-surface-muted);
-  --color-surface-map: var(--color-surface-map);
-
-  --color-border: var(--color-border);
-  --color-border-subtle: var(--color-border-subtle);
-
-  --color-text-primary: var(--color-text-primary);
-  --color-text-muted: var(--color-text-muted);
-
-  --color-accent: var(--color-accent);
-  --color-accent-soft: var(--color-accent-soft);
 
   --color-warning: var(--color-warning);
   --color-warning-soft: var(--color-warning-soft);
   --color-warning-text: var(--color-warning-text);
-
-  --color-ink: var(--color-ink);
 
   --color-price: var(--color-price);
   --color-star: var(--md-color-star);
