@@ -86,13 +86,16 @@ function Dialog({
   }, [onEscape]);
 
   return (
-    <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/40 px-6">
+    <div className="absolute inset-0 z-30 flex items-center justify-center bg-scrim/40 px-6">
+      {/* 테두리는 뺐다 — M3 Dialog는 elevation과 surface-container-high 톤만으로
+          바탕과 구분된다. text-error(#ba1a1a)를 이 배경(#fce4cc) 위에 그대로 써도
+          대비 5.26:1로 4.5:1 기준을 넘어 on-error-container로 바꿀 필요가 없었다. */}
       <div
         ref={box}
         role="dialog"
         aria-modal="true"
         aria-labelledby={labelledBy}
-        className="w-full max-w-xs rounded-xl border border-outline bg-surface-container-lowest p-6 shadow-lg"
+        className="w-full max-w-xs rounded-xl bg-surface-container-high p-6 shadow-elevation-3"
       >
         {children}
       </div>
@@ -181,11 +184,11 @@ export default function NicknameModal({
           탈퇴 후 <strong className="text-on-surface">{REJOIN_BLOCK_DAYS}일간</strong>은 다시
           가입할 수 없습니다.
         </p>
-        {error && <p role="alert" className="mt-2 text-xs text-red-600">{error}</p>}
+        {error && <p role="alert" className="mt-2 text-xs text-error">{error}</p>}
         <div className="mt-4 flex flex-col gap-2">
           <button
             type="button"
-            className="grid h-11 place-items-center rounded-lg bg-red-600 text-sm font-bold text-white disabled:opacity-50"
+            className="grid h-11 place-items-center rounded-lg bg-error text-sm font-bold text-on-error transition-colors hover:bg-error/90 active:bg-error/80 disabled:opacity-50"
             disabled={busy}
             onClick={withdraw}
           >
@@ -194,7 +197,7 @@ export default function NicknameModal({
           <button
             ref={cancelWithdrawRef}
             type="button"
-            className="grid h-11 place-items-center rounded-lg bg-surface-container text-sm font-bold text-on-surface"
+            className="grid h-11 place-items-center rounded-lg bg-surface-container text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10"
             onClick={backFromWithdraw}
           >
             그만둘래요
@@ -217,7 +220,7 @@ export default function NicknameModal({
         리뷰에 이 이름으로 표시돼요. 카카오·구글 이름은 쓰지 않아요.
       </p>
       {suspended && (
-        <p role="alert" className="mt-2 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+        <p role="alert" className="mt-2 rounded-lg bg-error-container px-3 py-2 text-xs text-on-error-container">
           {suspendedNotice}
           <br />
           {CONTACT_LINE}
@@ -236,7 +239,7 @@ export default function NicknameModal({
           aria-invalid={error !== ""}
           disabled={suspended}
         />
-        {error && <p role="alert" className="mt-2 text-xs text-red-600">{error}</p>}
+        {error && <p role="alert" className="mt-2 text-xs text-error">{error}</p>}
         <div className="mt-4 flex flex-col gap-2">
           <button
             type="submit"
@@ -248,7 +251,7 @@ export default function NicknameModal({
           {mode === "edit" && (
             <button
               type="button"
-              className="grid h-11 place-items-center rounded-lg bg-surface-container text-sm font-bold text-on-surface"
+              className="grid h-11 place-items-center rounded-lg bg-surface-container text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10"
               onClick={onClose}
             >
               취소
