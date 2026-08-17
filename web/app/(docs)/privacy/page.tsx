@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: `${SERVICE.name}이 무엇을 받고, 무엇을 저장하지 않으며, 언제 지우는지`,
 };
 
-const UPDATED = "2026-08-10";
+const UPDATED = "2026-08-16";
 
 export default function PrivacyPage() {
   return (
@@ -20,7 +20,8 @@ export default function PrivacyPage() {
 
       <p className="mt-6 rounded-lg bg-surface-muted p-4 text-sm">
         개인이 만들어 운영하는 서비스입니다. <strong>지금은 광고가 없고</strong>, 수집한 정보를
-        판매하거나 제3자에게 제공하지 않습니다.
+        판매하지 않습니다. 다만 어떤 경로로 들어와 무엇을 보는지 파악하기 위해{" "}
+        <strong>구글 애널리틱스</strong>를 사용하며, 이때 방문 기록이 구글로 전송됩니다(아래 6항).
       </p>
 
       <DocSection title="1. 무엇을 받고 무엇을 저장하나요">
@@ -37,6 +38,7 @@ export default function PrivacyPage() {
           <li><strong>점심특선 제보</strong> — 메뉴명, 가격, 맛별점, 비고. 닉네임 없이 내용만 공개됩니다</li>
           <li><strong>저장한 가게 목록</strong></li>
           <li><strong>방문 집계용 임의 토큰</strong> — 브라우저가 만든 무작위 값. 계정과 연결되지 않으며, 브라우저 데이터를 지우면 사라집니다</li>
+          <li><strong>구글 애널리틱스 쿠키</strong>(<code>_ga</code>, <code>_ga_*</code>) — 같은 브라우저의 재방문을 알아보기 위한 무작위 값. 계정과 연결되지 않습니다</li>
         </ul>
       </DocSection>
 
@@ -67,6 +69,7 @@ export default function PrivacyPage() {
         <ul className="ml-5 list-disc space-y-1">
           <li><strong>데이터베이스</strong> — Neon (AWS 미국 오하이오 리전, us-east-2). 위 1항의 저장 항목</li>
           <li><strong>호스팅</strong> — Vercel (미국). 서비스 실행과 접속 로그</li>
+          <li><strong>방문 분석</strong> — Google Analytics (구글, 미국). 접속 경로와 화면 이용 기록</li>
         </ul>
         <p className="text-sm text-text-muted">
           이 서비스를 이용하면 위 국외 이전에 동의하는 것이 됩니다. 동의하지 않으시면 로그인 없이도
@@ -95,7 +98,28 @@ export default function PrivacyPage() {
         </p>
       </DocSection>
 
-      <DocSection title="6. 탈퇴하려면">
+      <DocSection title="6. 방문 분석 도구">
+        <p>
+          어떤 경로로 들어온 분들이 어떤 가게를 보는지 파악하기 위해 <strong>구글 애널리틱스
+          (Google Analytics 4)</strong>를 사용합니다. 서비스 개선을 위한 통계 목적입니다.
+        </p>
+        <p>구글로 전송되는 것은 다음과 같은 <strong>익명 정보</strong>입니다.</p>
+        <ul className="ml-5 list-disc space-y-1">
+          <li>어디에서 들어왔는지(검색·링크 등 유입 경로)</li>
+          <li>어떤 화면을 보고 어떤 가게를 열었는지</li>
+          <li>기기·브라우저 종류, 대략적인 접속 지역</li>
+        </ul>
+        <p>
+          <strong>닉네임, 카카오 회원번호, 리뷰 내용은 구글로 보내지 않습니다.</strong> 수집된
+          기록은 <strong>14개월</strong> 후 삭제됩니다.
+        </p>
+        <p className="text-sm text-text-muted">
+          브라우저의 쿠키 차단 기능이나 광고 차단 확장 프로그램을 쓰시면 이 수집을 거부할 수
+          있으며, 거부하셔도 서비스 이용에는 아무런 제한이 없습니다.
+        </p>
+      </DocSection>
+
+      <DocSection title="7. 탈퇴하려면">
         <p>
           지도 화면 오른쪽 위의 닉네임을 누르면 나오는 창에서 <strong>회원 탈퇴</strong>를 선택하세요.
           계정과 저장한 가게는 지워지고, 남긴 글은 5항대로 익명으로 남습니다.
@@ -111,14 +135,14 @@ export default function PrivacyPage() {
         </p>
       </DocSection>
 
-      <DocSection title="7. 리뷰는 공개됩니다">
+      <DocSection title="8. 리뷰는 공개됩니다">
         <p>
           작성한 리뷰는 정한 닉네임과 함께 <strong>누구에게나 보입니다.</strong> 로그인하지 않은
           사람에게도 보이므로, 신원이 드러날 만한 내용은 쓰지 않는 편이 좋습니다.
         </p>
       </DocSection>
 
-      <DocSection title="8. 이용자의 권리">
+      <DocSection title="9. 이용자의 권리">
         <p>
           저장된 내 정보를 보거나 고치거나 지울 수 있습니다. 닉네임은 지도 화면에서 바로 바꿀 수
           있고, 리뷰는 각 가게 화면에서 수정·삭제할 수 있습니다. 그 밖의 요청은{" "}
@@ -127,7 +151,7 @@ export default function PrivacyPage() {
         </p>
       </DocSection>
 
-      <DocSection title="9. 가게 정보의 출처">
+      <DocSection title="10. 가게 정보의 출처">
         <p>
           가게 목록은 제로페이(비플페이) 가맹점 공개 정보와 카카오맵의 장소 정보를 모아 만들었습니다.
           가게 사진은 쓰지 않습니다. 정보가 실제와 다르거나 노출을 원하지 않는 가게가 있다면{" "}
@@ -135,7 +159,7 @@ export default function PrivacyPage() {
         </p>
       </DocSection>
 
-      <DocSection title="10. 문의">
+      <DocSection title="11. 문의">
         <p>
           {CREDIT.author} ·{" "}
           <a className="text-accent underline" href={`mailto:${CREDIT.email}`}>{CREDIT.email}</a>
