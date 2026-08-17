@@ -30,6 +30,7 @@ type GtagFn = (command: "event", name: string, params: Record<string, unknown>) 
 
 export function track(event: TrackEvent): void {
   if (!GA_ID) return;
+  if (typeof window === "undefined") return;
   const gtag = (window as unknown as { gtag?: GtagFn }).gtag;
   if (typeof gtag !== "function") return;
   const { name, ...params } = event;

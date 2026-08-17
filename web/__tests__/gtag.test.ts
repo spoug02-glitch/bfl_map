@@ -22,8 +22,16 @@ describe("track", () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  it("window.gtag가 없어도 던지지 않는다 (광고 차단·SSR)", async () => {
+  it("window.gtag가 없어도 던지지 않는다 (광고 차단)", async () => {
     vi.stubGlobal("window", {});
+    const { track } = await loadGtag("G-TEST123456");
+    expect(() =>
+      track({ name: "place_map_open", place_id: "123", place_category: "한식" }),
+    ).not.toThrow();
+  });
+
+  it("window가 아예 없어도 던지지 않는다 (SSR)", async () => {
+    vi.stubGlobal("window", undefined);
     const { track } = await loadGtag("G-TEST123456");
     expect(() =>
       track({ name: "place_map_open", place_id: "123", place_category: "한식" }),
