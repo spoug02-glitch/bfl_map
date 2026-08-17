@@ -113,7 +113,7 @@ export default function SpecialSection({ placeId, loggedIn }: { placeId: string;
         <p className="mt-3 text-xs text-on-surface-variant">로그인하면 제보할 수 있어요.</p>
       ) : !open ? (
         <button
-          className="mt-3 h-11 w-full rounded-lg bg-surface-container text-sm font-bold text-on-surface"
+          className="mt-3 h-11 w-full rounded-lg bg-surface-container text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10"
           onClick={() => setOpen(true)}
         >
           점심 특선 제보하기
@@ -149,7 +149,7 @@ export default function SpecialSection({ placeId, loggedIn }: { placeId: string;
           <div className="flex gap-2">
             <button
               type="button"
-              className="h-11 flex-1 rounded-lg bg-surface-container text-sm font-bold text-on-surface"
+              className="h-11 flex-1 rounded-lg bg-surface-container text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10"
               onClick={() => { setOpen(false); setError(""); }}
             >
               취소

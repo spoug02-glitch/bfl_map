@@ -123,7 +123,7 @@ function UserDetailPanel({ userId, onChanged }: { userId: string; onChanged: () 
 
       {suspended ? (
         <button
-          className="h-11 rounded-lg bg-surface-container px-4 text-sm font-bold text-on-surface disabled:opacity-50"
+          className="h-11 rounded-lg bg-surface-container px-4 text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10 disabled:opacity-50"
           disabled={busy}
           onClick={unsuspend}
         >

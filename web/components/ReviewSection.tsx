@@ -89,7 +89,7 @@ function ReviewEditor({
       {error && <p className="text-xs text-red-600">{error}</p>}
       <div className="flex justify-end gap-2">
         <button
-          className="h-11 rounded-lg bg-surface-container px-4 text-sm font-bold text-on-surface"
+          className="h-11 rounded-lg bg-surface-container px-4 text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10"
           onClick={onCancel}
         >
           취소

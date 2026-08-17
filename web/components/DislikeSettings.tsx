@@ -46,10 +46,10 @@ export default function DislikeSettings() {
             <button
               key={p.key}
               aria-pressed={picked}
-              className={`flex h-9 items-center gap-1 rounded-xl border px-3 text-xs font-bold ${
+              className={`flex h-9 items-center gap-1 rounded-xl border px-3 text-xs font-bold transition-colors ${
                 picked
-                  ? "border-primary bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-on-primary"
-                  : "border-outline-variant bg-surface-container-lowest text-on-surface-variant"
+                  ? "border-primary bg-primary hover:bg-primary/90 active:bg-primary/80 text-on-primary"
+                  : "border-outline-variant bg-surface-container-lowest text-on-surface-variant hover:bg-on-surface/8 active:bg-on-surface/10"
               }`}
               onClick={() => toggle(p.key)}
             >
@@ -72,7 +72,7 @@ export default function DislikeSettings() {
           onKeyDown={e => { if (e.key === "Enter") { e.preventDefault(); addCustom(); } }}
         />
         <button
-          className="h-11 shrink-0 rounded-lg bg-surface-container px-4 text-sm font-bold text-on-surface disabled:opacity-50"
+          className="h-11 shrink-0 rounded-lg bg-surface-container px-4 text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10 disabled:opacity-50"
           disabled={draft.trim().length === 0}
           onClick={addCustom}
         >
