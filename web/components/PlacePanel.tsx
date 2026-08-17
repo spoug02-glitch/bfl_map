@@ -24,7 +24,7 @@ export default function PlacePanel({
   return (
     <aside
       className="fixed inset-x-0 bottom-0 z-10 max-h-[75dvh] w-full overflow-y-auto
-        rounded-t-2xl border-t border-outline-variant bg-surface-container-lowest p-4 shadow-lg
+        rounded-t-2xl border-t border-outline-variant bg-surface-container-low p-4 shadow-elevation-3
         md:absolute md:inset-x-auto md:inset-y-0 md:right-0 md:top-0 md:h-full md:max-h-none
         md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0"
       style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}

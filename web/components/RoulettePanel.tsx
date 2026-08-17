@@ -137,7 +137,7 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
   return (
     <aside
       className="fixed inset-x-0 bottom-0 z-20 max-h-[75dvh] w-full overflow-y-auto
-        rounded-t-2xl border-t border-outline-variant bg-surface-container-lowest p-4 shadow-lg
+        rounded-t-2xl border-t border-outline-variant bg-surface-container-low p-4 shadow-elevation-5
         md:absolute md:inset-x-auto md:inset-y-0 md:right-0 md:top-0 md:h-full md:max-h-none
         md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0"
       style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
@@ -179,14 +179,14 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
           <p className="mt-5 text-xs font-bold text-on-surface-variant">후보 담기</p>
           <div className="mt-2 flex gap-2">
             <button
-              className="h-11 flex-1 rounded-xl border border-outline bg-surface-container-lowest text-sm font-bold text-on-surface disabled:opacity-50"
+              className="h-11 flex-1 rounded-xl border border-outline bg-surface-container-lowest text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10 disabled:opacity-50"
               disabled={full || savedPlaces.length === 0}
               onClick={addSaved}
             >
               <span aria-hidden>☆</span> 저장한 곳 담기
             </button>
             <button
-              className="h-11 flex-1 rounded-xl border border-outline bg-surface-container-lowest text-sm font-bold text-on-surface disabled:opacity-50"
+              className="h-11 flex-1 rounded-xl border border-outline bg-surface-container-lowest text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10 disabled:opacity-50"
               disabled={full || nearby.length === 0}
               onClick={fillRandom}
             >
@@ -288,13 +288,13 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
 
           <div className="mt-4 flex gap-2">
             <button
-              className="h-11 flex-1 rounded-lg bg-surface-container text-sm font-bold text-on-surface"
+              className="h-11 flex-1 rounded-lg bg-surface-container text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10"
               onClick={() => { setDraw(null); setArrived(false); }}
             >
               후보 고치기
             </button>
             <button
-              className="h-11 flex-1 rounded-lg bg-surface-container text-sm font-bold text-on-surface disabled:opacity-50"
+              className="h-11 flex-1 rounded-lg bg-surface-container text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10 disabled:opacity-50"
               disabled={!arrived}
               onClick={spin}
             >
