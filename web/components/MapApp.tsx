@@ -215,13 +215,13 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         {user?.nickname ? (
           <div className="flex items-center gap-2 text-sm">
             <button
-              className="grid h-11 place-items-center rounded-lg px-2 text-on-surface md:h-9"
+              className="grid h-11 place-items-center rounded-lg px-2 text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10 md:h-9"
               onClick={() => setEditingNickname(true)}
             >
               {user.nickname}님
             </button>
             <button
-              className="grid h-11 place-items-center rounded-lg border border-outline px-3 text-on-surface md:h-9"
+              className="grid h-11 place-items-center rounded-lg border border-outline px-3 text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10 md:h-9"
               onClick={logout}
             >
               로그아웃
@@ -233,7 +233,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
           // 지도만이라도 보러 갈 수 있게 로그아웃 출구를 열어둔다.
           // 같은 출구가 모달 안에도 있다 — 이 버튼은 마우스로만 닿는다.
           <button
-            className="grid h-11 place-items-center rounded-lg border border-outline px-3 text-sm text-on-surface md:h-9"
+            className="grid h-11 place-items-center rounded-lg border border-outline px-3 text-sm text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10 md:h-9"
             onClick={logout}
           >
             로그아웃
@@ -277,7 +277,8 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         {!selected && !rouletteOpen && (
           <button
             className="absolute bottom-[36dvh] right-3 z-20 flex h-11 items-center gap-1.5 rounded-full
-              border border-outline-variant bg-surface-container-lowest px-4 text-sm font-bold text-on-surface shadow-lg
+              border border-outline-variant bg-surface-container-lowest px-4 text-sm font-bold text-on-surface shadow-elevation-3
+              transition-colors hover:bg-on-surface/8 active:bg-on-surface/10
               md:bottom-4 md:right-[calc(24rem+0.75rem)]"
             onClick={() => mapApi.current?.recenter()}
           >
@@ -286,7 +287,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         )}
         <SiteFooter overlay />
         {staleLink && (
-          <div className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-outline bg-surface-container-lowest px-4 py-3 text-center shadow-lg">
+          <div className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-outline bg-surface-container-high px-4 py-3 text-center shadow-elevation-3">
             <p className="font-bold text-on-surface">공유된 가게를 찾지 못했어요</p>
             <p className="mt-1 text-sm text-on-surface-variant">가게 정보가 갱신되었거나 잘못된 링크일 수 있어요.</p>
           </div>
@@ -294,7 +295,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         {loginError && (
           <div
             role="alert"
-            className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-outline bg-surface-container-lowest px-4 py-3 text-center shadow-lg"
+            className="absolute inset-x-0 top-3 z-20 mx-auto w-fit max-w-[min(90vw,22rem)] rounded-xl border border-outline bg-surface-container-high px-4 py-3 text-center shadow-elevation-3"
           >
             <p className="font-bold text-on-surface">로그인하지 못했어요</p>
             <p className="mt-1 text-sm text-on-surface-variant">{loginError}</p>

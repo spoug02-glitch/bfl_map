@@ -89,7 +89,7 @@ export default function PlaceList({
       // 모바일에서 이 시트가 커지면 지도가 사라진다. 헤더와 필터 바가 이미
       // 화면 위쪽을 많이 차지하므로 시트는 3분의 1 남짓으로 묶어 둔다.
       className="fixed inset-x-0 bottom-0 z-10 max-h-[34dvh] w-full overflow-y-auto
-        rounded-t-2xl border-t border-outline-variant bg-surface-container-lowest px-4 pt-3 shadow-lg
+        rounded-t-2xl border-t border-outline-variant bg-surface-container-low px-4 pt-3 shadow-elevation-3
         md:absolute md:inset-x-auto md:inset-y-0 md:right-0 md:top-0 md:h-full md:max-h-none
         md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0 md:pt-4"
       style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}

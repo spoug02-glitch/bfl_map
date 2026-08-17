@@ -121,7 +121,7 @@ export default function ShareButton({ restaurant }: { restaurant: Restaurant }) 
         {/* 슬랙·디스코드에는 붙여넣기가 곧 공유다 — 링크에 가게별 OG 태그가 붙어
             있어 채널에 그대로 카드가 그려진다. */}
         <button
-          className="grid h-11 flex-1 place-items-center rounded border border-outline text-base font-medium text-on-surface shadow-xs"
+          className="grid h-11 flex-1 place-items-center rounded-lg border border-outline text-base font-medium text-on-surface shadow-xs transition-colors hover:bg-on-surface/8 active:bg-on-surface/10"
           onClick={copyLink}
         >
           {copied ? "복사했어요" : "링크 복사"}
