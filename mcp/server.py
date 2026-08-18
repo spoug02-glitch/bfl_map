@@ -12,7 +12,6 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA_PATH = ROOT / "web" / "public" / "restaurants.json"
 sys.path.insert(0, str(ROOT / "collector"))  # reuse the panel3 client and the alias table
 import brands  # noqa: E402
-import menu as menu_mod  # noqa: E402
 
 mcp = FastMCP("bfl-map")
 LIMIT = 30
@@ -70,21 +69,9 @@ def search_restaurants(keyword: str = "", category: str = "", max_distance_km: f
     return rows
 
 
-@mcp.tool()
-def get_menu(place_name: str) -> dict:
-    """가게 이름으로 최신 메뉴·가격을 카카오에서 실시간 조회. 표기 차이 허용."""
-    hits = [r for r in _load()
-            if brands.matches(place_name, r.get("search_keys") or [r["name"]])]
-    if not hits:
-        return {"error": f"'{place_name}' 가게를 찾을 수 없습니다."}
-    if len(hits) > 1:
-        # ambiguous: let the caller disambiguate instead of guessing a store
-        return {"error": f"'{place_name}'에 해당하는 가게가 {len(hits)}곳입니다. 더 구체적으로 지정해주세요.",
-                "candidates": [r["name"] for r in hits[:10]]}
-    r = hits[0]
-    fresh = menu_mod.fetch_menu(r["kakao_place_id"])
-    return {"name": r["name"], "menus": fresh or r["menus"],
-            "source": "live" if fresh else "cached"}
+# get_menu 툴은 삭제했다. 하는 일이 카카오 비공식 엔드포인트 실시간 조회 하나였고,
+# 저작권 문제로 그 수집을 중단하면서 근거가 사라졌다(collector/menu.py 도 함께 삭제).
+# 메뉴는 이제 출처가 분명한 것만 웹앱의 menu_items 에 있고, 이 서버는 다루지 않는다.
 
 
 if __name__ == "__main__":
