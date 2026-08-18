@@ -1,11 +1,19 @@
 import { CREDIT } from "@/lib/constants";
 
 /** 푸터와 안내 페이지가 공유하는 링크. 한 군데서만 고치면 되도록 모아둔다. */
+/**
+ * 푸터에 서는 링크들. 지도 오버레이와 문서 푸터가 이 한 벌을 같이 쓴다.
+ *
+ * 제보를 문의 앞에 둔다 — 대부분의 용건이 "이 가게 정보가 달라요"이고, 문의는
+ * 그 둘에 안 맞는 나머지를 받는 자리다. 업주 등록은 대상이 좁아 맨 뒤다.
+ */
 export const DOC_LINKS = [
   { href: "/about", label: "서비스 소개" },
   { href: "/terms", label: "이용약관" },
   { href: "/privacy", label: "개인정보처리방침" },
+  { href: "/report", label: "제보" },
   { href: "/contact", label: "문의" },
+  { href: "/owner", label: "업주 등록" },
 ] as const;
 
 /**

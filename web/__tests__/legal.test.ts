@@ -38,9 +38,21 @@ describe("suspensionNotice", () => {
 });
 
 describe("DOC_LINKS", () => {
-  it("네 페이지가 모두 있고 경로가 겹치지 않는다", () => {
+  it("경로가 겹치지 않는다", () => {
     const hrefs = DOC_LINKS.map(l => l.href);
-    expect(hrefs).toEqual(["/about", "/terms", "/privacy", "/contact"]);
     expect(new Set(hrefs).size).toBe(hrefs.length);
+  });
+
+  // 접수 경로가 푸터에 없으면 /contact 를 통해서만 닿는데, 그건 문의를 하러
+  // 들어온 사람만 발견한다는 뜻이다.
+  it("제보와 업주 등록으로 가는 길이 푸터에 있다", () => {
+    const hrefs = DOC_LINKS.map(l => l.href);
+    expect(hrefs).toContain("/report");
+    expect(hrefs).toContain("/owner");
+  });
+
+  it("법적 고지 페이지가 빠지지 않는다", () => {
+    const hrefs = DOC_LINKS.map(l => l.href);
+    for (const h of ["/about", "/terms", "/privacy", "/contact"]) expect(hrefs).toContain(h);
   });
 });

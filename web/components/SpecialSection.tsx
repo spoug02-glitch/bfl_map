@@ -122,6 +122,15 @@ export default function SpecialSection({
         </ul>
       )}
 
+      {/* 메뉴가 하나도 없는 가게에서는 이 가게 주인이 직접 넣는 게 제일 빠르다.
+          제보 문턱(로그인)이 있는 자리 바로 옆에 로그인 없는 경로를 같이 둔다. */}
+      {!hasMenus && (
+        <p className="mt-3 text-xs text-on-surface-variant">
+          이 가게 사장님이신가요?{" "}
+          <a className="text-primary underline" href="/owner">메뉴를 직접 등록</a>하실 수 있어요.
+        </p>
+      )}
+
       {!loggedIn ? (
         <p className="mt-3 text-xs text-on-surface-variant">로그인하면 제보할 수 있어요.</p>
       ) : !open ? (
