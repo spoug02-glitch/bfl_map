@@ -259,18 +259,22 @@ async function main() {
 
   // 갱신이 아니라 교체다. 착한가격업소에서 빠진 가게의 메뉴가 우리 DB 에만
   // 남아 "공공데이터 출처"를 달고 돌아다니면 안 된다.
-  const deleted = await sql`DELETE FROM menu_items WHERE source_type = 'public_data' RETURNING id`;
-  console.log(`\n기존 public_data ${deleted.length}건 삭제`);
-
-  for (const i of items) {
-    await sql`
+  //
+  // 삭제와 삽입은 반드시 한 트랜잭션이어야 한다. 나눠서 보내면 삭제가 끝난 뒤
+  // 삽입 도중에 끊겼을 때 공공데이터 가격이 통째로 또는 일부만 사라진 상태로 남는다.
+  // neon-http 의 transaction() 은 배열을 한 번의 요청으로 보내므로 왕복도 1회다.
+  const statements = [
+    sql`DELETE FROM menu_items WHERE source_type = 'public_data'`,
+    ...items.map(i => sql`
       INSERT INTO menu_items
         (place_id, menu_name, price, source_type, source_ref, verified_at, status)
       VALUES
         (${i.placeId}, ${i.menuName}, ${i.price}, 'public_data', ${i.sourceRef},
-         ${i.verifiedAt}, 'published')`;
-  }
-  console.log(`${items.length}건 삽입 완료`);
+         ${i.verifiedAt}, 'published')`),
+  ];
+  await sql.transaction(statements);
+  console.log(`
+교체 완료: ${items.length}건 (삭제와 삽입이 한 트랜잭션)`);
 }
 
 // 테스트가 이 파일을 import 할 때는 main 이 돌면 안 된다.

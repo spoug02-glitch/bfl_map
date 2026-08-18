@@ -134,3 +134,10 @@ CREATE TABLE IF NOT EXISTS menu_items (
 
 -- 가게별 조회가 유일한 접근 패턴이다. 가격 필터용 전체 요약도 status로 먼저 좁힌다.
 CREATE INDEX IF NOT EXISTS idx_menu_items_place ON menu_items (place_id, status);
+
+-- 가격 필터용 요약 쿼리는 status='published' AND price IS NOT NULL 로 좁힌 뒤
+-- (place_id, price) 순으로 훑는다. (place_id, status) 인덱스로는 정렬을 못 받아
+-- 매 초기 로드마다 정렬이 다시 일어난다. 조건까지 담은 부분 인덱스를 따로 둔다.
+CREATE INDEX IF NOT EXISTS idx_menu_items_published_price
+  ON menu_items (place_id, price)
+  WHERE status = 'published' AND price IS NOT NULL;

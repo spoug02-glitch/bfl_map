@@ -27,6 +27,8 @@ type Props = {
   priceFiltered: boolean;
   /** 가게별 최저가 점심특선 제보. 제보 덕에 통과한 줄에는 그 특선을 보여준다. */
   specialPrices: Map<string, SpecialPrice>;
+  /** 가게별 확정(published) 메뉴 최저가. 이것 때문에 통과한 줄에는 이 값을 보여준다. */
+  dbMinPrices: Map<string, number>;
   /** 가격 필터 때문에 빠진, 메뉴 가격을 모르는 가게 수. 0이면 알리지 않는다. */
   unpricedCount: number;
   onSelect: (r: Restaurant) => void;
@@ -79,7 +81,7 @@ function SectionBar({ children }: { children: React.ReactNode }) {
 // md 이상에서는 우측 사이드 패널. 가게를 고르면 이 자리가 상세로 바뀐다.
 export default function PlaceList({
   tab, onTab, places, savedPlaces, myReviews, placeById,
-  loggedIn, priceFiltered, specialPrices, unpricedCount,
+  loggedIn, priceFiltered, specialPrices, dbMinPrices, unpricedCount,
   onSelect, onWiden, onReset, onRoulette, canWiden,
 }: Props) {
   const shown = places.slice(0, MAX_ROWS);
@@ -171,8 +173,17 @@ export default function PlaceList({
                 // 특선이다 — 출처가 다르니 "특선"이라고 밝힌다.
                 const special = specialPrices.get(place.kakao_place_id);
                 const kakaoMin = minMenuPrice(place.menus);
+                const dbMin = dbMinPrices.get(place.kakao_place_id);
+                // 통과 근거는 셋 중 가장 싼 값이다. 카카오 메뉴만 보고 줄을 쓰면
+                // DB 가격 덕에 통과한 가게가 아무 가격도 없거나 상한보다 비싼
+                // 값을 달고 나와, 필터가 고장 난 것처럼 읽힌다.
+                const cheapest = Math.min(
+                  ...[dbMin, special?.price, kakaoMin].filter((v): v is number => v != null),
+                );
                 let line = "";
-                if (priceFiltered && special && (kakaoMin === null || special.price <= kakaoMin)) {
+                if (priceFiltered && dbMin !== undefined && dbMin === cheapest) {
+                  line = ` · ${formatPrice(String(dbMin))}부터`;
+                } else if (priceFiltered && special && special.price === cheapest) {
                   line = ` · 특선 ${special.menuName} ${formatPrice(String(special.price))}`;
                 } else {
                   const top = priceFiltered ? cheapestMenu(place.menus) : place.menus[0];

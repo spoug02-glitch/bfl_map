@@ -36,11 +36,24 @@ export default function PlacePanel({
   const [dbMenus, setDbMenus] = useState<DbMenuRow[]>([]);
 
   useEffect(() => {
+    // 가게를 빠르게 갈아타면 앞선 요청이 뒤에 도착해 A의 메뉴가 B 패널에 남는다.
+    // 응답을 버리는 플래그로 막는다 — 여기서 setDbMenus([])로 먼저 비우면
+    // react-hooks/set-state-in-effect에 걸린다.
+    let live = true;
     fetch(`/api/menu-items?placeId=${r.kakao_place_id}`)
       .then(res => res.json())
-      .then(d => setDbMenus(d.items ?? []))
-      .catch(() => {});
+      .then(d => { if (live) setDbMenus(d.items ?? []); })
+      .catch(() => { if (live) setDbMenus([]); });
+    return () => { live = false; };
   }, [r.kakao_place_id]);
+
+  // 공공데이터와 카카오가 같은 메뉴를 들고 있으면 출처가 있는 쪽만 남긴다.
+  // 실측(2026-08-17) 공공데이터 104건 중 41건이 카카오에도 있어, 안 거르면
+  // 39%가 화면에 두 번 뜬다.
+  const norm = (s: string) => s.replace(/[\s()]/g, "");
+  const dbNames = new Set(dbMenus.map(m => norm(m.menu_name)));
+  const crawledMenus = r.menus.filter(m => !dbNames.has(norm(m.name)));
+  const hasAnyMenu = dbMenus.length > 0 || r.menus.length > 0;
 
   return (
     <aside
@@ -87,7 +100,7 @@ export default function PlacePanel({
       {!isConvenienceStore(r.category) && (
         <>
           <h3 className="mt-6 border-b border-outline-variant pb-2 text-xl font-bold text-on-surface">메뉴</h3>
-          {dbMenus.length === 0 && r.menus.length === 0 ? (
+          {!hasAnyMenu ? (
             <p className="mt-2 text-sm text-on-surface-variant">메뉴 정보 없음 — 카카오맵 링크에서 확인</p>
           ) : (
             <>
@@ -116,11 +129,11 @@ export default function PlacePanel({
                   ))}
                 </ul>
               )}
-              {r.menus.length > 0 && (
+              {crawledMenus.length > 0 && (
                 <>
                   <p className="mt-2 text-[11px] text-on-surface-variant">카카오맵에서 가져온 정보예요.</p>
                   <ul className="mt-1">
-                    {r.menus.map(m => (
+                    {crawledMenus.map(m => (
                       <li key={m.name} className="flex items-center justify-between border-b border-outline-variant/50 py-3 text-base last:border-b-0">
                         <span className="text-on-surface">{m.name}</span>
                         {/* 가격 미공개(-1)나 빈 값이면 칸을 비운다 — 카카오가 -1을 주는데
@@ -135,7 +148,7 @@ export default function PlacePanel({
           )}
           {/* 카카오 메뉴에는 점심특선이 거의 안 올라온다 — 그 빈칸은 먹어본
               사람이 채운다. 편의점 분기 안에 있는 이유: 특선은 밥집의 것이다. */}
-          <SpecialSection placeId={r.kakao_place_id} loggedIn={user !== null} hasMenus={r.menus.length > 0} />
+          <SpecialSection placeId={r.kakao_place_id} loggedIn={user !== null} hasMenus={hasAnyMenu} />
         </>
       )}
 

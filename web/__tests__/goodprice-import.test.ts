@@ -151,3 +151,27 @@ describe("matchPlace — 자치구 가드", () => {
     expect(matchPlace(row, buildNameIndex([p]))?.kakao_place_id).toBe("6");
   });
 });
+
+// PlacePanel 이 공공데이터 메뉴와 카카오 메뉴를 겹치지 않게 그리는 규칙.
+// 컴포넌트에 인라인으로 있어 직접 부를 수 없으므로 같은 정규화를 여기서 고정한다.
+// 실측(2026-08-17) 공공데이터 104건 중 41건이 카카오에도 있었다.
+describe("메뉴 중복 제거 규칙", () => {
+  const norm = (s: string) => s.replace(/[\s()]/g, "");
+  const dedupe = (dbNames: string[], crawled: string[]) => {
+    const seen = new Set(dbNames.map(norm));
+    return crawled.filter(n => !seen.has(norm(n)));
+  };
+
+  it("같은 메뉴는 카카오 쪽에서 뺀다", () => {
+    expect(dedupe(["칼국수"], ["칼국수", "수제비"])).toEqual(["수제비"]);
+  });
+  it("공백과 괄호 차이는 같은 것으로 본다", () => {
+    expect(dedupe(["삼겹살(200g)"], ["삼겹살 (200g)"])).toEqual([]);
+  });
+  it("다른 메뉴는 남긴다", () => {
+    expect(dedupe(["칼국수"], ["보쌈"])).toEqual(["보쌈"]);
+  });
+  it("공공데이터가 없으면 카카오 메뉴가 그대로 남는다", () => {
+    expect(dedupe([], ["칼국수", "보쌈"])).toEqual(["칼국수", "보쌈"]);
+  });
+});

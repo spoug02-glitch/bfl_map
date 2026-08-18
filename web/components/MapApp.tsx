@@ -145,9 +145,13 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const dbItemsFor = useCallback(
     (placeId: string): DbMenuItem[] => {
       const p = dbMinPrices.get(placeId);
+      // 요약 응답에는 가격밖에 없다. sourceType 은 여기서 쓰이지 않지만 타입이
+      // 요구하므로, 실제 출처를 아는 척하지 않도록 public_data 로 두지 않고
+      // "확인 중"을 뜻하는 legacy_import 를 쓴다. 이 객체는 effectiveMinPrice
+      // 내부 계산에만 들어가고 화면으로 새지 않는다.
       return p === undefined
         ? []
-        : [{ menuName: "", price: p, sourceType: "user_report", status: "published", verifiedAt: null }];
+        : [{ menuName: "", price: p, sourceType: "legacy_import", status: "published", verifiedAt: null }];
     },
     [dbMinPrices],
   );
@@ -357,6 +361,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             loggedIn={user !== null}
             priceFiltered={priceLimit !== null}
             specialPrices={specialPrices}
+            dbMinPrices={dbMinPrices}
             unpricedCount={unpricedCount}
             onSelect={setSelected}
             onWiden={widenRadius}
