@@ -1,11 +1,14 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { BlogLink, Restaurant, formatPrice, isConvenienceStore } from "@/lib/constants";
+import { sourceLabel } from "@/lib/menu-source";
 import ReviewSection from "@/components/ReviewSection";
 import SaveButton from "@/components/SaveButton";
 import SpecialSection from "@/components/SpecialSection";
 import ShareButton from "@/components/ShareButton";
 import type { SessionUser } from "@/lib/constants";
+import type { MenuSourceType, MenuStatus } from "@/lib/menu-source";
 
 type Props = {
   restaurant: Restaurant;
@@ -16,11 +19,29 @@ type Props = {
   onClose: () => void;
 };
 
+type DbMenuRow = {
+  menu_name: string;
+  price: number | null;
+  source_type: MenuSourceType;
+  status: MenuStatus;
+  verified_at: string | null;
+  collected_at: string;
+};
+
 // 모바일(<768px)에서는 하단 바텀시트, md 이상에서는 우측 사이드 패널.
 // fixed + inset-x-0 bottom-0 로 뷰포트에 붙이고, md부터 absolute 우측 전체높이로 전환한다.
 export default function PlacePanel({
   restaurant: r, user, blogLink, saved, onToggleSaved, onClose,
 }: Props) {
+  const [dbMenus, setDbMenus] = useState<DbMenuRow[]>([]);
+
+  useEffect(() => {
+    fetch(`/api/menu-items?placeId=${r.kakao_place_id}`)
+      .then(res => res.json())
+      .then(d => setDbMenus(d.items ?? []))
+      .catch(() => {});
+  }, [r.kakao_place_id]);
+
   return (
     <aside
       className="fixed inset-x-0 bottom-0 z-10 max-h-[75dvh] w-full overflow-y-auto
@@ -66,23 +87,55 @@ export default function PlacePanel({
       {!isConvenienceStore(r.category) && (
         <>
           <h3 className="mt-6 border-b border-outline-variant pb-2 text-xl font-bold text-on-surface">메뉴</h3>
-          {r.menus.length === 0 ? (
+          {dbMenus.length === 0 && r.menus.length === 0 ? (
             <p className="mt-2 text-sm text-on-surface-variant">메뉴 정보 없음 — 카카오맵 링크에서 확인</p>
           ) : (
-            <ul className="mt-1">
-              {r.menus.map(m => (
-                <li key={m.name} className="flex items-center justify-between border-b border-outline-variant/50 py-3 text-base last:border-b-0">
-                  <span className="text-on-surface">{m.name}</span>
-                  {/* 가격 미공개(-1)나 빈 값이면 칸을 비운다 — 카카오가 -1을 주는데
-                      그대로 찍으면 "-1원"이 된다. */}
-                  <span className="text-price">{formatPrice(m.price) ?? ""}</span>
-                </li>
-              ))}
-            </ul>
+            <>
+              {/* 출처가 분명한 쪽을 위에 둔다 — DB 메뉴가 먼저, 카카오 메뉴는 그다음. */}
+              {dbMenus.length > 0 && (
+                <ul className="mt-1">
+                  {dbMenus.map((m, i) => (
+                    <li key={i} className="border-b border-outline-variant/50 py-3 text-base last:border-b-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="min-w-0 flex-1 text-on-surface">
+                          <span className="rounded bg-tertiary-container px-1 py-0.5 text-[10px] font-bold text-on-tertiary-container">
+                            {sourceLabel(m.source_type)}
+                            {m.status === "pending" && " · 미확인"}
+                          </span>{" "}
+                          {m.menu_name}
+                        </span>
+                        <span className="shrink-0 text-price">{formatPrice(m.price !== null ? String(m.price) : "") ?? ""}</span>
+                      </div>
+                      {/* 확인일이 없으면 아무것도 적지 않는다 — 빈 자리를 만들지 않는다. */}
+                      {m.verified_at && (
+                        <p className="mt-1 text-[11px] text-on-surface-variant">
+                          {new Date(m.verified_at).toLocaleDateString("ko-KR")} 확인
+                        </p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {r.menus.length > 0 && (
+                <>
+                  <p className="mt-2 text-[11px] text-on-surface-variant">카카오맵에서 가져온 정보예요.</p>
+                  <ul className="mt-1">
+                    {r.menus.map(m => (
+                      <li key={m.name} className="flex items-center justify-between border-b border-outline-variant/50 py-3 text-base last:border-b-0">
+                        <span className="text-on-surface">{m.name}</span>
+                        {/* 가격 미공개(-1)나 빈 값이면 칸을 비운다 — 카카오가 -1을 주는데
+                            그대로 찍으면 "-1원"이 된다. */}
+                        <span className="text-price">{formatPrice(m.price) ?? ""}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </>
+              )}
+            </>
           )}
           {/* 카카오 메뉴에는 점심특선이 거의 안 올라온다 — 그 빈칸은 먹어본
               사람이 채운다. 편의점 분기 안에 있는 이유: 특선은 밥집의 것이다. */}
-          <SpecialSection placeId={r.kakao_place_id} loggedIn={user !== null} />
+          <SpecialSection placeId={r.kakao_place_id} loggedIn={user !== null} hasMenus={r.menus.length > 0} />
         </>
       )}
 
