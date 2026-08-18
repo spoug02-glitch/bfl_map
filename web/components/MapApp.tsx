@@ -21,6 +21,7 @@ import {
   effectiveMinPrice,
   normalizeQuery,
 } from "@/lib/constants";
+import type { DbMenuItem } from "@/lib/menu-source";
 import { suggestNickname } from "@/lib/nickname";
 import { REJOIN_BLOCK_DAYS } from "@/lib/rejoin";
 
@@ -38,6 +39,8 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [priceLimit, setPriceLimit] = useState<number | null>(null);
   // 가게별 최저가 점심특선 제보. 가격 필터가 카카오 메뉴와 함께 본다.
   const [specialPrices, setSpecialPrices] = useState<Map<string, SpecialPrice>>(new Map());
+  // 가게별 확정 메뉴 최저가. specialPrices와 같은 이유로 요약 하나만 받는다.
+  const [dbMinPrices, setDbMinPrices] = useState<Map<string, number>>(new Map());
   // null = 아직 아무도 안 정함(화면 폭이 정한다). 의미는 FilterBar 주석 참조.
   const [barOpen, setBarOpen] = useState<boolean | null>(null);
   const mapApi = useRef<MapApi | null>(null);
@@ -89,6 +92,14 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         ),
       )
       .catch(() => {});
+    fetch("/api/menu-items")
+      .then(r => r.json())
+      .then(d =>
+        setDbMinPrices(
+          new Map((d.items ?? []).map((x: { place_id: string; price: number }) => [x.place_id, x.price])),
+        ),
+      )
+      .catch(() => {});
 
     // A failed login used to bounce back here with no explanation, so it just
     // looked like nothing happened. The common cause is clicking login twice:
@@ -128,27 +139,42 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   // 보여주는 화면이지 내 취향을 반영하는 화면이 아니다. 거르는 건 룰렛 랜덤뿐이고,
   // 그 판단은 후보를 뽑는 RoulettePanel이 직접 한다.
 
+  // dbMinPrices는 최저가 숫자만 담는다. effectiveMinPrice는 DbMenuItem 배열을
+  // 받으므로 여기서 한 건짜리 배열로 감싼다 — 요약 응답이 이미 published
+  // 최저가만 담고 있어 여기서 다시 판정하지 않는다.
+  const dbItemsFor = useCallback(
+    (placeId: string): DbMenuItem[] => {
+      const p = dbMinPrices.get(placeId);
+      return p === undefined
+        ? []
+        : [{ menuName: "", price: p, sourceType: "user_report", status: "published", verifiedAt: null }];
+    },
+    [dbMinPrices],
+  );
+
   // 씨드큐브 500m 안 196곳 중 88곳은 메뉴 가격이 아예 없다. 필터를 켜면 그만큼이
   // 조용히 사라지므로 몇 곳인지 세어 목록이 알리게 한다.
   const unpricedCount = useMemo(
     () =>
       priceLimit !== null
-        ? matched.filter(r => effectiveMinPrice(r.menus, specialPrices.get(r.kakao_place_id)) === null).length
+        ? matched.filter(r =>
+            effectiveMinPrice(r.menus, specialPrices.get(r.kakao_place_id), dbItemsFor(r.kakao_place_id)) === null,
+          ).length
         : 0,
-    [matched, priceLimit, specialPrices],
+    [matched, priceLimit, specialPrices, dbItemsFor],
   );
 
   const ranked = useMemo(() => {
     const kept = priceLimit !== null
       ? matched.filter(r => {
-          const min = effectiveMinPrice(r.menus, specialPrices.get(r.kakao_place_id));
+          const min = effectiveMinPrice(r.menus, specialPrices.get(r.kakao_place_id), dbItemsFor(r.kakao_place_id));
           return min !== null && min <= priceLimit;
         })
       : matched;
     return kept
       .map(place => ({ place, distanceKm: place.distance_km }))
       .sort((a, b) => a.distanceKm - b.distanceKm);
-  }, [matched, priceLimit, specialPrices]);
+  }, [matched, priceLimit, specialPrices, dbItemsFor]);
 
   const visible = useMemo(() => ranked.map(x => x.place), [ranked]);
 
