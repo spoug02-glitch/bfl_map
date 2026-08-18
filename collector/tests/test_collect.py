@@ -23,17 +23,13 @@ def fake_matcher(name, address, category=None):
     return COORDS.get(name)
 
 
-def fake_menu(place_id):
-    return [{"name": "김치찌개", "price": "9000"}] if place_id == "1" else []
-
 
 def test_build_dataset_filters_and_dedupes():
-    rows, unresolved = collect.build_dataset(MERCHANTS, fake_matcher, fake_menu, delay_sec=0)
+    rows, unresolved = collect.build_dataset(MERCHANTS, fake_matcher, delay_sec=0)
     assert len(rows) == 2  # 먼집 >5km 제외, 매칭실패집 unresolved, dup 제거, 편의점 포함
     by_name = {r["name"]: r for r in rows}
     r = by_name["가까운집"]
     assert r["kakao_place_id"] == "1"
-    assert r["menus"] == [{"name": "김치찌개", "price": "9000"}]
     assert 0 < r["distance_km"] < 0.2
     assert [u["name"] for u in unresolved] == ["매칭실패집"]
     assert r["search_keys"] == brands.search_keys("가까운집")
@@ -51,22 +47,9 @@ def test_build_dataset_includes_cu_stores():
     def matcher(name, address, category=None):
         return coords.get(name)
 
-    rows, unresolved = collect.build_dataset(merchants, matcher, fake_menu, delay_sec=0)
+    rows, unresolved = collect.build_dataset(merchants, matcher, delay_sec=0)
     names = [r["name"] for r in rows] + [u["name"] for u in unresolved]
     assert "씨유 씨드큐브점" in names  # CU: 비플페이 사용 가능, 제외 금지
-
-
-def test_build_dataset_skips_menu_for_convenience_stores():
-    calls = []
-
-    def spy_menu(place_id):
-        calls.append(place_id)
-        return []
-
-    rows, _ = collect.build_dataset(MERCHANTS, fake_matcher, spy_menu, delay_sec=0)
-    assert "3" not in calls  # GS25 (체인화 편의점) must not trigger a panel3 call
-    gs = next(r for r in rows if r["name"] == "GS25 씨드큐브점")
-    assert gs["menus"] == []
 
 
 def test_build_dataset_passes_category_to_matcher():
@@ -76,7 +59,7 @@ def test_build_dataset_passes_category_to_matcher():
         captured.append((name, category))
         return COORDS.get(name)
 
-    collect.build_dataset(MERCHANTS, spy_matcher, fake_menu, delay_sec=0)
+    collect.build_dataset(MERCHANTS, spy_matcher, delay_sec=0)
     assert ("가까운집", "한식 일반 음식점업") in captured
     assert ("GS25 씨드큐브점", "체인화 편의점") in captured
 
@@ -91,7 +74,7 @@ def test_build_dataset_uses_kakao_display_name_when_it_differs():
         return {"place_id": "9", "lat": 37.6546, "lng": 127.0500,
                 "kakao_url": "http://place.map.kakao.com/9", "place_name": "순대실록 창동씨드큐브점"}
 
-    rows, _ = collect.build_dataset(merchants, matcher, fake_menu, delay_sec=0)
+    rows, _ = collect.build_dataset(merchants, matcher, delay_sec=0)
     assert len(rows) == 1
     r = rows[0]
     assert r["name"] == "순대실록 창동씨드큐브점"  # kakao's spelling, not zeropay's typo
@@ -105,7 +88,7 @@ def test_build_dataset_uses_kakao_display_name_when_it_differs():
 
 
 def test_build_dataset_omits_zeropay_name_when_names_match():
-    rows, _ = collect.build_dataset(MERCHANTS, fake_matcher, fake_menu, delay_sec=0)
+    rows, _ = collect.build_dataset(MERCHANTS, fake_matcher, delay_sec=0)
     r = next(r for r in rows if r["name"] == "가까운집")
     assert "zeropay_name" not in r
 
@@ -118,7 +101,7 @@ def test_build_dataset_emits_progress_heartbeat(capsys):
          "category": "한식 일반 음식점업", "phone": "02-1"}
         for i in range(5)
     ]
-    collect.build_dataset(many, lambda n, a, c=None: None, fake_menu,
+    collect.build_dataset(many, lambda n, a, c=None: None,
                           delay_sec=0, progress_every=2)
     out = capsys.readouterr().out
     assert "[match] 2/5" in out
@@ -126,7 +109,7 @@ def test_build_dataset_emits_progress_heartbeat(capsys):
 
 
 def test_build_dataset_silent_without_progress_every(capsys):
-    collect.build_dataset(MERCHANTS, fake_matcher, fake_menu, delay_sec=0)
+    collect.build_dataset(MERCHANTS, fake_matcher, delay_sec=0)
     assert "[match]" not in capsys.readouterr().out
 
 
@@ -138,7 +121,7 @@ def test_build_dataset_records_out_of_radius_match_with_distance():
     wrong match: zeropay name/address, matched kakao place_name/place_id,
     and the computed distance."""
     out_of_radius = []
-    rows, unresolved = collect.build_dataset(MERCHANTS, fake_matcher, fake_menu, delay_sec=0,
+    rows, unresolved = collect.build_dataset(MERCHANTS, fake_matcher, delay_sec=0,
                                               out_of_radius=out_of_radius)
     assert len(out_of_radius) == 1
     entry = out_of_radius[0]
@@ -155,7 +138,7 @@ def test_build_dataset_reconciliation_arithmetic_balances():
     unresolved, out_of_radius, or duplicates — nothing may vanish."""
     out_of_radius = []
     duplicates = []
-    rows, unresolved = collect.build_dataset(MERCHANTS, fake_matcher, fake_menu, delay_sec=0,
+    rows, unresolved = collect.build_dataset(MERCHANTS, fake_matcher, delay_sec=0,
                                               out_of_radius=out_of_radius, duplicates=duplicates)
     assert len(rows) + len(unresolved) + len(out_of_radius) + len(duplicates) == len(MERCHANTS)
     assert len(duplicates) == 1
@@ -191,7 +174,7 @@ def test_checkpoint_resume_matches_uninterrupted_run(tmp_path):
             return counting_matcher(name, addr, cat)
 
         try:
-            collect.build_dataset(ms, dying, fake_menu, delay_sec=0, checkpoint_path=cp)
+            collect.build_dataset(ms, dying, delay_sec=0, checkpoint_path=cp)
         except ValueError as e:
             raise RuntimeError("boom") from e
 
@@ -200,7 +183,7 @@ def test_checkpoint_resume_matches_uninterrupted_run(tmp_path):
 
     # resume: already-processed merchants must not be re-matched
     calls.clear()
-    rows, unresolved = collect.build_dataset(ms, counting_matcher, fake_menu,
+    rows, unresolved = collect.build_dataset(ms, counting_matcher,
                                              delay_sec=0, checkpoint_path=cp)
     assert len(calls) == len(ms) - first_pass  # only the remaining ones cost API calls
     assert len(rows) == len(ms)
@@ -219,7 +202,7 @@ def test_checkpoint_tolerates_truncated_final_line(tmp_path):
 
 def test_no_checkpoint_path_writes_nothing(tmp_path):
     cp = tmp_path / "cp.jsonl"
-    collect.build_dataset(MERCHANTS, fake_matcher, fake_menu, delay_sec=0)
+    collect.build_dataset(MERCHANTS, fake_matcher, delay_sec=0)
     assert not cp.exists()
 
 
@@ -250,7 +233,7 @@ def test_checkpoint_key_survives_name_correction(tmp_path):
         return {"place_id": "9", "lat": 37.6545, "lng": 127.0499,
                 "kakao_url": "http://place.map.kakao.com/9", "place_name": "긱"}
 
-    collect.build_dataset(merchants, renaming_matcher, fake_menu, delay_sec=0, checkpoint_path=cp)
+    collect.build_dataset(merchants, renaming_matcher, delay_sec=0, checkpoint_path=cp)
     rec = json.loads(cp.read_text(encoding="utf-8").splitlines()[0])
     assert rec["key"] == ["긱(GIG)", "서울 도봉구 노해로 384"]
     assert rec["value"]["zeropay_name"] == "긱(GIG)"

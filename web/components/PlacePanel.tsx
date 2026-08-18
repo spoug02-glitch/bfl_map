@@ -47,13 +47,19 @@ export default function PlacePanel({
     return () => { live = false; };
   }, [r.kakao_place_id]);
 
-  // 공공데이터와 카카오가 같은 메뉴를 들고 있으면 출처가 있는 쪽만 남긴다.
-  // 실측(2026-08-17) 공공데이터 104건 중 41건이 카카오에도 있어, 안 거르면
-  // 39%가 화면에 두 번 뜬다.
-  const norm = (s: string) => s.replace(/[\s()]/g, "");
-  const dbNames = new Set(dbMenus.map(m => norm(m.menu_name)));
-  const crawledMenus = r.menus.filter(m => !dbNames.has(norm(m.name)));
-  const hasAnyMenu = dbMenus.length > 0 || r.menus.length > 0;
+  // 출처와 확인일은 줄마다 붙이지 않고 목록 아래 한 줄로 모은다. 메뉴 하나하나에
+  // 배지와 날짜를 달면 정작 궁금한 메뉴명과 가격이 묻힌다.
+  const sources = [...new Set(dbMenus.map(m => sourceLabel(m.source_type)))];
+  const latestVerified = dbMenus
+    .map(m => m.verified_at)
+    .filter((v): v is string => v !== null)
+    .sort()
+    .at(-1);
+  const sourceNote = sources.length
+    ? sources.join(" · ") + (latestVerified
+        ? ` · ${new Date(latestVerified).toLocaleDateString("ko-KR")} 확인`
+        : "")
+    : "";
 
   return (
     <aside
@@ -100,55 +106,31 @@ export default function PlacePanel({
       {!isConvenienceStore(r.category) && (
         <>
           <h3 className="mt-6 border-b border-outline-variant pb-2 text-xl font-bold text-on-surface">메뉴</h3>
-          {!hasAnyMenu ? (
+          {dbMenus.length === 0 ? (
             <p className="mt-2 text-sm text-on-surface-variant">메뉴 정보 없음 — 카카오맵 링크에서 확인</p>
           ) : (
             <>
-              {/* 출처가 분명한 쪽을 위에 둔다 — DB 메뉴가 먼저, 카카오 메뉴는 그다음. */}
-              {dbMenus.length > 0 && (
-                <ul className="mt-1">
-                  {dbMenus.map((m, i) => (
-                    <li key={i} className="border-b border-outline-variant/50 py-3 text-base last:border-b-0">
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="min-w-0 flex-1 text-on-surface">
-                          <span className="rounded bg-tertiary-container px-1 py-0.5 text-[10px] font-bold text-on-tertiary-container">
-                            {sourceLabel(m.source_type)}
-                            {m.status === "pending" && " · 미확인"}
-                          </span>{" "}
-                          {m.menu_name}
-                        </span>
-                        <span className="shrink-0 text-price">{formatPrice(m.price !== null ? String(m.price) : "") ?? ""}</span>
-                      </div>
-                      {/* 확인일이 없으면 아무것도 적지 않는다 — 빈 자리를 만들지 않는다. */}
-                      {m.verified_at && (
-                        <p className="mt-1 text-[11px] text-on-surface-variant">
-                          {new Date(m.verified_at).toLocaleDateString("ko-KR")} 확인
-                        </p>
+              <ul className="mt-1">
+                {dbMenus.map((m, i) => (
+                  <li key={i} className="flex items-center justify-between border-b border-outline-variant/50 py-3 text-base last:border-b-0">
+                    <span className="min-w-0 flex-1 truncate text-on-surface">
+                      {m.menu_name}
+                      {/* 확정 전 제보임을 알리는 건 줄에 남긴다 — 이건 값의 신뢰도라
+                          아래로 모으면 어느 메뉴 얘기인지 알 수 없다. */}
+                      {m.status === "pending" && (
+                        <span className="ml-1 text-[11px] text-on-surface-variant">미확인</span>
                       )}
-                    </li>
-                  ))}
-                </ul>
-              )}
-              {crawledMenus.length > 0 && (
-                <>
-                  <p className="mt-2 text-[11px] text-on-surface-variant">카카오맵에서 가져온 정보예요.</p>
-                  <ul className="mt-1">
-                    {crawledMenus.map(m => (
-                      <li key={m.name} className="flex items-center justify-between border-b border-outline-variant/50 py-3 text-base last:border-b-0">
-                        <span className="text-on-surface">{m.name}</span>
-                        {/* 가격 미공개(-1)나 빈 값이면 칸을 비운다 — 카카오가 -1을 주는데
-                            그대로 찍으면 "-1원"이 된다. */}
-                        <span className="text-price">{formatPrice(m.price) ?? ""}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </>
-              )}
+                    </span>
+                    <span className="shrink-0 text-price">{formatPrice(m.price !== null ? String(m.price) : "") ?? ""}</span>
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2 text-[11px] text-on-surface-variant">{sourceNote}</p>
             </>
           )}
           {/* 카카오 메뉴에는 점심특선이 거의 안 올라온다 — 그 빈칸은 먹어본
               사람이 채운다. 편의점 분기 안에 있는 이유: 특선은 밥집의 것이다. */}
-          <SpecialSection placeId={r.kakao_place_id} loggedIn={user !== null} hasMenus={hasAnyMenu} />
+          <SpecialSection placeId={r.kakao_place_id} loggedIn={user !== null} hasMenus={dbMenus.length > 0} />
         </>
       )}
 

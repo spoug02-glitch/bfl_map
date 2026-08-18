@@ -2,7 +2,7 @@
 
 Usage:
   python collect.py                        # full run (3 districts x 13 codes)
-  python collect.py --codes 56221 --districts 도봉구 --limit 20 --skip-menus  # smoke
+  python collect.py --codes 56221 --districts 도봉구 --limit 20  # smoke
 """
 import argparse
 import json
@@ -14,7 +14,6 @@ from pathlib import Path
 import brands
 import geo
 import kakao_local
-import menu as menu_mod
 import zeropay
 
 CENTER_LAT, CENTER_LNG = 37.6545, 127.0499  # 창동씨드큐브
@@ -97,10 +96,10 @@ def _append_checkpoint(path: Path, key: tuple[str, str], status: str, value) -> 
         f.flush()
 
 
-def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3,
+def build_dataset(merchants, matcher, delay_sec: float = 0.3,
                   progress_every: int = 0, out_of_radius: list | None = None,
                   duplicates: list | None = None, checkpoint_path: Path | None = None):
-    """Match merchants to Kakao places and attach menus.
+    """Match merchants to Kakao places.
 
     This is the slowest phase by far (a few API calls plus a delay per merchant),
     so pass progress_every=N to print a heartbeat every N merchants — without it a
@@ -165,11 +164,6 @@ def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3,
             if checkpoint_path is not None:
                 _append_checkpoint(checkpoint_path, key, "out_of_radius", dropped)
             continue
-        # menus are meaningless for convenience stores — skip the panel3 call
-        if m["category"] == "체인화 편의점":
-            menus = []
-        else:
-            menus = menu_fetcher(matched["place_id"])
         display_name = matched.get("place_name") or m["name"]
         search_keys = brands.search_keys(display_name)
         if display_name != m["name"]:
@@ -190,7 +184,6 @@ def build_dataset(merchants, matcher, menu_fetcher, delay_sec: float = 0.3,
             "distance_km": round(dist, 2),
             "kakao_place_id": matched["place_id"],
             "kakao_url": matched["kakao_url"],
-            "menus": menus,
         })
         rows.append(row)
         if checkpoint_path is not None:
@@ -224,7 +217,6 @@ def main() -> None:
     ap.add_argument("--districts", default=",".join(DISTRICTS))
     ap.add_argument("--codes", default=",".join(all_codes))
     ap.add_argument("--limit", type=int, default=0, help="stop after N merchants (smoke test)")
-    ap.add_argument("--skip-menus", action="store_true")
     ap.add_argument("--fresh", action="store_true",
                     help="discard any checkpoint and start the match phase from scratch")
     args = ap.parse_args()
@@ -247,10 +239,9 @@ def main() -> None:
             break
     print(f"[crawl] merchants: {len(merchants)}")
 
-    menu_fetcher = (lambda _pid: []) if args.skip_menus else menu_mod.fetch_menu
     out_of_radius: list = []
     duplicates: list = []
-    rows, unresolved = build_dataset(merchants, kakao_local.match_place, menu_fetcher,
+    rows, unresolved = build_dataset(merchants, kakao_local.match_place,
                                      progress_every=50, out_of_radius=out_of_radius,
                                      duplicates=duplicates, checkpoint_path=CHECKPOINT_PATH)
 
