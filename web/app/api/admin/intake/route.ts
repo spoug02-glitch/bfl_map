@@ -8,8 +8,11 @@ import { sql } from "@/lib/db";
  * 두 목록을 따로 부르지 않는 이유: 어드민이 보는 건 "지금 내가 처리할 게 있나"
  * 하나뿐이라, 나눠 부르면 화면이 두 번 깜빡이고 배지 숫자도 두 번 계산해야 한다.
  *
- * 업주 메뉴는 가게별로 묶어서 준다. 한 번 제출에 여러 줄이 들어오는데 줄 단위로
- * 승인하게 두면 같은 가게의 메뉴가 반쯤 확정된 상태가 생긴다.
+ * 대기 메뉴는 (가게, 출처) 단위로 묶어서 준다. 한 번 제출에 여러 줄이 들어오는데
+ * 줄 단위로 승인하게 두면 같은 가게의 메뉴가 반쯤 확정된 상태가 생긴다.
+ *
+ * source_type 을 'owner' 로 좁히지 않는다. 운영자가 직접 전사한 user_report 도
+ * 승인을 기다리는데, 좁혀두면 그건 검토 화면에 뜨지 않아 영원히 pending 으로 남는다.
  */
 export async function GET(req: NextRequest) {
   const ctx = await requireAdmin(req);
@@ -22,14 +25,15 @@ export async function GET(req: NextRequest) {
 
   const ownerMenus = await sql`
     SELECT place_id,
+           source_type,
            min(collected_at) AS submitted_at,
            min(source_ref)   AS contact,
            count(*)::int     AS item_count,
            json_agg(json_build_object('id', id, 'menuName', menu_name, 'price', price)
                     ORDER BY id) AS items
     FROM menu_items
-    WHERE source_type = 'owner' AND status = 'pending'
-    GROUP BY place_id
+    WHERE status = 'pending'
+    GROUP BY place_id, source_type
     ORDER BY min(collected_at) DESC
     LIMIT 100`;
 
@@ -38,7 +42,7 @@ export async function GET(req: NextRequest) {
 
 type Action = { target: "report" | "ownerMenu"; decision: "approve" | "reject" };
 
-function parseAction(json: unknown): (Action & { id?: number; placeId?: string }) | null {
+function parseAction(json: unknown): (Action & { id?: number; placeId?: string; sourceType?: string }) | null {
   if (typeof json !== "object" || json === null) return null;
   const o = json as Record<string, unknown>;
   const target = o.target === "report" || o.target === "ownerMenu" ? o.target : null;
@@ -49,6 +53,7 @@ function parseAction(json: unknown): (Action & { id?: number; placeId?: string }
     decision,
     id: typeof o.id === "number" ? o.id : undefined,
     placeId: typeof o.placeId === "string" ? o.placeId : undefined,
+    sourceType: typeof o.sourceType === "string" ? o.sourceType : undefined,
   };
 }
 
@@ -83,7 +88,7 @@ export async function PATCH(req: NextRequest) {
     return NextResponse.json({ ok: true });
   }
 
-  if (action.placeId === undefined) {
+  if (action.placeId === undefined || action.sourceType === undefined) {
     return NextResponse.json({ error: "잘못된 요청입니다." }, { status: 400 });
   }
   // 한 가게의 제출분은 통째로 승인하거나 통째로 물린다. 줄 단위로 가르면 같은
@@ -95,7 +100,8 @@ export async function PATCH(req: NextRequest) {
     UPDATE menu_items
     SET status = ${action.decision === "approve" ? "published" : "rejected"},
         verified_at = ${action.decision === "approve" ? new Date().toISOString() : null}
-    WHERE place_id = ${action.placeId} AND source_type = 'owner' AND status = 'pending'
+    WHERE place_id = ${action.placeId}
+      AND source_type = ${action.sourceType} AND status = 'pending'
     RETURNING id`;
   if (rows.length === 0) {
     return NextResponse.json({ error: "이미 처리된 건입니다." }, { status: 409 });

@@ -14,6 +14,7 @@ type Report = {
 
 type OwnerMenu = {
   place_id: string;
+  source_type: string;
   submitted_at: string;
   contact: string | null;
   item_count: number;
@@ -23,6 +24,15 @@ type OwnerMenu = {
 type PlaceName = Record<string, string>;
 
 const when = (iso: string) => new Date(iso).toLocaleString("ko-KR");
+
+// 업주 제출만 오는 게 아니다 — 운영자가 직접 전사한 것도 같은 줄에 선다.
+const SOURCE_LABEL: Record<string, string> = {
+  owner: "업주 제출",
+  user_report: "이용자 제보",
+  public_data: "공공데이터",
+  official_source: "공식 출처",
+  legacy_import: "출처 확인 중",
+};
 
 function Card({ children }: { children: React.ReactNode }) {
   return (
@@ -140,14 +150,15 @@ export default function IntakeQueue() {
       {ownerMenus.length > 0 && (
         <>
           <h3 className="mt-4 text-sm font-bold text-on-surface-variant">
-            업주 메뉴 승인 대기 {ownerMenus.length}
+            메뉴 승인 대기 {ownerMenus.length}
           </h3>
           <ul className="mt-2 space-y-2">
             {ownerMenus.map(o => (
-              <Card key={o.place_id}>
+              // 한 가게가 출처별로 여러 줄일 수 있어 place_id 만으로는 key 가 겹친다.
+              <Card key={`${o.place_id}:${o.source_type}`}>
                 <p className="font-bold text-on-surface">{placeLabel(o.place_id)}</p>
                 <p className="mt-0.5 text-xs text-on-surface-variant">
-                  {when(o.submitted_at)} · 연락처 {o.contact ?? "없음"}
+                  {SOURCE_LABEL[o.source_type] ?? o.source_type} · {when(o.submitted_at)} · {o.contact ?? "연락처 없음"}
                 </p>
                 <ul className="mt-2 space-y-0.5 text-sm">
                   {o.items.map(i => (
@@ -160,10 +171,10 @@ export default function IntakeQueue() {
                   ))}
                 </ul>
                 <Actions
-                  busy={busy === `o${o.place_id}`}
+                  busy={busy === `o${o.place_id}${o.source_type}`}
                   approveLabel={`${o.item_count}개 승인`}
-                  onApprove={() => act({ target: "ownerMenu", decision: "approve", placeId: o.place_id }, `o${o.place_id}`)}
-                  onReject={() => act({ target: "ownerMenu", decision: "reject", placeId: o.place_id }, `o${o.place_id}`)}
+                  onApprove={() => act({ target: "ownerMenu", decision: "approve", placeId: o.place_id, sourceType: o.source_type }, `o${o.place_id}${o.source_type}`)}
+                  onReject={() => act({ target: "ownerMenu", decision: "reject", placeId: o.place_id, sourceType: o.source_type }, `o${o.place_id}${o.source_type}`)}
                 />
               </Card>
             ))}

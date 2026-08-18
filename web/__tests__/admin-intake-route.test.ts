@@ -61,7 +61,9 @@ describe("GET /api/admin/intake", () => {
       .map(c => (c[0] as TemplateStringsArray).join("?").replace(/\s+/g, " "));
     expect(queries[0]).toContain("status = 'open'");
     expect(queries[1]).toContain("status = 'pending'");
-    expect(queries[1]).toContain("source_type = 'owner'");
+    // 출처로 좁히지 않는다 — 좁히면 운영자가 전사한 user_report 가 검토 화면에
+    // 뜨지 않아 영원히 pending 으로 남는다.
+    expect(queries[1]).not.toContain("source_type = 'owner'");
   });
 });
 
@@ -98,7 +100,7 @@ describe("PATCH /api/admin/intake", () => {
     sqlMock
       .mockResolvedValueOnce([{ is_active: true }])
       .mockResolvedValueOnce([{ id: 1 }, { id: 2 }, { id: 3 }]);
-    const res = await call("PATCH", { target: "ownerMenu", decision: "approve", placeId: "9" }, await token());
+    const res = await call("PATCH", { target: "ownerMenu", decision: "approve", placeId: "9", sourceType: "owner" }, await token());
     expect(res.status).toBe(200);
     expect((await res.json()).count).toBe(3);
     const q = lastSql();
@@ -111,7 +113,7 @@ describe("PATCH /api/admin/intake", () => {
 
   it("반려하면 확인 시각을 남기지 않는다", async () => {
     sqlMock.mockResolvedValueOnce([{ is_active: true }]).mockResolvedValueOnce([{ id: 1 }]);
-    await call("PATCH", { target: "ownerMenu", decision: "reject", placeId: "9" }, await token());
+    await call("PATCH", { target: "ownerMenu", decision: "reject", placeId: "9", sourceType: "owner" }, await token());
     const values = sqlMock.mock.calls.at(-1)!.slice(1);
     expect(values).toContain("rejected");
     expect(values).toContain(null);
