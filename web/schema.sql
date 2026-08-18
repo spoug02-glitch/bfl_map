@@ -68,3 +68,35 @@ CREATE TABLE IF NOT EXISTS visits (
   PRIMARY KEY (visitor_id, day)
 );
 CREATE INDEX IF NOT EXISTS idx_visits_day ON visits (day);
+
+-- 가게 저장(즐겨찾기). place_id에 외래 키를 걸지 않는 이유: 가게 목록은 DB가 아니라
+-- public/restaurants.json에 있다. 수집을 다시 돌려 사라진 가게는 화면단에서 걸러진다.
+CREATE TABLE IF NOT EXISTS saved_places (
+  user_id  TEXT NOT NULL REFERENCES users (user_id),
+  place_id TEXT NOT NULL,
+  saved_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (user_id, place_id)
+);
+
+-- 점심 특선 제보. PK(place_id, user_id) — 한 가게에 한 사람이 하나이고, 특선은 바뀌는
+-- 거라 다시 제보하면 덮어쓴다. 쌓지 않으니 도배도 안 된다.
+CREATE TABLE IF NOT EXISTS lunch_specials (
+  place_id   TEXT NOT NULL,
+  user_id    TEXT NOT NULL REFERENCES users(user_id),
+  menu_name  TEXT NOT NULL,
+  price      INTEGER NOT NULL,
+  taste      SMALLINT,
+  note       TEXT,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+  PRIMARY KEY (place_id, user_id)
+);
+
+-- 탈퇴 후 재가입 차단. 카카오 회원번호를 되돌릴 수 없는 값으로 바꾼 지문만 남긴다 —
+-- 이 값으로는 누구인지 알 수 없고, 로그인하는 계정과 대조하는 용도로만 쓴다.
+CREATE TABLE IF NOT EXISTS withdrawals (
+  fingerprint  TEXT PRIMARY KEY,
+  withdrawn_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+-- 기간이 지난 행은 남겨둘 이유가 없다. 지우는 일은 로그인 경로가 겸한다
+-- (그 순간이 이 표를 읽는 유일한 때다).
+CREATE INDEX IF NOT EXISTS withdrawals_withdrawn_at_idx ON withdrawals (withdrawn_at);
