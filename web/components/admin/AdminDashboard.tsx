@@ -1,5 +1,7 @@
 "use client";
 
+import IntakeQueue from "@/components/admin/IntakeQueue";
+
 import { useCallback, useEffect, useState } from "react";
 import { isSuspensionActive } from "@/lib/suspension";
 
@@ -235,6 +237,10 @@ export default function AdminDashboard({ role }: { role: "super_admin" | "operat
           <button className="text-sm text-on-surface-variant underline" onClick={logout}>로그아웃</button>
         </div>
       </div>
+
+      {/* 접수함이 통계보다 위에 있다. 통계는 봐도 그만이지만 접수함은 방치되면
+          스펙이 걱정한 그대로 — 열어놓고 아무도 안 보는 창구가 된다. */}
+      <IntakeQueue />
 
       {/* 트래픽 양과 재방문 질은 성격이 달라 줄을 나눈다 — 다섯 개를 한 줄에
           몰면 좁은 화면에서 어느 숫자가 무엇인지 읽히지 않는다. */}
