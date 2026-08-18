@@ -11,7 +11,8 @@ import SiteFooter from "@/components/SiteFooter";
 import RoulettePanel from "@/components/RoulettePanel";
 import PlaceList, { type ListTab, type MyReview } from "@/components/PlaceList";
 import {
-  BlogLink,
+  type OwnBlogLinks,
+  type FoundBlogLinks,
   CATEGORY_GROUPS,
   DEFAULT_VIEW_RADIUS_KM,
   RADIUS_KM,
@@ -46,7 +47,9 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const mapApi = useRef<MapApi | null>(null);
   const [selected, setSelected] = useState<Restaurant | null>(null);
   const [user, setUser] = useState<SessionUser | null>(null);
-  const [blogLinks, setBlogLinks] = useState<Record<string, BlogLink>>({});
+  const [blogLinks, setBlogLinks] = useState<OwnBlogLinks>({});
+  // 검색으로 모은 제3자 후기. 만든 이 후기와 자리도 무게도 다르다.
+  const [foundBlogs, setFoundBlogs] = useState<FoundBlogLinks>({});
   const [staleLink, setStaleLink] = useState(false);
   const [loginError, setLoginError] = useState<string | null>(null);
   const [editingNickname, setEditingNickname] = useState(false);
@@ -78,7 +81,8 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
       .then(r => r.json())
       .then(d => setUser(d.user ?? null))
       .catch(() => setUser(null));
-    fetch("/blog_links.json").then(r => r.json()).then(setBlogLinks).catch(() => {});
+    fetch("/obanaeodzb_blog_links.json").then(r => r.json()).then(setBlogLinks).catch(() => {});
+    fetch("/blog_links.json").then(r => r.json()).then(setFoundBlogs).catch(() => {});
     fetch("/api/specials")
       .then(r => r.json())
       .then(d =>
@@ -346,6 +350,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             restaurant={selected}
             user={user}
             blogLink={blogLinks[selected.kakao_place_id]}
+            foundBlogs={foundBlogs[selected.kakao_place_id]}
             saved={savedIds.has(selected.kakao_place_id)}
             onToggleSaved={toggleSaved}
             onClose={() => { setSelected(null); loadMine(); }}

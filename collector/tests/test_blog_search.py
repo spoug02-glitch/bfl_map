@@ -48,3 +48,28 @@ def test_pick_never_stores_post_body():
               "description": "본문 일부가 여기 들어온다"}]
     (row,) = bs.pick("코토코토", items)
     assert set(row) == {"url", "title"}
+
+
+# 아래 제목들은 실제 수집분에서 나온 오탐이다. 상호가 제목에 있지만 다른 가게다.
+def test_rejects_shop_of_the_same_name_in_another_city():
+    assert not bs.looks_like_same_shop("미스테이크", "창원 마산 분위기 좋은 양식전문 맛집 '미스테이크'")
+    assert not bs.looks_like_same_shop("포대포", "대전 송촌동 한우소곱창 포대포소곱창구이")
+    assert not bs.looks_like_same_shop("맥켄치킨", "성남 금광동 치킨 맛집 맥켄치킨")
+
+
+def test_rejects_short_name_that_is_just_a_common_word():
+    assert not bs.looks_like_same_shop("미자", "오지산행후기(800차) 다시 미자사냥")
+    assert not bs.looks_like_same_shop("주장", "주장하는 글쓰기 + 논술 수행 평가")
+    assert not bs.looks_like_same_shop("행운", "토스행운의 퀴즈 정답 유플러스 다이브")
+
+
+# 길이만으로 자르면 이것들을 잃는다. 2자 상호 78건 중 대부분이 이런 정상 글이었다.
+def test_keeps_short_name_when_the_area_backs_it_up():
+    assert bs.looks_like_same_shop("긱", "창동 긱 분위기 좋은 빙수 맛집 추천")
+    assert bs.looks_like_same_shop("소녹", "쌍문역 카페 소녹 말차라떼 딸기롤케이크 맛집")
+    assert bs.looks_like_same_shop("늘", "[창동] 창동역 안주 맛집 이자카야 '늘'")
+
+
+def test_keeps_a_local_post_that_also_names_another_area():
+    # 우리 지역이 함께 있으면 다른 지명이 있어도 받는다 — "창동 수유역 …" 같은 글.
+    assert bs.looks_like_same_shop("야끼니꾸소량 수유점", "창동 수유역 술집 야끼니꾸소량 수유점")

@@ -16,11 +16,20 @@ export const DEFAULT_VIEW_RADIUS_KM = 0.2;
 /** 브라우저가 아는 로그인 상태. `nickname`이 null이면 아직 닉네임을 안 정한 것이다. */
 export type SessionUser = { userId: string; nickname: string | null; suspendedUntil: string | null };
 
-/** blog_links.json: kakao_place_id -> 만든 이가 쓴 후기 */
+/** 블로그 글 한 건. 제목과 주소만 담는다 — 본문은 어디에도 저장하지 않는다. */
 export interface BlogLink {
   url: string;
   title: string;
 }
+
+/**
+ * 두 출처를 섞지 않는다.
+ * - obanaeodzb_blog_links.json: 만든 이가 직접 쓴 후기. 손으로 관리하고 가게당 하나.
+ * - blog_links.json: 네이버 검색으로 모은 제3자 후기. collector/blog_search.py 가 만들고
+ *   가게당 여러 건일 수 있다. 정확도가 100%가 아니라 화면에서 약하게 다룬다.
+ */
+export type OwnBlogLinks = Record<string, BlogLink>;
+export type FoundBlogLinks = Record<string, BlogLink[]>;
 
 /** 카카오 place_id는 숫자 문자열이다. 외부에서 들어온 값은 이걸 통과해야 한다. */
 export const PLACE_ID_RE = /^\d{1,20}$/;
