@@ -1,3 +1,5 @@
+import { type DbMenuItem, dbMinPrice } from "@/lib/menu-source";
+
 export const OFFICE_LABEL = "창동씨드큐브";
 export const CENTER = { lat: 37.6545, lng: 127.0499 }; // 창동씨드큐브
 export const RADIUS_KM = 5.0;
@@ -77,17 +79,30 @@ export type SpecialPrice = { menuName: string; price: number };
 export const SPECIAL_DISCLAIMER = "이용자 제보라 확인된 정보가 아니에요. 지금은 다를 수 있어요.";
 
 /**
- * 가격 필터가 보는 그 가게의 최저가. 카카오 메뉴와 제보 중 싼 쪽이다.
- * 오스시가 카카오에는 17,000원짜리로 보여도 1만원 특선 제보가 있으면
- * "1만원 이하"를 통과해야 한다 — 제보를 받는 이유가 그거다.
+ * 가격 필터가 보는 그 가게의 최저가. 출처가 다른 세 값 중 가장 싼 것이다.
+ *
+ * 오스시가 카카오에는 17,000원짜리로 보여도 1만원 특선 제보가 있으면 "1만원 이하"를
+ * 통과해야 한다 — 제보를 받는 이유가 그거다.
+ *
+ * dbItems(menu_items)를 먼저 본다. 카카오 메뉴는 이제 fallback 이다. 이 순서가
+ * 뒤집혀 있는 동안에는 크롤러를 끄는 순간 필터의 후보가 전멸했다 — 5,834곳 중
+ * 4,442곳의 가격이 그 한 경로에서만 왔기 때문이다.
+ *
+ * dbItems 를 넘기지 않으면 예전과 똑같이 동작한다. 호출부를 한꺼번에 고치지 않아도
+ * 되게 선택 인자로 뒀다.
  */
 export function effectiveMinPrice(
   menus: { price: string }[],
   special: SpecialPrice | undefined,
+  dbItems?: DbMenuItem[],
 ): number | null {
+  const candidates: number[] = [];
+  const fromDb = dbItems ? dbMinPrice(dbItems) : null;
+  if (fromDb !== null) candidates.push(fromDb);
   const kakao = minMenuPrice(menus);
-  if (!special) return kakao;
-  return kakao === null ? special.price : Math.min(kakao, special.price);
+  if (kakao !== null) candidates.push(kakao);
+  if (special) candidates.push(special.price);
+  return candidates.length === 0 ? null : Math.min(...candidates);
 }
 
 export const CONVENIENCE_CATEGORY = "체인화 편의점";

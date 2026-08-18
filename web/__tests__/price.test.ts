@@ -2,6 +2,8 @@ import { describe, expect, it } from "vitest";
 import {
   PRICE_LIMITS, cheapestMenu, effectiveMinPrice, minMenuPrice, priceLimitLabel,
 } from "@/lib/constants";
+import { dbMinPrice } from "@/lib/menu-source";
+import type { DbMenuItem } from "@/lib/menu-source";
 
 const menu = (price: string) => ({ name: `${price}짜리`, price });
 
@@ -63,5 +65,46 @@ describe("minMenuPrice", () => {
     expect(priceLimitLabel(10000)).toBe("1만원 이하");
     expect(priceLimitLabel(15000)).toBe("1.5만원 이하");
     expect(priceLimitLabel(20000)).toBe("2만원 이하");
+  });
+});
+
+describe("effectiveMinPrice — DB 메뉴 우선", () => {
+  const db = (price: number | null, status: DbMenuItem["status"] = "published"): DbMenuItem => ({
+    menuName: "메뉴", price, sourceType: "user_report", status, verifiedAt: null,
+  });
+
+  // 기존 호출부(MapApp.tsx)가 인자 두 개로 부른다. 그게 계속 컴파일되고 같은 값을 내야 한다.
+  it("세 번째 인자 없이 부르면 기존과 같다", () => {
+    expect(effectiveMinPrice([menu("9000")], undefined)).toBe(9000);
+  });
+
+  it("DB 메뉴가 카카오보다 싸면 DB를 쓴다", () => {
+    expect(effectiveMinPrice([menu("12000")], undefined, [db(7000)])).toBe(7000);
+  });
+
+  it("카카오가 더 싸도 둘 중 싼 쪽이다", () => {
+    expect(effectiveMinPrice([menu("6000")], undefined, [db(9000)])).toBe(6000);
+  });
+
+  // 이 한 줄이 이 작업의 목적이다 — 크롤러를 꺼도 가격 필터가 산다.
+  it("카카오 메뉴가 없어도 DB만으로 가격이 나온다", () => {
+    expect(effectiveMinPrice([], undefined, [db(8000)])).toBe(8000);
+  });
+
+  it("DB에 pending만 있으면 가격이 없는 것으로 본다", () => {
+    expect(effectiveMinPrice([], undefined, [db(3000, "pending")])).toBeNull();
+  });
+
+  it("제보 특선과 DB 메뉴가 함께 있으면 셋 중 최저가", () => {
+    expect(effectiveMinPrice([menu("12000")], { menuName: "특선", price: 10000 }, [db(8000)])).toBe(8000);
+  });
+
+  it("셋 다 없으면 null", () => {
+    expect(effectiveMinPrice([], undefined, [])).toBeNull();
+  });
+
+  it("dbMinPrice와 같은 판정을 쓴다", () => {
+    const items = [db(5000, "rejected"), db(9000)];
+    expect(effectiveMinPrice([], undefined, items)).toBe(dbMinPrice(items));
   });
 });
