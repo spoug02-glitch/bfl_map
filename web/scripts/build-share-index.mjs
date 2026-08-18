@@ -19,8 +19,8 @@ for (const r of restaurants) {
     name: r.name,
     category: r.category,
     distance_km: r.distance_km,
-    // 대표 메뉴 하나면 충분하다 — 카드 설명에 한 줄만 들어간다.
-    menus: r.menus.length > 0 ? [{ name: r.menus[0].name, price: r.menus[0].price }] : [],
+    // 메뉴는 담지 않는다. 카카오 메뉴 수집을 접은 뒤 restaurants.json 에는 menus 가
+    // 아예 없고, 여기서 r.menus.length 를 읽으면 다음 수집분에서 그대로 터진다.
   };
 }
 
