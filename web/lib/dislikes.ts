@@ -54,31 +54,18 @@ export function dislikeKeywords(d: Dislikes): string[] {
   return [...fromPresets.map(normalizeQuery), ...fromCustom];
 }
 
-/** 메뉴 중 몇 개나 걸리면 "그 집"으로 볼지. 과반이다. */
-function isMajority(hit: number, total: number): boolean {
-  return hit * 2 > total;
-}
-
 /**
  * 이 가게를 빼야 하나.
  *
- * 메뉴에 한 번 걸렸다고 빼지 않는다 — 한식집 메뉴판에 초밥 한 줄 있다고 그 집을
- * 지우면 갈 데가 없어진다. 그 음식이 **그 집의 정체**일 때만 뺀다:
- * 이름에 있거나(오스시, 미스사이공), 표시된 메뉴의 과반이 그것이거나.
+ * 카카오 메뉴 수집이 저작권 문제로 중단돼 메뉴 기반 판단(표시된 메뉴의 과반이
+ * 그 음식이면 뺀다)은 더 이상 할 수 없다. 이름에 그 음식이 있을 때만 뺀다
+ * (오스시, 미스사이공) — 예전보다 좁아졌지만 근거 없이 지우는 것보다는 낫다.
  */
 export function isDisliked(place: Restaurant, keywords: string[]): boolean {
   if (keywords.length === 0) return false;
 
   // search_keys는 수집기가 별칭까지 정규화해 넣어둔 이름들이다
-  if (place.search_keys.some(k => keywords.some(w => k.includes(w)))) return true;
-
-  const menus = place.menus;
-  if (menus.length === 0) return false;
-  const hit = menus.filter(m => {
-    const name = normalizeQuery(m.name);
-    return keywords.some(w => name.includes(w));
-  }).length;
-  return isMajority(hit, menus.length);
+  return place.search_keys.some(k => keywords.some(w => k.includes(w)));
 }
 
 // ── 저장소 ────────────────────────────────────────────────────────────────

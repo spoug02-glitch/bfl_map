@@ -162,7 +162,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     () =>
       priceLimit !== null
         ? matched.filter(r =>
-            effectiveMinPrice(r.menus, specialPrices.get(r.kakao_place_id), dbItemsFor(r.kakao_place_id)) === null,
+            effectiveMinPrice(specialPrices.get(r.kakao_place_id), dbItemsFor(r.kakao_place_id)) === null,
           ).length
         : 0,
     [matched, priceLimit, specialPrices, dbItemsFor],
@@ -171,7 +171,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const ranked = useMemo(() => {
     const kept = priceLimit !== null
       ? matched.filter(r => {
-          const min = effectiveMinPrice(r.menus, specialPrices.get(r.kakao_place_id), dbItemsFor(r.kakao_place_id));
+          const min = effectiveMinPrice(specialPrices.get(r.kakao_place_id), dbItemsFor(r.kakao_place_id));
           return min !== null && min <= priceLimit;
         })
       : matched;

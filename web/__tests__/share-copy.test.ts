@@ -5,7 +5,6 @@ const sundae: ShareSubject = {
   name: "순대실록 창동씨드큐브점",
   category: "한식 일반 음식점업",
   distance_km: 0.04,
-  menus: [{ name: "항정 순대국", price: "15000" }],
 };
 
 describe("shareTitle", () => {
@@ -20,31 +19,12 @@ describe("shareTitle", () => {
 });
 
 describe("shareDescription", () => {
-  it("leads with the distance and adds the top menu with a formatted price", () => {
-    expect(shareDescription(sundae)).toBe("씨드큐브에서 0.04km · 항정 순대국 15,000원");
-  });
-
-  it("omits the menu clause when the place has no menu", () => {
-    expect(shareDescription({ ...sundae, menus: [] })).toBe("씨드큐브에서 0.04km");
-  });
-
-  it("omits the menu clause when the menu carries no price", () => {
-    // 편의점처럼 가격이 비어 오는 경우 — "메뉴 원"이 붙으면 안 된다
-    expect(shareDescription({ ...sundae, menus: [{ name: "도시락", price: "" }] })).toBe(
-      "씨드큐브에서 0.04km",
-    );
-  });
-
-  it("omits the menu clause when Kakao reports the price as undisclosed", () => {
-    // 카카오 panel3은 가격 미공개를 "-1"로 준다 (수집분의 25%). 그대로 쓰면
-    // 공유 카드에 "-1원"이 나가 틀린 가격을 퍼뜨린다.
-    const undisclosed = { ...sundae, menus: [{ name: "더티땅콩라떼", price: "-1" }] };
-    expect(shareDescription(undisclosed)).toBe("씨드큐브에서 0.04km");
-    expect(shareDescription(undisclosed)).not.toContain("-1");
+  it("leads with the distance", () => {
+    expect(shareDescription(sundae)).toBe("씨드큐브에서 0.04km");
   });
 
   it("stays inside the Kakao feed template's 76 character description limit", () => {
-    const long: ShareSubject = { ...sundae, menus: [{ name: "가".repeat(80), price: "1000" }] };
+    const long: ShareSubject = { ...sundae, distance_km: 1234.5678 };
     expect(shareDescription(long).length).toBeLessThanOrEqual(76);
   });
 });

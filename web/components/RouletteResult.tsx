@@ -102,7 +102,7 @@ export default function RouletteResult({ draw }: { draw: LadderDraw | null }) {
             </p>
             {/* 뭘 파는 곳인지 여기서 알려주지 않으면 결국 카카오맵을 다시 연다 */}
             <div className="mt-4 border-t border-outline-variant pt-4">
-              <MenuLines menus={winnerPlace.menus} special={special} max={4} />
+              <MenuLines special={special} />
             </div>
           </>
         )}

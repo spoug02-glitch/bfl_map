@@ -1,5 +1,3 @@
-import { formatPrice } from "@/lib/constants";
-
 /**
  * 공유 카드 문구. 카카오톡 공유와 링크 미리보기(OG 태그)가 같은 문구를 쓰도록
  * 한 곳에 둔다 — 두 군데서 따로 만들면 조용히 갈라진다.
@@ -11,7 +9,6 @@ export type ShareSubject = {
   name: string;
   category: string;
   distance_km: number;
-  menus: { name: string; price: string }[];
 };
 
 /** 카카오 Feed 템플릿의 title 상한이 40자다. */
@@ -24,12 +21,7 @@ export function shareTitle(r: ShareSubject): string {
 }
 
 export function shareDescription(r: ShareSubject): string {
-  const top = r.menus[0];
-  // 가격이 미공개(-1)거나 비어 있으면 메뉴 자체를 뺀다 — 공유 카드에 "-1원"이
-  // 나가면 틀린 정보를 퍼뜨리는 셈이다.
-  const price = top ? formatPrice(top.price) : null;
-  const menuPart = price ? ` · ${top.name} ${price}` : "";
-  return `씨드큐브에서 ${r.distance_km}km${menuPart}`.slice(0, DESC_MAX);
+  return `씨드큐브에서 ${r.distance_km}km`.slice(0, DESC_MAX);
 }
 
 /** 공유 링크. 가게별 OG 태그가 붙는 경로여야 슬랙·디스코드에서 카드가 뜬다. */

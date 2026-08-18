@@ -47,31 +47,6 @@ export function priceLimitLabel(limit: number): string {
   return `${n} 이하`;
 }
 
-/**
- * 표시된 메뉴 중 가장 싼 값. 쓸 수 있는 가격이 하나도 없으면 null이다.
- *
- * 카카오가 주는 메뉴는 가게당 최대 5개라 이건 그 가게의 진짜 최저가가 아니라
- * "표시된 메뉴 중 최저가"다. 화면 문구도 그 이상을 약속하지 않는다.
- *
- * 미공개(-1)와 빈 문자열을 반드시 걸러야 한다 — 그냥 Number()로 받으면 최저가가
- * -1이 되어 모든 가게가 상한을 통과해버린다. formatPrice와 같은 기준이다.
- */
-export function cheapestMenu<T extends { price: string }>(menus: T[]): T | null {
-  let best: T | null = null;
-  let min = Infinity;
-  for (const m of menus) {
-    const n = Number(m.price);
-    if (!Number.isFinite(n) || n <= 0) continue;
-    if (n < min) { min = n; best = m; }
-  }
-  return best;
-}
-
-export function minMenuPrice(menus: { price: string }[]): number | null {
-  const m = cheapestMenu(menus);
-  return m ? Number(m.price) : null;
-}
-
 /** 가게별 최저가 점심특선 제보. /api/specials(전체)가 내려준다. */
 export type SpecialPrice = { menuName: string; price: number };
 
@@ -79,28 +54,21 @@ export type SpecialPrice = { menuName: string; price: number };
 export const SPECIAL_DISCLAIMER = "이용자 제보라 확인된 정보가 아니에요. 지금은 다를 수 있어요.";
 
 /**
- * 가격 필터가 보는 그 가게의 최저가. 출처가 다른 세 값 중 가장 싼 것이다.
+ * 가격 필터가 보는 그 가게의 최저가. 출처가 다른 두 값 중 가장 싼 것이다.
  *
- * 오스시가 카카오에는 17,000원짜리로 보여도 1만원 특선 제보가 있으면 "1만원 이하"를
- * 통과해야 한다 — 제보를 받는 이유가 그거다.
+ * 오스시가 menu_items에는 17,000원짜리로 등록돼 있어도 1만원 특선 제보가 있으면
+ * "1만원 이하"를 통과해야 한다 — 제보를 받는 이유가 그거다.
  *
- * dbItems(menu_items)를 먼저 본다. 카카오 메뉴는 이제 fallback 이다. 이 순서가
- * 뒤집혀 있는 동안에는 크롤러를 끄는 순간 필터의 후보가 전멸했다 — 5,834곳 중
- * 4,442곳의 가격이 그 한 경로에서만 왔기 때문이다.
- *
- * dbItems 를 넘기지 않으면 예전과 똑같이 동작한다. 호출부를 한꺼번에 고치지 않아도
- * 되게 선택 인자로 뒀다.
+ * 카카오 크롤러는 저작권 문제로 중단됐다(menus는 이제 항상 빈 배열). 가격은
+ * menu_items(DB)와 lunch_specials(제보) 두 경로로만 들어온다.
  */
 export function effectiveMinPrice(
-  menus: { price: string }[],
   special: SpecialPrice | undefined,
   dbItems?: DbMenuItem[],
 ): number | null {
   const candidates: number[] = [];
   const fromDb = dbItems ? dbMinPrice(dbItems) : null;
   if (fromDb !== null) candidates.push(fromDb);
-  const kakao = minMenuPrice(menus);
-  if (kakao !== null) candidates.push(kakao);
   if (special) candidates.push(special.price);
   return candidates.length === 0 ? null : Math.min(...candidates);
 }
@@ -202,5 +170,4 @@ export interface Restaurant {
   distance_km: number;
   kakao_place_id: string;
   kakao_url: string;
-  menus: { name: string; price: string }[];
 }

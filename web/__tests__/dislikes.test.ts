@@ -3,7 +3,7 @@ import { DISLIKE_PRESETS, dislikeKeywords, isDisliked, parseDislikes } from "@/l
 import type { Restaurant } from "@/lib/constants";
 import { normalizeQuery } from "@/lib/constants";
 
-function place(name: string, menuNames: string[]): Restaurant {
+function place(name: string): Restaurant {
   return {
     kakao_place_id: "1",
     name,
@@ -16,7 +16,6 @@ function place(name: string, menuNames: string[]): Restaurant {
     lat: 0,
     lng: 0,
     distance_km: 0.1,
-    menus: menuNames.map(n => ({ name: n, price: "10000" })),
   } as Restaurant;
 }
 
@@ -68,46 +67,23 @@ describe("parseDislikes", () => {
 
 describe("isDisliked", () => {
   it("설정이 비어 있으면 아무도 안 뺀다", () => {
-    expect(isDisliked(place("오스시", ["광어초밥"]), [])).toBe(false);
+    expect(isDisliked(place("오스시"), [])).toBe(false);
   });
 
   it("가게 이름에 걸리면 뺀다 — 그게 그 집이다", () => {
-    expect(isDisliked(place("오스시", ["계란찜", "우동"]), sushi)).toBe(true);
+    expect(isDisliked(place("오스시"), sushi)).toBe(true);
   });
 
-  // 이 규칙이 이 기능의 핵심이다
-  it("메뉴 하나만 걸린 집은 남긴다", () => {
-    const 한식집 = place("종로김밥", ["김밥", "라면", "초밥", "돈까스", "제육덮밥"]);
-    expect(isDisliked(한식집, sushi)).toBe(false);
-  });
-
-  it("메뉴 과반이 걸리면 뺀다", () => {
-    const 초밥집 = place("바다상회", ["모둠초밥", "특초밥", "초밥세트", "우동", "계란찜"]);
-    expect(isDisliked(초밥집, sushi)).toBe(true);
-  });
-
-  it("딱 절반은 남긴다 — 과반이어야 뺀다", () => {
-    const 반반 = place("바다상회", ["모둠초밥", "특초밥", "우동", "돈까스"]);
-    expect(isDisliked(반반, sushi)).toBe(false);
-  });
-
-  it("메뉴가 없으면 이름으로만 판단한다", () => {
-    expect(isDisliked(place("김가네", []), sushi)).toBe(false);
-    expect(isDisliked(place("스시로", []), sushi)).toBe(true);
+  // 카카오 메뉴 수집이 중단돼 이제 이름으로만 판단한다.
+  it("이름에 없으면 남긴다", () => {
+    expect(isDisliked(place("김가네"), sushi)).toBe(false);
+    expect(isDisliked(place("스시로"), sushi)).toBe(true);
   });
 
   it("띄어쓰기가 달라도 걸린다", () => {
     const pho = dislikeKeywords({ presets: ["pho"], custom: [] });
     // 이름이 띄어져 있어도 정규화되어 걸린다
-    expect(isDisliked(place("사이공 쌀 국수", ["볶음밥"]), pho)).toBe(true);
-    // 메뉴 쪽도 마찬가지 — 5개 중 3개면 과반이다
-    expect(
-      isDisliked(place("반포식당", ["소고기 쌀 국수", "해물 쌀국수", "차돌쌀국수", "볶음밥", "짜조"]), pho),
-    ).toBe(true);
-    // 같은 집이라도 쌀국수가 하나뿐이면 남는다
-    expect(
-      isDisliked(place("반포식당", ["소고기 쌀 국수", "제육덮밥", "김치찌개", "볶음밥", "짜조"]), pho),
-    ).toBe(false);
+    expect(isDisliked(place("사이공 쌀 국수"), pho)).toBe(true);
   });
 
   it("프리셋 키워드는 짧은 조각을 쓰지 않는다", () => {

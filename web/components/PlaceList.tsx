@@ -1,7 +1,7 @@
 "use client";
 
 import DislikeSettings from "@/components/DislikeSettings";
-import { OFFICE_LABEL, Restaurant, SpecialPrice, cheapestMenu, formatPrice, minMenuPrice } from "@/lib/constants";
+import { OFFICE_LABEL, Restaurant, SpecialPrice, formatPrice } from "@/lib/constants";
 
 export type ListedPlace = { place: Restaurant; distanceKm: number };
 export type MyReview = {
@@ -167,28 +167,19 @@ export default function PlaceList({
           ) : (
             <ul className="mt-1">
               {shown.map(({ place, distanceKm }) => {
-                // 가격으로 걸렀으면 그 가게를 통과시킨 메뉴를 보여준다. 대표메뉴를
-                // 그대로 쓰면 "1만원 이하"를 켜놓고 15,000원이 떠서 필터가 고장 난
-                // 것처럼 읽힌다. 제보 특선이 카카오 최저가보다 싸면 통과 근거는
-                // 특선이다 — 출처가 다르니 "특선"이라고 밝힌다.
+                // 가격으로 걸렀으면 그 가게를 통과시킨 근거를 보여준다. 통과 근거는
+                // 둘 중 가장 싼 값이다 — DB 가격 덕에 통과한 가게가 상한보다 비싼
+                // 값을 달고 나오면 필터가 고장 난 것처럼 읽힌다.
                 const special = specialPrices.get(place.kakao_place_id);
-                const kakaoMin = minMenuPrice(place.menus);
                 const dbMin = dbMinPrices.get(place.kakao_place_id);
-                // 통과 근거는 셋 중 가장 싼 값이다. 카카오 메뉴만 보고 줄을 쓰면
-                // DB 가격 덕에 통과한 가게가 아무 가격도 없거나 상한보다 비싼
-                // 값을 달고 나와, 필터가 고장 난 것처럼 읽힌다.
                 const cheapest = Math.min(
-                  ...[dbMin, special?.price, kakaoMin].filter((v): v is number => v != null),
+                  ...[dbMin, special?.price].filter((v): v is number => v != null),
                 );
                 let line = "";
                 if (priceFiltered && dbMin !== undefined && dbMin === cheapest) {
                   line = ` · ${formatPrice(String(dbMin))}부터`;
                 } else if (priceFiltered && special && special.price === cheapest) {
                   line = ` · 특선 ${special.menuName} ${formatPrice(String(special.price))}`;
-                } else {
-                  const top = priceFiltered ? cheapestMenu(place.menus) : place.menus[0];
-                  const price = top ? formatPrice(top.price) : null;
-                  if (top && price) line = ` · ${top.name} ${price}`;
                 }
                 return (
                   <Row

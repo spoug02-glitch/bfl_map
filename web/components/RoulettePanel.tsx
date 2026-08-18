@@ -279,7 +279,6 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
               </p>
               <div className="mt-3 border-t border-outline-variant pt-3">
                 <MenuLines
-                  menus={picked[winner].menus}
                   special={specialPrices.get(picked[winner].kakao_place_id)}
                 />
               </div>

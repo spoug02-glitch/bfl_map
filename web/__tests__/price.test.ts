@@ -1,63 +1,9 @@
 import { describe, expect, it } from "vitest";
-import {
-  PRICE_LIMITS, cheapestMenu, effectiveMinPrice, minMenuPrice, priceLimitLabel,
-} from "@/lib/constants";
+import { PRICE_LIMITS, effectiveMinPrice, priceLimitLabel } from "@/lib/constants";
 import { dbMinPrice } from "@/lib/menu-source";
 import type { DbMenuItem } from "@/lib/menu-source";
 
-const menu = (price: string) => ({ name: `${price}짜리`, price });
-
-describe("cheapestMenu", () => {
-  // 목록에 대표메뉴 가격을 그대로 띄우면 "1만원 이하"를 켜놓고 15,000원이 보인다.
-  // 필터가 통과시킨 근거가 된 메뉴를 보여줘야 말이 맞는다.
-  it("필터를 통과시킨 그 메뉴를 돌려준다", () => {
-    const menus = [menu("15000"), menu("8000"), menu("12000")];
-    expect(cheapestMenu(menus)?.name).toBe("8000짜리");
-  });
-
-  it("쓸 수 있는 가격이 없으면 null이다", () => {
-    expect(cheapestMenu([menu("-1"), menu("")])).toBeNull();
-    expect(cheapestMenu([])).toBeNull();
-  });
-});
-
-describe("minMenuPrice", () => {
-  it("표시된 메뉴 중 가장 싼 값을 고른다", () => {
-    expect(minMenuPrice([menu("15000"), menu("8000"), menu("12000")])).toBe(8000);
-  });
-
-  it("메뉴가 없으면 null이다", () => {
-    expect(minMenuPrice([])).toBeNull();
-  });
-
-  // 카카오 panel3은 가격 미공개를 -1로 준다. 이걸 숫자로 받으면 최저가가 -1이 되어
-  // 모든 가게가 "1만원 이하"를 통과해버린다.
-  it("-1(미공개)은 가격으로 치지 않는다", () => {
-    expect(minMenuPrice([menu("-1"), menu("-1")])).toBeNull();
-    expect(minMenuPrice([menu("-1"), menu("9000")])).toBe(9000);
-  });
-
-  it("빈 문자열과 숫자가 아닌 값도 가격으로 치지 않는다", () => {
-    expect(minMenuPrice([menu(""), menu("가격문의")])).toBeNull();
-    expect(minMenuPrice([menu(""), menu("7000")])).toBe(7000);
-  });
-
-  it("0원은 가격으로 치지 않는다", () => {
-    expect(minMenuPrice([menu("0")])).toBeNull();
-  });
-
-  // 오스시 사례: 카카오 최저가 17,000이어도 1만원 특선 제보가 있으면 그게 최저가다.
-  it("점심특선 제보가 카카오 가격보다 싸면 그쪽이 최저가다", () => {
-    const menus = [menu("17000"), menu("20000")];
-    expect(effectiveMinPrice(menus, { menuName: "특선", price: 10000 })).toBe(10000);
-    expect(effectiveMinPrice(menus, undefined)).toBe(17000);
-    // 제보가 더 비싸면 카카오 값이 이긴다
-    expect(effectiveMinPrice(menus, { menuName: "특선", price: 19000 })).toBe(17000);
-    // 카카오 가격이 아예 없어도 제보만으로 가격 있는 가게가 된다
-    expect(effectiveMinPrice([menu("-1")], { menuName: "특선", price: 9000 })).toBe(9000);
-    expect(effectiveMinPrice([menu("-1")], undefined)).toBeNull();
-  });
-
+describe("priceLimitLabel", () => {
   it("상한 선택지와 라벨", () => {
     expect(PRICE_LIMITS).toContain(10000);
     expect(priceLimitLabel(5000)).toBe("5천원 이하");
@@ -68,43 +14,35 @@ describe("minMenuPrice", () => {
   });
 });
 
-describe("effectiveMinPrice — DB 메뉴 우선", () => {
+describe("effectiveMinPrice", () => {
   const db = (price: number | null, status: DbMenuItem["status"] = "published"): DbMenuItem => ({
     menuName: "메뉴", price, sourceType: "user_report", status, verifiedAt: null,
   });
 
-  // 기존 호출부(MapApp.tsx)가 인자 두 개로 부른다. 그게 계속 컴파일되고 같은 값을 내야 한다.
-  it("세 번째 인자 없이 부르면 기존과 같다", () => {
-    expect(effectiveMinPrice([menu("9000")], undefined)).toBe(9000);
+  it("특선 제보만 있으면 그 값이 최저가다", () => {
+    expect(effectiveMinPrice({ menuName: "특선", price: 10000 })).toBe(10000);
   });
 
-  it("DB 메뉴가 카카오보다 싸면 DB를 쓴다", () => {
-    expect(effectiveMinPrice([menu("12000")], undefined, [db(7000)])).toBe(7000);
+  it("특선도 DB도 없으면 null", () => {
+    expect(effectiveMinPrice(undefined)).toBeNull();
   });
 
-  it("카카오가 더 싸도 둘 중 싼 쪽이다", () => {
-    expect(effectiveMinPrice([menu("6000")], undefined, [db(9000)])).toBe(6000);
+  it("DB 메뉴만 있으면 그 값이 최저가다", () => {
+    expect(effectiveMinPrice(undefined, [db(7000)])).toBe(7000);
   });
 
-  // 이 한 줄이 이 작업의 목적이다 — 크롤러를 꺼도 가격 필터가 산다.
-  it("카카오 메뉴가 없어도 DB만으로 가격이 나온다", () => {
-    expect(effectiveMinPrice([], undefined, [db(8000)])).toBe(8000);
+  // 오스시 사례: DB 최저가 17,000이어도 1만원 특선 제보가 있으면 그게 최저가다.
+  it("특선과 DB가 함께 있으면 둘 중 싼 쪽이다", () => {
+    expect(effectiveMinPrice({ menuName: "특선", price: 10000 }, [db(17000)])).toBe(10000);
+    expect(effectiveMinPrice({ menuName: "특선", price: 19000 }, [db(17000)])).toBe(17000);
   });
 
   it("DB에 pending만 있으면 가격이 없는 것으로 본다", () => {
-    expect(effectiveMinPrice([], undefined, [db(3000, "pending")])).toBeNull();
-  });
-
-  it("제보 특선과 DB 메뉴가 함께 있으면 셋 중 최저가", () => {
-    expect(effectiveMinPrice([menu("12000")], { menuName: "특선", price: 10000 }, [db(8000)])).toBe(8000);
-  });
-
-  it("셋 다 없으면 null", () => {
-    expect(effectiveMinPrice([], undefined, [])).toBeNull();
+    expect(effectiveMinPrice(undefined, [db(3000, "pending")])).toBeNull();
   });
 
   it("dbMinPrice와 같은 판정을 쓴다", () => {
     const items = [db(5000, "rejected"), db(9000)];
-    expect(effectiveMinPrice([], undefined, items)).toBe(dbMinPrice(items));
+    expect(effectiveMinPrice(undefined, items)).toBe(dbMinPrice(items));
   });
 });
