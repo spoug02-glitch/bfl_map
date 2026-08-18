@@ -38,7 +38,9 @@ function OptionalStars({ value, onChange }: { value: number | null; onChange: (v
  * 사람이 메뉴명·가격(필수)과 맛별점·비고(선택)를 남긴다. 한 가게에 한 사람이
  * 하나 — 다시 제보하면 이전 것을 덮는다.
  */
-export default function SpecialSection({ placeId, loggedIn }: { placeId: string; loggedIn: boolean }) {
+export default function SpecialSection({
+  placeId, loggedIn, hasMenus,
+}: { placeId: string; loggedIn: boolean; hasMenus: boolean }) {
   const [specials, setSpecials] = useState<Special[]>([]);
   const [open, setOpen] = useState(false);
   const [menuName, setMenuName] = useState("");
@@ -85,14 +87,22 @@ export default function SpecialSection({ placeId, loggedIn }: { placeId: string;
 
   return (
     <section className="mt-6">
+      {/* 메뉴가 아예 없는 가게는 점심특선이 아니라 메뉴 자체를 묻는다 — 특선을
+          말하려면 정가가 먼저 있어야 하는데, 그게 없다. */}
       <h3 className="border-b border-outline-variant pb-2 text-xl font-bold text-on-surface">
-        점심 특선 <span className="text-sm font-medium text-on-surface-variant">제보받아요</span>
+        {hasMenus ? (
+          <>점심 특선 <span className="text-sm font-medium text-on-surface-variant">제보받아요</span></>
+        ) : (
+          "이 집 메뉴를 아시나요?"
+        )}
       </h3>
       <p className="mt-1.5 text-xs text-on-surface-variant">{SPECIAL_DISCLAIMER}</p>
 
       {specials.length === 0 ? (
         <p className="mt-2 text-sm text-on-surface-variant">
-          아직 제보가 없어요. 이 집 점심특선을 아신다면 알려주세요.
+          {hasMenus
+            ? "아직 제보가 없어요. 이 집 점심특선을 아신다면 알려주세요."
+            : "드셔보신 메뉴와 가격을 알려주세요."}
         </p>
       ) : (
         <ul className="mt-1">
@@ -119,7 +129,7 @@ export default function SpecialSection({ placeId, loggedIn }: { placeId: string;
           className="mt-3 h-11 w-full rounded-lg bg-surface-container text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10"
           onClick={() => setOpen(true)}
         >
-          점심 특선 제보하기
+          {hasMenus ? "점심 특선 제보하기" : "메뉴 알려주기"}
         </button>
       ) : (
         <form
