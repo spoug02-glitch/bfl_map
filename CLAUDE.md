@@ -146,8 +146,3 @@ font stack, 44px touch targets (`h-11`, `md:h-9`), every `prefers-reduced-motion
 `docs/specs/` holds design decisions and `docs/plans/` the implementation plans. They record
 rejected alternatives, so read the spec before changing behaviour it describes — several
 "obvious" simplifications are things that were tried and reverted.
-
-## Stale bits in README.md
-
-Still describes Kakao as the menu source, `ADMIN_USER_ID` + `/api/stats` for DAU (replaced by
-`admin_users` and `/admin`), and old test counts. Trust this file over those parts.
