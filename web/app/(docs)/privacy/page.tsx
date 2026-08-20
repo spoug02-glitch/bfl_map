@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: `${SERVICE.name}이 무엇을 받고, 무엇을 저장하지 않으며, 언제 지우는지`,
 };
 
-const UPDATED = "2026-08-16";
+const UPDATED = "2026-08-20";
 
 export default function PrivacyPage() {
   return (
@@ -19,9 +19,11 @@ export default function PrivacyPage() {
       <p className="mt-1 text-sm text-on-surface-variant">최종 수정일 {UPDATED}</p>
 
       <p className="mt-6 rounded-lg bg-surface-container p-4 text-sm">
-        개인이 만들어 운영하는 서비스입니다. <strong>지금은 광고가 없고</strong>, 수집한 정보를
-        판매하지 않습니다. 다만 어떤 경로로 들어와 무엇을 보는지 파악하기 위해{" "}
-        <strong>구글 애널리틱스</strong>를 사용하며, 이때 방문 기록이 구글로 전송됩니다(아래 6항).
+        개인이 만들어 운영하는 서비스입니다. 수집한 정보를 판매하지 않습니다. 어떤 경로로
+        들어와 무엇을 보는지 파악하기 위해 <strong>구글 애널리틱스</strong>를 사용하고
+        (아래 6항), 광고를 보여주기 위해 <strong>Google AdSense</strong>를 사용합니다
+        (아래 7항). 이 과정에서 Google과 제휴 제3자가 쿠키를 이용해 광고를 개인화할 수
+        있습니다.
       </p>
 
       <DocSection title="1. 무엇을 받고 무엇을 저장하나요">
@@ -39,6 +41,8 @@ export default function PrivacyPage() {
           <li><strong>저장한 가게 목록</strong></li>
           <li><strong>방문 집계용 임의 토큰</strong> — 브라우저가 만든 무작위 값. 계정과 연결되지 않으며, 브라우저 데이터를 지우면 사라집니다</li>
           <li><strong>구글 애널리틱스 쿠키</strong>(<code>_ga</code>, <code>_ga_*</code>) — 같은 브라우저의 재방문을 알아보기 위한 무작위 값. 계정과 연결되지 않습니다</li>
+          <li><strong>Google AdSense 광고 쿠키</strong> — Google과 광고 제휴 제3자가 광고를
+            게재·개인화하기 위해 심는 쿠키. 계정과 연결되지 않습니다(아래 7항)</li>
         </ul>
       </DocSection>
 
@@ -70,6 +74,7 @@ export default function PrivacyPage() {
           <li><strong>데이터베이스</strong> — Neon (AWS 미국 오하이오 리전, us-east-2). 위 1항의 저장 항목</li>
           <li><strong>호스팅</strong> — Vercel (미국). 서비스 실행과 접속 로그</li>
           <li><strong>방문 분석</strong> — Google Analytics (구글, 미국). 접속 경로와 화면 이용 기록</li>
+          <li><strong>광고</strong> — Google AdSense (구글, 미국). 광고 게재와 개인화에 필요한 정보</li>
         </ul>
         <p className="text-sm text-on-surface-variant">
           이 서비스를 이용하면 위 국외 이전에 동의하는 것이 됩니다. 동의하지 않으시면 로그인 없이도
@@ -120,7 +125,36 @@ export default function PrivacyPage() {
         </p>
       </DocSection>
 
-      <DocSection title="7. 탈퇴하려면">
+      <DocSection title="7. 광고 (Google AdSense)">
+        <p>
+          이 서비스는 <strong>Google AdSense</strong>를 이용해 광고를 게재합니다. Google과
+          Google의 광고 제휴 제3자는 이용자의 이 서비스 방문 기록 또는 다른 웹사이트 방문
+          기록을 바탕으로 <strong>쿠키(및 유사 기술)</strong>를 이용해 광고를 게재하고
+          개인화할 수 있습니다.
+        </p>
+        <p>
+          <strong>닉네임, 카카오 회원번호, 리뷰 내용은 광고 목적으로 제공하지 않습니다.</strong>{" "}
+          광고 쿠키가 다루는 정보는 이 서비스 계정과 연결되지 않습니다.
+        </p>
+        <p className="text-sm text-on-surface-variant">
+          Google이 광고에 쿠키를 사용하는 방식은{" "}
+          <a className="text-primary underline" href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noreferrer">
+            Google 파트너 사이트 정책
+          </a>
+          에서 확인할 수 있습니다. 개인 맞춤 광고를 원하지 않으시면{" "}
+          <a className="text-primary underline" href="https://adssettings.google.com/" target="_blank" rel="noreferrer">
+            Google 광고 설정
+          </a>
+          에서, 또는{" "}
+          <a className="text-primary underline" href="https://www.aboutads.info/choices/" target="_blank" rel="noreferrer">
+            aboutads.info
+          </a>
+          에서 끌 수 있습니다. 꺼도 광고 자체는 계속 보일 수 있으며, 다만 이용자의 관심사에
+          맞춰 골라지지 않을 뿐입니다. 서비스 이용에는 제한이 없습니다.
+        </p>
+      </DocSection>
+
+      <DocSection title="8. 탈퇴하려면">
         <p>
           지도 화면 오른쪽 위의 닉네임을 누르면 나오는 창에서 <strong>회원 탈퇴</strong>를 선택하세요.
           계정과 저장한 가게는 지워지고, 남긴 글은 5항대로 익명으로 남습니다.
@@ -136,14 +170,14 @@ export default function PrivacyPage() {
         </p>
       </DocSection>
 
-      <DocSection title="8. 리뷰는 공개됩니다">
+      <DocSection title="9. 리뷰는 공개됩니다">
         <p>
           작성한 리뷰는 정한 닉네임과 함께 <strong>누구에게나 보입니다.</strong> 로그인하지 않은
           사람에게도 보이므로, 신원이 드러날 만한 내용은 쓰지 않는 편이 좋습니다.
         </p>
       </DocSection>
 
-      <DocSection title="9. 이용자의 권리">
+      <DocSection title="10. 이용자의 권리">
         <p>
           저장된 내 정보를 보거나 고치거나 지울 수 있습니다. 닉네임은 지도 화면에서 바로 바꿀 수
           있고, 리뷰는 각 가게 화면에서 수정·삭제할 수 있습니다. 그 밖의 요청은{" "}
@@ -152,7 +186,7 @@ export default function PrivacyPage() {
         </p>
       </DocSection>
 
-      <DocSection title="10. 가게 정보의 출처">
+      <DocSection title="11. 가게 정보의 출처">
         <p>
           가게 목록은 제로페이(비플페이) 가맹점 공개 정보와 카카오맵의 장소 정보를 모아 만들었습니다.
           가게 사진은 쓰지 않습니다. 정보가 실제와 다르거나 노출을 원하지 않는 가게가 있다면{" "}
@@ -160,7 +194,7 @@ export default function PrivacyPage() {
         </p>
       </DocSection>
 
-      <DocSection title="11. 문의">
+      <DocSection title="12. 문의">
         <p>
           {CREDIT.author} ·{" "}
           <a className="text-primary underline" href={`mailto:${CREDIT.email}`}>{CREDIT.email}</a>
