@@ -45,6 +45,15 @@ export default function RootLayout({
           as="style"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css"
         />
+        {/* Google AdSense 사이트 소유권 확인 스니펫. Google이 "각 페이지의 head" 를
+            명시적으로 요구해서, next/script가 아니라 정적 <head> 안에 그대로 둔다 —
+            afterInteractive 전략은 hydration 이후에나 실행되어 verification
+            크롤러가 초기 HTML에서 못 찾을 수 있다. */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3893735525022642"
+          crossOrigin="anonymous"
+        />
       </head>
       <body className="min-h-full flex flex-col">
         <GoogleAnalytics />
