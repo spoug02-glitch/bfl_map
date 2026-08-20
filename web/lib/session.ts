@@ -3,18 +3,18 @@ import { SignJWT, jwtVerify } from "jose";
 /** 세션이 들고 다니는 전부. 표시 이름은 여기 없고 users 테이블에서 읽는다. */
 export type Session = { userId: string };
 
-export type AuthProvider = "kakao";
+export type AuthProvider = "kakao" | "google";
 
 /**
  * Namespaces an account id by its provider.
  *
- * Kakao is the only provider now — Google login was removed because two
- * providers meant one person could hold two accounts and review the same
- * place twice. The prefix stays anyway: rows written during the Google era
- * still carry `google:`, and a second provider can only ever be added safely
- * if ids are namespaced. Raw ids would risk two people colliding on one id,
- * and a collision would let one edit the other's review, since
- * (place_id, user_id) is the review's primary identity.
+ * Google was removed once and brought back on 2026-08-19 — the multi-account
+ * risk this note used to warn about (one person double-reviewing a place via
+ * two providers) is accepted for now, not solved. The prefix is what makes
+ * that acceptable at all: raw ids would risk two *different* people
+ * colliding on one id across providers, which is a worse bug than the
+ * accepted risk. Rows from the Google era before the removal still carry
+ * `google:` too, so this format was never actually broken.
  */
 export function namespacedUserId(provider: AuthProvider, accountId: string): string {
   return `${provider}:${accountId}`;

@@ -275,8 +275,9 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             로그아웃
           </button>
         ) : (
-          // 로그인 수단은 카카오 하나뿐이다. 구글도 열어두면 한 사람이 계정을
-          // 두 개 갖게 되고, 같은 가게에 리뷰를 두 번 남겨 평점을 밀 수 있다.
+          // 헤더는 카카오 원탭 로그인만 유지한다. 구글은 /login, /signup에
+          // 있다 — 한 사람이 계정을 두 개 갖고 같은 가게에 리뷰를 두 번
+          // 남길 수 있다는 위험은 여전하고, 지금은 감수하기로 한 상태다.
           <a
             className="grid h-11 place-items-center rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 px-4 text-sm font-bold text-on-primary shadow-xs md:h-9"
             href="/api/auth/kakao"
