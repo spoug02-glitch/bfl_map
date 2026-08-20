@@ -5,6 +5,7 @@ import MenuLines from "@/components/MenuLines";
 import RouletteWheel from "@/components/RouletteWheel";
 import Toast from "@/components/Toast";
 import { Restaurant, SpecialPrice, isMealPlace, normalizeQuery } from "@/lib/constants";
+import { track } from "@/lib/gtag";
 import { dislikeKeywords, isDisliked, useDislikes } from "@/lib/dislikes";
 import { MAX_LEGS, MIN_LEGS, encodeLadder } from "@/lib/ladder-link";
 import { sliceColor, sliceLabel } from "@/lib/roulette";
@@ -116,6 +117,13 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
     });
   };
 
+  // 첫 돌리기와 구분해서 센다 — 재시도는 "결과가 마음에 안 들었다"는 신호라
+  // 첫 판과 섞으면 그 뜻이 사라진다.
+  const spinAgain = () => {
+    track({ name: "roulette_again", pool_size: picked.length });
+    spin();
+  };
+
   const shareUrl = () => {
     if (!draw) return "";
     const base = process.env.NEXT_PUBLIC_BASE_URL ?? window.location.origin;
@@ -168,7 +176,18 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
           names={picked.map(p => p.name)}
           winner={winner}
           arrived={arrived}
-          onArrive={() => setArrived(true)}
+          // 원판이 멈춘 시점에 센다. spin() 시점이 아니라 여기인 이유는 도중에
+          // 닫으면 사용자는 결과를 본 적이 없기 때문이다.
+          onArrive={() => {
+            setArrived(true);
+            if (winner !== null) {
+              track({
+                name: "roulette_result",
+                pool_size: picked.length,
+                winner_category: picked[winner].category,
+              });
+            }
+          }}
         />
       </div>
 
@@ -295,7 +314,7 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
             <button
               className="h-11 flex-1 rounded-lg bg-surface-container text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10 disabled:opacity-50"
               disabled={!arrived}
-              onClick={spin}
+              onClick={spinAgain}
             >
               다시 돌리기
             </button>

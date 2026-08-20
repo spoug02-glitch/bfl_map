@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { BlogLink, Restaurant, formatPrice, isConvenienceStore } from "@/lib/constants";
+import { track, type EntryContext } from "@/lib/gtag";
 import { sourceLabel } from "@/lib/menu-source";
 import ReviewSection from "@/components/ReviewSection";
 import SaveButton from "@/components/SaveButton";
@@ -12,6 +13,8 @@ import type { MenuSourceType, MenuStatus } from "@/lib/menu-source";
 
 type Props = {
   restaurant: Restaurant;
+  /** 이 가게 상세에 어떻게 도달했는지. 공유 링크로 온 사람은 행동이 달라 통제해야 한다. */
+  entryContext: EntryContext;
   user: SessionUser | null;
   blogLink?: BlogLink;
   /** 네이버 검색으로 찾은 제3자 후기. 정확도가 100%가 아니라 만든 이 후기와 구분해 쓴다. */
@@ -33,7 +36,7 @@ type DbMenuRow = {
 // 모바일(<768px)에서는 하단 바텀시트, md 이상에서는 우측 사이드 패널.
 // fixed + inset-x-0 bottom-0 로 뷰포트에 붙이고, md부터 absolute 우측 전체높이로 전환한다.
 export default function PlacePanel({
-  restaurant: r, user, blogLink, foundBlogs, saved, onToggleSaved, onClose,
+  restaurant: r, entryContext, user, blogLink, foundBlogs, saved, onToggleSaved, onClose,
 }: Props) {
   const [dbMenus, setDbMenus] = useState<DbMenuRow[]>([]);
 
@@ -44,10 +47,33 @@ export default function PlacePanel({
     let live = true;
     fetch(`/api/menu-items?placeId=${r.kakao_place_id}`)
       .then(res => res.json())
-      .then(d => { if (live) setDbMenus(d.items ?? []); })
+      .then(d => {
+        if (!live) return;
+        const items: DbMenuRow[] = d.items ?? [];
+        setDbMenus(items);
+        // place_view 를 패널이 열릴 때가 아니라 여기서 쏜다. has_menu 는 이 응답이
+        // 와야 알 수 있는 값이라, 열자마자 쏘면 매번 false 로 나가거나 이벤트를 두 번
+        // 쏴야 한다. 대가는 응답 전에 닫으면 집계되지 않는다는 것 — 0.1초짜리는
+        // 어차피 조회가 아니다. live 플래그를 같이 타므로 가게를 빨리 갈아타도
+        // 늦게 온 A의 응답이 B의 조회로 기록되지 않는다.
+        track({
+          name: "place_view",
+          place_id: r.kakao_place_id,
+          place_category: r.category,
+          entry_context: entryContext,
+          place_kind: isConvenienceStore(r.category) ? "convenience" : "meal",
+          has_menu: items.length > 0,
+          menu_count: items.length,
+        });
+      })
+      // 실패했을 때는 쏘지 않는다. has_menu=false 로 보내면 네트워크 장애가
+      // "메뉴 없는 가게"로 집계돼 비교 자체를 오염시킨다.
       .catch(() => { if (live) setDbMenus([]); });
     return () => { live = false; };
-  }, [r.kakao_place_id]);
+    // entryContext 는 가게가 바뀔 때 같이 정해진다. 여기 넣으면 같은 가게를 목록에서
+    // 다시 여는 등으로 값만 바뀌었을 때 조회가 중복 기록된다.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [r.kakao_place_id, r.category]);
 
   // 출처와 확인일은 줄마다 붙이지 않고 목록 아래 한 줄로 모은다. 메뉴 하나하나에
   // 배지와 날짜를 달면 정작 궁금한 메뉴명과 가격이 묻힌다.

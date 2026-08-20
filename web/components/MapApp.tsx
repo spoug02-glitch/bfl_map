@@ -10,6 +10,7 @@ import PlacePanel from "@/components/PlacePanel";
 import SiteFooter from "@/components/SiteFooter";
 import RoulettePanel from "@/components/RoulettePanel";
 import PlaceList, { type ListTab, type MyReview } from "@/components/PlaceList";
+import { type EntryContext } from "@/lib/gtag";
 import {
   type OwnBlogLinks,
   type FoundBlogLinks,
@@ -46,6 +47,14 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [barOpen, setBarOpen] = useState<boolean | null>(null);
   const mapApi = useRef<MapApi | null>(null);
   const [selected, setSelected] = useState<Restaurant | null>(null);
+  // 어느 경로로 상세를 열었는지. selected 와 한 몸이지만 selected 는 여러 곳에서
+  // 읽히는 값이라 객체로 묶지 않고 옆에 둔다 — setSelected 로 가게를 여는 곳은
+  // 아래 select() 와 공유 링크 처리 두 군데뿐이라 어긋날 자리가 없다.
+  const [entryContext, setEntryContext] = useState<EntryContext>("marker");
+  const select = useCallback((r: Restaurant, ctx: EntryContext) => {
+    setEntryContext(ctx);
+    setSelected(r);
+  }, []);
   const [user, setUser] = useState<SessionUser | null>(null);
   const [blogLinks, setBlogLinks] = useState<OwnBlogLinks>({});
   // 검색으로 모은 제3자 후기. 만든 이 후기와 자리도 무게도 다르다.
@@ -68,6 +77,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
       if (!id) return;
       const found = data.find(r => r.kakao_place_id === id);
       if (found) {
+        setEntryContext("shared_link");
         setSelected(found);
         // 공유된 가게가 기본 100m 밖이면 반경을 그 가게까지 넓힌다. 안 그러면
         // 상세를 닫는 순간 지도에도 목록에도 없는 가게가 된다. 0.1 단위로 올려
@@ -307,7 +317,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             if (e.pointerType !== "mouse") setBarOpen(false);
           }}
         >
-          <MapView restaurants={visible} maxDist={maxDist} onSelect={setSelected} apiRef={mapApi} />
+          <MapView restaurants={visible} maxDist={maxDist} onSelect={r => select(r, "marker")} apiRef={mapApi} />
         </div>
         {/* 카카오맵의 현위치 버튼 자리에 회사가 있다. 마커도 같은 일을 하지만
             전국 크기로 빼면 마커는 찾을 수 없다 — 버튼은 어디서든 그 자리다. */}
@@ -349,6 +359,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         {selected ? (
           <PlacePanel
             restaurant={selected}
+            entryContext={entryContext}
             user={user}
             blogLink={blogLinks[selected.kakao_place_id]}
             foundBlogs={foundBlogs[selected.kakao_place_id]}
@@ -369,7 +380,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             specialPrices={specialPrices}
             dbMinPrices={dbMinPrices}
             unpricedCount={unpricedCount}
-            onSelect={setSelected}
+            onSelect={r => select(r, "list")}
             onWiden={widenRadius}
             onReset={resetFilters}
             onRoulette={() => setRouletteOpen(true)}
