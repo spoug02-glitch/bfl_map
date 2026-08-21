@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { SPECIAL_DISCLAIMER, formatPrice } from "@/lib/constants";
+import { track } from "@/lib/gtag";
 import { SPECIAL_NAME_MAX, SPECIAL_NOTE_MAX } from "@/lib/specials";
 
 type Special = {
@@ -79,6 +80,8 @@ export default function SpecialSection({
     }
     setOpen(false);
     setMenuName(""); setPrice(""); setTaste(null); setNote("");
+    // 저장과 한 이벤트로 묶여 있다 — action 으로 가른다. 서버가 받아들인 뒤에만 센다.
+    track({ name: "place_engage", place_id: placeId, action: "special" });
     fetch(`/api/specials?placeId=${placeId}`)
       .then(r => r.json())
       .then(d => setSpecials(d.specials ?? []))

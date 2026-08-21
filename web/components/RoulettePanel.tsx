@@ -137,7 +137,11 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
   };
 
   const copy = async () => {
-    await navigator.clipboard.writeText(shareUrl()).catch(() => {});
+    let ok = true;
+    await navigator.clipboard.writeText(shareUrl()).catch(() => { ok = false; });
+    // 실제로 복사된 것만 센다. 아래 setCopied 가 실패해도 "복사했어요"를 띄우는 건
+    // 예전부터 그랬던 동작이라 건드리지 않았지만, 지표까지 같이 부풀릴 이유는 없다.
+    if (ok) track({ name: "roulette_share", pool_size: picked.length });
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };

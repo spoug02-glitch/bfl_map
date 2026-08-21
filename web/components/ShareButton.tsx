@@ -3,6 +3,7 @@
 import Script from "next/script";
 import { useState } from "react";
 import { OG_CARD_PATH, Restaurant } from "@/lib/constants";
+import { track } from "@/lib/gtag";
 import { shareDescription, sharePath, shareTitle } from "@/lib/share-copy";
 
 // SRI 값은 버전마다 다르다 — 공식 다운로드 페이지에서 복사해 넣을 것
@@ -59,6 +60,8 @@ export default function ShareButton({ restaurant }: { restaurant: Restaurant }) 
       await navigator.clipboard.writeText(url);
       setManualUrl(null);
       setCopied(true);
+      // 복사가 실제로 된 뒤에만 센다. 아래 catch(권한·포커스 거부)는 공유가 아니다.
+      track({ name: "place_share", place_id: restaurant.kakao_place_id, method: "copy" });
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // 클립보드 쓰기는 권한·포커스·비보안 컨텍스트에서 거부된다. 조용히 실패하면
@@ -72,6 +75,7 @@ export default function ShareButton({ restaurant }: { restaurant: Restaurant }) 
     if (navigator.share) {
       try {
         await navigator.share({ title: restaurant.name, url });
+        track({ name: "place_share", place_id: restaurant.kakao_place_id, method: "web_share" });
         return;
       } catch {
         /* 사용자가 취소한 경우 — 복사로 넘어간다 */
@@ -103,6 +107,9 @@ export default function ShareButton({ restaurant }: { restaurant: Restaurant }) 
         },
         buttons: [{ title: "지도에서 보기", link: { mobileWebUrl: url, webUrl: url } }],
       });
+      // sendDefault 는 전송 결과를 알려주지 않는다. 던지지 않았다는 것까지가
+      // 우리가 아는 전부라, 여기서 세는 건 "공유창이 떴다"에 가깝다.
+      track({ name: "place_share", place_id: restaurant.kakao_place_id, method: "kakao" });
     } catch {
       await fallback();
     }

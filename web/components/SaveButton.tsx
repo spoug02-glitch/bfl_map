@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { track } from "@/lib/gtag";
 
 type Props = {
   placeId: string;
@@ -36,6 +37,8 @@ export default function SaveButton({ placeId, saved, loggedIn, onChange }: Props
     }
     // 서버가 받아들인 뒤에 화면을 바꾼다 — 실패했는데 저장된 것처럼 보이면 안 된다.
     onChange(placeId, next);
+    // 저장만 센다. 해제는 참여가 아니라 그 반대라, 같이 세면 합계가 무의미해진다.
+    if (next) track({ name: "place_engage", place_id: placeId, action: "save" });
   };
 
   return (

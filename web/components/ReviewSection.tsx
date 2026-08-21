@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import type { SessionUser } from "@/lib/constants";
+import { track } from "@/lib/gtag";
 import { kstDateTime } from "@/lib/kst";
 import { CONTACT_LINE, suspensionNotice } from "@/lib/legal";
 import { isPermanentSuspension, isSuspensionActive } from "@/lib/suspension";
@@ -106,7 +107,9 @@ function ReviewEditor({
   );
 }
 
-export default function ReviewSection({ placeId, user }: { placeId: string; user: SessionUser | null }) {
+export default function ReviewSection({
+  placeId, placeCategory, user,
+}: { placeId: string; placeCategory: string; user: SessionUser | null }) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [summary, setSummary] = useState<Summary | null>(null);
   const [taste, setTaste] = useState(0);
@@ -147,6 +150,8 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
       return;
     }
     setBody(""); setTaste(0); setConvenience(0);
+    // 로그인이 필요한 가장 무거운 참여다. 서버가 받아들인 뒤에만 센다.
+    track({ name: "review_submit", place_id: placeId, place_category: placeCategory });
     load();
   };
 
@@ -217,9 +222,13 @@ export default function ReviewSection({ placeId, user }: { placeId: string; user
       ) : (
         <div className="mt-4 space-y-4 rounded-lg border border-outline p-4 text-center shadow-xs">
           <p className="text-base text-on-surface-variant">리뷰를 남기려면 로그인이 필요합니다.</p>
+          {/* 헤더 로그인과 갈라서 센다 — 리뷰를 쓰려다 들어온 사람은 동기가 다르고,
+              섞으면 "무엇이 로그인을 시키는가"를 못 묻는다. 페이지를 떠나는
+              길이라 결과를 알 수 없어 클릭 시점에 센다. */}
           <a
             className="grid h-11 place-items-center rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 text-center text-base font-bold text-on-primary"
             href="/api/auth/kakao"
+            onClick={() => track({ name: "login_start", trigger: "review" })}
           >
             카카오로 로그인하고 리뷰 남기기
           </a>

@@ -10,7 +10,7 @@ import PlacePanel from "@/components/PlacePanel";
 import SiteFooter from "@/components/SiteFooter";
 import RoulettePanel from "@/components/RoulettePanel";
 import PlaceList, { type ListTab, type MyReview } from "@/components/PlaceList";
-import { type EntryContext } from "@/lib/gtag";
+import { track, type EntryContext } from "@/lib/gtag";
 import {
   type OwnBlogLinks,
   CATEGORY_GROUPS,
@@ -287,6 +287,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
           <a
             className="grid h-11 place-items-center rounded-lg bg-primary transition-colors hover:bg-primary/90 active:bg-primary/80 px-4 text-sm font-bold text-on-primary shadow-xs md:h-9"
             href="/api/auth/kakao"
+            onClick={() => track({ name: "login_start", trigger: "header" })}
           >
             카카오 로그인
           </a>

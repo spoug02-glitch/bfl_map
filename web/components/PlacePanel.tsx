@@ -112,7 +112,17 @@ export default function PlacePanel({
       <div className="mt-4 space-y-2 rounded border border-outline-variant bg-surface-container p-4">
         <p className="text-base text-on-surface">📍 {r.address}</p>
         {r.phone && <p className="text-base text-on-surface">📞 {r.phone}</p>}
-        <a className="flex h-11 items-center text-base text-primary underline" href={r.kakao_url} target="_blank" rel="noreferrer">
+        {/* 핵심 전환이다 — 길찾기로 넘어갔다는 건 실제로 가겠다는 뜻이다.
+            나가는 링크라 결과를 알 수 없어 클릭 시점에 센다. */}
+        <a
+          className="flex h-11 items-center text-base text-primary underline"
+          href={r.kakao_url}
+          target="_blank"
+          rel="noreferrer"
+          onClick={() =>
+            track({ name: "place_map_open", place_id: r.kakao_place_id, place_category: r.category })
+          }
+        >
           카카오맵에서 보기 ↗
         </a>
       </div>
@@ -178,7 +188,7 @@ export default function PlacePanel({
         </a>
       )}
 
-      <ReviewSection placeId={r.kakao_place_id} user={user} />
+      <ReviewSection placeId={r.kakao_place_id} placeCategory={r.category} user={user} />
     </aside>
   );
 }
