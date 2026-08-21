@@ -95,6 +95,38 @@ class TestPruneGuard:
         assert vz.prune_allowed([])[0] is False
 
 
+class TestPruneScope:
+    """부분 조회 뒤 --prune 하면 조회 안 한 범위가 통째로 이탈로 찍힌다.
+    조회 완결성(TOTAL_CNT)만 봐서는 이걸 못 잡는다 — 그 한 조합은 완전하니까."""
+
+    def test_구를_일부만_조회했으면_거부한다(self):
+        ok, reason = vz.scope_allows_prune(["도봉구"], list(vz.ALL_CODES))
+        assert ok is False
+        assert "노원구" in reason or "구" in reason
+
+    def test_코드를_일부만_조회했으면_거부한다(self):
+        ok, reason = vz.scope_allows_prune(list(vz.DISTRICTS), ["56111"])
+        assert ok is False
+
+    def test_전체_범위면_허용한다(self):
+        ok, _ = vz.scope_allows_prune(list(vz.DISTRICTS), list(vz.ALL_CODES))
+        assert ok is True
+
+    def test_순서가_달라도_전체면_허용한다(self):
+        ok, _ = vz.scope_allows_prune(list(reversed(vz.DISTRICTS)), list(vz.ALL_CODES))
+        assert ok is True
+
+
+class TestLiveUnparsed:
+    """라이브 쪽 주소가 안 읽히면 그 가맹점은 live_keys 에 안 들어간다.
+    우리 행은 멀쩡히 읽히는데 짝이 사라져 거짓 이탈이 된다 — 조용하면 안 된다."""
+
+    def test_라이브_주소를_못읽으면_센다(self):
+        live = [merchant(address="서울 어딘가 산기슭"), merchant(name="맑음이네")]
+        d = vz.diff([], live)
+        assert d.live_unverifiable == 1
+
+
 class TestPrune:
     def test_이탈분만_빼고_나머지_순서와_내용을_보존한다(self, tmp_path):
         p = tmp_path / "restaurants.json"

@@ -15,9 +15,18 @@ collect.py 와 달리 **카카오를 부르지 않는다.** 제로페이만 다�
 이미 빠졌는데 우리 파일에만 남은 가게**가 5,834곳 중 51곳(0.87%) 있었다. 이쪽은
 기계적으로 잡힌다. 이 스크립트가 그 일을 한다.
 
-**--prune 은 모든 (구, 코드) 조합이 완전하게 받아졌을 때만 지운다.** 제로페이는
-일시적으로 행을 누락한 적이 있고(zeropay.py 의 TOTAL_CNT 주석), 그 순간 자동 삭제하면
-멀쩡한 가게가 날아간다. 하나라도 부족하면 아무것도 지우지 않고 리포트만 낸다.
+**--prune 에는 안전장치가 둘이다.** 하나라도 걸리면 아무것도 지우지 않는다.
+
+1. 전체 범위(3개 구 x 12개 코드)로 조회했을 것 — `scope_allows_prune()`.
+   부분 조회로 지우면 **조회 안 한 범위가 통째로 이탈로 찍힌다.** 실측으로
+   `--districts 도봉구 --codes 56113` 은 5,456곳을 이탈로 판정했다
+2. 모든 (구, 코드) 조합이 완전하게 받아졌을 것 — `prune_allowed()`.
+   제로페이는 일시적으로 행을 누락한 적이 있다(zeropay.py 의 TOTAL_CNT 주석)
+
+**한 자릿수 이탈은 실행마다 바뀐다.** 재수집 직후 두 번 돌렸더니 6곳과 5곳이 나왔고
+이름도 겹치지 않았다. 제로페이가 호출마다 조금씩 다른 집합을 준다는 뜻이라,
+**대여섯 곳이 나왔다고 바로 지우지 말 것.** 여러 번 돌려 계속 같은 이름이 나올 때만
+진짜 이탈로 본다.
 """
 import argparse
 import json
@@ -32,6 +41,7 @@ import zeropay
 OUT_PATH = Path(__file__).resolve().parent.parent / "web" / "public" / "restaurants.json"
 REPORT_PATH = Path(__file__).resolve().parent / "zeropay-verify-report.json"
 DISTRICTS = ["도봉구", "노원구", "강북구"]
+ALL_CODES = {**zeropay.FOOD_CODES, **zeropay.CONVENIENCE_CODES}
 
 
 @dataclass(frozen=True)
@@ -52,7 +62,11 @@ class Fetch:
 class Diff:
     departed: list[dict] = field(default_factory=list)
     arrived: list[dict] = field(default_factory=list)
+    #: 우리 파일에서 주소를 못 읽은 행. 이탈로 세지 않는다.
     unverifiable: int = 0
+    #: 라이브 쪽에서 주소를 못 읽은 가맹점. 이쪽이 사라지면 짝인 우리 행이
+    #: 거짓 이탈이 되므로, 조용히 넘기지 않고 세어서 드러낸다.
+    live_unverifiable: int = 0
 
 
 def key_of(name: str, address: str) -> tuple[str, str, str] | None:
@@ -84,8 +98,14 @@ def key_of_row(row: dict) -> tuple[str, str, str] | None:
 
 def diff(ours: list[dict], live: list[dict]) -> Diff:
     """우리 파일과 제로페이 라이브 목록을 양방향으로 대조한다."""
-    live_keys = {k for m in live if (k := key_of(m["name"], m["address"])) is not None}
     out = Diff()
+    live_keys: set[tuple[str, str, str]] = set()
+    for m in live:
+        k = key_of(m["name"], m["address"])
+        if k is None:
+            out.live_unverifiable += 1
+        else:
+            live_keys.add(k)
     ours_keys: set[tuple[str, str, str]] = set()
 
     for row in ours:
@@ -102,6 +122,27 @@ def diff(ours: list[dict], live: list[dict]) -> Diff:
         if k is not None and k not in ours_keys:
             out.arrived.append(m)
     return out
+
+
+def scope_allows_prune(districts: list[str], codes: list[str]) -> tuple[bool, str]:
+    """부분 조회로는 지우지 못하게 막는다.
+
+    `diff()` 는 **부분 라이브 목록**과 **전체 restaurants.json** 을 맞댄다. 그래서
+    `--districts 도봉구 --codes 56111` 로 조회하면 나머지 전부가 이탈로 찍히고,
+    그 한 조합은 완전하게 받아졌으니 `prune_allowed()` 는 통과시킨다.
+    조회 완결성만으로는 이걸 못 잡는다 — 범위를 따로 봐야 한다.
+    (2026-08-21 코드 리뷰에서 잡힌 구멍. 부분 조회 자체는 확인용으로 쓸모가 있어 남긴다.)
+    """
+    missing_gu = [g for g in DISTRICTS if g not in districts]
+    missing_code = [c for c in ALL_CODES if c not in codes]
+    if missing_gu or missing_code:
+        parts = []
+        if missing_gu:
+            parts.append(f"구 {', '.join(missing_gu)}")
+        if missing_code:
+            parts.append(f"코드 {', '.join(missing_code)}")
+        return False, f"부분 조회다 — 빠진 {' / '.join(parts)}"
+    return True, ""
 
 
 def prune_allowed(fetches: list[Fetch]) -> tuple[bool, str]:
@@ -141,7 +182,7 @@ def fetch_live(districts: list[str], codes: dict[str, str],
 
 
 def main() -> None:
-    all_codes = {**zeropay.FOOD_CODES, **zeropay.CONVENIENCE_CODES}
+    all_codes = ALL_CODES
     ap = argparse.ArgumentParser()
     ap.add_argument("--districts", default=",".join(DISTRICTS))
     ap.add_argument("--codes", default=",".join(all_codes))
@@ -171,7 +212,11 @@ def main() -> None:
     print(f"신규 후보(우리 파일에 없음): {len(d.arrived)}곳 "
           f"— 상한이다. 실제 순증은 훨씬 적다(2026-08-21: 1,592 → 순증 44)")
     if d.unverifiable:
-        print(f"주소를 못 읽어 대조 못 함: {d.unverifiable}곳 (이탈로 세지 않았다)")
+        print(f"우리 파일에서 주소를 못 읽어 대조 못 함: {d.unverifiable}곳 (이탈로 세지 않았다)")
+    if d.live_unverifiable:
+        # 이쪽은 위험하다 — 라이브 짝이 사라지면 멀쩡한 우리 행이 이탈로 찍힌다.
+        print(f"**제로페이 쪽 주소를 못 읽음: {d.live_unverifiable}곳** "
+              f"— 이만큼은 거짓 이탈을 만들 수 있다. 이탈 목록을 눈으로 볼 것")
 
     for r in d.departed[:20]:
         print(f"  - {r['name']} ({r['address']})")
@@ -185,6 +230,7 @@ def main() -> None:
         "ours": len(ours),
         "live": len(live),
         "unverifiable": d.unverifiable,
+        "live_unverifiable": d.live_unverifiable,
         "departed": [{"name": r["name"], "address": r["address"],
                       "kakao_place_id": r["kakao_place_id"]} for r in d.departed],
         # 상한이다 — 5km 반경 밖이 섞여 있다. 위 print 의 주석 참고.
@@ -200,6 +246,12 @@ def main() -> None:
                   f"(카카오로 좌표를 붙이고 반경 밖을 걸러낸다).")
         print("삭제하려면 --prune 을 붙일 것.")
         return
+
+    ok, reason = scope_allows_prune(districts, list(codes))
+    if not ok:
+        print(f"\n[중단] {reason}")
+        print("조회 안 한 범위가 통째로 이탈로 찍혀 있다. 전체 범위로 다시 돌릴 것.")
+        raise SystemExit(2)
 
     ok, reason = prune_allowed(fetches)
     if not ok:
