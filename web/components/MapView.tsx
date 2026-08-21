@@ -22,12 +22,18 @@ const MAP_PRIMARY = "#9b4511";
 /**
  * 식당 마커. 카카오 기본 물방울 핀은 34px짜리라 100곳만 넘어가도 지도가 핀으로
  * 덮인다 — 여기서 필요한 건 "가게가 있다"는 점 하나지, 핀 그림이 아니다.
+ *
+ * 그려지는 점은 14px 그대로지만 그림 자체는 28px다. 카카오 마커는 **이미지 크기가
+ * 곧 터치 영역**이라, 14px 그림은 손가락으로 눌러도 자주 빗나가 "눌렀는데 아무
+ * 반응이 없다"가 된다(2026-08-21 제보). 나머지를 투명하게 비워 보이는 크기는
+ * 유지하면서 누를 수 있는 넓이만 넓혔다. 이 값을 줄이려면 손가락으로 먼저 눌러볼 것.
  */
+const DOT_BOX = 28;
 const DOT_ICON =
   "data:image/svg+xml;charset=utf-8," +
   encodeURIComponent(
-    '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14">' +
-      `<circle cx="7" cy="7" r="4.5" fill="${MAP_PRIMARY}" stroke="#fff" stroke-width="2"/></svg>`,
+    `<svg xmlns="http://www.w3.org/2000/svg" width="${DOT_BOX}" height="${DOT_BOX}">` +
+      `<circle cx="${DOT_BOX / 2}" cy="${DOT_BOX / 2}" r="4.5" fill="${MAP_PRIMARY}" stroke="#fff" stroke-width="2"/></svg>`,
   );
 
 /**
@@ -128,11 +134,16 @@ export default function MapView({ restaurants, maxDist, onSelect, apiRef }: Prop
       });
       mapRef.current = map;
       // minLevel 5로 두면 한참 축소했을 때만 뭉쳐서, 정작 쓰는 줌(기본 3)에서는
-      // 196곳이 196개 핀으로 깔렸다. 1로 내려 모든 줌에서 켜두고, 실제로 뭉칠지는
-      // gridSize가 정한다 — 화면에서 60px 안에 겹친 것만 하나로 모으므로 가까이
+      // 196곳이 196개 핀으로 깔렸다. 낮춰서 쓰는 줌에서도 켜두고, 실제로 뭉칠지는
+      // gridSize가 정한다 — 화면에서 32px 안에 겹친 것만 하나로 모으므로 가까이
       // 당기면 알아서 풀린다.
+      //
+      // 다만 1이 아니라 2다. 클러스터를 누르면 한 단계 더 당겨지는 게 전부인데,
+      // 1이면 가장 가까운 줌에서도 뭉친 채라 더 당길 데가 없어 **눌러도 아무 일도
+      // 일어나지 않는다**(2026-08-21 제보). 2로 두면 마지막 한 단계에서는 클러스터가
+      // 풀려 개별 마커가 되므로, 어떤 뭉치든 끝까지 파고들면 반드시 열린다.
       clustererRef.current = new window.kakao.maps.MarkerClusterer({
-        map, averageCenter: true, minLevel: 1, gridSize: 32,
+        map, averageCenter: true, minLevel: 2, gridSize: 32,
         styles: [CLUSTER_STYLE],
       });
       // 회사는 식당과 같은 파란 핀이면 안 된다 — 핀 수백 개 사이에서 "여기가
@@ -178,9 +189,9 @@ export default function MapView({ restaurants, maxDist, onSelect, apiRef }: Prop
     // 점 아이콘은 마커마다 새로 만들 필요가 없다 — 5,834개면 그 비용이 그대로 쌓인다.
     const dot = new kakao.maps.MarkerImage(
       DOT_ICON,
-      new kakao.maps.Size(14, 14),
+      new kakao.maps.Size(DOT_BOX, DOT_BOX),
       // 물방울과 달리 점은 뾰족한 끝이 없어 한가운데를 좌표에 맞춘다
-      { offset: new kakao.maps.Point(7, 7) },
+      { offset: new kakao.maps.Point(DOT_BOX / 2, DOT_BOX / 2) },
     );
     const markers = restaurants.map(r => {
       const m = new kakao.maps.Marker({

@@ -2,6 +2,7 @@
 
 import DislikeSettings from "@/components/DislikeSettings";
 import { OFFICE_LABEL, Restaurant, SpecialPrice, formatPrice } from "@/lib/constants";
+import { useState } from "react";
 
 export type ListedPlace = { place: Restaurant; distanceKm: number };
 export type MyReview = {
@@ -38,8 +39,8 @@ type Props = {
   canWiden: boolean;
 };
 
-/** 한 번에 그리는 최대 개수. 5,834개를 다 그리면 스크롤이 버벅인다. */
-const MAX_ROWS = 50;
+/** 한 번에 그리는 개수. 5,834개를 다 그리면 스크롤이 버벅인다. 더 보기로 이만큼씩 늘린다. */
+const PAGE_ROWS = 50;
 
 function formatDistance(km: number): string {
   return km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)}km`;
@@ -84,7 +85,17 @@ export default function PlaceList({
   loggedIn, priceFiltered, specialPrices, dbMinPrices, unpricedCount,
   onSelect, onWiden, onReset, onRoulette, canWiden,
 }: Props) {
-  const shown = places.slice(0, MAX_ROWS);
+  const [rows, setRows] = useState(PAGE_ROWS);
+  // 필터·반경을 바꾸면 다른 목록이다. 200번째 줄까지 펼친 상태로 남으면
+  // 새 조건에서는 없는 자리라 빈 화면처럼 보인다. places는 부모가 useMemo로
+  // 쥐고 있어 필터가 바뀔 때만 새 배열이 된다 — effect가 아니라 렌더 중에
+  // 맞추는 쪽이 한 박자 늦게 그려지는 일이 없다.
+  const [seenPlaces, setSeenPlaces] = useState(places);
+  if (places !== seenPlaces) {
+    setSeenPlaces(places);
+    setRows(PAGE_ROWS);
+  }
+  const shown = places.slice(0, rows);
 
   return (
     <aside
@@ -194,9 +205,14 @@ export default function PlaceList({
             </ul>
           )}
           {places.length > shown.length && (
-            <p className="py-3 text-center text-xs text-on-surface-variant">
-              가까운 {MAX_ROWS}곳만 보여주고 있어요 · 전체 {places.length}곳
-            </p>
+            // 안내문이던 자리다. 지도에는 마커가 다 찍혀 있는데 목록만 잘려서,
+            // 왜 안 보이는지는 알려주면서 볼 방법은 안 주는 상태였다.
+            <button
+              className="my-2 grid h-11 w-full place-items-center rounded-lg bg-surface-container text-sm font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10 md:h-9"
+              onClick={() => setRows(n => n + PAGE_ROWS)}
+            >
+              더 보기 · {shown.length}/{places.length}곳
+            </button>
           )}
         </>
       )}
