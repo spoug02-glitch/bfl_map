@@ -17,14 +17,24 @@ ENV_FILE="$(dirname "$0")/../.env.local"
 
 # Keep this list in sync with .env.example. A variable missing here does not
 # fail the build — the feature that needs it just breaks in production.
+# SEED_ADMIN_USERNAME/PASSWORD are deliberately absent: they exist only for
+# scripts/seed-admin.mjs on a developer machine, never in a deployment.
 VARS=(
   NEXT_PUBLIC_KAKAO_JS_KEY   # map rendering + KakaoTalk share
   KAKAO_REST_API_KEY         # Kakao login (Kakao uses the REST key as client_id)
   KAKAO_CLIENT_SECRET        # only if the Kakao app has client secret enabled
+  GOOGLE_CLIENT_ID           # Google login
+  GOOGLE_CLIENT_SECRET       # Google always requires it, unlike Kakao
   SESSION_SECRET
+  ADMIN_SESSION_SECRET       # 운영자 세션. SESSION_SECRET과 달라야 한다
   DATABASE_URL
-  ADMIN_USER_ID
 )
+
+# Production only. Setting the GA id on preview would fold test traffic into the
+# live property — .env.example leaves it empty everywhere else for that reason.
+if [ "$TARGET" = "production" ]; then
+  VARS+=(NEXT_PUBLIC_GA_ID)
+fi
 
 for name in "${VARS[@]}"; do
   value="$(grep -E "^${name}=" "$ENV_FILE" | head -1 | cut -d= -f2-)"
