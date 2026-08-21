@@ -17,8 +17,6 @@ type Props = {
   entryContext: EntryContext;
   user: SessionUser | null;
   blogLink?: BlogLink;
-  /** 네이버 검색으로 찾은 제3자 후기. 정확도가 100%가 아니라 만든 이 후기와 구분해 쓴다. */
-  foundBlogs?: BlogLink[];
   saved: boolean;
   onToggleSaved: (placeId: string, saved: boolean) => void;
   onClose: () => void;
@@ -36,7 +34,7 @@ type DbMenuRow = {
 // 모바일(<768px)에서는 하단 바텀시트, md 이상에서는 우측 사이드 패널.
 // fixed + inset-x-0 bottom-0 로 뷰포트에 붙이고, md부터 absolute 우측 전체높이로 전환한다.
 export default function PlacePanel({
-  restaurant: r, entryContext, user, blogLink, foundBlogs, saved, onToggleSaved, onClose,
+  restaurant: r, entryContext, user, blogLink, saved, onToggleSaved, onClose,
 }: Props) {
   const [dbMenus, setDbMenus] = useState<DbMenuRow[]>([]);
 
@@ -170,35 +168,14 @@ export default function PlacePanel({
           href={blogLink.url}
           target="_blank"
           rel="noreferrer"
+          // 나가는 링크라 결과를 알 수 없다 — 클릭 시점에 쏜다.
+          onClick={() =>
+            track({ name: "blog_review_click", place_id: r.kakao_place_id, place_category: r.category })
+          }
         >
           <span className="text-xs font-medium text-on-surface-variant">✍️ 만든 이 블로그 후기</span>
           <p className="mt-1 font-bold text-primary underline">{blogLink.title}</p>
         </a>
-      )}
-
-      {/* 검색으로 찾은 제3자 후기. 만든 이 후기와 달리 우리가 읽고 고른 글이 아니라
-          제목만 보고 붙인 것이라, 카드가 아니라 링크 목록으로 약하게 둔다.
-          같은 상호의 다른 지점이 섞일 수 있다는 걸 문구로 밝힌다. */}
-      {foundBlogs && foundBlogs.length > 0 && (
-        <section className="mt-6">
-          <h3 className="text-xs font-medium text-on-surface-variant">
-            네이버 블로그 후기 <span className="font-normal">· 검색으로 찾은 글이라 다른 가게일 수 있어요</span>
-          </h3>
-          <ul className="mt-1.5 space-y-1.5">
-            {foundBlogs.map(b => (
-              <li key={b.url}>
-                <a
-                  className="flex min-h-11 items-center text-sm text-primary underline md:min-h-9"
-                  href={b.url}
-                  target="_blank"
-                  rel="noreferrer nofollow"
-                >
-                  {b.title}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
       )}
 
       <ReviewSection placeId={r.kakao_place_id} user={user} />

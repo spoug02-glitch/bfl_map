@@ -23,13 +23,15 @@ export interface BlogLink {
 }
 
 /**
- * 두 출처를 섞지 않는다.
- * - obanaeodzb_blog_links.json: 만든 이가 직접 쓴 후기. 손으로 관리하고 가게당 하나.
- * - blog_links.json: 네이버 검색으로 모은 제3자 후기. collector/blog_search.py 가 만들고
- *   가게당 여러 건일 수 있다. 정확도가 100%가 아니라 화면에서 약하게 다룬다.
+ * obanaeodzb_blog_links.json: 만든 이가 직접 쓴 후기. 손으로 관리하고 가게당 하나.
+ *
+ * 네이버 검색으로 제3자 후기를 모으던 경로가 따로 있었으나 2026-08-21에 걷어냈다
+ * (collector/blog_search.py, public/blog_links.json). 제목에 상호가 든 글만 남기는
+ * 필터를 거쳐도 다른 지점 글이 섞여, 화면에 "다른 가게일 수 있어요"를 붙인 채 두는
+ * 것 말고는 방법이 없었다. 우리가 읽고 고른 글이 아닌 것을 가게 상세에 얹는 값이
+ * 그 번잡함보다 크지 않았다. 되살릴 거면 그 판단부터 다시 할 것.
  */
 export type OwnBlogLinks = Record<string, BlogLink>;
-export type FoundBlogLinks = Record<string, BlogLink[]>;
 
 /** 카카오 place_id는 숫자 문자열이다. 외부에서 들어온 값은 이걸 통과해야 한다. */
 export const PLACE_ID_RE = /^\d{1,20}$/;

@@ -17,7 +17,7 @@ npx vitest run -t "DB 메뉴"                      # tests whose name matches
 npm run build                    # prebuild regenerates lib/share-index.json
 
 # collector (Python). Run from Bfl_map/collector
-python -m pytest tests/ -q       # 96 tests
+python -m pytest tests/ -q       # 84 tests
 python collect.py                # full re-collect, hours; resumes from .checkpoint.jsonl
 
 # mcp. Run from Bfl_map/mcp
