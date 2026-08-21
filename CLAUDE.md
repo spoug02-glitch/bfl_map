@@ -79,6 +79,15 @@ different things rot, and they need different instruments:
 `--prune` refuses unless every (gu, code) fetch came back complete. Zeropay has dropped rows
 transiently before, and deleting on that would take live places with it.
 
+**Roughly a fifth of zeropay merchants never make it in.** The 2026-08-21 re-collect crawled
+7,467 and kept 5,826: 1,469 unresolved, 67 out of radius, 105 merged onto a place already
+listed. So `verify_zeropay.py`'s arrived count reads far higher than any re-collect delivers —
+that run turned an upper bound of 1,592 into a net gain of 44. The gap is Kakao matching, not
+distance; `unresolved.json` is where those go.
+
+A re-collect is also the only way to drop the `menus` field left on every row by the pre-2026-08-18
+schema, and it takes about two hours.
+
 ## Menu provenance
 
 Menus were scraped from an unofficial Kakao endpoint until 2026-08-18, when the owner stopped it
