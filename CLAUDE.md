@@ -17,8 +17,10 @@ npx vitest run -t "DB 메뉴"                      # tests whose name matches
 npm run build                    # prebuild regenerates lib/share-index.json
 
 # collector (Python). Run from Bfl_map/collector
-python -m pytest tests/ -q       # 84 tests
+python -m pytest tests/ -q       # 99 tests
 python collect.py                # full re-collect, hours; resumes from .checkpoint.jsonl
+python verify_zeropay.py         # minutes: is restaurants.json still on the zeropay list?
+python verify_zeropay.py --prune # drop the ones that have left
 
 # mcp. Run from Bfl_map/mcp
 python -m pytest tests/ -q       # 4 tests
@@ -64,6 +66,18 @@ because places are not in the database.
 
 Because the collector rewrites the JSON wholesale, **you cannot partially preserve anything in
 it** — that is why menus moved to Postgres rather than staying a field on each place.
+
+**Being in that file means zeropay listed the place, not that BeeflPay works there.** Two
+different things rot, and they need different instruments:
+
+- *Left the zeropay list but still in our file* — mechanical. `verify_zeropay.py` refetches
+  zeropay only (minutes, no Kakao) and diffs. 52 such rows were pruned on 2026-08-21.
+  Match on `zeropay_name` where present: `name` is Kakao's spelling and differs for 2,541 rows.
+- *Still listed but the QR does not work* — undetectable in code; the endpoint publishes no
+  merchant status. Only the `zeropay_fail` report kind catches these.
+
+`--prune` refuses unless every (gu, code) fetch came back complete. Zeropay has dropped rows
+transiently before, and deleting on that would take live places with it.
 
 ## Menu provenance
 

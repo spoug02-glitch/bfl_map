@@ -2682,21 +2682,6 @@
   "menus": []
  },
  {
-  "name": "스시황",
-  "search_keys": [
-   "스시황"
-  ],
-  "address": "서울시 도봉구 노해로65길 11",
-  "category": "일식 음식점업",
-  "phone": "029975003",
-  "lat": 37.6518110227662,
-  "lng": 127.046193534441,
-  "distance_km": 0.44,
-  "kakao_place_id": "20349076",
-  "kakao_url": "http://place.map.kakao.com/20349076",
-  "menus": []
- },
- {
   "name": "라쿵푸마라탕 창동점",
   "search_keys": [
    "라쿵푸마라탕창동점"
@@ -5209,23 +5194,6 @@
   "menus": []
  },
  {
-  "name": "청담설렁탕순대국 창동본점",
-  "search_keys": [
-   "청담설렁탕순대국창동본점",
-   "청담설렁탕순대국"
-  ],
-  "zeropay_name": "청담설렁탕&순대국(창동본점)",
-  "address": "서울특별시 도봉구 해등로 146(창동)",
-  "category": "한식 일반 음식점업",
-  "phone": "029003352",
-  "lat": 37.6566154252536,
-  "lng": 127.04028425520303,
-  "distance_km": 0.88,
-  "kakao_place_id": "188527413",
-  "kakao_url": "http://place.map.kakao.com/188527413",
-  "menus": []
- },
- {
   "name": "BHC치킨 창동아이파크점",
   "search_keys": [
    "bhc치킨창동아이파크점",
@@ -5677,21 +5645,6 @@
   "distance_km": 0.91,
   "kakao_place_id": "2025285181",
   "kakao_url": "http://place.map.kakao.com/2025285181",
-  "menus": []
- },
- {
-  "name": "토핑폭탄김치찜&김치찌개 쌍문점",
-  "search_keys": [
-   "토핑폭탄김치찜김치찌개쌍문점"
-  ],
-  "address": "서울특별시 도봉구 도봉로 586 (창동)",
-  "category": "한식 일반 음식점업",
-  "phone": "01027244974",
-  "lat": 37.6569155762794,
-  "lng": 127.039919503823,
-  "distance_km": 0.92,
-  "kakao_place_id": "139100618",
-  "kakao_url": "http://place.map.kakao.com/139100618",
   "menus": []
  },
  {
@@ -6149,21 +6102,6 @@
   "distance_km": 0.98,
   "kakao_place_id": "813752975",
   "kakao_url": "http://place.map.kakao.com/813752975",
-  "menus": []
- },
- {
-  "name": "빛나라김밥 노원점",
-  "search_keys": [
-   "빛나라김밥노원점"
-  ],
-  "address": "서울특별시 노원구 동일로 1389 (상계동, 상계주공아파트 302동)",
-  "category": "김밥 및 기타 간이 음식점업",
-  "phone": "0269411126",
-  "lat": 37.6521702699648,
-  "lng": 127.060660184497,
-  "distance_km": 0.98,
-  "kakao_place_id": "1213286197",
-  "kakao_url": "http://place.map.kakao.com/1213286197",
   "menus": []
  },
  {
@@ -7514,21 +7452,6 @@
   "menus": []
  },
  {
-  "name": "카츠백 쌍문점",
-  "search_keys": [
-   "카츠백쌍문점"
-  ],
-  "address": "서울 도봉구 방학로3길 33",
-  "category": "일식 음식점업",
-  "phone": "07048338704",
-  "lat": 37.6612065841577,
-  "lng": 127.040992805016,
-  "distance_km": 1.08,
-  "kakao_place_id": "689141250",
-  "kakao_url": "http://place.map.kakao.com/689141250",
-  "menus": []
- },
- {
   "name": "정직유부 노원역점",
   "search_keys": [
    "정직유부노원역점"
@@ -8004,21 +7927,6 @@
   "distance_km": 1.1,
   "kakao_place_id": "1438842442",
   "kakao_url": "http://place.map.kakao.com/1438842442",
-  "menus": []
- },
- {
-  "name": "두포집",
-  "search_keys": [
-   "두포집"
-  ],
-  "address": "서울 노원구 노해로 490",
-  "category": "한식 일반 음식점업",
-  "phone": "029307751",
-  "lat": 37.6544101004757,
-  "lng": 127.062410586146,
-  "distance_km": 1.1,
-  "kakao_place_id": "1338416998",
-  "kakao_url": "http://place.map.kakao.com/1338416998",
   "menus": []
  },
  {
@@ -11192,21 +11100,6 @@
   "menus": []
  },
  {
-  "name": "얼군집",
-  "search_keys": [
-   "얼군집"
-  ],
-  "address": "서울시 노원구 상계로 76",
-  "category": "한식 일반 음식점업",
-  "phone": "02",
-  "lat": 37.65613492994629,
-  "lng": 127.06344442961236,
-  "distance_km": 1.21,
-  "kakao_place_id": "568879114",
-  "kakao_url": "http://place.map.kakao.com/568879114",
-  "menus": []
- },
- {
   "name": "동래정 노원점",
   "search_keys": [
    "동래정노원점"
@@ -12233,21 +12126,6 @@
   "distance_km": 1.26,
   "kakao_place_id": "1537019830",
   "kakao_url": "http://place.map.kakao.com/1537019830",
-  "menus": []
- },
- {
-  "name": "삼덕식당",
-  "search_keys": [
-   "삼덕식당"
-  ],
-  "address": "서울시 노원구 상계로5길 9",
-  "category": "한식 육류요리 전문점",
-  "phone": "02",
-  "lat": 37.656977996694145,
-  "lng": 127.0639120553409,
-  "distance_km": 1.26,
-  "kakao_place_id": "298434750",
-  "kakao_url": "http://place.map.kakao.com/298434750",
   "menus": []
  },
  {
@@ -17841,21 +17719,6 @@
   "menus": []
  },
  {
-  "name": "피자애 쌍문역점",
-  "search_keys": [
-   "피자애쌍문역점"
-  ],
-  "address": "서울특별시 도봉구 도봉로114길 22-9(창동)",
-  "category": "피자, 햄버거, 샌드위치 및 유사 음식점업",
-  "phone": "029977676",
-  "lat": 37.6470214267435,
-  "lng": 127.035725057501,
-  "distance_km": 1.5,
-  "kakao_place_id": "1067884831",
-  "kakao_url": "http://place.map.kakao.com/1067884831",
-  "menus": []
- },
- {
   "name": "마루숯불치킨바베큐",
   "search_keys": [
    "마루숯불치킨바베큐"
@@ -21186,21 +21049,6 @@
   "menus": []
  },
  {
-  "name": "스시앤회마트",
-  "search_keys": [
-   "스시앤회마트"
-  ],
-  "address": "서울특별시 도봉구 노해로60길 83",
-  "category": "일식 음식점업",
-  "phone": "01049555131",
-  "lat": 37.6477924932435,
-  "lng": 127.033242731828,
-  "distance_km": 1.65,
-  "kakao_place_id": "2024570300",
-  "kakao_url": "http://place.map.kakao.com/2024570300",
-  "menus": []
- },
- {
   "name": "버거브라더",
   "search_keys": [
    "버거브라더"
@@ -23376,40 +23224,6 @@
   "distance_km": 1.73,
   "kakao_place_id": "1181452805",
   "kakao_url": "http://place.map.kakao.com/1181452805",
-  "menus": []
- },
- {
-  "name": "영월동강오리",
-  "search_keys": [
-   "영월동강오리",
-   "동강오리"
-  ],
-  "zeropay_name": "동강오리",
-  "address": "서울시 노원구 한글비석로49길 28",
-  "category": "한식 일반 음식점업",
-  "phone": "029317940",
-  "lat": 37.6630384403572,
-  "lng": 127.066374385999,
-  "distance_km": 1.73,
-  "kakao_place_id": "20747560",
-  "kakao_url": "http://place.map.kakao.com/20747560",
-  "menus": []
- },
- {
-  "name": "호반닭갈비 노원점",
-  "search_keys": [
-   "호반닭갈비노원점",
-   "호반닭갈비"
-  ],
-  "zeropay_name": "호반닭갈비",
-  "address": "서울시 노원구 상계로 12길 42",
-  "category": "한식 일반 음식점업",
-  "phone": "029399771",
-  "lat": 37.6561711792128,
-  "lng": 127.06946887299,
-  "distance_km": 1.73,
-  "kakao_place_id": "12722888",
-  "kakao_url": "http://place.map.kakao.com/12722888",
   "menus": []
  },
  {
@@ -26462,25 +26276,6 @@
   "menus": []
  },
  {
-  "name": "컴포즈커피 신창시장점",
-  "search_keys": [
-   "컴포즈커피신창시장점",
-   "compose신창시장점",
-   "컴포즈커피",
-   "compose"
-  ],
-  "zeropay_name": "컴포즈커피(신창시장점)",
-  "address": "서울특별시 도봉구 덕릉로 253(창동)",
-  "category": "커피 전문점",
-  "phone": "01055287854",
-  "lat": 37.6402412577622,
-  "lng": 127.03938372656,
-  "distance_km": 1.84,
-  "kakao_place_id": "128804207",
-  "kakao_url": "http://place.map.kakao.com/128804207",
-  "menus": []
- },
- {
   "name": "CU 방학시온점",
   "search_keys": [
    "cu방학시온점",
@@ -27911,23 +27706,6 @@
   "menus": []
  },
  {
-  "name": "오가네손만두 상계역점",
-  "search_keys": [
-   "오가네손만두상계역점",
-   "오가네손만두상계점"
-  ],
-  "zeropay_name": "오가네손만두상계점",
-  "address": "서울특별시 노원구 상계로 146",
-  "category": "한식 일반 음식점업",
-  "phone": "01099589315",
-  "lat": 37.65848045609908,
-  "lng": 127.07088197754801,
-  "distance_km": 1.9,
-  "kakao_place_id": "34789719",
-  "kakao_url": "http://place.map.kakao.com/34789719",
-  "menus": []
- },
- {
   "name": "스텔라떡볶이 서울 노원상계점",
   "search_keys": [
    "스텔라떡볶이서울노원상계점"
@@ -27988,23 +27766,6 @@
   "distance_km": 1.9,
   "kakao_place_id": "13024753",
   "kakao_url": "http://place.map.kakao.com/13024753",
-  "menus": []
- },
- {
-  "name": "2010옛날통닭 상계점",
-  "search_keys": [
-   "2010옛날통닭상계점",
-   "2010옛날통닭"
-  ],
-  "zeropay_name": "2010옛날통닭",
-  "address": "서울특별시 노원구 동일로231길 85 (상계동)",
-  "category": "치킨 전문점",
-  "phone": "029397279",
-  "lat": 37.67159105335858,
-  "lng": 127.05084858818924,
-  "distance_km": 1.9,
-  "kakao_place_id": "700820502",
-  "kakao_url": "http://place.map.kakao.com/700820502",
   "menus": []
  },
  {
@@ -28864,23 +28625,6 @@
   "distance_km": 1.94,
   "kakao_place_id": "1296519072",
   "kakao_url": "http://place.map.kakao.com/1296519072",
-  "menus": []
- },
- {
-  "name": "교촌치킨 도봉동점",
-  "search_keys": [
-   "교촌치킨도봉동점",
-   "교촌치킨도봉점"
-  ],
-  "zeropay_name": "교촌치킨 도봉점",
-  "address": "서울특별시 도봉구 마들로 689(도봉동)",
-  "category": "치킨 전문점",
-  "phone": "029568892",
-  "lat": 37.6716830152562,
-  "lng": 127.046323733357,
-  "distance_km": 1.94,
-  "kakao_place_id": "8210356",
-  "kakao_url": "http://place.map.kakao.com/8210356",
   "menus": []
  },
  {
@@ -30089,21 +29833,6 @@
   "distance_km": 1.99,
   "kakao_place_id": "1314885566",
   "kakao_url": "http://place.map.kakao.com/1314885566",
-  "menus": []
- },
- {
-  "name": "제로빵집",
-  "search_keys": [
-   "제로빵집"
-  ],
-  "address": "서울특별시 노원구 한글비석로 416 (상계동)",
-  "category": "제과점업",
-  "phone": "69536653",
-  "lat": 37.6617025128224,
-  "lng": 127.070636838594,
-  "distance_km": 1.99,
-  "kakao_place_id": "571949368",
-  "kakao_url": "http://place.map.kakao.com/571949368",
   "menus": []
  },
  {
@@ -34798,21 +34527,6 @@
   "menus": []
  },
  {
-  "name": "88옛날통닭 쌍문점",
-  "search_keys": [
-   "88옛날통닭쌍문점"
-  ],
-  "address": "서울특별시 도봉구 우이천로32길 62",
-  "category": "치킨 전문점",
-  "phone": "0260130111",
-  "lat": 37.6503901994455,
-  "lng": 127.025287883798,
-  "distance_km": 2.21,
-  "kakao_place_id": "860859735",
-  "kakao_url": "http://place.map.kakao.com/860859735",
-  "menus": []
- },
- {
   "name": "이칠이오",
   "search_keys": [
    "이칠이오"
@@ -36141,21 +35855,6 @@
   "distance_km": 2.26,
   "kakao_place_id": "13495039",
   "kakao_url": "http://place.map.kakao.com/13495039",
-  "menus": []
- },
- {
-  "name": "도담커피",
-  "search_keys": [
-   "도담커피"
-  ],
-  "address": "서울특별시 노원구 한글비석로 396 (상계동, 벽산아파트)",
-  "category": "커피 전문점",
-  "phone": "01028202290",
-  "lat": 37.66164826542138,
-  "lng": 127.07388608348583,
-  "distance_km": 2.26,
-  "kakao_place_id": "1908586776",
-  "kakao_url": "http://place.map.kakao.com/1908586776",
   "menus": []
  },
  {
@@ -38713,21 +38412,6 @@
   "distance_km": 2.37,
   "kakao_place_id": "2143658463",
   "kakao_url": "http://place.map.kakao.com/2143658463",
-  "menus": []
- },
- {
-  "name": "냉면육가",
-  "search_keys": [
-   "냉면육가"
-  ],
-  "address": "서울특별시 강북구 삼양로38길 6 (미아동)",
-  "category": "한식 일반 음식점업",
-  "phone": "029829988",
-  "lat": 37.6416112036199,
-  "lng": 127.028412096428,
-  "distance_km": 2.37,
-  "kakao_place_id": "1418578940",
-  "kakao_url": "http://place.map.kakao.com/1418578940",
   "menus": []
  },
  {
@@ -43659,23 +43343,6 @@
   "menus": []
  },
  {
-  "name": "도로시파스타연정 수유쌍문점",
-  "search_keys": [
-   "도로시파스타연정수유쌍문점",
-   "도로시파스타수유쌍문점"
-  ],
-  "zeropay_name": "도로시파스타 수유쌍문점",
-  "address": "서울특별시 강북구 노해로33길 15",
-  "category": "서양식 음식점업",
-  "phone": "01094544125",
-  "lat": 37.6460991716339,
-  "lng": 127.023567504777,
-  "distance_km": 2.5,
-  "kakao_place_id": "2140877230",
-  "kakao_url": "http://place.map.kakao.com/2140877230",
-  "menus": []
- },
- {
   "name": "이마트24 수유사랑점",
   "search_keys": [
    "이마트24수유사랑점",
@@ -44272,21 +43939,6 @@
   "menus": []
  },
  {
-  "name": "떡볶당 수유점",
-  "search_keys": [
-   "떡볶당수유점"
-  ],
-  "address": "서울특별시 강북구 도봉로 367-1(수유동)",
-  "category": "한식 일반 음식점업",
-  "phone": "0264497925",
-  "lat": 37.64015539549402,
-  "lng": 127.02764222327171,
-  "distance_km": 2.53,
-  "kakao_place_id": "991900472",
-  "kakao_url": "http://place.map.kakao.com/991900472",
-  "menus": []
- },
- {
   "name": "단무지",
   "search_keys": [
    "단무지"
@@ -44472,21 +44124,6 @@
   "distance_km": 2.54,
   "kakao_place_id": "1909724784",
   "kakao_url": "http://place.map.kakao.com/1909724784",
-  "menus": []
- },
- {
-  "name": "류우카츠",
-  "search_keys": [
-   "류우카츠"
-  ],
-  "address": "서울특별시 강북구 한천로 1016 (번동)",
-  "category": "일식 음식점업",
-  "phone": "69410323",
-  "lat": 37.6389009542156,
-  "lng": 127.028773623741,
-  "distance_km": 2.54,
-  "kakao_place_id": "1510215635",
-  "kakao_url": "http://place.map.kakao.com/1510215635",
   "menus": []
  },
  {
@@ -44832,22 +44469,6 @@
   "distance_km": 2.56,
   "kakao_place_id": "83147097",
   "kakao_url": "http://place.map.kakao.com/83147097",
-  "menus": []
- },
- {
-  "name": "마포고깃간 하계점",
-  "search_keys": [
-   "마포고깃간하계점"
-  ],
-  "zeropay_name": "마포 고깃간 하계점",
-  "address": "서울시 노원구 노원로 257",
-  "category": "피자, 햄버거, 샌드위치 및 유사 음식점업",
-  "phone": "02",
-  "lat": 37.6403406792246,
-  "lng": 127.07282826310436,
-  "distance_km": 2.56,
-  "kakao_place_id": "476611333",
-  "kakao_url": "http://place.map.kakao.com/476611333",
   "menus": []
  },
  {
@@ -45215,21 +44836,6 @@
   "distance_km": 2.57,
   "kakao_place_id": "917817439",
   "kakao_url": "http://place.map.kakao.com/917817439",
-  "menus": []
- },
- {
-  "name": "어셈블",
-  "search_keys": [
-   "어셈블"
-  ],
-  "address": "서울특별시 강북구 한천로 1007(번동)",
-  "category": "일식 음식점업",
-  "phone": "01052992813",
-  "lat": 37.6382151967522,
-  "lng": 127.029212958554,
-  "distance_km": 2.57,
-  "kakao_place_id": "2029136328",
-  "kakao_url": "http://place.map.kakao.com/2029136328",
   "menus": []
  },
  {
@@ -49223,24 +48829,6 @@
   "menus": []
  },
  {
-  "name": "세븐일레븐 도봉럭키점",
-  "search_keys": [
-   "세븐일레븐도봉럭키점",
-   "7eleven도봉럭키점",
-   "seveneleven도봉럭키점"
-  ],
-  "zeropay_name": "세븐일레븐도봉럭키점",
-  "address": "서울특별시 도봉구 도봉로 169나길24 (도봉동)",
-  "category": "체인화 편의점",
-  "phone": "0234929569",
-  "lat": 37.678529735215186,
-  "lng": 127.0434883207193,
-  "distance_km": 2.73,
-  "kakao_place_id": "10396127",
-  "kakao_url": "http://place.map.kakao.com/10396127",
-  "menus": []
- },
- {
   "name": "송담추어탕 강북구청점",
   "search_keys": [
    "송담추어탕강북구청점"
@@ -52110,22 +51698,6 @@
   "menus": []
  },
  {
-  "name": "석관동떡볶이 수유점",
-  "search_keys": [
-   "석관동떡볶이수유점"
-  ],
-  "zeropay_name": "석관동 떡볶이 수유점",
-  "address": "서울특별시 강북구 도봉로87길 14 (수유동)",
-  "category": "간이음식 포장 판매 전문점",
-  "phone": "029931674",
-  "lat": 37.63849727808119,
-  "lng": 127.02497114655077,
-  "distance_km": 2.83,
-  "kakao_place_id": "27219418",
-  "kakao_url": "http://place.map.kakao.com/27219418",
-  "menus": []
- },
- {
   "name": "무너미",
   "search_keys": [
    "무너미",
@@ -52907,21 +52479,6 @@
   "menus": []
  },
  {
-  "name": "24시한끼라면",
-  "search_keys": [
-   "24시한끼라면"
-  ],
-  "address": "서울특별시 노원구 중계로14길 23",
-  "category": "한식 일반 음식점업",
-  "phone": "01096534600",
-  "lat": 37.6496564004756,
-  "lng": 127.081766670632,
-  "distance_km": 2.86,
-  "kakao_place_id": "1031347240",
-  "kakao_url": "http://place.map.kakao.com/1031347240",
-  "menus": []
- },
- {
   "name": "교촌치킨 인덕대점",
   "search_keys": [
    "교촌치킨인덕대점"
@@ -53255,21 +52812,6 @@
   "distance_km": 2.86,
   "kakao_place_id": "538241782",
   "kakao_url": "http://place.map.kakao.com/538241782",
-  "menus": []
- },
- {
-  "name": "마왕족발 하계점",
-  "search_keys": [
-   "마왕족발하계점"
-  ],
-  "address": "서울특별시 노원구 섬밭로 196 (하계동, 장미아파트)",
-  "category": "한식 일반 음식점업",
-  "phone": "029748292",
-  "lat": 37.63358291740642,
-  "lng": 127.06895275487436,
-  "distance_km": 2.87,
-  "kakao_place_id": "1932725185",
-  "kakao_url": "http://place.map.kakao.com/1932725185",
   "menus": []
  },
  {
@@ -54255,23 +53797,6 @@
   "distance_km": 2.9,
   "kakao_place_id": "2092587868",
   "kakao_url": "http://place.map.kakao.com/2092587868",
-  "menus": []
- },
- {
-  "name": "수유사쿠라이자카야술집",
-  "search_keys": [
-   "수유사쿠라이자카야술집",
-   "사쿠라이자카야"
-  ],
-  "zeropay_name": "사쿠라이자카야",
-  "address": "서울특별시 강북구 노해로8길 22 (수유동)",
-  "category": "일식 음식점업",
-  "phone": "07046512666",
-  "lat": 37.637959494552334,
-  "lng": 127.02447245362835,
-  "distance_km": 2.9,
-  "kakao_place_id": "133655648",
-  "kakao_url": "http://place.map.kakao.com/133655648",
   "menus": []
  },
  {
@@ -55493,21 +55018,6 @@
   "distance_km": 2.94,
   "kakao_place_id": "16996372",
   "kakao_url": "http://place.map.kakao.com/16996372",
-  "menus": []
- },
- {
-  "name": "라트",
-  "search_keys": [
-   "라트"
-  ],
-  "address": "서울특별시 노원구 한글비석로 245 (중계동)",
-  "category": "커피 전문점",
-  "phone": "029333505",
-  "lat": 37.65004664389125,
-  "lng": 127.08288893407983,
-  "distance_km": 2.95,
-  "kakao_place_id": "1199405836",
-  "kakao_url": "http://place.map.kakao.com/1199405836",
   "menus": []
  },
  {
@@ -57938,23 +57448,6 @@
   "menus": []
  },
  {
-  "name": "용궁 본점",
-  "search_keys": [
-   "용궁본점",
-   "용궁"
-  ],
-  "zeropay_name": "용궁",
-  "address": "서울특별시 강북구 도봉로82길 28",
-  "category": "한식 일반 음식점업",
-  "phone": "029937877",
-  "lat": 37.6351492203056,
-  "lng": 127.024956430802,
-  "distance_km": 3.07,
-  "kakao_place_id": "20741370",
-  "kakao_url": "http://place.map.kakao.com/20741370",
-  "menus": []
- },
- {
   "name": "금돈돈갈비",
   "search_keys": [
    "금돈돈갈비"
@@ -58181,21 +57674,6 @@
   "distance_km": 3.08,
   "kakao_place_id": "1324321424",
   "kakao_url": "http://place.map.kakao.com/1324321424",
-  "menus": []
- },
- {
-  "name": "미칸",
-  "search_keys": [
-   "미칸"
-  ],
-  "address": "서울특별시 강북구 도봉로82길 22 (번동)",
-  "category": "중식 음식점업",
-  "phone": "029029989",
-  "lat": 37.635404291314,
-  "lng": 127.024516933393,
-  "distance_km": 3.08,
-  "kakao_place_id": "1100421661",
-  "kakao_url": "http://place.map.kakao.com/1100421661",
   "menus": []
  },
  {
@@ -60086,23 +59564,6 @@
   "menus": []
  },
  {
-  "name": "느티나무가든",
-  "search_keys": [
-   "느티나무가든",
-   "느티나무집"
-  ],
-  "zeropay_name": "느티나무집",
-  "address": "서울시 도봉구 도봉로169길 346-6",
-  "category": "한식 일반 음식점업",
-  "phone": "029548271",
-  "lat": 37.6770659055379,
-  "lng": 127.027695586683,
-  "distance_km": 3.18,
-  "kakao_place_id": "16376916",
-  "kakao_url": "http://place.map.kakao.com/16376916",
-  "menus": []
- },
- {
   "name": "보나뻬띠브레드",
   "search_keys": [
    "보나뻬띠브레드"
@@ -61432,24 +60893,6 @@
   "distance_km": 3.23,
   "kakao_place_id": "2084329949",
   "kakao_url": "http://place.map.kakao.com/2084329949",
-  "menus": []
- },
- {
-  "name": "쉬즈베이글커피 덕성여대점",
-  "search_keys": [
-   "쉬즈베이글커피덕성여대점",
-   "쉬즈베이글덕대점",
-   "쉬즈베이글"
-  ],
-  "zeropay_name": "쉬즈베이글 (덕대점)",
-  "address": "서울특별시 강북구 삼양로 526(우이동)",
-  "category": "커피 전문점",
-  "phone": "01077735827",
-  "lat": 37.6499172937924,
-  "lng": 127.013720369121,
-  "distance_km": 3.23,
-  "kakao_place_id": "2011565641",
-  "kakao_url": "http://place.map.kakao.com/2011565641",
   "menus": []
  },
  {
@@ -64786,21 +64229,6 @@
   "menus": []
  },
  {
-  "name": "복쓰부",
-  "search_keys": [
-   "복쓰부"
-  ],
-  "address": "서울특별시 노원구 섬밭로 134 (공릉동, 풍림아파트)",
-  "category": "중식 음식점업",
-  "phone": "01098090689",
-  "lat": 37.62825787973292,
-  "lng": 127.06931260852177,
-  "distance_km": 3.38,
-  "kakao_place_id": "258345156",
-  "kakao_url": "http://place.map.kakao.com/258345156",
-  "menus": []
- },
- {
   "name": "병천토종순대국 도봉점",
   "search_keys": [
    "병천토종순대국도봉점",
@@ -66683,21 +66111,6 @@
   "menus": []
  },
  {
-  "name": "찌개찝",
-  "search_keys": [
-   "찌개찝"
-  ],
-  "address": "서울특별시 강북구 삼양로91길 3 (수유동)",
-  "category": "한식 일반 음식점업",
-  "phone": "07086701469",
-  "lat": 37.6366877269763,
-  "lng": 127.016923093093,
-  "distance_km": 3.51,
-  "kakao_place_id": "1987622973",
-  "kakao_url": "http://place.map.kakao.com/1987622973",
-  "menus": []
- },
- {
   "name": "화계전통",
   "search_keys": [
    "화계전통"
@@ -66943,22 +66356,6 @@
   "distance_km": 3.52,
   "kakao_place_id": "1860516233",
   "kakao_url": "http://place.map.kakao.com/1860516233",
-  "menus": []
- },
- {
-  "name": "더새봄",
-  "search_keys": [
-   "더새봄"
-  ],
-  "zeropay_name": "더 새봄",
-  "address": "서울특별시 강북구 인수봉로78길 19 (수유동)",
-  "category": "커피 전문점",
-  "phone": "01090481941",
-  "lat": 37.6446106928957,
-  "lng": 127.011951780431,
-  "distance_km": 3.52,
-  "kakao_place_id": "1802103345",
-  "kakao_url": "http://place.map.kakao.com/1802103345",
   "menus": []
  },
  {
@@ -67475,21 +66872,6 @@
   "distance_km": 3.55,
   "kakao_place_id": "15538644",
   "kakao_url": "http://place.map.kakao.com/15538644",
-  "menus": []
- },
- {
-  "name": "좋은날",
-  "search_keys": [
-   "좋은날"
-  ],
-  "address": "서울특별시 강북구 오현로 131 (번동)",
-  "category": "한식 일반 음식점업",
-  "phone": "029829381",
-  "lat": 37.6241368024489,
-  "lng": 127.037332836914,
-  "distance_km": 3.55,
-  "kakao_place_id": "1292032884",
-  "kakao_url": "http://place.map.kakao.com/1292032884",
   "menus": []
  },
  {
@@ -68094,21 +67476,6 @@
   "distance_km": 3.58,
   "kakao_place_id": "534426827",
   "kakao_url": "http://place.map.kakao.com/534426827",
-  "menus": []
- },
- {
-  "name": "초아",
-  "search_keys": [
-   "초아"
-  ],
-  "address": "서울 노원구 동일로192다길 51",
-  "category": "일식 음식점업",
-  "phone": "029788295",
-  "lat": 37.6288043563371,
-  "lng": 127.07444263706242,
-  "distance_km": 3.58,
-  "kakao_place_id": "708970275",
-  "kakao_url": "http://place.map.kakao.com/708970275",
   "menus": []
  },
  {
@@ -71225,22 +70592,6 @@
   "menus": []
  },
  {
-  "name": "더벤티 공릉역점",
-  "search_keys": [
-   "더벤티공릉역점"
-  ],
-  "zeropay_name": "더벤티공릉역점",
-  "address": "서울특별시 노원구 동일로 1077 (공릉동)",
-  "category": "커피 전문점",
-  "phone": "07048337298",
-  "lat": 37.6260711072549,
-  "lng": 127.07244277896102,
-  "distance_km": 3.73,
-  "kakao_place_id": "1269102007",
-  "kakao_url": "http://place.map.kakao.com/1269102007",
-  "menus": []
- },
- {
   "name": "CU 광운대원룸점",
   "search_keys": [
    "cu광운대원룸점",
@@ -73103,23 +72454,6 @@
   "menus": []
  },
  {
-  "name": "수해복마라탕 광운대점",
-  "search_keys": [
-   "수해복마라탕광운대점",
-   "수해복마라탕"
-  ],
-  "zeropay_name": "수해복마라탕",
-  "address": "서울특별시 노원구 광운로 39 (월계동)",
-  "category": "중식 음식점업",
-  "phone": "029173303",
-  "lat": 37.6210745477174,
-  "lng": 127.058929022312,
-  "distance_km": 3.8,
-  "kakao_place_id": "961930767",
-  "kakao_url": "http://place.map.kakao.com/961930767",
-  "menus": []
- },
- {
   "name": "쿠마",
   "search_keys": [
    "쿠마",
@@ -73701,21 +73035,6 @@
   "distance_km": 3.82,
   "kakao_place_id": "1148391455",
   "kakao_url": "http://place.map.kakao.com/1148391455",
-  "menus": []
- },
- {
-  "name": "고씨네 광운대점",
-  "search_keys": [
-   "고씨네광운대점"
-  ],
-  "address": "서울특별시 노원구 광운로 17-5(월계동)",
-  "category": "한식 일반 음식점업",
-  "phone": "029431535",
-  "lat": 37.6208944299358,
-  "lng": 127.058769165945,
-  "distance_km": 3.82,
-  "kakao_place_id": "1720897273",
-  "kakao_url": "http://place.map.kakao.com/1720897273",
   "menus": []
  },
  {
@@ -74817,21 +74136,6 @@
   "menus": []
  },
  {
-  "name": "효자분식 미아점",
-  "search_keys": [
-   "효자분식미아점"
-  ],
-  "address": "서울특별시 강북구 도봉로53길 27 (미아동)",
-  "category": "김밥 및 기타 간이 음식점업",
-  "phone": "07077880040",
-  "lat": 37.62654585285998,
-  "lng": 127.02424328174159,
-  "distance_km": 3.84,
-  "kakao_place_id": "1445081477",
-  "kakao_url": "http://place.map.kakao.com/1445081477",
-  "menus": []
- },
- {
   "name": "카페아토",
   "search_keys": [
    "카페아토"
@@ -74861,22 +74165,6 @@
   "distance_km": 3.84,
   "kakao_place_id": "1629849237",
   "kakao_url": "http://place.map.kakao.com/1629849237",
-  "menus": []
- },
- {
-  "name": "크레펭 귄",
-  "search_keys": [
-   "크레펭귄"
-  ],
-  "zeropay_name": "크레펭,귄",
-  "address": "서울 강북구 삼양로74길 30",
-  "category": "커피 전문점",
-  "phone": "01062631571",
-  "lat": 37.6296542137315,
-  "lng": 127.019625629878,
-  "distance_km": 3.84,
-  "kakao_place_id": "1064428475",
-  "kakao_url": "http://place.map.kakao.com/1064428475",
   "menus": []
  },
  {
@@ -84820,23 +84108,6 @@
   "menus": []
  },
  {
-  "name": "골목식당 강북점",
-  "search_keys": [
-   "골목식당강북점",
-   "골목식당"
-  ],
-  "zeropay_name": "골목식당",
-  "address": "서울특별시 강북구 삼양로40길 7 1층",
-  "category": "한식 일반 음식점업",
-  "phone": "020000000",
-  "lat": 37.6217937995751,
-  "lng": 127.02081973527609,
-  "distance_km": 4.45,
-  "kakao_place_id": "83325559",
-  "kakao_url": "http://place.map.kakao.com/83325559",
-  "menus": []
- },
- {
   "name": "한일산장",
   "search_keys": [
    "한일산장"
@@ -86907,21 +86178,6 @@
   "menus": []
  },
  {
-  "name": "의정부부대찌개",
-  "search_keys": [
-   "의정부부대찌개"
-  ],
-  "address": "서울특별시 강북구 도봉로10길 78 미아동",
-  "category": "한식 일반 음식점업",
-  "phone": "029986977",
-  "lat": 37.6160937291232,
-  "lng": 127.030953116808,
-  "distance_km": 4.58,
-  "kakao_place_id": "1042142935",
-  "kakao_url": "http://place.map.kakao.com/1042142935",
-  "menus": []
- },
- {
   "name": "돝제주흑돼지 본점",
   "search_keys": [
    "돝제주흑돼지본점",
@@ -87575,23 +86831,6 @@
   "distance_km": 4.61,
   "kakao_place_id": "1603182805",
   "kakao_url": "http://place.map.kakao.com/1603182805",
-  "menus": []
- },
- {
-  "name": "돈까스브로스 미아점",
-  "search_keys": [
-   "돈까스브로스미아점",
-   "돈까스브로스"
-  ],
-  "zeropay_name": "돈까스브로스(미아점)",
-  "address": "서울특별시 강북구 오패산로30길 30 (미아동, 경남아너스빌)",
-  "category": "한식 일반 음식점업",
-  "phone": "00000000000",
-  "lat": 37.61475818605535,
-  "lng": 127.03516255567007,
-  "distance_km": 4.61,
-  "kakao_place_id": "141494619",
-  "kakao_url": "http://place.map.kakao.com/141494619",
   "menus": []
  },
  {
@@ -89223,21 +88462,6 @@
   "menus": []
  },
  {
-  "name": "토이타코",
-  "search_keys": [
-   "토이타코"
-  ],
-  "address": "서울 강북구 삼양로 169",
-  "category": "일식 음식점업",
-  "phone": "01086787173",
-  "lat": 37.6189313626052,
-  "lng": 127.020814406287,
-  "distance_km": 4.71,
-  "kakao_place_id": "138633172",
-  "kakao_url": "http://place.map.kakao.com/138633172",
-  "menus": []
- },
- {
   "name": "오국물떡볶이",
   "search_keys": [
    "오국물떡볶이"
@@ -90792,21 +90016,6 @@
   "distance_km": 4.79,
   "kakao_place_id": "332043702",
   "kakao_url": "http://place.map.kakao.com/332043702",
-  "menus": []
- },
- {
-  "name": "아뜰리에투티",
-  "search_keys": [
-   "아뜰리에투티"
-  ],
-  "address": "서울특별시 노원구 화랑로51나길 8 (공릉동)",
-  "category": "제과점업",
-  "phone": "029727252",
-  "lat": 37.6247178923533,
-  "lng": 127.089421877985,
-  "distance_km": 4.8,
-  "kakao_place_id": "1251902653",
-  "kakao_url": "http://place.map.kakao.com/1251902653",
   "menus": []
  },
  {
@@ -92885,21 +92094,6 @@
   "menus": []
  },
  {
-  "name": "벼락화로구이",
-  "search_keys": [
-   "벼락화로구이"
-  ],
-  "address": "서울특별시 강북구 도봉로8길 19 (미아동)",
-  "category": "한식 일반 음식점업",
-  "phone": "029838914",
-  "lat": 37.6126446579534,
-  "lng": 127.031282406336,
-  "distance_km": 4.93,
-  "kakao_place_id": "16792093",
-  "kakao_url": "http://place.map.kakao.com/16792093",
-  "menus": []
- },
- {
   "name": "화목토식당 미아본점",
   "search_keys": [
    "화목토식당미아본점",
@@ -93156,21 +92350,6 @@
   "distance_km": 4.96,
   "kakao_place_id": "16681387",
   "kakao_url": "http://place.map.kakao.com/16681387",
-  "menus": []
- },
- {
-  "name": "콩아리",
-  "search_keys": [
-   "콩아리"
-  ],
-  "address": "서울시 강북구 월계로 43-1",
-  "category": "한식 일반 음식점업",
-  "phone": "02",
-  "lat": 37.6115806118683,
-  "lng": 127.034439603782,
-  "distance_km": 4.96,
-  "kakao_place_id": "25888675",
-  "kakao_url": "http://place.map.kakao.com/25888675",
   "menus": []
  },
  {
