@@ -1,11 +1,20 @@
 import { PLACE_ID_RE } from "@/lib/constants";
 
-/** /contact 가 이메일로 받던 목록에서 그대로 온 네 종류. DB CHECK 제약과 같은 집합이다. */
-export const REPORT_KINDS = ["place_fix", "delist", "abuse", "feature"] as const;
+/**
+ * /contact 가 이메일로 받던 네 종류에 zeropay_fail 을 더한 것. DB CHECK 제약과 같은 집합이다.
+ * 폼도 어드민 큐도 이 배열을 순회하므로 순서가 곧 화면 순서다.
+ *
+ * zeropay_fail 이 place_fix 와 따로인 이유: 제로페이 목록에는 있는데 실제로는 결제가
+ * 안 되는 가게를 코드로 탐지할 방법이 없다(2026-08-21 전수 조사). 제보가 유일한
+ * 창구인데 폐업·이전·가격과 한 통에 섞으면 그 건수를 따로 셀 수가 없고, 그 숫자가
+ * 곧 이 앱의 전제가 얼마나 새는지다.
+ */
+export const REPORT_KINDS = ["place_fix", "zeropay_fail", "delist", "abuse", "feature"] as const;
 export type ReportKind = (typeof REPORT_KINDS)[number];
 
 export const REPORT_KIND_LABELS: Record<ReportKind, string> = {
   place_fix: "가게 정보가 달라요 (폐업·이전·가격)",
+  zeropay_fail: "비플페이 결제가 안 됐어요",
   delist: "가게 노출을 원하지 않아요",
   abuse: "부적절한 리뷰·제보 신고",
   feature: "기능 제안·불편",
@@ -76,6 +85,11 @@ export function validateReportInput(json: unknown): Fail | Ok<ReportInput> {
       return { ok: false, error: "잘못된 요청입니다." };
     }
     placeId = o.placeId;
+  }
+  // 단 "결제가 안 됐다"는 가게가 없으면 아무것도 아니다. 코드로는 못 잡는 오염이라
+  // 이 제보가 유일한 근거인데, 본문에 상호만 적히면 대조할 방법이 없다.
+  if (kind === "zeropay_fail" && placeId === null) {
+    return { ok: false, error: "어떤 가게였는지 골라주세요." };
   }
 
   let contact: string | null = null;

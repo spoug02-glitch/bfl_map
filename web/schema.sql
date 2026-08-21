@@ -156,8 +156,11 @@ CREATE INDEX IF NOT EXISTS idx_menu_items_published_price
 -- 어드민 받은함만 지저분해지고 데이터는 오염되지 않는다.
 CREATE TABLE IF NOT EXISTS reports (
   id          SERIAL PRIMARY KEY,
+  -- zeropay_fail 은 place_fix 와 따로 둔다. 제로페이 목록에 있는데 실제로는 결제가
+  -- 안 되는 가게는 코드로 탐지할 수 없어(2026-08-21 전수 조사) 제보가 유일한 창구인데,
+  -- 폐업·이전·가격과 한 통에 섞으면 그 건수를 따로 셀 수가 없다.
   kind        TEXT NOT NULL CHECK (kind IN
-                ('place_fix','delist','abuse','feature')),
+                ('place_fix','zeropay_fail','delist','abuse','feature')),
   place_id    TEXT,
   body        TEXT NOT NULL CHECK (length(trim(body)) > 0),
   contact     TEXT,

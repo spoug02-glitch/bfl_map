@@ -82,7 +82,13 @@ export default function ReportForm() {
         </div>
       </fieldset>
 
-      <ShopPicker label="가게" value={shop} onChange={setShop} />
+      {/* 다른 종류는 가게가 선택이다. 결제 실패만은 어느 가게였는지가 제보의 전부라
+          필수인 걸 라벨로 먼저 알린다 — 다 적고 나서 거절당하면 다시 안 보낸다. */}
+      <ShopPicker
+        label={kind === "zeropay_fail" ? "가게 (꼭 골라주세요)" : "가게"}
+        value={shop}
+        onChange={setShop}
+      />
 
       <div>
         <label className="block text-sm font-bold text-on-surface" htmlFor="report-body">

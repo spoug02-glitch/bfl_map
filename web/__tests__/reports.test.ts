@@ -22,9 +22,26 @@ describe("validateReportInput", () => {
     expect(r.ok && r.value).toMatchObject({ kind: "place_fix", placeId: null, contact: null });
   });
 
-  it("네 종류만 받는다", () => {
-    for (const k of REPORT_KINDS) expect(validateReportInput(report({ kind: k })).ok).toBe(true);
+  it("정해진 종류만 받는다", () => {
+    // zeropay_fail 은 가게가 필수라 여기서만 placeId 를 채워 준다.
+    for (const k of REPORT_KINDS) {
+      const extra = k === "zeropay_fail" ? { placeId: "12345" } : {};
+      expect(validateReportInput(report({ kind: k, ...extra })).ok).toBe(true);
+    }
     expect(validateReportInput(report({ kind: "spam" })).ok).toBe(false);
+  });
+
+  // 코드로는 못 잡는 오염이라 이 제보가 유일한 근거다. 어느 가게인지 없으면
+  // 대조할 것이 없어 접수해도 쓸 수가 없다.
+  it("비플페이 결제 실패는 가게가 없으면 거절한다", () => {
+    expect(validateReportInput(report({ kind: "zeropay_fail" })).ok).toBe(false);
+    expect(validateReportInput(report({ kind: "zeropay_fail", placeId: "12345" })).ok).toBe(true);
+  });
+
+  // 나머지 종류는 가게 없이도 받는다 — 가게와 무관한 제보가 있고, 본문에 이름을
+  // 적는 사람도 있다.
+  it("다른 종류는 가게가 없어도 된다", () => {
+    expect(validateReportInput(report({ kind: "feature" })).ok).toBe(true);
   });
 
   it("본문이 비면 거절한다", () => {
