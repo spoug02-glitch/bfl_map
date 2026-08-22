@@ -16,6 +16,9 @@ type Props = {
   savedPlaces: Restaurant[];
   /** 가게별 최저가 점심특선 제보. 당첨 가게의 메뉴 줄에 얹는다. */
   specialPrices: Map<string, SpecialPrice>;
+  /** 기준점 기준 거리. distance_km은 회사 기준으로 구워진 값이라 기준점을 옮기면
+      틀린다 — 랜덤의 150m도 지금 보고 있는 지점에서의 150m여야 한다. */
+  distKm: (r: Restaurant) => number;
   onClose: () => void;
 };
 
@@ -31,7 +34,7 @@ const RANDOM_PICK = 4;
  */
 const RANDOM_RADIUS_KM = 0.15;
 
-export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClose }: Props) {
+export default function RoulettePanel({ pool, savedPlaces, specialPrices, distKm, onClose }: Props) {
   const [picked, setPicked] = useState<Restaurant[]>([]);
   const [query, setQuery] = useState("");
   const [draw, setDraw] = useState<{ seed: number; winner: number } | null>(null);
@@ -80,11 +83,11 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, onClos
     () =>
       pool.filter(
         r =>
-          r.distance_km <= RANDOM_RADIUS_KM &&
+          distKm(r) <= RANDOM_RADIUS_KM &&
           isMealPlace(r.category) &&
           !isDisliked(r, disliked),
       ),
-    [pool, disliked],
+    [pool, disliked, distKm],
   );
 
   const fillRandom = () => {

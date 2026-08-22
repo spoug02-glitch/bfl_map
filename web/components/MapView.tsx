@@ -2,7 +2,8 @@
 
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
-import { CENTER, OFFICE_LABEL, Restaurant } from "@/lib/constants";
+import { CENTER, OFFICE_LABEL, RADIUS_KM, Restaurant } from "@/lib/constants";
+import type { LatLng } from "@/lib/geo";
 
 /**
  * Kakao zoom: 숫자가 작을수록 가깝다. 3에서 기본 반경 200m 원은 지름 400px로
@@ -65,8 +66,11 @@ interface KakaoMap {
   panTo(pos: KakaoLatLng): void;
   setLevel(level: number): void;
 }
-type KakaoMarker = object;
+interface KakaoMarker { setMap(map: KakaoMap | null): void }
 interface KakaoCircle { setMap(map: KakaoMap | null): void }
+/** 지도 클릭 리스너가 받는 이벤트. 찍은 좌표만 쓴다. */
+interface KakaoPointOnMap { getLat(): number; getLng(): number }
+interface KakaoMouseEvent { latLng: KakaoPointOnMap }
 interface KakaoClusterer {
   clear(): void;
   addMarkers(markers: KakaoMarker[]): void;
@@ -89,6 +93,7 @@ interface KakaoMapsNamespace {
   Circle: new (opts: {
     map: KakaoMap; center: KakaoLatLng; radius: number;
     strokeWeight: number; strokeColor: string; strokeOpacity: number;
+    strokeStyle?: string;
     fillColor: string; fillOpacity: number;
   }) => KakaoCircle;
   MarkerClusterer: new (opts: {
@@ -96,7 +101,10 @@ interface KakaoMapsNamespace {
     gridSize?: number; disableClickZoom?: boolean;
     styles?: Record<string, string>[];
   }) => KakaoClusterer;
-  event: { addListener(target: KakaoMarker, type: string, handler: () => void): void };
+  event: {
+    addListener(target: KakaoMarker, type: string, handler: () => void): void;
+    addListener(target: KakaoMap, type: "click", handler: (e: KakaoMouseEvent) => void): void;
+  };
 }
 
 declare global {
@@ -111,17 +119,31 @@ export type MapApi = { recenter: () => void };
 type Props = {
   restaurants: Restaurant[];
   maxDist: number;
+  /** 반경 원과 거리 계산의 기준점. 지도를 찍으면 여기가 옮겨간다. */
+  origin: LatLng;
   onSelect: (r: Restaurant) => void;
+  onPickOrigin: (p: LatLng) => void;
   /** 회사로 돌아가기를 지도 밖(떠 있는 버튼)에서 부를 수 있게 열어준다. */
   apiRef?: React.RefObject<MapApi | null>;
 };
 
-export default function MapView({ restaurants, maxDist, onSelect, apiRef }: Props) {
+export default function MapView({ restaurants, maxDist, origin, onSelect, onPickOrigin, apiRef }: Props) {
   const mapEl = useRef<HTMLDivElement>(null);
   const mapRef = useRef<KakaoMap | null>(null);
   const clustererRef = useRef<KakaoClusterer | null>(null);
   const circleRef = useRef<KakaoCircle | null>(null);
+  const originMarkerRef = useRef<KakaoMarker | null>(null);
+  const boundaryRef = useRef<KakaoCircle | null>(null);
   const [ready, setReady] = useState(false);
+
+  // 클릭 리스너는 지도 생성 시 한 번만 단다. 최신 콜백을 ref로 읽어 리스너를
+  // 다시 달지 않는다 — 카카오 SDK에는 removeListener를 걸 훅이 마땅치 않다.
+  // 갱신은 렌더가 아니라 effect에서 한다: 렌더 중 ref 쓰기는 동시성 렌더링에서
+  // 버려질 수 있는 작업이라 React가 금지한다.
+  const onPickOriginRef = useRef(onPickOrigin);
+  useEffect(() => {
+    onPickOriginRef.current = onPickOrigin;
+  }, [onPickOrigin]);
 
   const initMap = () => {
     window.kakao.maps.load(() => {
@@ -166,26 +188,68 @@ export default function MapView({ restaurants, maxDist, onSelect, apiRef }: Prop
         map.setLevel(INITIAL_LEVEL);
         map.panTo(center);
       };
-      window.kakao.maps.event.addListener(office, "click", recenter);
+      window.kakao.maps.event.addListener(office, "click", () => {
+        recenter();
+        // 회사로 돌아오기 = 기준점도 회사로. 지도만 돌리고 기준점을 흘리면
+        // "회사를 눌렀는데 목록은 딴 동네"가 된다.
+        onPickOriginRef.current(CENTER);
+      });
+      // 지도 빈 곳 탭 = 기준점 이동. 실수 탭 처리(패널이 열려 있으면 닫기만)는
+      // 부모의 onPickOrigin 이 한다 — 여기는 좌표만 넘긴다.
+      window.kakao.maps.event.addListener(map, "click", (e: KakaoMouseEvent) => {
+        onPickOriginRef.current({ lat: e.latLng.getLat(), lng: e.latLng.getLng() });
+      });
       if (apiRef) apiRef.current = { recenter };
       setReady(true);
     });
   };
 
+  // 반경 원·기준점 핀·수집 경계. 마커와 갱신 주기가 달라 effect를 가른다 —
+  // 기준점만 옮겼는데 5,800개 마커를 다시 만들 이유가 없다.
   useEffect(() => {
-    // ready=true는 initMap이 mapRef/clustererRef를 채운 뒤에만 set되므로 non-null 단언이 안전하다.
-    if (!ready || !mapRef.current || !clustererRef.current) return;
+    if (!ready || !mapRef.current) return;
     const kakao = window.kakao;
     const map = mapRef.current;
-    const clusterer = clustererRef.current;
+    const moved = origin.lat !== CENTER.lat || origin.lng !== CENTER.lng;
+
     if (circleRef.current) circleRef.current.setMap(null);
     circleRef.current = new kakao.maps.Circle({
       map,
-      center: new kakao.maps.LatLng(CENTER.lat, CENTER.lng),
+      center: new kakao.maps.LatLng(origin.lat, origin.lng),
       radius: maxDist * 1000,
       strokeWeight: 2, strokeColor: MAP_PRIMARY, strokeOpacity: 0.6,
       fillColor: MAP_PRIMARY, fillOpacity: 0.06,
     });
+
+    // 회사가 아닌 곳을 찍었을 때만 기준점 핀을 세운다. 회사에는 이미 로고 핀이 있다.
+    if (originMarkerRef.current) originMarkerRef.current.setMap(null);
+    originMarkerRef.current = null;
+    // 수집 경계: 데이터는 회사 5km 안에서만 모았다. 기준점이 밖을 향하면 지도가
+    // 비어 "가게가 없다"로 읽힌다 — 없는 게 아니라 모르는 곳이라는 걸 선으로 긋는다.
+    if (boundaryRef.current) boundaryRef.current.setMap(null);
+    boundaryRef.current = null;
+    if (moved) {
+      originMarkerRef.current = new kakao.maps.Marker({
+        map,
+        position: new kakao.maps.LatLng(origin.lat, origin.lng),
+        title: "선택한 지점",
+      });
+      boundaryRef.current = new kakao.maps.Circle({
+        map,
+        center: new kakao.maps.LatLng(CENTER.lat, CENTER.lng),
+        radius: RADIUS_KM * 1000,
+        strokeWeight: 1.5, strokeColor: MAP_PRIMARY, strokeOpacity: 0.35,
+        strokeStyle: "shortdash",
+        fillColor: MAP_PRIMARY, fillOpacity: 0,
+      });
+    }
+  }, [ready, origin, maxDist]);
+
+  useEffect(() => {
+    // ready=true는 initMap이 mapRef/clustererRef를 채운 뒤에만 set되므로 non-null 단언이 안전하다.
+    if (!ready || !mapRef.current || !clustererRef.current) return;
+    const kakao = window.kakao;
+    const clusterer = clustererRef.current;
     // 점 아이콘은 마커마다 새로 만들 필요가 없다 — 5,834개면 그 비용이 그대로 쌓인다.
     const dot = new kakao.maps.MarkerImage(
       DOT_ICON,
@@ -205,7 +269,7 @@ export default function MapView({ restaurants, maxDist, onSelect, apiRef }: Prop
     clusterer.clear();
     clusterer.addMarkers(markers);
     return () => clusterer.clear();
-  }, [ready, restaurants, maxDist, onSelect]);
+  }, [ready, restaurants, onSelect]);
 
   return (
     <>

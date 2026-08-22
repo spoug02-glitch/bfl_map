@@ -37,6 +37,11 @@ type Props = {
   onReset: () => void;
   onRoulette: () => void;
   canWiden: boolean;
+  /** 기준점이 회사가 아닌 지점으로 옮겨져 있는지. 문구와 되돌리기가 여기 달렸다. */
+  originMoved: boolean;
+  onResetOrigin: () => void;
+  /** 기준점 기준 거리. 저장 목록 줄에 쓴다 — 목록(places)은 부모가 이미 계산해 준다. */
+  distKm: (r: Restaurant) => number;
 };
 
 /** 한 번에 그리는 개수. 5,834개를 다 그리면 스크롤이 버벅인다. 더 보기로 이만큼씩 늘린다. */
@@ -84,6 +89,7 @@ export default function PlaceList({
   tab, onTab, places, savedPlaces, myReviews, placeById,
   loggedIn, priceFiltered, specialPrices, dbMinPrices, unpricedCount,
   onSelect, onWiden, onReset, onRoulette, canWiden,
+  originMoved, onResetOrigin, distKm,
 }: Props) {
   const [rows, setRows] = useState(PAGE_ROWS);
   // 필터·반경을 바꾸면 다른 목록이다. 200번째 줄까지 펼친 상태로 남으면
@@ -146,8 +152,15 @@ export default function PlaceList({
       {tab === "near" && (
         <>
           <p className="mt-3 text-sm text-on-surface-variant">
-            <span className="font-bold text-on-surface">{OFFICE_LABEL}</span> 기준 가까운 순
+            <span className="font-bold text-on-surface">{originMoved ? "지도에서 찍은 지점" : OFFICE_LABEL}</span> 기준 가까운 순
           </p>
+          {/* 데이터는 회사 5km 안에서만 모았다. 기준점을 밖으로 옮기면 지도가 비는데,
+              그건 가게가 없는 게 아니라 우리가 안 가본 곳이다 — 말하지 않으면 거짓말이 된다. */}
+          {originMoved && (
+            <p className="mt-1 text-xs text-on-surface-variant">
+              회사에서 멀어질수록 저희가 모르는 가게가 늘어요. 데이터는 회사 5km 안에서 모았어요.
+            </p>
+          )}
           {/* 가격 필터를 켜면 후보의 절반 가까이가 조용히 사라진다 — 메뉴 가격이
               등록 안 된 곳이 그만큼 많다. 말없이 빼면 없는 줄 알게 된다. */}
           {unpricedCount > 0 && (
@@ -219,12 +232,22 @@ export default function PlaceList({
 
       {tab === "me" && (
         <>
-          {/* 거리의 기준점. 지금은 모두 같은 곳이라 바꿀 수는 없고, 어디 기준인지
-              보여주기만 한다. */}
-          <SectionBar>회사</SectionBar>
+          {/* 거리의 기준점. 지도를 누르면 그 자리로 옮겨간다. */}
+          <SectionBar>거리 기준점</SectionBar>
           <div className="flex items-center justify-between gap-3 py-2.5">
-            <span className="min-w-0 flex-1 truncate text-sm font-bold text-on-surface">{OFFICE_LABEL}</span>
-            <span className="shrink-0 text-xs text-on-surface-variant">지금은 모두 여기 기준</span>
+            <span className="min-w-0 flex-1 truncate text-sm font-bold text-on-surface">
+              {originMoved ? "지도에서 찍은 지점" : OFFICE_LABEL}
+            </span>
+            {originMoved ? (
+              <button
+                className="grid h-11 shrink-0 place-items-center rounded-lg bg-surface-container px-3 text-xs font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10 md:h-9"
+                onClick={onResetOrigin}
+              >
+                회사 기준으로
+              </button>
+            ) : (
+              <span className="shrink-0 text-xs text-on-surface-variant">지도를 누르면 옮겨져요</span>
+            )}
           </div>
 
           {/* 로그인과 무관한 개인 설정 — 이 브라우저에만 남는다 */}
@@ -246,7 +269,7 @@ export default function PlaceList({
                   {savedPlaces.map(place => (
                     <Row
                       key={place.kakao_place_id}
-                      lead={formatDistance(place.distance_km)}
+                      lead={formatDistance(distKm(place))}
                       title={place.name}
                       subtitle={place.category}
                       onClick={() => onSelect(place)}

@@ -14,6 +14,7 @@ import { track, type EntryContext } from "@/lib/gtag";
 import {
   type OwnBlogLinks,
   CATEGORY_GROUPS,
+  CENTER,
   DEFAULT_VIEW_RADIUS_KM,
   RADIUS_KM,
   Restaurant,
@@ -22,6 +23,7 @@ import {
   effectiveMinPrice,
   normalizeQuery,
 } from "@/lib/constants";
+import { haversineKm, type LatLng } from "@/lib/geo";
 import type { DbMenuItem } from "@/lib/menu-source";
 import { suggestNickname } from "@/lib/nickname";
 import { REJOIN_BLOCK_DAYS } from "@/lib/rejoin";
@@ -36,6 +38,17 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [group, setGroup] = useState<string | null>(null);
   const [query, setQuery] = useState("");
   const [maxDist, setMaxDist] = useState(DEFAULT_VIEW_RADIUS_KM);
+  // 거리의 기준점. 지도를 누르면 그 자리로 옮겨간다. 저장하지 않는다 — 새로고침이면
+  // 회사로 돌아온다. 이 앱의 전제가 "회사 근처 점심"이라, 어제 딴 동네를 보다 닫은
+  // 상태로 오늘 아침을 열면 왜 이런지 알 수 없다.
+  const [origin, setOrigin] = useState<LatLng>(CENTER);
+  const originIsOffice = origin.lat === CENTER.lat && origin.lng === CENTER.lng;
+  // 화면의 모든 거리는 여기서 파생된다. 기준점이 회사면 수집기가 구워둔 distance_km을
+  // 그대로 써서 5,800여 회 계산을 건너뛴다 — 그 값이 맞는지는 geo.test.ts가 전수 대조한다.
+  const distKm = useCallback(
+    (r: Restaurant) => (originIsOffice ? r.distance_km : haversineKm(origin, r)),
+    [origin, originIsOffice],
+  );
   // null이면 가격으로 거르지 않는다.
   const [priceLimit, setPriceLimit] = useState<number | null>(null);
   // 가게별 최저가 점심특선 제보. 가격 필터가 카카오 메뉴와 함께 본다.
@@ -130,7 +143,6 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     }
   }, [initialPlaceId]);
 
-  // 거리는 수집기가 회사 기준으로 미리 계산해 넣어둔 값을 그대로 쓴다.
   // 가격은 여기서 거르지 않는다 — 가격 때문에 몇 곳이 빠졌는지 세려면 그 직전
   // 상태가 필요하다.
   const matched = useMemo(() => {
@@ -139,11 +151,11 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     // "CU" find stores the source data spells "씨유", and "뉴창동" find "뉴(NEW)창동…"
     const q = normalizeQuery(query);
     return all.filter(r =>
-      r.distance_km <= maxDist &&
+      distKm(r) <= maxDist &&
       (!cats || cats.has(r.category)) &&
       (!q || r.search_keys.some(k => k.includes(q))),
     );
-  }, [all, group, query, maxDist]);
+  }, [all, group, query, maxDist, distKm]);
 
   // 안 먹는 음식은 지도와 목록을 건드리지 않는다 — 그건 그 동네에 뭐가 있는지를
   // 보여주는 화면이지 내 취향을 반영하는 화면이 아니다. 거르는 건 룰렛 랜덤뿐이고,
@@ -186,9 +198,9 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         })
       : matched;
     return kept
-      .map(place => ({ place, distanceKm: place.distance_km }))
+      .map(place => ({ place, distanceKm: distKm(place) }))
       .sort((a, b) => a.distanceKm - b.distanceKm);
-  }, [matched, priceLimit, specialPrices, dbItemsFor]);
+  }, [matched, priceLimit, specialPrices, dbItemsFor, distKm]);
 
   const visible = useMemo(() => ranked.map(x => x.place), [ranked]);
 
@@ -220,6 +232,22 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   }, [user]);
 
   useEffect(loadMine, [loadMine]);
+
+  // 지도 탭 = 기준점 이동. 단, 뭔가 열려 있을 때의 탭은 "닫고 싶다"는 뜻이다.
+  // 이 기능의 첫 판(7ca8f0ca)은 그 탭까지 이동으로 받아서 시트를 닫으려다 기준점이
+  // 옮겨졌고, 그래서 같은 날 제거됐다(cef5e219). 닫기만 하고 기준점은 두는 게 그 답이다.
+  const pickOrigin = useCallback(
+    (p: LatLng) => {
+      if (rouletteOpen) return;
+      if (selected) {
+        setSelected(null);
+        loadMine();
+        return;
+      }
+      setOrigin(p);
+    },
+    [rouletteOpen, selected, loadMine],
+  );
 
   const toggleSaved = useCallback((placeId: string, saved: boolean) => {
     setSavedIds(prev => {
@@ -314,7 +342,14 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             if (e.pointerType !== "mouse") setBarOpen(false);
           }}
         >
-          <MapView restaurants={visible} maxDist={maxDist} onSelect={r => select(r, "marker")} apiRef={mapApi} />
+          <MapView
+            restaurants={visible}
+            maxDist={maxDist}
+            origin={origin}
+            onSelect={r => select(r, "marker")}
+            onPickOrigin={pickOrigin}
+            apiRef={mapApi}
+          />
         </div>
         {/* 카카오맵의 현위치 버튼 자리에 회사가 있다. 마커도 같은 일을 하지만
             전국 크기로 빼면 마커는 찾을 수 없다 — 버튼은 어디서든 그 자리다. */}
@@ -324,7 +359,11 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
               border border-outline-variant bg-surface-container-lowest px-4 text-sm font-bold text-on-surface shadow-elevation-3
               transition-colors hover:bg-on-surface/8 active:bg-on-surface/10
               md:bottom-4 md:right-[calc(24rem+0.75rem)]"
-            onClick={() => mapApi.current?.recenter()}
+            onClick={() => {
+              mapApi.current?.recenter();
+              // 지도만 돌리고 기준점을 흘리면 "회사를 눌렀는데 목록은 딴 동네"가 된다.
+              setOrigin(CENTER);
+            }}
           >
             <span aria-hidden>🏢</span>회사
           </button>
@@ -381,6 +420,12 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             onReset={resetFilters}
             onRoulette={() => setRouletteOpen(true)}
             canWiden={maxDist < RADIUS_KM}
+            originMoved={!originIsOffice}
+            onResetOrigin={() => {
+              mapApi.current?.recenter();
+              setOrigin(CENTER);
+            }}
+            distKm={distKm}
           />
         )}
         {rouletteOpen && (
@@ -388,6 +433,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             pool={visible}
             savedPlaces={savedPlaces}
             specialPrices={specialPrices}
+            distKm={distKm}
             onClose={() => setRouletteOpen(false)}
           />
         )}
