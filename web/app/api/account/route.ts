@@ -34,6 +34,11 @@ export async function DELETE(req: NextRequest) {
     // 저장한 가게는 남에게 보이지 않는 개인 목록이라 익명으로 남길 값이 없다.
     sql`DELETE FROM saved_places WHERE user_id = ${me}`,
 
+    // "점심에 안 열어요" 제보는 지운다. 익명으로 옮기면 탈퇴한 사람 한 명이
+    // 계속 한 표를 쥐고 있게 되고, 그 표는 이제 아무도 정정할 수 없다.
+    // 남은 사람들의 제보만으로 다시 문턱을 넘는 게 맞다.
+    sql`DELETE FROM lunch_closed_reports WHERE user_id = ${me}`,
+
     // 리뷰는 그대로 옮긴다. users 외래 키 때문에 계정 삭제보다 반드시 먼저다.
     sql`UPDATE reviews SET user_id = ${WITHDRAWN_USER_ID} WHERE user_id = ${me}`,
 

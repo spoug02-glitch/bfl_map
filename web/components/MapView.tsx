@@ -71,6 +71,9 @@ interface KakaoCircle { setMap(map: KakaoMap | null): void }
 /** 지도 클릭 리스너가 받는 이벤트. 찍은 좌표만 쓴다. */
 interface KakaoPointOnMap { getLat(): number; getLng(): number }
 interface KakaoMouseEvent { latLng: KakaoPointOnMap }
+interface KakaoCluster {
+  getMarkers(): KakaoMarker[];
+}
 interface KakaoClusterer {
   clear(): void;
   addMarkers(markers: KakaoMarker[]): void;
@@ -104,6 +107,7 @@ interface KakaoMapsNamespace {
   event: {
     addListener(target: KakaoMarker, type: string, handler: () => void): void;
     addListener(target: KakaoMap, type: "click", handler: (e: KakaoMouseEvent) => void): void;
+    addListener(target: KakaoClusterer, type: "clusterclick", handler: (c: KakaoCluster) => void): void;
   };
 }
 
@@ -122,12 +126,16 @@ type Props = {
   /** 반경 원과 거리 계산의 기준점. 지도를 찍으면 여기가 옮겨간다. */
   origin: LatLng;
   onSelect: (r: Restaurant) => void;
+  /** 뭉친 원을 탭했을 때 그 안에 든 가게들. 목록이 받아 그 구역만 보여준다. */
+  onCluster: (places: Restaurant[]) => void;
   onPickOrigin: (p: LatLng) => void;
   /** 회사로 돌아가기를 지도 밖(떠 있는 버튼)에서 부를 수 있게 열어준다. */
   apiRef?: React.RefObject<MapApi | null>;
 };
 
-export default function MapView({ restaurants, maxDist, origin, onSelect, onPickOrigin, apiRef }: Props) {
+export default function MapView({
+  restaurants, maxDist, origin, onSelect, onCluster, onPickOrigin, apiRef,
+}: Props) {
   const mapEl = useRef<HTMLDivElement>(null);
   const mapRef = useRef<KakaoMap | null>(null);
   const clustererRef = useRef<KakaoClusterer | null>(null);
@@ -135,6 +143,9 @@ export default function MapView({ restaurants, maxDist, origin, onSelect, onPick
   const originMarkerRef = useRef<KakaoMarker | null>(null);
   const boundaryRef = useRef<KakaoCircle | null>(null);
   const [ready, setReady] = useState(false);
+  /** 클러스터가 돌려주는 건 마커라 가게로 되짚을 길이 필요하다. WeakMap이라
+   *  마커가 버려지면 항목도 같이 사라진다 — 5,800개가 세대마다 쌓이지 않는다. */
+  const placeOfMarker = useRef(new WeakMap<KakaoMarker, Restaurant>());
 
   // 클릭 리스너는 지도 생성 시 한 번만 단다. 최신 콜백을 ref로 읽어 리스너를
   // 다시 달지 않는다 — 카카오 SDK에는 removeListener를 걸 훅이 마땅치 않다.
@@ -144,6 +155,10 @@ export default function MapView({ restaurants, maxDist, origin, onSelect, onPick
   useEffect(() => {
     onPickOriginRef.current = onPickOrigin;
   }, [onPickOrigin]);
+  const onClusterRef = useRef(onCluster);
+  useEffect(() => {
+    onClusterRef.current = onCluster;
+  }, [onCluster]);
 
   const initMap = () => {
     window.kakao.maps.load(() => {
@@ -160,13 +175,23 @@ export default function MapView({ restaurants, maxDist, origin, onSelect, onPick
       // gridSize가 정한다 — 화면에서 32px 안에 겹친 것만 하나로 모으므로 가까이
       // 당기면 알아서 풀린다.
       //
-      // 다만 1이 아니라 2다. 클러스터를 누르면 한 단계 더 당겨지는 게 전부인데,
-      // 1이면 가장 가까운 줌에서도 뭉친 채라 더 당길 데가 없어 **눌러도 아무 일도
-      // 일어나지 않는다**(2026-08-21 제보). 2로 두면 마지막 한 단계에서는 클러스터가
-      // 풀려 개별 마커가 되므로, 어떤 뭉치든 끝까지 파고들면 반드시 열린다.
+      // minLevel 2는 그대로 둔다: 마지막 한 단계에서 클러스터가 풀려 개별 마커가
+      // 되므로 어떤 뭉치든 끝까지 당기면 열린다.
+      //
+      // disableClickZoom: 원래 뭉친 원을 누르면 한 단계 당겨지는 게 전부였다.
+      // 그런데 누르는 이유는 "여기 뭐가 있나"지 "더 당겨줘"가 아니다(2026-08-25
+      // 제보: 목록이 안 보이고 위치만 이동함). 줌을 끄고 그 안의 가게 목록을
+      // 하단 시트로 넘긴다. 당기고 싶으면 두 손가락과 더블탭이 그대로 있다.
       clustererRef.current = new window.kakao.maps.MarkerClusterer({
         map, averageCenter: true, minLevel: 2, gridSize: 32,
+        disableClickZoom: true,
         styles: [CLUSTER_STYLE],
+      });
+      window.kakao.maps.event.addListener(clustererRef.current, "clusterclick", cluster => {
+        const places = cluster.getMarkers()
+          .map(m => placeOfMarker.current.get(m))
+          .filter((r): r is Restaurant => r !== undefined);
+        if (places.length) onClusterRef.current(places);
       });
       // 회사는 식당과 같은 파란 핀이면 안 된다 — 핀 수백 개 사이에서 "여기가
       // 어디 기준인지"를 찾을 수 없었다. 우리 로고를 크게, 항상 맨 위에 둔다.
@@ -264,6 +289,7 @@ export default function MapView({ restaurants, maxDist, origin, onSelect, onPick
         image: dot,
       });
       kakao.maps.event.addListener(m, "click", () => onSelect(r));
+      placeOfMarker.current.set(m, r);
       return m;
     });
     clusterer.clear();
