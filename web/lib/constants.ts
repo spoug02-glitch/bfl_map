@@ -1,5 +1,12 @@
 import { type DbMenuItem, dbMinPrice } from "@/lib/menu-source";
 
+/**
+ * 정식 도메인. canonical·robots·sitemap이 검색엔진에 내보내는 주소의 기준이다.
+ * metadataBase와 달리 환경변수를 타지 않는다 — 프리뷰 배포가 자기 주소를
+ * canonical로 뱉으면 색인이 그쪽으로 쏠린다.
+ */
+export const SITE_URL = "https://lunchpick.kr";
+
 export const OFFICE_LABEL = "창동씨드큐브";
 export const CENTER = { lat: 37.6545, lng: 127.0499 }; // 창동씨드큐브
 export const RADIUS_KM = 5.0;
