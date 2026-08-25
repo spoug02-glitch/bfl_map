@@ -8,6 +8,8 @@ type Props = {
   maxDist: number; onMaxDist: (d: number) => void;
   /** 가격 상한. null이면 가격으로 거르지 않는다. */
   priceLimit: number | null; onPriceLimit: (v: number | null) => void;
+  /** 점심에 여는 곳만 볼지. 기본은 켜져 있다 — 여긴 점심 지도다. */
+  lunchOnly: boolean; onLunchOnly: (v: boolean) => void;
   /** 접힘 상태. 부모가 든다 — 지도를 만지면 접는 건 지도를 아는 쪽만 할 수 있다. */
   open: boolean | null; onOpenChange: (v: boolean) => void;
   count: number;
@@ -19,16 +21,20 @@ function formatRadius(km: number): string {
 }
 
 /** 접었을 때 지금 무엇이 걸려 있는지 한 줄로 알려준다. */
-function summarize(query: string, group: string | null, maxDist: number, priceLimit: number | null): string {
+function summarize(
+  query: string, group: string | null, maxDist: number, priceLimit: number | null, lunchOnly: boolean,
+): string {
   const parts = [group ?? "전체", `반경 ${formatRadius(maxDist)}`];
   if (priceLimit !== null) parts.push(priceLimitLabel(priceLimit));
+  // 켜진 게 기본이라 굳이 알리지 않는다. 끈 쪽이 기본에서 벗어난 상태라 알린다.
+  if (!lunchOnly) parts.push("영업시간 무시");
   if (query.trim()) parts.unshift(`"${query.trim()}"`);
   return parts.join(" · ");
 }
 
 export default function FilterBar({
   group, onGroup, query, onQuery, maxDist, onMaxDist, priceLimit, onPriceLimit,
-  open, onOpenChange, count,
+  lunchOnly, onLunchOnly, open, onOpenChange, count,
 }: Props) {
   /**
    * 아직 아무도 접거나 펴지 않은 상태가 null이다.
@@ -58,7 +64,7 @@ export default function FilterBar({
         <span className="flex min-w-0 items-center gap-2">
           <span aria-hidden className="text-on-surface-variant">⌕</span>
           <span className="truncate font-medium text-on-surface">
-            {summarize(query, group, maxDist, priceLimit)}
+            {summarize(query, group, maxDist, priceLimit, lunchOnly)}
           </span>
         </span>
         <span className="flex shrink-0 items-center gap-1 text-on-surface-variant">
@@ -141,6 +147,21 @@ export default function FilterBar({
             ))}
           </select>
         </div>
+        {/* 업종 칩과 한 줄에 두지 않는다 — 업종은 하나만 고르는 배타 선택이라
+            같은 줄에 섞이면 이것도 업종의 하나로 읽힌다. 켜짐이 기본이므로
+            aria-pressed로 눌린 상태를 읽어준다. */}
+        <button
+          type="button"
+          aria-pressed={lunchOnly}
+          className={`flex h-11 items-center justify-center gap-1.5 rounded-xl border px-3.5 font-bold transition-colors md:h-9 ${
+            lunchOnly
+              ? "border-primary bg-primary text-on-primary hover:bg-primary/90 active:bg-primary/80"
+              : "border-outline bg-surface-container-lowest text-on-surface-variant hover:bg-on-surface/8 active:bg-on-surface/10"
+          }`}
+          onClick={() => onLunchOnly(!lunchOnly)}
+        >
+          <span aria-hidden>🕛</span>점심에 여는 곳만
+        </button>
         {/* 접는 표적은 가로 전체다. 오른쪽 끝 작은 버튼으로 뒀더니 누를 수 있다는
             걸 아무도 몰라, 모바일에서 지도가 계속 211px에 갇혀 있었다.
             펼친 상태에서 바 전체를 표적으로 삼지는 않는다 — 검색창을 누르려다

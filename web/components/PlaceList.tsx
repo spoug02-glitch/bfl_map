@@ -2,7 +2,7 @@
 
 import DislikeSettings from "@/components/DislikeSettings";
 import { OFFICE_LABEL, Restaurant, SpecialPrice, formatPrice } from "@/lib/constants";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export type ListedPlace = { place: Restaurant; distanceKm: number };
 export type MyReview = {
@@ -32,6 +32,9 @@ type Props = {
   dbMinPrices: Map<string, number>;
   /** 가격 필터 때문에 빠진, 메뉴 가격을 모르는 가게 수. 0이면 알리지 않는다. */
   unpricedCount: number;
+  /** 지도에서 뭉친 원을 탭해 그 구역만 보고 있으면 그 개수. 아니면 null. */
+  clusterCount: number | null;
+  onClearCluster: () => void;
   onSelect: (r: Restaurant) => void;
   onWiden: () => void;
   onReset: () => void;
@@ -46,6 +49,17 @@ type Props = {
 
 /** 한 번에 그리는 개수. 5,834개를 다 그리면 스크롤이 버벅인다. 더 보기로 이만큼씩 늘린다. */
 const PAGE_ROWS = 50;
+
+/**
+ * 시트가 멈춰 서는 높이(dvh). 34%는 지도가 주인공인 기본 자세, 88%는 목록만
+ * 보는 자세, 62%는 그 사이에서 지도도 목록도 남는 자세다.
+ *
+ * 34% 하나로 고정돼 있었더니 한 화면에 세 줄 반이라, 가까운 50곳을 훑으려면
+ * 좁은 창으로 계속 긁어야 했다(2026-08-25 제보).
+ */
+const SNAPS = [34, 62, 88];
+/** 이 이하로 움직였으면 끌었다고 보지 않고 탭으로 친다(px). */
+const TAP_SLOP = 6;
 
 function formatDistance(km: number): string {
   return km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)}km`;
@@ -88,6 +102,7 @@ function SectionBar({ children }: { children: React.ReactNode }) {
 export default function PlaceList({
   tab, onTab, places, savedPlaces, myReviews, placeById,
   loggedIn, priceFiltered, specialPrices, dbMinPrices, unpricedCount,
+  clusterCount, onClearCluster,
   onSelect, onWiden, onReset, onRoulette, canWiden,
   originMoved, onResetOrigin, distKm,
 }: Props) {
@@ -103,21 +118,110 @@ export default function PlaceList({
   }
   const shown = places.slice(0, rows);
 
+  /** 몇 번째 정지 높이에 서 있는지. md 이상은 우측 사이드 패널이라 쓰이지 않는다. */
+  const [snap, setSnap] = useState(0);
+  /** 끄는 동안의 높이(dvh). 놓으면 null로 돌아가고 가장 가까운 정지 높이에 붙는다. */
+  const [dragging, setDragging] = useState<number | null>(null);
+  const drag = useRef<{ y: number; from: number; moved: number } | null>(null);
+  /** 방금 끝난 게 드래그였는지. 뒤따라오는 click이 한 칸 더 올리지 않게 막는다. */
+  const dragged = useRef(false);
+
+  /**
+   * 시트 높이는 모바일에서만 우리가 정한다. md 이상은 화면 높이를 꽉 채워야
+   * 하는데 인라인 height는 어떤 클래스도 못 이겨 사이드 패널이 3분의 1로
+   * 잘린다. 그래서 폭을 직접 물어보고 그때만 건다. 하이드레이션 전에는
+   * 클래스(h-[34dvh])가 기본 자세를 잡는다.
+   */
+  const [isSheet, setIsSheet] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const sync = () => setIsSheet(mq.matches);
+    sync();
+    mq.addEventListener("change", sync);
+    return () => mq.removeEventListener("change", sync);
+  }, []);
+
+  // 뭉친 원을 탭한 건 "그 안에 뭐가 있나" 보려는 것이다. 34% 자세 그대로면
+  // 세 줄 반만 보여, 정작 탭한 이유가 화면 밖에 남는다. 위의 rows와 같은 방식으로
+  // effect가 아니라 렌더 중에 맞춘다 — 한 박자 늦게 커지면 시트가 들썩인다.
+  const [seenCluster, setSeenCluster] = useState(clusterCount);
+  if (clusterCount !== seenCluster) {
+    setSeenCluster(clusterCount);
+    if (clusterCount !== null && snap === 0) setSnap(1);
+  }
+
+  const height = dragging ?? SNAPS[snap];
+
+  const onDown = (e: React.PointerEvent) => {
+    drag.current = { y: e.clientY, from: SNAPS[snap], moved: 0 };
+    // 손가락이 시트 밖으로 나가도 계속 따라오게. 잡을 수 없는 포인터면 캡처
+    // 없이 진행한다 — 이것 때문에 탭까지 죽으면 안 된다.
+    try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* 있으면 좋은 것 */ }
+  };
+  const onMove = (e: React.PointerEvent) => {
+    const d = drag.current;
+    if (!d) return;
+    const dy = d.y - e.clientY;  // 위로 끌면 커진다
+    d.moved = Math.max(d.moved, Math.abs(dy));
+    // 정지 높이를 조금 넘어가는 건 허용한다 — 딱 잘리면 손가락이 걸린 느낌이 난다.
+    setDragging(Math.min(92, Math.max(20, d.from + (dy / window.innerHeight) * 100)));
+  };
+  const onUp = () => {
+    const d = drag.current;
+    drag.current = null;
+    setDragging(null);
+    if (!d) return;
+    // 탭이면 여기서 아무것도 하지 않는다 — 뒤이어 오는 click이 처리한다.
+    // 그래야 키보드 Enter도 같은 길을 탄다(button인데 눌러도 안 움직이면 고장이다).
+    if (d.moved <= TAP_SLOP) return;
+    dragged.current = true;
+    const at = dragging ?? d.from;
+    let best = 0;
+    for (let i = 1; i < SNAPS.length; i++) {
+      if (Math.abs(SNAPS[i] - at) < Math.abs(SNAPS[best] - at)) best = i;
+    }
+    setSnap(best);
+  };
+  /** 끌 수 있다는 걸 모르는 사람도, 키보드를 쓰는 사람도 한 번 눌러 다음 높이로. */
+  const onGrabClick = () => {
+    if (dragged.current) { dragged.current = false; return; }
+    setSnap(s => (s + 1) % SNAPS.length);
+  };
+
   return (
     <aside
-      // 모바일에서 이 시트가 커지면 지도가 사라진다. 헤더와 필터 바가 이미
-      // 화면 위쪽을 많이 차지하므로 시트는 3분의 1 남짓으로 묶어 둔다.
-      className="fixed inset-x-0 bottom-0 z-10 max-h-[34dvh] w-full overflow-y-auto
-        rounded-t-2xl border-t border-outline-variant bg-surface-container-low px-4 pt-3 shadow-elevation-3
-        md:absolute md:inset-x-auto md:inset-y-0 md:right-0 md:top-0 md:h-full md:max-h-none
-        md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0 md:pt-4"
-      style={{ paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+      // 모바일은 하단 시트, md 이상은 우측 사이드 패널.
+      // h-[34dvh]는 하이드레이션 전 기본 자세다 — 붙고 나면 손잡이가 정한
+      // 높이를 인라인으로 덮어쓴다(모바일에서만, isSheet 주석 참조).
+      className={`fixed inset-x-0 bottom-0 z-10 flex h-[34dvh] w-full flex-col
+        rounded-t-2xl border-t border-outline-variant bg-surface-container-low px-4 shadow-elevation-3
+        md:absolute md:inset-x-auto md:inset-y-0 md:right-0 md:top-0 md:h-full
+        md:w-full md:max-w-sm md:rounded-none md:border-l md:border-t-0 md:pt-4
+        ${dragging === null ? "transition-[height] duration-200" : ""}`}
+      style={{
+        height: isSheet ? `${height}dvh` : undefined,
+        paddingBottom: "max(0.75rem, env(safe-area-inset-bottom))",
+      }}
     >
+      {/* 손잡이. 끌면 높이가 따라오고, 그냥 누르면 다음 높이로 간다.
+          touch-none이 없으면 끄는 동안 브라우저가 페이지를 같이 스크롤한다. */}
+      <button
+        type="button"
+        aria-label="목록 높이 조절"
+        className="-mx-4 flex h-7 shrink-0 touch-none items-center justify-center md:hidden"
+        onPointerDown={onDown}
+        onPointerMove={onMove}
+        onPointerUp={onUp}
+        onPointerCancel={onUp}
+        onClick={onGrabClick}
+      >
+        <span aria-hidden className="h-1 w-10 rounded-full bg-outline-variant" />
+      </button>
       {/* 주변 | 룰렛 | 나. 룰렛은 탭이 아니라 패널을 여는 버튼이지만 같은
           줄에서 같은 크기로 산다 — 지도 위에 띄웠을 때는 가게를 하나 고르는
           순간 사라져 아무도 다시 찾지 못했다. 탭이 둘뿐이라 role=tablist 대신
           aria-current로 충분하다. */}
-      <div className="flex gap-1">
+      <div className="flex shrink-0 gap-1">
         <button
           aria-current={tab === "near"}
           className={`h-11 flex-1 rounded-lg text-sm font-bold transition-colors md:h-9 ${
@@ -149,11 +253,28 @@ export default function PlaceList({
         </button>
       </div>
 
+      {/* 탭 줄은 시트가 아무리 낮아도 남아 있어야 한다 — 스크롤은 이 안쪽만 한다. */}
+      <div className="min-h-0 flex-1 overflow-y-auto">
       {tab === "near" && (
         <>
           <p className="mt-3 text-sm text-on-surface-variant">
             <span className="font-bold text-on-surface">{originMoved ? "지도에서 찍은 지점" : OFFICE_LABEL}</span> 기준 가까운 순
           </p>
+          {/* 지도에서 뭉친 원을 탭해 그 구역만 보고 있는 상태. 왜 갑자기 목록이
+              짧아졌는지 말해주지 않으면 필터가 고장 난 걸로 읽힌다. */}
+          {clusterCount !== null && (
+            <div className="mt-2 flex items-center justify-between gap-3">
+              <p className="min-w-0 truncate text-sm text-on-surface-variant">
+                지도에서 고른 <span className="font-bold text-on-surface">{clusterCount}곳</span>만 보는 중
+              </p>
+              <button
+                className="h-9 shrink-0 rounded-lg bg-surface-container px-3 text-xs font-bold text-on-surface transition-colors hover:bg-on-surface/8 active:bg-on-surface/10"
+                onClick={onClearCluster}
+              >
+                전체 보기
+              </button>
+            </div>
+          )}
           {/* 데이터는 회사 5km 안에서만 모았다. 기준점을 밖으로 옮기면 지도가 비는데,
               그건 가게가 없는 게 아니라 우리가 안 가본 곳이다 — 말하지 않으면 거짓말이 된다. */}
           {originMoved && (
@@ -303,6 +424,7 @@ export default function PlaceList({
           )}
         </>
       )}
+      </div>
     </aside>
   );
 }

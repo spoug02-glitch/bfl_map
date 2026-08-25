@@ -25,6 +25,7 @@ import {
 } from "@/lib/constants";
 import { haversineKm, type LatLng } from "@/lib/geo";
 import type { DbMenuItem } from "@/lib/menu-source";
+import { type ClosedCounts, closedAtLunch } from "@/lib/lunch-closed";
 import { suggestNickname } from "@/lib/nickname";
 import { REJOIN_BLOCK_DAYS } from "@/lib/rejoin";
 
@@ -75,7 +76,19 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [tab, setTab] = useState<ListTab>("near");
   const [rouletteOpen, setRouletteOpen] = useState(false);
   const [savedIds, setSavedIds] = useState<Set<string>>(new Set());
+  /** 지도에서 뭉친 원을 탭해 그 구역만 보고 있을 때의 가게 id들. null이면 전체. */
+  const [clusterIds, setClusterIds] = useState<Set<string> | null>(null);
+  // "점심에 안 열어요" 제보. 여긴 점심 지도인데 13시에 문 여는 집(사실상 술집)이
+  // 후보로 올라와, 걸어갔다가 닫힌 문을 보는 일이 있었다(2026-08-25 제보).
+  // 카카오 영업시간은 저작권 판단(37901fe7)으로 안 쓴다 — 출처는 다녀온 사람뿐이다.
+  const [closedCounts, setClosedCounts] = useState<ClosedCounts>(new Map());
+  const [closedByMe, setClosedByMe] = useState<Set<string>>(new Set());
+  /** 켜진 채로 시작한다 — 이 지도의 기본 질문이 "지금 점심 먹으러 갈 데"라서다. */
+  const [lunchOnly, setLunchOnly] = useState(true);
   const [myReviews, setMyReviews] = useState<MyReview[]>([]);
+
+  /** 다음 오버레이 변화는 history에 쌓지 않는다는 표시. */
+  const skipPush = useRef(false);
 
   useEffect(() => {
     // 공유 링크로 들어온 경우 그 가게를 열어준다. 마커 클릭마다 URL을 갱신하지는
@@ -87,6 +100,9 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
       if (!id) return;
       const found = data.find(r => r.kakao_place_id === id);
       if (found) {
+        // 공유 링크로 연 상세는 이미 그 자체가 하나의 주소다. 여기서 history를
+        // 하나 더 쌓으면 뒤로가기를 두 번 눌러야 그 링크 밖으로 나가진다.
+        skipPush.current = true;
         setEntryContext("shared_link");
         setSelected(found);
         // 공유된 가게가 기본 100m 밖이면 반경을 그 가게까지 넓힌다. 안 그러면
@@ -114,6 +130,16 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
           ),
         ),
       )
+      .catch(() => {});
+    fetch("/api/lunch-closed")
+      .then(r => r.json())
+      .then(d => {
+        setClosedCounts(
+          new Map((d.counts ?? []).map((c: { place_id: string; reports: number }) =>
+            [c.place_id, c.reports])),
+        );
+        setClosedByMe(new Set(d.mine ?? []));
+      })
       .catch(() => {});
     fetch("/api/menu-items")
       .then(r => r.json())
@@ -153,9 +179,13 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     return all.filter(r =>
       distKm(r) <= maxDist &&
       (!cats || cats.has(r.category)) &&
-      (!q || r.search_keys.some(k => k.includes(q))),
+      (!q || r.search_keys.some(k => k.includes(q))) &&
+      // 제보가 문턱을 넘긴 가게만 뺀다. 제보가 없는 가게는 "점심에 연다"가
+      // 아니라 "모른다"이므로 남긴다 — 모름을 휴무로 접으면 5,800곳 중
+      // 대부분이 이유 없이 사라진다.
+      (!lunchOnly || !closedAtLunch(closedCounts, r.kakao_place_id)),
     );
-  }, [all, group, query, maxDist, distKm]);
+  }, [all, group, query, maxDist, distKm, lunchOnly, closedCounts]);
 
   // 안 먹는 음식은 지도와 목록을 건드리지 않는다 — 그건 그 동네에 뭐가 있는지를
   // 보여주는 화면이지 내 취향을 반영하는 화면이 아니다. 거르는 건 룰렛 랜덤뿐이고,
@@ -204,6 +234,13 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
 
   const visible = useMemo(() => ranked.map(x => x.place), [ranked]);
 
+  // 뭉친 원을 탭하면 목록만 그 구역으로 좁힌다. 지도까지 좁히면 마커가 바뀌어
+  // 클러스터가 다시 그려지고, 방금 탭한 그 원이 사라진다.
+  const listed = useMemo(
+    () => (clusterIds ? ranked.filter(x => clusterIds.has(x.place.kakao_place_id)) : ranked),
+    [ranked, clusterIds],
+  );
+
   const placeById = useMemo(
     () => new Map(all.map(r => [r.kakao_place_id, r])),
     [all],
@@ -244,10 +281,61 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         loadMine();
         return;
       }
+      setClusterIds(null);
       setOrigin(p);
     },
     [rouletteOpen, selected, loadMine],
   );
+
+  /**
+   * 안드로이드 내비게이션 뒤로가기가 사이트를 통째로 나가버리던 문제.
+   *
+   * 상세와 룰렛은 "화면"처럼 열리는데 주소가 안 바뀌니 브라우저 입장에서는
+   * 돌아갈 데가 없었다. 열릴 때 history 항목을 하나 쌓아 뒤로가기가 그걸 먹게
+   * 한다. 닫기 버튼으로 닫았으면 그 항목을 되돌려 놓는다 — 안 그러면 다음
+   * 뒤로가기가 아무 일도 안 하는 것처럼 보인다.
+   */
+  const overlay = selected ? "place" : rouletteOpen ? "roulette" : null;
+  const prevOverlay = useRef<string | null>(null);
+
+  useEffect(() => {
+    const prev = prevOverlay.current;
+    prevOverlay.current = overlay;
+    if (prev === overlay) return;
+    if (prev === null && overlay !== null) {
+      if (skipPush.current) { skipPush.current = false; return; }
+      window.history.pushState({ overlay }, "");
+    } else if (prev !== null && overlay === null) {
+      // 뒤로가기로 닫혔다면 그 항목은 이미 사라졌다 — state를 보고 가른다.
+      if ((window.history.state as { overlay?: string } | null)?.overlay) window.history.back();
+    }
+  }, [overlay]);
+
+  useEffect(() => {
+    const onPop = () => {
+      setSelected(null);
+      setRouletteOpen(false);
+      // 상세를 닫는 다른 경로(닫기 버튼·지도 탭)가 모두 하는 일이다.
+      loadMine();
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [loadMine]);
+
+  /** 제보 버튼이 서버 응답을 받은 뒤 부른다. 다시 받아오지 않고 그 자리에서 센다. */
+  const toggleClosed = useCallback((placeId: string, reported: boolean) => {
+    setClosedCounts(prev => {
+      const next = new Map(prev);
+      const now = (next.get(placeId) ?? 0) + (reported ? 1 : -1);
+      if (now > 0) next.set(placeId, now); else next.delete(placeId);
+      return next;
+    });
+    setClosedByMe(prev => {
+      const next = new Set(prev);
+      if (reported) next.add(placeId); else next.delete(placeId);
+      return next;
+    });
+  }, []);
 
   const toggleSaved = useCallback((placeId: string, saved: boolean) => {
     setSavedIds(prev => {
@@ -261,6 +349,11 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
 
   const resetFilters = () => {
     setGroup(null); setQuery(""); setMaxDist(RADIUS_KM); setPriceLimit(null);
+    // 점심 영업은 초기화가 켜는 쪽이다 — 그게 이 지도의 기본값이다.
+    setLunchOnly(true);
+    // 지도에서 고른 구역도 필터의 하나다 — 초기화가 이것만 남겨두면 목록이
+    // 이유 없이 짧은 채로 남는다.
+    setClusterIds(null);
   };
   const widenRadius = () => setMaxDist(Math.min(5, Math.round((maxDist + 1) * 10) / 10));
 
@@ -326,6 +419,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         query={query} onQuery={setQuery}
         maxDist={maxDist} onMaxDist={setMaxDist}
         priceLimit={priceLimit} onPriceLimit={setPriceLimit}
+        lunchOnly={lunchOnly} onLunchOnly={setLunchOnly}
         open={barOpen} onOpenChange={setBarOpen}
         count={visible.length}
       />
@@ -347,6 +441,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             maxDist={maxDist}
             origin={origin}
             onSelect={r => select(r, "marker")}
+            onCluster={places => setClusterIds(new Set(places.map(x => x.kakao_place_id)))}
             onPickOrigin={pickOrigin}
             apiRef={mapApi}
           />
@@ -400,13 +495,16 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             blogLink={blogLinks[selected.kakao_place_id]}
             saved={savedIds.has(selected.kakao_place_id)}
             onToggleSaved={toggleSaved}
+            closedReports={closedCounts.get(selected.kakao_place_id) ?? 0}
+            closedByMe={closedByMe.has(selected.kakao_place_id)}
+            onToggleClosed={toggleClosed}
             onClose={() => { setSelected(null); loadMine(); }}
           />
         ) : all.length > 0 && (
           <PlaceList
             tab={tab}
             onTab={setTab}
-            places={ranked}
+            places={listed}
             savedPlaces={savedPlaces}
             myReviews={user ? myReviews : []}
             placeById={placeById}
@@ -415,6 +513,8 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             specialPrices={specialPrices}
             dbMinPrices={dbMinPrices}
             unpricedCount={unpricedCount}
+            clusterCount={clusterIds ? listed.length : null}
+            onClearCluster={() => setClusterIds(null)}
             onSelect={r => select(r, "list")}
             onWiden={widenRadius}
             onReset={resetFilters}

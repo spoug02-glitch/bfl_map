@@ -5,6 +5,7 @@ import { BlogLink, Restaurant, formatPrice, isConvenienceStore } from "@/lib/con
 import { track, type EntryContext } from "@/lib/gtag";
 import { sourceLabel } from "@/lib/menu-source";
 import ReviewSection from "@/components/ReviewSection";
+import LunchClosedButton from "@/components/LunchClosedButton";
 import SaveButton from "@/components/SaveButton";
 import SpecialSection from "@/components/SpecialSection";
 import ShareButton from "@/components/ShareButton";
@@ -19,6 +20,10 @@ type Props = {
   blogLink?: BlogLink;
   saved: boolean;
   onToggleSaved: (placeId: string, saved: boolean) => void;
+  /** 이 가게에 모인 "점심에 안 열어요" 제보 수와, 그중 내 표가 있는지. */
+  closedReports: number;
+  closedByMe: boolean;
+  onToggleClosed: (placeId: string, reported: boolean) => void;
   onClose: () => void;
 };
 
@@ -34,7 +39,8 @@ type DbMenuRow = {
 // 모바일(<768px)에서는 하단 바텀시트, md 이상에서는 우측 사이드 패널.
 // fixed + inset-x-0 bottom-0 로 뷰포트에 붙이고, md부터 absolute 우측 전체높이로 전환한다.
 export default function PlacePanel({
-  restaurant: r, entryContext, user, blogLink, saved, onToggleSaved, onClose,
+  restaurant: r, entryContext, user, blogLink, saved, onToggleSaved,
+  closedReports, closedByMe, onToggleClosed, onClose,
 }: Props) {
   const [dbMenus, setDbMenus] = useState<DbMenuRow[]>([]);
 
@@ -132,6 +138,15 @@ export default function PlacePanel({
         saved={saved}
         loggedIn={user !== null}
         onChange={onToggleSaved}
+      />
+      {/* 저장 바로 밑이다. 여기가 이 가게에 대해 뭔가를 남기는 자리이고,
+          "점심에 갔더니 닫혀 있더라"는 그 순간에 남기는 말이다. */}
+      <LunchClosedButton
+        placeId={r.kakao_place_id}
+        reports={closedReports}
+        mine={closedByMe}
+        loggedIn={user !== null}
+        onChange={onToggleClosed}
       />
       <ShareButton restaurant={r} />
 
