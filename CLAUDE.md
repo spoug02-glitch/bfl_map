@@ -39,10 +39,40 @@ For the same reason, never `rm -rf .next` while a dev server is up — it serves
 
 ## Deploying
 
-Vercel watches a **separate repository**, not this monorepo:
+Vercel watches a **separate repository**, not this monorepo.
+
+`git subtree push --prefix=Bfl_map bflmap main` is what this file used to say, and it **does not
+work**. It was rejected non-fast-forward on 2026-08-26: `bflmap/main` carries commits merged through
+GitHub PRs, so the lineage `subtree split` regenerates is not an ancestor of the remote tip. The two
+repositories are kept in sync by *content*, not by shared history — `5bd4530a` says as much
+("Mirrors bflmap 2316452a so the monorepo subtree and the deploy repo agree"). Do not reach for
+`--force`; that would rewrite the deploy repo's history to fix a local lineage problem.
+
+What works is putting one commit carrying the right tree directly on the remote tip:
 
 ```bash
-git -C <worktree> subtree push --prefix=Bfl_map bflmap main
+W=<worktree>
+git -C "$W" fetch bflmap
+# The parent's subtree must already equal the remote tip. If it does not, someone
+# else pushed and you are about to discard their work — reconcile first.
+git -C "$W" rev-parse 'HEAD~1:Bfl_map' 'bflmap/main^{tree}'
+NEW=$(git -C "$W" log -1 --format=%B HEAD \
+      | git -C "$W" commit-tree "$(git -C "$W" rev-parse HEAD:Bfl_map)" -p bflmap/main)
+git -C "$W" push bflmap "$NEW:main"
+```
+
+Then re-fetch and confirm `bflmap/main^{tree}` equals `HEAD:Bfl_map`. Tree OIDs are the only proof
+that the deploy repo holds what you think it holds; a green push is not.
+
+**`main` in the monorepo is not the source.** Development happens on a feature branch, and the
+mirror is built from that branch — on 2026-08-26 it was `feature/bfl-map-google-auth`, and `main`'s
+`Bfl_map/` tree differed from the live one. Find the real branch by tree OID before editing anything:
+
+```bash
+T=$(git rev-parse 'bflmap/main^{tree}')
+for b in $(git for-each-ref --format='%(refname:short)' refs/heads); do
+  [ "$(git rev-parse -q --verify "$b:Bfl_map" 2>/dev/null)" = "$T" ] && echo "MATCH $b"
+done
 ```
 
 **Vercel's Redeploy button does not pick up new code.** It rebuilds whatever commit `bflmap/main`
