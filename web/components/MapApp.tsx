@@ -26,12 +26,22 @@ import {
 import { haversineKm, type LatLng } from "@/lib/geo";
 import type { DbMenuItem } from "@/lib/menu-source";
 import { suggestNickname } from "@/lib/nickname";
+import { placeIdFromUrl } from "@/lib/place-url";
+import { sharePath } from "@/lib/share-copy";
 import { REJOIN_BLOCK_DAYS } from "@/lib/rejoin";
 
 /**
  * `initialPlaceId`는 /place/[id]가 넘겨준다 — 그 경로만이 가게별 OG 태그를 달 수
  * 있어 슬랙·디스코드에서 미리보기 카드가 뜬다. 예전에 뿌려진 /?place=... 링크도
  * 계속 열려야 하므로 쿼리 파라미터 경로를 함께 남겨둔다.
+ *
+ * 가게를 고르면 주소도 그 가게를 가리키게 한다(select). 새로고침이나 뒤로가기
+ * 한 번에 선택이 통째로 날아가던 게 이 컴포넌트의 가장 큰 구멍이었다. 단,
+ * 라우팅은 하지 않고 주소만 얕게 바꾼다 — /와 /place/[id]는 다른 페이지라
+ * 진짜로 이동하면 이 컴포넌트가 언마운트되고, 4MB restaurants.json 재요청에
+ * 지도 뷰포트·필터·반경·기준점이 통째로 초기화된다. 클릭 한 번마다 그 값을
+ * 치르면 지금보다 나쁘다. Next는 native History API를 라우터에 물려 두었다
+ * (node_modules/next/dist/docs/01-app/02-guides/single-page-applications.md).
  */
 export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) {
   const [all, setAll] = useState<Restaurant[]>([]);
@@ -63,10 +73,22 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   // 읽히는 값이라 객체로 묶지 않고 옆에 둔다 — setSelected 로 가게를 여는 곳은
   // 아래 select() 와 공유 링크 처리 두 군데뿐이라 어긋날 자리가 없다.
   const [entryContext, setEntryContext] = useState<EntryContext>("marker");
-  const select = useCallback((r: Restaurant, ctx: EntryContext) => {
+  /**
+   * 가게를 화면에 연다. 주소를 읽고 여는 경로(공유 링크·뒤로가기)로 들어온
+   * 가게는 지금 반경 밖일 수 있는데, 그러면 상세를 닫는 순간 지도에도 목록에도
+   * 없는 가게가 된다. 그 가게까지 반경을 넓혀둔다 — 0.1 단위로 올려 슬라이더
+   * 눈금과 어긋나지 않게 한다.
+   */
+  const showPlace = useCallback((r: Restaurant, ctx: EntryContext) => {
     setEntryContext(ctx);
     setSelected(r);
+    setMaxDist(d => Math.max(d, Math.ceil(r.distance_km * 10) / 10));
   }, []);
+  /** 목록·마커로 고른 가게. 주소를 얕게 바꿔 새로고침과 뒤로가기가 선택을 기억한다. */
+  const select = useCallback((r: Restaurant, ctx: EntryContext) => {
+    showPlace(r, ctx);
+    window.history.pushState(null, "", sharePath(r.kakao_place_id));
+  }, [showPlace]);
   const [user, setUser] = useState<SessionUser | null>(null);
   const [blogLinks, setBlogLinks] = useState<OwnBlogLinks>({});
   const [staleLink, setStaleLink] = useState(false);
@@ -78,21 +100,15 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const [myReviews, setMyReviews] = useState<MyReview[]>([]);
 
   useEffect(() => {
-    // 공유 링크로 들어온 경우 그 가게를 열어준다. 마커 클릭마다 URL을 갱신하지는
-    // 않는다 — 공유 버튼만 URL을 만든다. restaurants.json이 도착한 콜백 안에서
-    // 처리해 별도의 setState-in-effect를 만들지 않는다.
+    // 공유 링크로 들어온 경우 그 가게를 열어준다. restaurants.json이 도착한
+    // 콜백 안에서 처리해 별도의 setState-in-effect를 만들지 않는다.
     fetch("/restaurants.json").then(r => r.json()).then((data: Restaurant[]) => {
       setAll(data);
-      const id = initialPlaceId ?? new URLSearchParams(window.location.search).get("place");
+      const id = initialPlaceId ?? placeIdFromUrl(window.location.pathname, window.location.search);
       if (!id) return;
       const found = data.find(r => r.kakao_place_id === id);
       if (found) {
-        setEntryContext("shared_link");
-        setSelected(found);
-        // 공유된 가게가 기본 100m 밖이면 반경을 그 가게까지 넓힌다. 안 그러면
-        // 상세를 닫는 순간 지도에도 목록에도 없는 가게가 된다. 0.1 단위로 올려
-        // 슬라이더 눈금과 어긋나지 않게 한다.
-        setMaxDist(d => Math.max(d, Math.ceil(found.distance_km * 10) / 10));
+        showPlace(found, "shared_link");
       } else {
         setStaleLink(true);  // 데이터 갱신으로 사라진 가게일 수 있다
       }
@@ -141,7 +157,26 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
       // drop the parameter so a refresh does not replay the message
       window.history.replaceState({}, "", window.location.pathname);
     }
-  }, [initialPlaceId]);
+  }, [initialPlaceId, showPlace]);
+
+  // 뒤로가기·앞으로가기. 주소만 얕게 바꿨으니 라우터는 화면을 다시 그려주지
+  // 않는다 — 바뀐 주소를 읽어 선택을 우리가 맞춘다. 데이터가 도착하기 전에는
+  // 맞출 대상이 없으므로 all이 채워진 뒤에 붙인다.
+  //
+  // entry_context 는 shared_link 로 둔다. 이력을 오가는 건 마커도 목록도 아닌
+  // "주소가 가게를 정한 상태"이고, 그게 이 값이 이미 뜻하는 바다. 새 값을
+  // 만들면 GA 스키마가 바뀌므로 같은 칸에 넣는다.
+  useEffect(() => {
+    if (all.length === 0) return;
+    const sync = () => {
+      const id = placeIdFromUrl(window.location.pathname, window.location.search);
+      const found = id ? all.find(r => r.kakao_place_id === id) : undefined;
+      if (found) showPlace(found, "shared_link");
+      else setSelected(null);
+    };
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
+  }, [all, showPlace]);
 
   // 가격은 여기서 거르지 않는다 — 가격 때문에 몇 곳이 빠졌는지 세려면 그 직전
   // 상태가 필요하다.
@@ -400,7 +435,17 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             blogLink={blogLinks[selected.kakao_place_id]}
             saved={savedIds.has(selected.kakao_place_id)}
             onToggleSaved={toggleSaved}
-            onClose={() => { setSelected(null); loadMine(); }}
+            onClose={() => {
+              setSelected(null);
+              loadMine();
+              // 주소도 선택 없는 상태로 되돌린다. 되돌릴 게 없으면 건드리지
+              // 않는다 — 이미 /인데 또 밀어 넣으면 뒤로가기를 눌러도 아무 일도
+              // 안 일어나는 빈 이력이 쌓인다. back()이 아니라 push인 이유는
+              // /place/<id>로 바로 들어온 사람에게 back은 사이트 밖 문이기 때문이다.
+              if (placeIdFromUrl(window.location.pathname, window.location.search)) {
+                window.history.pushState(null, "", "/");
+              }
+            }}
           />
         ) : all.length > 0 && (
           <PlaceList
