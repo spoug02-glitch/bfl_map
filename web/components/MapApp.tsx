@@ -74,21 +74,27 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   // showPlace() 를 지나므로 두 값이 어긋날 자리가 없다.
   const [entryContext, setEntryContext] = useState<EntryContext>("marker");
   /**
-   * 가게를 화면에 연다. 주소를 읽고 여는 경로(공유 링크·뒤로가기)로 들어온
-   * 가게는 지금 반경 밖일 수 있는데, 그러면 상세를 닫는 순간 지도에도 목록에도
-   * 없는 가게가 된다. 그 가게까지 반경을 넓혀둔다 — 0.1 단위로 올려 슬라이더
-   * 눈금과 어긋나지 않게 한다.
+   * URL(공유 링크·뒤로가기)로 열린 가게. 반경 필터와 무관하게 지도에 핀으로
+   * 남는다 — MapView가 그린다.
    *
-   * 넓힐 거리는 distKm이어야 한다. r.distance_km은 회사에서의 거리로 구워진
-   * 값인데 반경 필터가 보는 건 기준점에서의 거리다. 기준점을 옮긴 뒤 눈앞의
-   * 가게를 누르면 회사에서 3km라는 이유로 반경이 3km로 벌어지고, 목록과 지도에
-   * 수천 곳이 쏟아진다. 두 값이 같은 건 기준점이 회사일 때뿐이다.
+   * 예전에는 이 경우 반경을 그 가게까지 넓혔다. 목적은 "상세를 닫는 순간
+   * 지도에도 목록에도 없는 가게가 되지 않게"였는데, 회사에서 2.35km인 가게
+   * 하나를 살리려고 반경이 200m→2.4km로 조용히 바뀌며 2,479곳이 목록에
+   * 쏟아졌고, 정작 그 가게는 화면 밖 핀에 거리순 맨 끝 줄이라 어차피 못
+   * 찾았다(2026-08-26 라이브에서 확인). 핀 하나가 같은 목적을 나머지 2,478곳
+   * 없이 달성한다.
+   *
+   * 반경 안이어도 무조건 담는다 — 밖일 때만 담으려면 distKm·maxDist를 읽어야
+   * 해서 콜백마다 낡은 클로저를 걱정해야 한다. 이미 점으로 그려진 가게면
+   * MapView가 핀을 겹쳐 그리지 않으므로 결과는 같다. 수명은 다른 URL 가게로
+   * 교체되거나 새로고침될 때까지다(저장하지 않는다).
    */
+  const [pinned, setPinned] = useState<Restaurant | null>(null);
+  /** 가게를 화면에 연다. 여는 경로가 목록·마커든 URL이든 전부 여기를 지난다. */
   const showPlace = useCallback((r: Restaurant, ctx: EntryContext) => {
     setEntryContext(ctx);
     setSelected(r);
-    setMaxDist(d => Math.max(d, Math.ceil(distKm(r) * 10) / 10));
-  }, [distKm]);
+  }, []);
   /** 목록·마커로 고른 가게. 주소를 얕게 바꿔 새로고침과 뒤로가기가 선택을 기억한다. */
   const select = useCallback((r: Restaurant, ctx: EntryContext) => {
     showPlace(r, ctx);
@@ -137,6 +143,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
       const found = data.find(r => r.kakao_place_id === id);
       if (found) {
         showPlace(found, "shared_link");
+        setPinned(found);
       } else {
         setStaleLink(true);  // 데이터 갱신으로 사라진 가게일 수 있다
       }
@@ -291,8 +298,10 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     const sync = () => {
       const id = placeIdFromUrl(window.location.pathname, window.location.search);
       const found = id ? all.find(r => r.kakao_place_id === id) : undefined;
-      if (found) showPlace(found, "shared_link");
-      else {
+      if (found) {
+        showPlace(found, "shared_link");
+        setPinned(found);
+      } else {
         // × 버튼과 똑같이 닫히는 자리다. 패널 안에서 리뷰를 쓰고 뒤로가기를
         // 누른 사람에게도 "내 리뷰"가 갱신돼야 한다.
         setSelected(null);
@@ -416,6 +425,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             restaurants={visible}
             maxDist={maxDist}
             origin={origin}
+            pinned={pinned}
             onSelect={r => select(r, "marker")}
             onPickOrigin={pickOrigin}
             apiRef={mapApi}

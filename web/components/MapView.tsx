@@ -130,19 +130,22 @@ type Props = {
   maxDist: number;
   /** 반경 원과 거리 계산의 기준점. 지도를 찍으면 여기가 옮겨간다. */
   origin: LatLng;
+  /** URL로 열린 가게. 반경·필터와 무관하게 핀으로 남고, 열릴 때 지도가 그리로 간다. */
+  pinned?: Restaurant | null;
   onSelect: (r: Restaurant) => void;
   onPickOrigin: (p: LatLng) => void;
   /** 회사로 돌아가기를 지도 밖(떠 있는 버튼)에서 부를 수 있게 열어준다. */
   apiRef?: React.RefObject<MapApi | null>;
 };
 
-export default function MapView({ restaurants, maxDist, origin, onSelect, onPickOrigin, apiRef }: Props) {
+export default function MapView({ restaurants, maxDist, origin, pinned, onSelect, onPickOrigin, apiRef }: Props) {
   const mapEl = useRef<HTMLDivElement>(null);
   const mapRef = useRef<KakaoMap | null>(null);
   const clustererRef = useRef<KakaoClusterer | null>(null);
   const circleRef = useRef<KakaoCircle | null>(null);
   const originMarkerRef = useRef<KakaoMarker | null>(null);
   const boundaryRef = useRef<KakaoCircle | null>(null);
+  const pinnedMarkerRef = useRef<KakaoMarker | null>(null);
   const [ready, setReady] = useState(false);
 
   // 클릭 리스너는 지도 생성 시 한 번만 단다. 최신 콜백을 ref로 읽어 리스너를
@@ -255,6 +258,42 @@ export default function MapView({ restaurants, maxDist, origin, onSelect, onPick
     ro.observe(mapEl.current);
     return () => { cancelAnimationFrame(raf); ro.disconnect(); };
   }, [ready]);
+
+  // URL로 열린 가게의 핀. 반경을 그 가게까지 넓히던 방식을 대체한다 — 가게
+  // 하나를 살리려고 수천 곳을 목록에 쏟아붓는 대신, 그 하나만 예외로 남긴다.
+  // 상세를 닫아도 핀은 남아 공유받은 가게를 다시 찾을 수 있다.
+  //
+  // 이미 점으로 그려진 가게면 핀을 겹쳐 그리지 않는다. 반경·필터 안에 든
+  // 가게라는 뜻이라 평범한 점 하나로 충분하고, 겹치면 같은 자리에 점과 핀이
+  // 두 겹으로 떠서 다른 가게처럼 읽힌다. 카카오 기본 물방울 마커를 그대로
+  // 쓴다 — 점(음식점)·로고(회사)와 한눈에 구별되는 세 번째 모양이 필요할
+  // 뿐이고, "지도에 꽂힌 핀"은 그 자체로 공유받은 자리라고 읽힌다.
+  useEffect(() => {
+    if (!ready || !mapRef.current) return;
+    const kakao = window.kakao;
+    if (pinnedMarkerRef.current) pinnedMarkerRef.current.setMap(null);
+    pinnedMarkerRef.current = null;
+    if (!pinned) return;
+    if (restaurants.some(r => r.kakao_place_id === pinned.kakao_place_id)) return;
+    const m = new kakao.maps.Marker({
+      map: mapRef.current,
+      position: new kakao.maps.LatLng(pinned.lat, pinned.lng),
+      title: pinned.name,
+      // 회사 로고(10)보다는 아래, 음식점 점들보다는 위.
+      zIndex: 9,
+    });
+    kakao.maps.event.addListener(m, "click", () => onSelect(pinned));
+    pinnedMarkerRef.current = m;
+  }, [ready, pinned, restaurants, onSelect]);
+
+  // 핀이 꽂히면 지도가 그리로 간다. 공유 링크의 가게는 기본 화면(회사 근처)
+  // 밖일 수 있는데, 여기로 데려다주지 않으면 핀도 반경 원도 화면 밖이라 상세를
+  // 닫는 순간 빈 지도처럼 보인다. 필터 변경으로 이 effect가 다시 돌지 않도록
+  // 의존성은 핀 자체만 둔다 — 같은 가게면 all에서 온 같은 객체라 재실행이 없다.
+  useEffect(() => {
+    if (!ready || !mapRef.current || !pinned) return;
+    mapRef.current.panTo(new window.kakao.maps.LatLng(pinned.lat, pinned.lng));
+  }, [ready, pinned]);
 
   // 반경 원·기준점 핀·수집 경계. 마커와 갱신 주기가 달라 effect를 가른다 —
   // 기준점만 옮겼는데 5,800개 마커를 다시 만들 이유가 없다.
