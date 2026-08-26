@@ -70,8 +70,8 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const mapApi = useRef<MapApi | null>(null);
   const [selected, setSelected] = useState<Restaurant | null>(null);
   // 어느 경로로 상세를 열었는지. selected 와 한 몸이지만 selected 는 여러 곳에서
-  // 읽히는 값이라 객체로 묶지 않고 옆에 둔다 — setSelected 로 가게를 여는 곳은
-  // 아래 select() 와 공유 링크 처리 두 군데뿐이라 어긋날 자리가 없다.
+  // 읽히는 값이라 객체로 묶지 않고 옆에 둔다 — 가게를 여는 곳은 아래 showPlace()
+  // 하나로 모여 있어 어긋날 자리가 없다.
   const [entryContext, setEntryContext] = useState<EntryContext>("marker");
   /**
    * 가게를 화면에 연다. 주소를 읽고 여는 경로(공유 링크·뒤로가기)로 들어온
@@ -89,6 +89,25 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     showPlace(r, ctx);
     window.history.pushState(null, "", sharePath(r.kakao_place_id));
   }, [showPlace]);
+  /**
+   * 상세를 닫는다. 주소도 선택 없는 상태로 되돌린다.
+   *
+   * 닫는 길이 셋이다 — × 버튼, 지도 탭(pickOrigin), 탈퇴. 주소를 되돌리는 일을
+   * 각자 하게 두면 하나만 빠져도 "닫았는데 새로고침하면 다시 열리는" 상태가
+   * 되므로 한 군데로 모은다. 되돌릴 게 없으면 건드리지 않는다: 이미 /인데 또
+   * 밀어 넣으면 뒤로가기를 눌러도 아무 일도 안 일어나는 빈 이력이 쌓인다.
+   * back()이 아니라 push인 이유는 /place/<id>로 바로 들어온 사람에게 back은
+   * 사이트 밖으로 나가는 문이기 때문이다.
+   *
+   * popstate 는 이 함수를 쓰지 않는다 — 이력을 따라가는 쪽이라 주소를 다시
+   * 밀어 넣으면 안 된다.
+   */
+  const closeSelected = useCallback(() => {
+    setSelected(null);
+    if (placeIdFromUrl(window.location.pathname, window.location.search)) {
+      window.history.pushState(null, "", "/");
+    }
+  }, []);
   const [user, setUser] = useState<SessionUser | null>(null);
   const [blogLinks, setBlogLinks] = useState<OwnBlogLinks>({});
   const [staleLink, setStaleLink] = useState(false);
@@ -158,25 +177,6 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
       window.history.replaceState({}, "", window.location.pathname);
     }
   }, [initialPlaceId, showPlace]);
-
-  // 뒤로가기·앞으로가기. 주소만 얕게 바꿨으니 라우터는 화면을 다시 그려주지
-  // 않는다 — 바뀐 주소를 읽어 선택을 우리가 맞춘다. 데이터가 도착하기 전에는
-  // 맞출 대상이 없으므로 all이 채워진 뒤에 붙인다.
-  //
-  // entry_context 는 shared_link 로 둔다. 이력을 오가는 건 마커도 목록도 아닌
-  // "주소가 가게를 정한 상태"이고, 그게 이 값이 이미 뜻하는 바다. 새 값을
-  // 만들면 GA 스키마가 바뀌므로 같은 칸에 넣는다.
-  useEffect(() => {
-    if (all.length === 0) return;
-    const sync = () => {
-      const id = placeIdFromUrl(window.location.pathname, window.location.search);
-      const found = id ? all.find(r => r.kakao_place_id === id) : undefined;
-      if (found) showPlace(found, "shared_link");
-      else setSelected(null);
-    };
-    window.addEventListener("popstate", sync);
-    return () => window.removeEventListener("popstate", sync);
-  }, [all, showPlace]);
 
   // 가격은 여기서 거르지 않는다 — 가격 때문에 몇 곳이 빠졌는지 세려면 그 직전
   // 상태가 필요하다.
@@ -268,6 +268,30 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
 
   useEffect(loadMine, [loadMine]);
 
+  // 뒤로가기·앞으로가기. 주소만 얕게 바꿨으니 라우터는 화면을 다시 그려주지
+  // 않는다 — 바뀐 주소를 읽어 선택을 우리가 맞춘다. 데이터가 도착하기 전에는
+  // 맞출 대상이 없으므로 all이 채워진 뒤에 붙인다.
+  //
+  // entry_context 는 shared_link 로 둔다. 이력을 오가는 건 마커도 목록도 아닌
+  // "주소가 가게를 정한 상태"이고, 그게 이 값이 이미 뜻하는 바다. 새 값을
+  // 만들면 GA 스키마가 바뀌므로 같은 칸에 넣는다.
+  useEffect(() => {
+    if (all.length === 0) return;
+    const sync = () => {
+      const id = placeIdFromUrl(window.location.pathname, window.location.search);
+      const found = id ? all.find(r => r.kakao_place_id === id) : undefined;
+      if (found) showPlace(found, "shared_link");
+      else {
+        // × 버튼과 똑같이 닫히는 자리다. 패널 안에서 리뷰를 쓰고 뒤로가기를
+        // 누른 사람에게도 "내 리뷰"가 갱신돼야 한다.
+        setSelected(null);
+        loadMine();
+      }
+    };
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
+  }, [all, showPlace, loadMine]);
+
   // 지도 탭 = 기준점 이동. 단, 뭔가 열려 있을 때의 탭은 "닫고 싶다"는 뜻이다.
   // 이 기능의 첫 판(7ca8f0ca)은 그 탭까지 이동으로 받아서 시트를 닫으려다 기준점이
   // 옮겨졌고, 그래서 같은 날 제거됐다(cef5e219). 닫기만 하고 기준점은 두는 게 그 답이다.
@@ -275,13 +299,13 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     (p: LatLng) => {
       if (rouletteOpen) return;
       if (selected) {
-        setSelected(null);
+        closeSelected();
         loadMine();
         return;
       }
       setOrigin(p);
     },
-    [rouletteOpen, selected, loadMine],
+    [rouletteOpen, selected, loadMine, closeSelected],
   );
 
   const toggleSaved = useCallback((placeId: string, saved: boolean) => {
@@ -435,17 +459,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             blogLink={blogLinks[selected.kakao_place_id]}
             saved={savedIds.has(selected.kakao_place_id)}
             onToggleSaved={toggleSaved}
-            onClose={() => {
-              setSelected(null);
-              loadMine();
-              // 주소도 선택 없는 상태로 되돌린다. 되돌릴 게 없으면 건드리지
-              // 않는다 — 이미 /인데 또 밀어 넣으면 뒤로가기를 눌러도 아무 일도
-              // 안 일어나는 빈 이력이 쌓인다. back()이 아니라 push인 이유는
-              // /place/<id>로 바로 들어온 사람에게 back은 사이트 밖 문이기 때문이다.
-              if (placeIdFromUrl(window.location.pathname, window.location.search)) {
-                window.history.pushState(null, "", "/");
-              }
-            }}
+            onClose={() => { closeSelected(); loadMine(); }}
           />
         ) : all.length > 0 && (
           <PlaceList
@@ -504,7 +518,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
               setUser(null);
               setSavedIds(new Set());
               setMyReviews([]);
-              setSelected(null);
+              closeSelected();
             }}
           />
         )}
