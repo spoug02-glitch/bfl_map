@@ -2,6 +2,7 @@
 
 import DislikeSettings from "@/components/DislikeSettings";
 import { OFFICE_LABEL, Restaurant, SpecialPrice, formatPrice } from "@/lib/constants";
+import { formatDistance } from "@/lib/geo";
 import { sharePath } from "@/lib/share-copy";
 import { useState } from "react";
 
@@ -47,10 +48,6 @@ type Props = {
 
 /** 한 번에 그리는 개수. 5,834개를 다 그리면 스크롤이 버벅인다. 더 보기로 이만큼씩 늘린다. */
 const PAGE_ROWS = 50;
-
-function formatDistance(km: number): string {
-  return km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)}km`;
-}
 
 // 줄마다 진짜 href를 둔다. 여태 /place/[id]로 가는 앵커는 룰렛 결과 화면
 // 하나뿐이어서, 홈에서 출발하는 클릭 경로로는 그 경로에 닿을 방법이 없었다

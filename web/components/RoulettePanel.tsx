@@ -8,6 +8,7 @@ import { Restaurant, SpecialPrice, isMealPlace, normalizeQuery } from "@/lib/con
 import { track } from "@/lib/gtag";
 import { dislikeKeywords, isDisliked, useDislikes } from "@/lib/dislikes";
 import { MAX_LEGS, MIN_LEGS, encodeLadder } from "@/lib/ladder-link";
+import { formatDistance } from "@/lib/geo";
 import { sliceColor, sliceLabel } from "@/lib/roulette";
 
 type Props = {
@@ -240,7 +241,7 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, distKm
                     onClick={() => add(r)}
                   >
                     <span className="w-12 shrink-0 font-bold text-primary">
-                      {r.distance_km < 1 ? `${Math.round(r.distance_km * 1000)}m` : `${r.distance_km.toFixed(1)}km`}
+                      {formatDistance(distKm(r))}
                     </span>
                     <span className="min-w-0 flex-1 truncate text-on-surface">{r.name}</span>
                   </button>
@@ -299,9 +300,7 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, distKm
               </p>
               <p className="mt-1 text-center text-xs text-on-surface-variant">
                 {picked[winner].category} ·{" "}
-                {picked[winner].distance_km < 1
-                  ? `${Math.round(picked[winner].distance_km * 1000)}m`
-                  : `${picked[winner].distance_km.toFixed(1)}km`}
+                {formatDistance(distKm(picked[winner]))}
               </p>
               <div className="mt-3 border-t border-outline-variant pt-3">
                 <MenuLines

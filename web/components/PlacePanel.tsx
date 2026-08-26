@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { BlogLink, Restaurant, formatPrice, isConvenienceStore } from "@/lib/constants";
+import { formatDistance } from "@/lib/geo";
 import { track, type EntryContext } from "@/lib/gtag";
 import { sourceLabel } from "@/lib/menu-source";
 import ReviewSection from "@/components/ReviewSection";
@@ -18,6 +19,10 @@ type Props = {
   user: SessionUser | null;
   blogLink?: BlogLink;
   saved: boolean;
+  /** 기준점 기준 거리. distance_km은 회사 기준으로 구워진 값이라 지도를 눌러
+      기준점을 옮기면 틀린다 — 목록이 16m라 말한 가게를 상세가 2.35km라 말하던
+      2026-08-26 버그가 그것이다. 두 값이 같은 건 기준점이 회사일 때뿐이다. */
+  distKm: (r: Restaurant) => number;
   onToggleSaved: (placeId: string, saved: boolean) => void;
   onClose: () => void;
 };
@@ -34,7 +39,7 @@ type DbMenuRow = {
 // 모바일(<768px)에서는 하단 바텀시트, md 이상에서는 우측 사이드 패널.
 // fixed + inset-x-0 bottom-0 로 뷰포트에 붙이고, md부터 absolute 우측 전체높이로 전환한다.
 export default function PlacePanel({
-  restaurant: r, entryContext, user, blogLink, saved, onToggleSaved, onClose,
+  restaurant: r, entryContext, user, blogLink, saved, distKm, onToggleSaved, onClose,
 }: Props) {
   const [dbMenus, setDbMenus] = useState<DbMenuRow[]>([]);
 
@@ -98,7 +103,7 @@ export default function PlacePanel({
       <div className="flex items-start justify-between gap-2">
         <div>
           <h2 className="text-xl font-bold tracking-tight text-on-surface">{r.name}</h2>
-          <p className="mt-1 text-base text-on-surface-variant">{r.category} · {r.distance_km}km</p>
+          <p className="mt-1 text-base text-on-surface-variant">{r.category} · {formatDistance(distKm(r))}</p>
         </div>
         <button
           aria-label="닫기"

@@ -469,6 +469,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             user={user}
             blogLink={blogLinks[selected.kakao_place_id]}
             saved={savedIds.has(selected.kakao_place_id)}
+            distKm={distKm}
             onToggleSaved={toggleSaved}
             onClose={() => { closeSelected(); loadMine(); }}
           />

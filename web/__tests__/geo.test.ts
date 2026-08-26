@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { haversineKm } from "@/lib/geo";
+import { formatDistance, haversineKm } from "@/lib/geo";
 import { CENTER } from "@/lib/constants";
 import restaurants from "../public/restaurants.json";
 
@@ -43,5 +43,29 @@ describe("haversineKm", () => {
     const d = haversineKm(CENTER, cityHall);
     expect(d).toBeGreaterThan(11);
     expect(d).toBeLessThan(14);
+  });
+});
+
+describe("formatDistance", () => {
+  // 1km 미만은 미터로 끊는다. "0.02km"는 읽는 사람이 한 번 환산해야 하는 숫자다.
+  it("renders sub-kilometre distances as whole metres", () => {
+    expect(formatDistance(0.016)).toBe("16m");
+    expect(formatDistance(0.001)).toBe("1m");
+    expect(formatDistance(0.9994)).toBe("999m");
+  });
+
+  it("renders a kilometre and beyond with one decimal", () => {
+    expect(formatDistance(1)).toBe("1.0km");
+    expect(formatDistance(2.35)).toBe("2.4km");
+    expect(formatDistance(5)).toBe("5.0km");
+  });
+
+  // 목록·상세·룰렛이 같은 가게를 서로 다른 문자열로 부르던 버그(2026-08-26)를 막는다.
+  // 세 화면이 이 함수 하나만 보게 만든 것이 수정의 핵심이라, 포맷이 갈라지면 여기서 깨진다.
+  it("gives one string per distance, whatever screen asks", () => {
+    for (const km of [0.01, 0.25, 0.999, 1.0, 2.35, 4.99, 5.0]) {
+      expect(formatDistance(km)).toBe(formatDistance(km));
+      expect(formatDistance(km)).toMatch(/^\d+(\.\d)?(m|km)$/);
+    }
   });
 });
