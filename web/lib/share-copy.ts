@@ -1,3 +1,5 @@
+import { formatDistance } from "@/lib/geo";
+
 /**
  * 공유 카드 문구. 카카오톡 공유와 링크 미리보기(OG 태그)가 같은 문구를 쓰도록
  * 한 곳에 둔다 — 두 군데서 따로 만들면 조용히 갈라진다.
@@ -21,7 +23,7 @@ export function shareTitle(r: ShareSubject): string {
 }
 
 export function shareDescription(r: ShareSubject): string {
-  return `씨드큐브에서 ${r.distance_km}km`.slice(0, DESC_MAX);
+  return `씨드큐브에서 ${formatDistance(r.distance_km)}`.slice(0, DESC_MAX);
 }
 
 /** 공유 링크. 가게별 OG 태그가 붙는 경로여야 슬랙·디스코드에서 카드가 뜬다. */

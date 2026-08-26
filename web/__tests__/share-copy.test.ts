@@ -20,7 +20,13 @@ describe("shareTitle", () => {
 
 describe("shareDescription", () => {
   it("leads with the distance", () => {
-    expect(shareDescription(sundae)).toBe("씨드큐브에서 0.04km");
+    // 앱의 나머지와 같은 포맷으로 말한다 — 공유 카드에서 "0.04km"는 읽는 사람이
+    // 한 번 환산해야 하는 숫자다.
+    expect(shareDescription(sundae)).toBe("씨드큐브에서 40m");
+  });
+
+  it("uses one decimal past a kilometre, like every other screen", () => {
+    expect(shareDescription({ ...sundae, distance_km: 2.35 })).toBe("씨드큐브에서 2.4km");
   });
 
   it("stays inside the Kakao feed template's 76 character description limit", () => {

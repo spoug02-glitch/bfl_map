@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import MenuLines from "@/components/MenuLines";
 import RouletteWheel from "@/components/RouletteWheel";
 import { Restaurant, SpecialPrice } from "@/lib/constants";
+import { formatDistance } from "@/lib/geo";
 import { sharePath } from "@/lib/share-copy";
 import type { LadderDraw } from "@/lib/ladder-link";
 
@@ -98,7 +99,7 @@ export default function RouletteResult({ draw }: { draw: LadderDraw | null }) {
         {arrived && winnerPlace && (
           <>
             <p className="mt-1 text-center text-sm text-on-surface-variant">
-              {winnerPlace.category} · 씨드큐브에서 {winnerPlace.distance_km}km
+              {winnerPlace.category} · 씨드큐브에서 {formatDistance(winnerPlace.distance_km)}
             </p>
             {/* 뭘 파는 곳인지 여기서 알려주지 않으면 결국 카카오맵을 다시 연다 */}
             <div className="mt-4 border-t border-outline-variant pt-4">
