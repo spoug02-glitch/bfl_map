@@ -315,6 +315,13 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   // 지도 탭 = 기준점 이동. 단, 뭔가 열려 있을 때의 탭은 "닫고 싶다"는 뜻이다.
   // 이 기능의 첫 판(7ca8f0ca)은 그 탭까지 이동으로 받아서 시트를 닫으려다 기준점이
   // 옮겨졌고, 그래서 같은 날 제거됐다(cef5e219). 닫기만 하고 기준점은 두는 게 그 답이다.
+  //
+  // 회사 코앞은 회사로 붙인다. 회사 로고가 탭을 통과시키게 되면서(MapView 참조)
+  // 로고 위 탭이 지도 클릭으로 떨어지는데, 그대로 받으면 기준점이 "회사에서 몇 m
+  // 떨어진 지점"이 되어 화면은 그대로인데 문구만 "지도에서 찍은 지점 기준"으로
+  // 뒤집힌다. originIsOffice가 좌표 완전 일치를 보기 때문이다. 30m는 기본 줌에서
+  // 로고가 덮는 땅 크기 언저리다 — 아주 축소한 화면에선 로고 가장자리 탭이 스냅을
+  // 벗어날 수 있지만, 그 축척에서 몇십 m는 화면상 같은 자리라 되돌리기로 충분하다.
   const pickOrigin = useCallback(
     (p: LatLng) => {
       if (rouletteOpen) return;
@@ -323,7 +330,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         loadMine();
         return;
       }
-      setOrigin(p);
+      setOrigin(haversineKm(p, CENTER) <= 0.03 ? CENTER : p);
     },
     [rouletteOpen, selected, loadMine, closeSelected],
   );

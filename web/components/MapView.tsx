@@ -72,6 +72,7 @@ interface KakaoMap {
 }
 interface KakaoMarker { setMap(map: KakaoMap | null): void }
 interface KakaoCircle { setMap(map: KakaoMap | null): void }
+interface KakaoCustomOverlay { setMap(map: KakaoMap | null): void }
 /** 지도 클릭 리스너가 받는 이벤트. 찍은 좌표만 쓴다. */
 interface KakaoPointOnMap { getLat(): number; getLng(): number }
 interface KakaoMouseEvent { latLng: KakaoPointOnMap }
@@ -102,6 +103,10 @@ interface KakaoMapsNamespace {
     strokeStyle?: string;
     fillColor: string; fillOpacity: number;
   }) => KakaoCircle;
+  CustomOverlay: new (opts: {
+    map: KakaoMap; position: KakaoLatLng; content: string;
+    xAnchor?: number; yAnchor?: number; zIndex?: number;
+  }) => KakaoCustomOverlay;
   MarkerClusterer: new (opts: {
     map: KakaoMap; averageCenter: boolean; minLevel: number;
     gridSize?: number; disableClickZoom?: boolean;
@@ -201,30 +206,34 @@ export default function MapView({ restaurants, maxDist, origin, pinned, onSelect
       });
       // 회사는 식당과 같은 파란 핀이면 안 된다 — 핀 수백 개 사이에서 "여기가
       // 어디 기준인지"를 찾을 수 없었다. 우리 로고를 크게, 항상 맨 위에 둔다.
-      const office = new window.kakao.maps.Marker({
+      //
+      // Marker가 아니라 pointer-events:none 오버레이다. 마커일 때는 44px
+      // 히트영역이 지도에서 가장 밀집한 지점(회사 = 모든 것의 중심)을 항상
+      // 덮어서, 그 아래 클러스터가 눌리지 않았고 클러스터를 노린 탭이 빗나가면
+      // recenter가 오발돼 줌·팬·기준점이 통째로 리셋됐다(2026-08-26 실측).
+      // 마커 클릭의 기능(회사로 돌아오기)은 떠 있는 회사 버튼과 되돌리기에
+      // 이미 두 벌 있으므로, 로고는 보이기만 하고 탭은 아래로 통과시킨다.
+      // 뾰족한 꼭짓점(viewBox 32,57 → 44px에서 22,39)을 좌표에 앉힌다.
+      const office = new window.kakao.maps.CustomOverlay({
         map,
         position: center,
-        title: OFFICE_LABEL,
-        image: new window.kakao.maps.MarkerImage(
-          "/office-marker.png",
-          new window.kakao.maps.Size(44, 44),
-          // 밥그릇 핀의 뾰족한 꼭짓점(viewBox 32,57 → 44px에서 22,39)을 좌표에 앉힌다
-          { offset: new window.kakao.maps.Point(22, 39) },
-        ),
+        // 크기는 인라인 style로 못박는다. width 속성만 주면 Tailwind preflight의
+        // img{max-width:100%}가 절대배치 래퍼(너비 auto)와 순환 제약을 만들어
+        // 0×0으로 붕괴한다 — 실제로 로고가 통째로 사라졌다(2026-08-26).
+        content:
+          `<img src="/office-marker.png" alt="${OFFICE_LABEL}" ` +
+          `style="pointer-events:none;display:block;width:44px;height:44px;max-width:none">`,
+        xAnchor: 0.5,
+        yAnchor: 39 / 44,
         zIndex: 10,
       });
-      // 처음 화면으로 돌아오는 길. 마커 클릭에도 걸려 있지만, 전국 크기로 빼면
-      // 마커는 못 찾는다 — 그래서 같은 동작을 apiRef로도 열어 떠 있는 버튼이 쓴다.
+      void office; // setMap으로 지울 일이 없어 참조만 남긴다 — 지도와 수명이 같다
+      // 처음 화면으로 돌아오는 길. 떠 있는 회사 버튼이 apiRef로 쓴다 —
+      // 버튼은 전국 크기로 빼도 어디서든 그 자리다.
       const recenter = () => {
         map.setLevel(INITIAL_LEVEL);
         map.panTo(center);
       };
-      window.kakao.maps.event.addListener(office, "click", () => {
-        recenter();
-        // 회사로 돌아오기 = 기준점도 회사로. 지도만 돌리고 기준점을 흘리면
-        // "회사를 눌렀는데 목록은 딴 동네"가 된다.
-        onPickOriginRef.current(CENTER);
-      });
       // 지도 빈 곳 탭 = 기준점 이동. 실수 탭 처리(패널이 열려 있으면 닫기만)는
       // 부모의 onPickOrigin 이 한다 — 여기는 좌표만 넘긴다.
       window.kakao.maps.event.addListener(map, "click", (e: KakaoMouseEvent) => {
