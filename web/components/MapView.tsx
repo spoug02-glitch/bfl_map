@@ -64,7 +64,9 @@ const CLUSTER_STYLE = {
 type KakaoLatLng = object;
 interface KakaoMap {
   panTo(pos: KakaoLatLng): void;
-  setLevel(level: number): void;
+  getLevel(): number;
+  /** anchor를 주면 그 좌표를 붙든 채 확대한다 — 누른 자리가 화면에서 안 튄다. */
+  setLevel(level: number, opts?: { anchor: KakaoLatLng }): void;
 }
 interface KakaoMarker { setMap(map: KakaoMap | null): void }
 interface KakaoCircle { setMap(map: KakaoMap | null): void }
@@ -75,6 +77,8 @@ interface KakaoClusterer {
   clear(): void;
   addMarkers(markers: KakaoMarker[]): void;
 }
+/** clusterclick 핸들러가 받는 뭉치. 누른 자리를 붙들 좌표만 쓴다. */
+interface KakaoCluster { getCenter(): KakaoLatLng }
 type KakaoSize = object;
 type KakaoPoint = object;
 type KakaoMarkerImage = object;
@@ -102,6 +106,9 @@ interface KakaoMapsNamespace {
     styles?: Record<string, string>[];
   }) => KakaoClusterer;
   event: {
+    addListener(
+      target: KakaoClusterer, type: "clusterclick", handler: (cluster: KakaoCluster) => void,
+    ): void;
     addListener(target: KakaoMarker, type: string, handler: () => void): void;
     addListener(target: KakaoMap, type: "click", handler: (e: KakaoMouseEvent) => void): void;
   };
@@ -160,13 +167,32 @@ export default function MapView({ restaurants, maxDist, origin, onSelect, onPick
       // gridSize가 정한다 — 화면에서 32px 안에 겹친 것만 하나로 모으므로 가까이
       // 당기면 알아서 풀린다.
       //
-      // 다만 1이 아니라 2다. 클러스터를 누르면 한 단계 더 당겨지는 게 전부인데,
-      // 1이면 가장 가까운 줌에서도 뭉친 채라 더 당길 데가 없어 **눌러도 아무 일도
-      // 일어나지 않는다**(2026-08-21 제보). 2로 두면 마지막 한 단계에서는 클러스터가
-      // 풀려 개별 마커가 되므로, 어떤 뭉치든 끝까지 파고들면 반드시 열린다.
+      // disableClickZoom은 켜야 한다. 기본 동작은 "1레벨 확대"가 아니라 "뭉친 마커가
+      // 모두 잘 보이도록 레벨과 영역을 변경"이라, 두 곳이 이미 화면에 다 보이는
+      // 뭉치는 바꿀 게 없어 **눌러도 아무 일도 일어나지 않는다**(2026-08-21, 2026-08-26
+      // 두 번 제보). 2026-08-21에 이걸 minLevel 탓으로 진단해 5에서 2로 내렸지만
+      // 원인이 아니었다 — 레벨을 바꿔도 "이미 다 보이면 가만히 있는다"는 그대로다.
+      // 공식 문서도 커스텀 핸들러를 쓸 거면 이 값을 켜라고 적어둔다: 끄면 핸들러에
+      // cluster 객체가 넘어오지 않을 수 있다.
+      // https://apis.map.kakao.com/web/sample/addClustererClickEvent/
+      //
+      // minLevel이 2인 것은 이제 아래 핸들러와 짝이다. 레벨 1에서는 클러스터가 아예
+      // 만들어지지 않으므로(실측: 레벨 2에서 12개 → 레벨 1에서 0개) 눌릴 수 있는
+      // 뭉치는 항상 레벨 2 이상에 있고 getLevel()-1은 언제나 유효하다. 1로 내리면
+      // 레벨 1의 뭉치가 setLevel(0)을 부르고 카카오가 그걸 1로 되물려, 고친 그
+      // 죽은 컨트롤이 되살아난다.
       clustererRef.current = new window.kakao.maps.MarkerClusterer({
         map, averageCenter: true, minLevel: 2, gridSize: 32,
+        disableClickZoom: true,
         styles: [CLUSTER_STYLE],
+      });
+      // 뭉치를 누르면 한 단계 당긴다 — 카카오 공식 샘플과 같은 처리다. setLevel은
+      // 조건 없이 실행되므로 "이미 다 보인다"고 가만히 있는 일이 없다. 뭉치 안을
+      // 목록으로 따로 열어주지는 않는다: 클러스터는 목록과 같은 집합(visible)으로
+      // 만들어지므로 그 가게들은 이미 주변 목록에 들어 있고, 카카오맵도 네이버도
+      // 뭉치를 눌러 목록을 여는 UX를 쓰지 않는다(2026-08-26 확인).
+      window.kakao.maps.event.addListener(clustererRef.current, "clusterclick", cluster => {
+        map.setLevel(map.getLevel() - 1, { anchor: cluster.getCenter() });
       });
       // 회사는 식당과 같은 파란 핀이면 안 된다 — 핀 수백 개 사이에서 "여기가
       // 어디 기준인지"를 찾을 수 없었다. 우리 로고를 크게, 항상 맨 위에 둔다.
