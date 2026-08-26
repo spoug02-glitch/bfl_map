@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import DocSection from "@/components/DocSection";
 import { CREDIT, SERVICE } from "@/lib/constants";
+import { pageMetadata } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/contact",
   title: `문의 · ${SERVICE.name}`,
   description: `${SERVICE.name} 문의 안내`,
-};
+});
 
 export default function ContactPage() {
   return (

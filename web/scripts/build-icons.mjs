@@ -5,7 +5,7 @@
 //
 // OG 카드에는 글자를 넣지 않는다. 넣으려면 한글 폰트를 번들에 실어야 하는데,
 // 카드의 제목·설명은 이미 OG 태그가 텍스트로 전달하므로 그림에 다시 쓸 이유가 없다.
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import sharp from "sharp";
@@ -101,3 +101,31 @@ for (const t of targets) {
   writeFileSync(out, png);
   console.log(`  ${t.file}  ${t.w}x${t.h}  ${(png.length / 1024).toFixed(1)}KB`);
 }
+
+/**
+ * PNG 하나를 ICO 컨테이너에 담는다.
+ *
+ * Next는 app/icon.png를 해시 붙은 주소(/icon.png?icon.16n8-...)로 내보내므로, 관습
+ * 경로 /favicon.ico를 그대로 때리는 크롤러·피드 리더는 404를 받는다 — 2026-08-26
+ * 라이브에서 확인했다. Vista 이후의 ICO는 PNG를 그대로 품을 수 있어서 22바이트
+ * 헤더만 붙이면 되고, 그래서 인코더 의존성이 필요 없다.
+ */
+function pngToIco(png, size) {
+  const header = Buffer.alloc(22);
+  header.writeUInt16LE(0, 0); // reserved
+  header.writeUInt16LE(1, 2); // 1 = 아이콘
+  header.writeUInt16LE(1, 4); // 담긴 이미지 수
+  header.writeUInt8(size, 6); // width
+  header.writeUInt8(size, 7); // height
+  header.writeUInt8(0, 8); // 팔레트 없음
+  header.writeUInt8(0, 9); // reserved
+  header.writeUInt16LE(1, 10); // color planes
+  header.writeUInt16LE(32, 12); // bits per pixel
+  header.writeUInt32LE(png.length, 14); // 이미지 바이트 수
+  header.writeUInt32LE(header.length, 18); // 이미지 시작 위치
+  return Buffer.concat([header, png]);
+}
+
+const ico = pngToIco(readFileSync(join(web, "app/icon.png")), 32);
+writeFileSync(join(web, "app/favicon.ico"), ico);
+console.log(`  app/favicon.ico  32x32  ${(ico.length / 1024).toFixed(1)}KB`);

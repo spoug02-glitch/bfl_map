@@ -1,14 +1,15 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import DocSection from "@/components/DocSection";
 import { CREDIT, SERVICE } from "@/lib/constants";
 import { WITHDRAWN_NICKNAME } from "@/lib/nickname";
 import { REJOIN_BLOCK_DAYS } from "@/lib/rejoin";
+import { pageMetadata } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/privacy",
   title: `개인정보처리방침 · ${SERVICE.name}`,
   description: `${SERVICE.name}이 무엇을 받고, 무엇을 저장하지 않으며, 언제 지우는지`,
-};
+});
 
 const UPDATED = "2026-08-20";
 

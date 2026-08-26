@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import DocSection from "@/components/DocSection";
 import { OFFICE_LABEL, SERVICE } from "@/lib/constants";
+import { pageMetadata } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/about",
   title: `서비스 소개 · ${SERVICE.name}`,
   description: SERVICE.tagline,
-};
+});
 
 export default function AboutPage() {
   return (

@@ -1,13 +1,14 @@
-import type { Metadata } from "next";
 import Link from "next/link";
 import DocSection from "@/components/DocSection";
 import { NICKNAME_MAX_LEN, WITHDRAWN_NICKNAME } from "@/lib/nickname";
 import { SERVICE } from "@/lib/constants";
+import { pageMetadata } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/terms",
   title: `이용약관 · ${SERVICE.name}`,
   description: `${SERVICE.name}을 이용할 때의 약속`,
-};
+});
 
 const UPDATED = "2026-08-13";
 

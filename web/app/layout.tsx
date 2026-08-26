@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { OG_CARD_PATH, SITE_URL } from "@/lib/constants";
+import { OG_CARD_PATH, SERVICE, SITE_URL } from "@/lib/constants";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import "./globals.css";
 
@@ -12,8 +12,8 @@ import "./globals.css";
 // served from a CDN instead — it is the de-facto Korean UI font and matches
 // the Figma design's intent far better than a platform-dependent fallback.
 
-const SITE_NAME = "직장인 맛창고";
-const DESCRIPTION = "창동씨드큐브 반경 5km 비플페이(제로페이) 맛집 지도";
+const SITE_NAME = SERVICE.name;
+const DESCRIPTION = SERVICE.description;
 
 export const metadata: Metadata = {
   // 공유 카드의 이미지 주소는 절대 경로여야 한다. 이게 없으면 og:image가
@@ -25,9 +25,9 @@ export const metadata: Metadata = {
   description: DESCRIPTION,
   manifest: "/manifest.webmanifest",
   appleWebApp: { capable: true, title: "맛창고", statusBarStyle: "default" },
-  // 지도는 필터·좌표가 쿼리로 붙는데 그건 전부 같은 문서다. 정식 주소를 못박아
-  // 두지 않으면 검색엔진이 쿼리별로 다른 페이지로 세어 색인이 쪼개진다.
-  alternates: { canonical: "/" },
+  // canonical과 og:url은 **여기 두지 않는다**. 레이아웃에 두면 모든 하위 페이지가
+  // 홈을 정본으로 신고한다 — 2026-08-26 라이브에서 여덟 경로가 실제로 그랬다.
+  // 페이지마다 lib/page-meta.ts의 pageMetadata()가 자기 경로로 만든다.
   // 검색엔진 소유권 확인. 네이버는 메타 태그만 받고, 구글은 파일 방식이라
   // public/google5b8ff07028b28e0a.html이 짝이다 — 한쪽만 지우면 확인이 풀린다.
   verification: {
@@ -37,7 +37,6 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: SITE_NAME,
     description: DESCRIPTION,
-    url: SITE_URL,
     type: "website",
     locale: "ko_KR",
     images: [{ url: OG_CARD_PATH, width: 1200, height: 630 }],

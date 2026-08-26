@@ -1,11 +1,12 @@
-import type { Metadata } from "next";
 import ReportForm from "@/components/ReportForm";
 import { SERVICE } from "@/lib/constants";
+import { pageMetadata } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/report",
   title: `제보 · ${SERVICE.name}`,
   description: `${SERVICE.name} 가게 정보 제보`,
-};
+});
 
 export default function ReportPage() {
   return (

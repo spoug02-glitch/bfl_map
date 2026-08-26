@@ -1,12 +1,13 @@
-import type { Metadata } from "next";
 import DocSection from "@/components/DocSection";
 import OwnerMenuForm from "@/components/OwnerMenuForm";
 import { SERVICE } from "@/lib/constants";
+import { pageMetadata } from "@/lib/page-meta";
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
+  path: "/owner",
   title: `업주 메뉴 등록 · ${SERVICE.name}`,
   description: `${SERVICE.name} 가게 메뉴·가격 등록`,
-};
+});
 
 export default function OwnerPage() {
   return (

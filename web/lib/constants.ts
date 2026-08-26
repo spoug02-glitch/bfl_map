@@ -129,10 +129,15 @@ export const OG_CARD_PATH = "/og-card.png?v=2";
 
 /**
  * 서비스 이름과 한 줄 소개. 푸터·안내 페이지가 같은 값을 쓴다.
+ *
+ * `tagline`은 화면에 읽히는 소개고, `description`은 검색 결과와 공유 카드에 나가는
+ * 문장이다. 이름과 설명이 layout·place 페이지에 따로 복사돼 있던 것을 여기로 모았다
+ * — 한 곳이 바뀌고 다른 곳이 안 바뀌면 검색 결과와 화면이 다른 말을 하게 된다.
  */
 export const SERVICE = {
   name: "직장인 맛창고",
   tagline: "직장인을 위한 점심 맛집 지도",
+  description: "창동씨드큐브 반경 5km 비플페이(제로페이) 맛집 지도",
 } as const;
 
 /**
