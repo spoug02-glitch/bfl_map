@@ -18,9 +18,15 @@ const STATIC_PATHS = ["/", "/about", "/contact", "/report", "/owner", "/privacy"
  * 그때는 "같은 지도 셸에 OG 태그만 다른 구조라 중복 콘텐츠로 읽힐 소지가 있고,
  * 메인 화면에서 링크로 이미 도달 가능하다"를 이유로 뺐다. 뒤의 전제가 사실이
  * 아니었다 — 2026-08-26에 라이브 DOM을 열어보니 목록 50개가 전부 `<button onClick>`이고
- * href에 /place/ 가 든 앵커는 0개다. 유일한 링크인 RouletteResult는 /ladder/[token]
+ * href에 /place/ 가 든 앵커는 0개였다. 유일한 링크인 RouletteResult는 /ladder/[token]
  * 에서만 그려지는데 그 경로는 robots.txt가 막고 있다. 사이트맵에서도 빠져 있었으니
  * 5,826곳 전부가 크롤러에게는 존재하지 않는 페이지였다.
+ *
+ * 그 뒤 PlaceList가 진짜 앵커를 갖게 됐지만(claude/place-route-anchors) 이 목록은
+ * 여전히 필요하다. 앵커는 두 겹으로 부분적이다 — 목록은 반경 안에서 최대 50줄만
+ * 그리므로 기본 200m 화면에 뜨는 건 5,826곳 중 수십 곳이고, 그 목록 자체가
+ * restaurants.json을 받은 뒤 클라이언트에서 그려져 서버가 보낸 HTML에는 없다.
+ * 자바스크립트를 실행하는 크롤러만 그 앵커를 본다.
  *
  * 앞의 우려는 그대로 남아 있다. 그래서 이 목록은 **가게별 canonical과 가게별
  * JSON-LD가 함께 나갈 때만 성립한다** — 셋은 세트다. Search Console에 "중복" 판정이

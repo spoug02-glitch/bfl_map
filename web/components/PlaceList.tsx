@@ -2,6 +2,7 @@
 
 import DislikeSettings from "@/components/DislikeSettings";
 import { OFFICE_LABEL, Restaurant, SpecialPrice, formatPrice } from "@/lib/constants";
+import { sharePath } from "@/lib/share-copy";
 import { useState } from "react";
 
 export type ListedPlace = { place: Restaurant; distanceKm: number };
@@ -51,21 +52,34 @@ function formatDistance(km: number): string {
   return km < 1 ? `${Math.round(km * 1000)}m` : `${km.toFixed(1)}km`;
 }
 
+// 줄마다 진짜 href를 둔다. 여태 /place/[id]로 가는 앵커는 룰렛 결과 화면
+// 하나뿐이어서, 홈에서 출발하는 클릭 경로로는 그 경로에 닿을 방법이 없었다
+// (sitemap.ts가 "메인 화면에서 링크로 이미 도달 가능하다"고 적어둔 전제가
+// 실제로는 성립하지 않았다). 평범한 좌클릭만 가로채 주소를 얕게 바꾸고,
+// 새 탭·링크 복사·크롤러는 이 href를 그대로 쓴다.
+// next/link는 쓰지 않는다 — /place/[id]는 동적 경로라 50줄이 화면에 들어오는
+// 순간 prefetch가 서버 렌더 50번을 예열한다.
 function Row({
-  title, subtitle, lead, onClick,
-}: { title: string; subtitle: string; lead: string; onClick: () => void }) {
+  title, subtitle, lead, href, onOpen,
+}: { title: string; subtitle: string; lead: string; href: string; onOpen: () => void }) {
   return (
     <li className="border-b border-outline-variant/60 last:border-b-0">
-      <button
+      <a
         className="flex w-full items-center gap-3 py-3 text-left transition-colors hover:bg-on-surface/8 active:bg-on-surface/10"
-        onClick={onClick}
+        href={href}
+        onClick={e => {
+          // 새 탭·새 창(⌘/Ctrl·Shift·가운데 버튼)은 브라우저에게 넘긴다.
+          if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button !== 0) return;
+          e.preventDefault();
+          onOpen();
+        }}
       >
         <span className="w-14 shrink-0 text-sm font-bold text-primary">{lead}</span>
         <span className="min-w-0 flex-1">
           <span className="block truncate text-base font-medium text-on-surface">{title}</span>
           <span className="block truncate text-xs text-on-surface-variant">{subtitle}</span>
         </span>
-      </button>
+      </a>
     </li>
   );
 }
@@ -211,7 +225,8 @@ export default function PlaceList({
                     lead={formatDistance(distanceKm)}
                     title={place.name}
                     subtitle={place.category + line}
-                    onClick={() => onSelect(place)}
+                    href={sharePath(place.kakao_place_id)}
+                    onOpen={() => onSelect(place)}
                   />
                 );
               })}
@@ -272,7 +287,8 @@ export default function PlaceList({
                       lead={formatDistance(distKm(place))}
                       title={place.name}
                       subtitle={place.category}
-                      onClick={() => onSelect(place)}
+                      href={sharePath(place.kakao_place_id)}
+                      onOpen={() => onSelect(place)}
                     />
                   ))}
                 </ul>
@@ -293,7 +309,8 @@ export default function PlaceList({
                         lead={`★${rv.taste}`}
                         title={place.name}
                         subtitle={rv.body || `맛 ★${rv.taste} · 편의성 ★${rv.convenience}`}
-                        onClick={() => onSelect(place)}
+                        href={sharePath(place.kakao_place_id)}
+                        onOpen={() => onSelect(place)}
                       />
                     );
                   })}
