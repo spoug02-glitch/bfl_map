@@ -64,6 +64,8 @@ const CLUSTER_STYLE = {
 type KakaoLatLng = object;
 interface KakaoMap {
   panTo(pos: KakaoLatLng): void;
+  /** 컨테이너 크기가 바뀐 걸 지도에 알린다. 부르지 않으면 늘어난 자리가 비어 있다. */
+  relayout(): void;
   getLevel(): number;
   /** anchor를 주면 그 좌표를 붙든 채 확대한다 — 누른 자리가 화면에서 안 튄다. */
   setLevel(level: number, opts?: { anchor: KakaoLatLng }): void;
@@ -229,6 +231,30 @@ export default function MapView({ restaurants, maxDist, origin, onSelect, onPick
       setReady(true);
     });
   };
+
+  // 컨테이너 크기가 바뀌면 카카오에 relayout()으로 알린다 — SDK 문서가 요구하는
+  // 계약이다. 창 리사이즈는 SDK가 스스로 처리하는 걸 확인했지만(2026-08-26
+  // Playwright 실측: relayout 없는 배포본도 창 확대에 타일을 다시 채움), 창은
+  // 그대로인 채 이 컨테이너만 커지는 경우는 그 처리 밖이다. 이 앱에 그게 있다:
+  // 필터 바 접기가 지도를 128px 키운다. 지금은 타일 버퍼(256px)가 우연히 흡수해
+  // 흰 띠가 안 보이는데, 그건 문서화되지 않은 여유에 기대는 것이라 버퍼보다 큰
+  // 레이아웃 변화가 생기는 순간 깨진다. 계약대로 알려주는 쪽이 맞다.
+  //
+  // 즉시 한 번, 다음 프레임에 한 번 더 부른다. 리사이즈가 여러 프레임에 걸쳐
+  // 정착할 때 콜백 시점의 크기가 최종이 아닐 수 있어 rAF로 마무리하고, 그려지지
+  // 않는 탭에서는 rAF가 발화하지 않으므로 즉시 호출이 기본 채움을 맡는다.
+  // relayout은 멱등이라 두 번 불러도 비용뿐 부작용이 없다.
+  useEffect(() => {
+    if (!ready || !mapEl.current) return;
+    let raf = 0;
+    const ro = new ResizeObserver(() => {
+      mapRef.current?.relayout();
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(() => mapRef.current?.relayout());
+    });
+    ro.observe(mapEl.current);
+    return () => { cancelAnimationFrame(raf); ro.disconnect(); };
+  }, [ready]);
 
   // 반경 원·기준점 핀·수집 경계. 마커와 갱신 주기가 달라 effect를 가른다 —
   // 기준점만 옮겼는데 5,800개 마커를 다시 만들 이유가 없다.
