@@ -64,7 +64,7 @@ describe("GET /api/saved", () => {
 
 describe("PUT /api/saved", () => {
   it("rejects an anonymous caller", async () => {
-    const res = await put("1080924210", false);
+    const res = await put("3090000-101-2024-00209", false);
     expect(res.status).toBe(401);
     expect(sqlMock).not.toHaveBeenCalled();
   });
@@ -80,7 +80,7 @@ describe("PUT /api/saved", () => {
 
   it("saves a valid place", async () => {
     sqlMock.mockResolvedValueOnce([]);
-    const res = await put("1080924210");
+    const res = await put("3090000-101-2024-00209");
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ saved: true });
   });
@@ -88,7 +88,7 @@ describe("PUT /api/saved", () => {
 
 describe("DELETE /api/saved", () => {
   it("rejects an anonymous caller", async () => {
-    const res = await del("1080924210", false);
+    const res = await del("3090000-101-2024-00209", false);
     expect(res.status).toBe(401);
     expect(sqlMock).not.toHaveBeenCalled();
   });
@@ -101,7 +101,7 @@ describe("DELETE /api/saved", () => {
 
   it("unsaves a place", async () => {
     sqlMock.mockResolvedValueOnce([]);
-    const res = await del("1080924210");
+    const res = await del("3090000-101-2024-00209");
     expect(res.status).toBe(200);
     expect(await res.json()).toEqual({ saved: false });
   });

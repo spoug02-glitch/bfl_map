@@ -72,7 +72,7 @@ describe("GET /api/menu-items?placeId= — 가게별", () => {
         collected_at: "2026-08-17T00:00:00.000Z",
       },
     ]);
-    const res = await call("?placeId=12345");
+    const res = await call("?placeId=3090000-101-2024-12345");
     expect(res.status).toBe(200);
     const body = await res.json();
     expect(body.items[0].source_type).toBe("user_report");
@@ -82,7 +82,7 @@ describe("GET /api/menu-items?placeId= — 가게별", () => {
   // pending 은 내보낸다 — 화면이 "미확인"으로 구분해 보여준다. rejected 는 아니다.
   it("rejected 는 내보내지 않는다", async () => {
     sqlMock.mockResolvedValueOnce([]);
-    await call("?placeId=12345");
+    await call("?placeId=3090000-101-2024-12345");
     expect(lastSql()).toContain("status <> 'rejected'");
   });
 });

@@ -61,6 +61,9 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   );
   // null이면 가격으로 거르지 않는다.
   const [priceLimit, setPriceLimit] = useState<number | null>(null);
+  // 기본은 꺼짐. 목록을 인허가로 넓힌 이유가 결제수단이 지도를 반으로 깎는 걸
+  // 그만두려던 것이라, 켜진 채로 시작하면 그 전환이 없던 일이 된다.
+  const [zeropayOnly, setZeropayOnly] = useState(false);
   // 가게별 최저가 점심특선 제보. 가격 필터가 카카오 메뉴와 함께 본다.
   const [specialPrices, setSpecialPrices] = useState<Map<string, SpecialPrice>>(new Map());
   // 가게별 확정 메뉴 최저가. specialPrices와 같은 이유로 요약 하나만 받는다.
@@ -98,7 +101,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   /** 목록·마커로 고른 가게. 주소를 얕게 바꿔 새로고침과 뒤로가기가 선택을 기억한다. */
   const select = useCallback((r: Restaurant, ctx: EntryContext) => {
     showPlace(r, ctx);
-    window.history.pushState(null, "", sharePath(r.kakao_place_id));
+    window.history.pushState(null, "", sharePath(r.place_id));
   }, [showPlace]);
   /**
    * 상세를 닫는다. 주소도 선택 없는 상태로 되돌린다.
@@ -140,7 +143,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
       setAll(data);
       const id = initialPlaceId ?? placeIdFromUrl(window.location.pathname, window.location.search);
       if (!id) return;
-      const found = data.find(r => r.kakao_place_id === id);
+      const found = data.find(r => r.place_id === id);
       if (found) {
         showPlace(found, "shared_link");
         setPinned(found);
@@ -205,9 +208,10 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     return all.filter(r =>
       distKm(r) <= maxDist &&
       (!cats || cats.has(r.category)) &&
+      (!zeropayOnly || r.zeropay) &&
       (!q || r.search_keys.some(k => k.includes(q))),
     );
-  }, [all, group, query, maxDist, distKm]);
+  }, [all, group, query, maxDist, distKm, zeropayOnly]);
 
   // 안 먹는 음식은 지도와 목록을 건드리지 않는다 — 그건 그 동네에 뭐가 있는지를
   // 보여주는 화면이지 내 취향을 반영하는 화면이 아니다. 거르는 건 룰렛 랜덤뿐이고,
@@ -236,7 +240,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     () =>
       priceLimit !== null
         ? matched.filter(r =>
-            effectiveMinPrice(specialPrices.get(r.kakao_place_id), dbItemsFor(r.kakao_place_id)) === null,
+            effectiveMinPrice(specialPrices.get(r.place_id), dbItemsFor(r.place_id)) === null,
           ).length
         : 0,
     [matched, priceLimit, specialPrices, dbItemsFor],
@@ -245,7 +249,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const ranked = useMemo(() => {
     const kept = priceLimit !== null
       ? matched.filter(r => {
-          const min = effectiveMinPrice(specialPrices.get(r.kakao_place_id), dbItemsFor(r.kakao_place_id));
+          const min = effectiveMinPrice(specialPrices.get(r.place_id), dbItemsFor(r.place_id));
           return min !== null && min <= priceLimit;
         })
       : matched;
@@ -257,7 +261,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
   const visible = useMemo(() => ranked.map(x => x.place), [ranked]);
 
   const placeById = useMemo(
-    () => new Map(all.map(r => [r.kakao_place_id, r])),
+    () => new Map(all.map(r => [r.place_id, r])),
     [all],
   );
 
@@ -297,7 +301,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     if (all.length === 0) return;
     const sync = () => {
       const id = placeIdFromUrl(window.location.pathname, window.location.search);
-      const found = id ? all.find(r => r.kakao_place_id === id) : undefined;
+      const found = id ? all.find(r => r.place_id === id) : undefined;
       if (found) {
         showPlace(found, "shared_link");
         setPinned(found);
@@ -412,6 +416,7 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
         query={query} onQuery={setQuery}
         maxDist={maxDist} onMaxDist={setMaxDist}
         priceLimit={priceLimit} onPriceLimit={setPriceLimit}
+        zeropayOnly={zeropayOnly} onZeropayOnly={setZeropayOnly}
         open={barOpen} onOpenChange={setBarOpen}
         count={visible.length}
       />
@@ -484,8 +489,8 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
             restaurant={selected}
             entryContext={entryContext}
             user={user}
-            blogLink={blogLinks[selected.kakao_place_id]}
-            saved={savedIds.has(selected.kakao_place_id)}
+            blogLink={blogLinks[selected.place_id]}
+            saved={savedIds.has(selected.place_id)}
             distKm={distKm}
             onToggleSaved={toggleSaved}
             onClose={() => { closeSelected(); loadMine(); }}

@@ -27,7 +27,7 @@ export default function RouletteResult({ draw }: { draw: LadderDraw | null }) {
   useEffect(() => {
     fetch("/restaurants.json")
       .then(r => r.json())
-      .then((data: Restaurant[]) => setNames(new Map(data.map(r => [r.kakao_place_id, r]))))
+      .then((data: Restaurant[]) => setNames(new Map(data.map(r => [r.place_id, r]))))
       .catch(() => setNames(new Map()));
   }, []);
 

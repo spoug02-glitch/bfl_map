@@ -1,7 +1,7 @@
 import { beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { validateReviewInput } from "@/lib/reviews";
 
-const valid = { placeId: "1080924210", taste: 4, convenience: 2, body: "국물 진함. 12시 전엔 안 기다림" };
+const valid = { placeId: "3090000-101-2024-00209", taste: 4, convenience: 2, body: "국물 진함. 12시 전엔 안 기다림" };
 
 describe("validateReviewInput", () => {
   it("accepts a valid input", () => {

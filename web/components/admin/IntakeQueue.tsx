@@ -100,9 +100,9 @@ export default function IntakeQueue() {
     if (ids.size === 0) return;
     fetch("/restaurants.json")
       .then(r => r.json())
-      .then((rows: { kakao_place_id: string; name: string }[]) => {
+      .then((rows: { place_id: string; name: string }[]) => {
         const m: PlaceName = {};
-        for (const row of rows) if (ids.has(row.kakao_place_id)) m[row.kakao_place_id] = row.name;
+        for (const row of rows) if (ids.has(row.place_id)) m[row.place_id] = row.name;
         setNames(m);
       })
       .catch(() => {});

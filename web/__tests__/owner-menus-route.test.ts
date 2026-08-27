@@ -27,7 +27,7 @@ async function post(body: unknown) {
 }
 
 const valid = {
-  placeId: "12345",
+  placeId: "3090000-101-2024-12345",
   contact: "010-0000-0000",
   menus: [{ menuName: "김치찌개", price: 9000 }, { menuName: "된장찌개", price: 8500 }],
 };

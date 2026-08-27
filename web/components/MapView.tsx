@@ -2,7 +2,7 @@
 
 import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
-import { CENTER, OFFICE_LABEL, RADIUS_KM, Restaurant } from "@/lib/constants";
+import { CENTER, OFFICE_LABEL, Restaurant } from "@/lib/constants";
 import type { LatLng } from "@/lib/geo";
 
 /**
@@ -324,8 +324,13 @@ export default function MapView({ restaurants, maxDist, origin, pinned, onSelect
     // 회사가 아닌 곳을 찍었을 때만 기준점 핀을 세운다. 회사에는 이미 로고 핀이 있다.
     if (originMarkerRef.current) originMarkerRef.current.setMap(null);
     originMarkerRef.current = null;
-    // 수집 경계: 데이터는 회사 5km 안에서만 모았다. 기준점이 밖을 향하면 지도가
-    // 비어 "가게가 없다"로 읽힌다 — 없는 게 아니라 모르는 곳이라는 걸 선으로 긋는다.
+    // 수집 경계선은 2026-08-27에 걷어냈다.
+    //
+    // 데이터가 제로페이(전국)에서 오던 시절엔 회사 5km 원이 곧 우리가 아는 범위였다.
+    // 지금은 인허가 데이터를 **구 단위로** 받으므로 경계가 도봉·노원·강북의 행정
+    // 경계다. 원을 그대로 두면 원 안이지만 우리가 모르는 곳(성북·중랑 쪽)을
+    // "아는 곳"이라고 주장하게 된다 — 없는 것을 아는 척하는 쪽이 더 나쁘다.
+    // 대신 목록 위 문구가 어느 세 구인지 말한다 → PlaceList.
     if (boundaryRef.current) boundaryRef.current.setMap(null);
     boundaryRef.current = null;
     if (moved) {
@@ -333,14 +338,6 @@ export default function MapView({ restaurants, maxDist, origin, pinned, onSelect
         map,
         position: new kakao.maps.LatLng(origin.lat, origin.lng),
         title: "선택한 지점",
-      });
-      boundaryRef.current = new kakao.maps.Circle({
-        map,
-        center: new kakao.maps.LatLng(CENTER.lat, CENTER.lng),
-        radius: RADIUS_KM * 1000,
-        strokeWeight: 1.5, strokeColor: MAP_PRIMARY, strokeOpacity: 0.35,
-        strokeStyle: "shortdash",
-        fillColor: MAP_PRIMARY, fillOpacity: 0,
       });
     }
   }, [ready, origin, maxDist]);

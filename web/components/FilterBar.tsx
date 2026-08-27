@@ -8,6 +8,10 @@ type Props = {
   maxDist: number; onMaxDist: (d: number) => void;
   /** 가격 상한. null이면 가격으로 거르지 않는다. */
   priceLimit: number | null; onPriceLimit: (v: number | null) => void;
+  /** 비플페이 되는 곳만. **기본값은 꺼짐**이다 — 목록을 인허가로 넓힌 이유가
+   *  결제수단이 지도를 반으로 깎는 걸 그만두려던 것이라, 켜진 채로 시작하면
+   *  그 전환이 없던 일이 된다. */
+  zeropayOnly: boolean; onZeropayOnly: (v: boolean) => void;
   /** 접힘 상태. 부모가 든다 — 지도를 만지면 접는 건 지도를 아는 쪽만 할 수 있다. */
   open: boolean | null; onOpenChange: (v: boolean) => void;
   count: number;
@@ -19,16 +23,18 @@ function formatRadius(km: number): string {
 }
 
 /** 접었을 때 지금 무엇이 걸려 있는지 한 줄로 알려준다. */
-function summarize(query: string, group: string | null, maxDist: number, priceLimit: number | null): string {
+function summarize(query: string, group: string | null, maxDist: number, priceLimit: number | null,
+                   zeropayOnly: boolean): string {
   const parts = [group ?? "전체", `반경 ${formatRadius(maxDist)}`];
   if (priceLimit !== null) parts.push(priceLimitLabel(priceLimit));
+  if (zeropayOnly) parts.push("비플페이");
   if (query.trim()) parts.unshift(`"${query.trim()}"`);
   return parts.join(" · ");
 }
 
 export default function FilterBar({
   group, onGroup, query, onQuery, maxDist, onMaxDist, priceLimit, onPriceLimit,
-  open, onOpenChange, count,
+  zeropayOnly, onZeropayOnly, open, onOpenChange, count,
 }: Props) {
   /**
    * 아직 아무도 접거나 펴지 않은 상태가 null이다.
@@ -58,7 +64,7 @@ export default function FilterBar({
         <span className="flex min-w-0 items-center gap-2">
           <span aria-hidden className="text-on-surface-variant">⌕</span>
           <span className="truncate font-medium text-on-surface">
-            {summarize(query, group, maxDist, priceLimit)}
+            {summarize(query, group, maxDist, priceLimit, zeropayOnly)}
           </span>
         </span>
         <span className="flex shrink-0 items-center gap-1 text-on-surface-variant">
@@ -140,6 +146,20 @@ export default function FilterBar({
               <option className="bg-surface-container-lowest text-on-surface" key={l} value={l}>{priceLimitLabel(l)}</option>
             ))}
           </select>
+          {/* 켜고 끄는 값 하나라 토글이다. aria-pressed 로 상태를 읽어줘야
+              색만으로 구별되는 상태가 되지 않는다. */}
+          <button
+            type="button"
+            aria-pressed={zeropayOnly}
+            className={`h-11 shrink-0 rounded-xl border px-2.5 font-bold md:h-9 ${
+              zeropayOnly
+                ? "border-primary bg-primary text-white"
+                : "border-outline bg-surface-container-lowest text-on-surface"
+            }`}
+            onClick={() => onZeropayOnly(!zeropayOnly)}
+          >
+            비플페이
+          </button>
         </div>
         {/* 접는 표적은 가로 전체다. 오른쪽 끝 작은 버튼으로 뒀더니 누를 수 있다는
             걸 아무도 몰라, 모바일에서 지도가 계속 211px에 갇혀 있었다.

@@ -29,7 +29,7 @@ const valid = { kind: "place_fix", body: "여기 폐업했어요." };
 describe("POST /api/reports", () => {
   it("정상 제보를 저장한다", async () => {
     allowRate();
-    const res = await post({ ...valid, placeId: "12345", contact: "a@b.com" });
+    const res = await post({ ...valid, placeId: "3090000-101-2024-12345", contact: "a@b.com" });
     expect(res.status).toBe(201);
     const inserted = (sqlMock.mock.calls.at(-1)?.[0] as TemplateStringsArray)
       .join("?")

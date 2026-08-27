@@ -53,22 +53,22 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, distKm
     setQuery("");
     setFillNote(null);
     setPicked(prev =>
-      prev.length >= MAX_LEGS || prev.some(p => p.kakao_place_id === r.kakao_place_id)
+      prev.length >= MAX_LEGS || prev.some(p => p.place_id === r.place_id)
         ? prev
         : [...prev, r],
     );
   };
   const remove = (id: string) => {
     setFillNote(null);
-    setPicked(prev => prev.filter(p => p.kakao_place_id !== id));
+    setPicked(prev => prev.filter(p => p.place_id !== id));
   };
 
   const matches = useMemo(() => {
     const q = normalizeQuery(query);
     if (!q) return [];
-    const chosen = new Set(picked.map(p => p.kakao_place_id));
+    const chosen = new Set(picked.map(p => p.place_id));
     return pool
-      .filter(r => !chosen.has(r.kakao_place_id) && r.search_keys.some(k => k.includes(q)))
+      .filter(r => !chosen.has(r.place_id) && r.search_keys.some(k => k.includes(q)))
       .slice(0, 6);
   }, [query, pool, picked]);
 
@@ -92,8 +92,8 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, distKm
   );
 
   const fillRandom = () => {
-    const chosen = new Set(picked.map(p => p.kakao_place_id));
-    const rest = nearby.filter(r => !chosen.has(r.kakao_place_id));
+    const chosen = new Set(picked.map(p => p.place_id));
+    const rest = nearby.filter(r => !chosen.has(r.place_id));
     // Fisher–Yates로 앞쪽만 섞는다. 정렬로 뽑으면 앞순번이 계속 뽑힌다.
     for (let i = rest.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -108,8 +108,8 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, distKm
   };
 
   const addSaved = () => {
-    const chosen = new Set(picked.map(p => p.kakao_place_id));
-    const rest = savedPlaces.filter(r => !chosen.has(r.kakao_place_id));
+    const chosen = new Set(picked.map(p => p.place_id));
+    const rest = savedPlaces.filter(r => !chosen.has(r.place_id));
     setPicked(prev => [...prev, ...rest.slice(0, MAX_LEGS - prev.length)]);
   };
 
@@ -132,7 +132,7 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, distKm
     if (!draw) return "";
     const base = process.env.NEXT_PUBLIC_BASE_URL ?? window.location.origin;
     const token = encodeLadder({
-      placeIds: picked.map(p => p.kakao_place_id),
+      placeIds: picked.map(p => p.place_id),
       winner: draw.winner,
       seed: draw.seed,
     });
@@ -235,7 +235,7 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, distKm
           {matches.length > 0 && (
             <ul className="mt-1 rounded-lg border border-outline-variant">
               {matches.map(r => (
-                <li key={r.kakao_place_id} className="border-b border-outline-variant/60 last:border-b-0">
+                <li key={r.place_id} className="border-b border-outline-variant/60 last:border-b-0">
                   <button
                     className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm"
                     onClick={() => add(r)}
@@ -258,7 +258,7 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, distKm
               <ul className="mt-2 space-y-1">
                 {picked.map((r, i) => (
                   <li
-                    key={r.kakao_place_id}
+                    key={r.place_id}
                     className="flex items-center gap-2 rounded-lg bg-surface-container px-3 py-2"
                   >
                     {/* 목록의 글자와 원판의 조각을 같은 색으로 묶는다 */}
@@ -272,7 +272,7 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, distKm
                     <button
                       className="grid h-9 w-9 shrink-0 place-items-center text-on-surface-variant"
                       aria-label={`${r.name} 빼기`}
-                      onClick={() => remove(r.kakao_place_id)}
+                      onClick={() => remove(r.place_id)}
                     >
                       ×
                     </button>
@@ -304,7 +304,7 @@ export default function RoulettePanel({ pool, savedPlaces, specialPrices, distKm
               </p>
               <div className="mt-3 border-t border-outline-variant pt-3">
                 <MenuLines
-                  special={specialPrices.get(picked[winner].kakao_place_id)}
+                  special={specialPrices.get(picked[winner].place_id)}
                 />
               </div>
             </div>

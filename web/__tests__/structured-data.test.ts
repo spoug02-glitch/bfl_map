@@ -103,8 +103,12 @@ describe("placeJsonLd - 내용", () => {
     expect(biz.url).toBe(`${SITE_URL}/place/524535584`);
   });
 
-  it("sameAs로 카카오맵 자리를 가리킨다", () => {
-    expect(biz.sameAs).toContain("https://place.map.kakao.com/524535584");
+  // 2026-08-27에 뒤집힘. 원래 "sameAs로 카카오맵 자리를 가리킨다" 였다.
+  // id 가 카카오 place_id 이던 시절엔 맞았지만 지금은 인허가 관리번호라
+  // 저 주소를 만들면 **없는 카카오 페이지**를 가리키게 된다.
+  it("카카오맵 자리를 지어내지 않는다", () => {
+    expect(biz.sameAs).toBeUndefined();
+    expect(JSON.stringify(graph)).not.toContain("place.map.kakao.com");
   });
 
   // 리뷰 수·가격대·영업시간은 빌드 시점에 검증된 값이 없다. 없는 걸 넣으면

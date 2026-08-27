@@ -26,5 +26,77 @@
   "unresolved": 1469,
   "outOfRadius": 67,
   "duplicates": 0
+ },
+ {
+  "startedAt": "2026-08-27T04:38:41.794856+00:00",
+  "finishedAt": "2026-08-27T04:42:09.052378+00:00",
+  "source": "permit",
+  "districts": [
+   "도봉구",
+   "노원구",
+   "강북구"
+  ],
+  "services": [
+   "general_restaurants",
+   "rest_cafes"
+  ],
+  "places": 11625,
+  "zeropayFlagged": 5108,
+  "zeropayUnmatched": 2352,
+  "apiRequests": 119
+ },
+ {
+  "startedAt": "2026-08-27T04:43:57.986113+00:00",
+  "finishedAt": "2026-08-27T04:47:17.754902+00:00",
+  "source": "permit",
+  "districts": [
+   "도봉구",
+   "노원구",
+   "강북구"
+  ],
+  "services": [
+   "general_restaurants",
+   "rest_cafes"
+  ],
+  "places": 11625,
+  "zeropayFlagged": 5165,
+  "zeropayUnmatched": 2294,
+  "apiRequests": 119
+ },
+ {
+  "startedAt": "2026-08-27T05:07:35.472437+00:00",
+  "finishedAt": "2026-08-27T05:11:59.911415+00:00",
+  "source": "permit",
+  "districts": [
+   "도봉구",
+   "노원구",
+   "강북구"
+  ],
+  "services": [
+   "general_restaurants",
+   "rest_cafes"
+  ],
+  "places": 11307,
+  "zeropayFlagged": 5090,
+  "zeropayUnmatched": 2295,
+  "apiRequests": 119
+ },
+ {
+  "startedAt": "2026-08-27T05:31:56.455259+00:00",
+  "finishedAt": "2026-08-27T05:35:43.619972+00:00",
+  "source": "permit",
+  "districts": [
+   "도봉구",
+   "노원구",
+   "강북구"
+  ],
+  "services": [
+   "general_restaurants",
+   "rest_cafes"
+  ],
+  "places": 11565,
+  "zeropayFlagged": 5156,
+  "zeropayUnmatched": 2293,
+  "apiRequests": 119
  }
 ]

@@ -29,7 +29,7 @@ describe("suspended user is blocked from writing", () => {
       new NextRequest("http://localhost/api/reviews", {
         method: "POST",
         headers: { "content-type": "application/json", cookie: await sessionCookie() },
-        body: JSON.stringify({ placeId: "1080924210", taste: 4, convenience: 3, body: "" }),
+        body: JSON.stringify({ placeId: "3090000-101-2024-00209", taste: 4, convenience: 3, body: "" }),
       }),
     );
     expect(res.status).toBe(403);

@@ -12,7 +12,7 @@ const report = (o: Record<string, unknown> = {}) => ({
   kind: "place_fix", body: "여기 폐업했어요", ...o,
 });
 const owner = (o: Record<string, unknown> = {}) => ({
-  placeId: "12345", contact: "010-0000-0000",
+  placeId: "3090000-101-2024-12345", contact: "010-0000-0000",
   menus: [{ menuName: "김치찌개", price: 9000 }], ...o,
 });
 
@@ -25,7 +25,7 @@ describe("validateReportInput", () => {
   it("정해진 종류만 받는다", () => {
     // zeropay_fail 은 가게가 필수라 여기서만 placeId 를 채워 준다.
     for (const k of REPORT_KINDS) {
-      const extra = k === "zeropay_fail" ? { placeId: "12345" } : {};
+      const extra = k === "zeropay_fail" ? { placeId: "3090000-101-2024-12345" } : {};
       expect(validateReportInput(report({ kind: k, ...extra })).ok).toBe(true);
     }
     expect(validateReportInput(report({ kind: "spam" })).ok).toBe(false);
@@ -35,7 +35,7 @@ describe("validateReportInput", () => {
   // 대조할 것이 없어 접수해도 쓸 수가 없다.
   it("비플페이 결제 실패는 가게가 없으면 거절한다", () => {
     expect(validateReportInput(report({ kind: "zeropay_fail" })).ok).toBe(false);
-    expect(validateReportInput(report({ kind: "zeropay_fail", placeId: "12345" })).ok).toBe(true);
+    expect(validateReportInput(report({ kind: "zeropay_fail", placeId: "3090000-101-2024-12345" })).ok).toBe(true);
   });
 
   // 나머지 종류는 가게 없이도 받는다 — 가게와 무관한 제보가 있고, 본문에 이름을
@@ -61,8 +61,8 @@ describe("validateReportInput", () => {
   it("가게는 없어도 되지만 형식이 틀리면 거절한다", () => {
     expect(validateReportInput(report({ placeId: "" })).ok).toBe(true);
     expect(validateReportInput(report({ placeId: "abc" })).ok).toBe(false);
-    const r = validateReportInput(report({ placeId: "987" }));
-    expect(r.ok && r.value.placeId).toBe("987");
+    const r = validateReportInput(report({ placeId: "3090000-101-2024-00987" }));
+    expect(r.ok && r.value.placeId).toBe("3090000-101-2024-00987");
   });
 
   it("앞뒤 공백을 다듬는다", () => {

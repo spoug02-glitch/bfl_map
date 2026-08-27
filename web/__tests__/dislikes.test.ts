@@ -5,7 +5,7 @@ import { normalizeQuery } from "@/lib/constants";
 
 function place(name: string): Restaurant {
   return {
-    kakao_place_id: "1",
+    place_id: "1",
     name,
     // 수집기가 이름을 정규화해 넣어두는 자리
     search_keys: [normalizeQuery(name)],

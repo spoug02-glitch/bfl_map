@@ -10,9 +10,9 @@ import {
   districtOf,
 } from "../scripts/import-goodprice.mjs";
 
-type Place = { name: string; address: string; kakao_place_id: string; search_keys?: string[] };
+type Place = { name: string; address: string; place_id: string; search_keys?: string[] };
 const place = (o: Partial<Place>): Place => ({
-  name: "가게", address: "서울특별시 도봉구 노해로69길 15-9", kakao_place_id: "1", ...o,
+  name: "가게", address: "서울특별시 도봉구 노해로69길 15-9", place_id: "1", ...o,
 });
 
 describe("parseCsv", () => {
@@ -85,9 +85,9 @@ describe("addressCore", () => {
 
 describe("matchPlace", () => {
   it("이름이 하나만 걸리고 주소가 맞으면 붙인다", () => {
-    const p = place({ name: "힘찬장어", address: "서울특별시 도봉구 노해로69길 15-9", kakao_place_id: "99" });
+    const p = place({ name: "힘찬장어", address: "서울특별시 도봉구 노해로69길 15-9", place_id: "99" });
     const got = matchPlace({ 업소명: "힘찬장어", 주소: "서울특별시 도봉구 노해로69길 15-9(창동)" }, buildNameIndex([p]));
-    expect(got?.kakao_place_id).toBe("99");
+    expect(got?.place_id).toBe("99");
   });
 
   it("이름이 같아도 주소가 다르면 거절한다", () => {
@@ -97,15 +97,15 @@ describe("matchPlace", () => {
 
   // 같은 상호의 다른 지점을 잘못 붙이는 게 이 작업에서 제일 조용한 실패다.
   it("같은 이름이 여럿이면 주소가 맞는 하나를 고른다", () => {
-    const a = place({ name: "홍두깨손칼국수", address: "서울특별시 도봉구 도당로13가길 13", kakao_place_id: "A" });
-    const b = place({ name: "홍두깨손칼국수", address: "서울특별시 도봉구 도봉산4가길 14", kakao_place_id: "B" });
+    const a = place({ name: "홍두깨손칼국수", address: "서울특별시 도봉구 도당로13가길 13", place_id: "A" });
+    const b = place({ name: "홍두깨손칼국수", address: "서울특별시 도봉구 도봉산4가길 14", place_id: "B" });
     const got = matchPlace({ 업소명: "홍두깨손칼국수", 주소: "서울특별시 도봉구 도봉산4가길 14" }, buildNameIndex([a, b]));
-    expect(got?.kakao_place_id).toBe("B");
+    expect(got?.place_id).toBe("B");
   });
 
   it("같은 이름이 여럿인데 주소로도 못 가르면 포기한다", () => {
-    const a = place({ name: "남원추어탕", address: "서울특별시 도봉구 해등로 10", kakao_place_id: "A" });
-    const b = place({ name: "남원추어탕", address: "서울특별시 도봉구 해등로 20", kakao_place_id: "B" });
+    const a = place({ name: "남원추어탕", address: "서울특별시 도봉구 해등로 10", place_id: "A" });
+    const b = place({ name: "남원추어탕", address: "서울특별시 도봉구 해등로 20", place_id: "B" });
     expect(matchPlace({ 업소명: "남원추어탕", 주소: "서울특별시 도봉구 해등로 83" }, buildNameIndex([a, b]))).toBeNull();
   });
 
@@ -114,9 +114,9 @@ describe("matchPlace", () => {
   });
 
   it("search_keys 로도 찾는다", () => {
-    const p = place({ name: "CU 창동점", search_keys: ["씨유창동점", "cu창동점"], kakao_place_id: "7" });
+    const p = place({ name: "CU 창동점", search_keys: ["씨유창동점", "cu창동점"], place_id: "7" });
     const got = matchPlace({ 업소명: "씨유 창동점", 주소: p.address }, buildNameIndex([p]));
-    expect(got?.kakao_place_id).toBe("7");
+    expect(got?.place_id).toBe("7");
   });
 });
 
@@ -140,15 +140,15 @@ describe("matchPlace — 자치구 가드", () => {
   });
 
   it("구가 같고 주소가 안 읽히면 이름을 믿는다", () => {
-    const p = place({ name: "마들김밥", address: "서울시 노원구 한글비석로 474", kakao_place_id: "5" });
+    const p = place({ name: "마들김밥", address: "서울시 노원구 한글비석로 474", place_id: "5" });
     const row = { 업소명: "마들김밥", 주소: "서울특별시 노원구 한글비석로 474 보람상가" };
-    expect(matchPlace(row, buildNameIndex([p]))?.kakao_place_id).toBe("5");
+    expect(matchPlace(row, buildNameIndex([p]))?.place_id).toBe("5");
   });
 
   it("지번 주소라 도로명이 없어도 구가 같으면 붙인다", () => {
-    const p = place({ name: "영차", address: "서울특별시 노원구 상계로39길 11 (상계동)", kakao_place_id: "6" });
+    const p = place({ name: "영차", address: "서울특별시 노원구 상계로39길 11 (상계동)", place_id: "6" });
     const row = { 업소명: "영차", 주소: "서울특별시 노원구 상계동 111-431" };
-    expect(matchPlace(row, buildNameIndex([p]))?.kakao_place_id).toBe("6");
+    expect(matchPlace(row, buildNameIndex([p]))?.place_id).toBe("6");
   });
 });
 

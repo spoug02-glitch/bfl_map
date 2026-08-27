@@ -4,13 +4,13 @@ import { sharePath } from "@/lib/share-copy";
 
 describe("placeIdFromUrl", () => {
   it("reads the id out of the /place/[id] route", () => {
-    expect(placeIdFromUrl("/place/1080924210", "")).toBe("1080924210");
+    expect(placeIdFromUrl("/place/3090000-101-2024-00209", "")).toBe("3090000-101-2024-00209");
   });
 
   it("round-trips whatever sharePath produced", () => {
     // 목록 앵커의 href를 만드는 쪽과 뒤로가기로 그 href를 다시 읽는 쪽이
     // 어긋나면 popstate가 조용히 아무 가게도 못 찾는다.
-    expect(placeIdFromUrl(sharePath("1080924210"), "")).toBe("1080924210");
+    expect(placeIdFromUrl(sharePath("3090000-101-2024-00209"), "")).toBe("3090000-101-2024-00209");
   });
 
   it("decodes an id that had to be escaped in the path", () => {
@@ -19,7 +19,7 @@ describe("placeIdFromUrl", () => {
 
   it("still honours the older /?place=... links", () => {
     // 이미 밖에 뿌려진 링크다 — 이 경로가 끊기면 남의 채팅방에 있는 링크가 죽는다.
-    expect(placeIdFromUrl("/", "?place=1080924210")).toBe("1080924210");
+    expect(placeIdFromUrl("/", "?place=3090000-101-2024-00209")).toBe("3090000-101-2024-00209");
   });
 
   it("prefers the path over a query parameter when both are present", () => {

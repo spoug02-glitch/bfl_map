@@ -165,11 +165,14 @@ export default function PlaceList({
           <p className="mt-3 text-sm text-on-surface-variant">
             <span className="font-bold text-on-surface">{originMoved ? "지도에서 찍은 지점" : OFFICE_LABEL}</span> 기준 가까운 순
           </p>
-          {/* 데이터는 회사 5km 안에서만 모았다. 기준점을 밖으로 옮기면 지도가 비는데,
-              그건 가게가 없는 게 아니라 우리가 안 가본 곳이다 — 말하지 않으면 거짓말이 된다. */}
+          {/* 데이터는 도봉·노원·강북 세 구에서만 모았다. 기준점을 밖으로 옮기면
+              지도가 비는데, 그건 가게가 없는 게 아니라 우리가 안 가본 곳이다 —
+              말하지 않으면 거짓말이 된다.
+              2026-08-27 전까지는 "회사 5km"였다. 출처가 인허가로 바뀌면서 경계가
+              원이 아니라 행정구역이 됐다. */}
           {originMoved && (
             <p className="mt-1 text-xs text-on-surface-variant">
-              회사에서 멀어질수록 저희가 모르는 가게가 늘어요. 데이터는 회사 5km 안에서 모았어요.
+              데이터는 도봉·노원·강북 세 구에서 모았어요. 그 밖은 저희가 모르는 곳이에요.
             </p>
           )}
           {/* 가격 필터를 켜면 후보의 절반 가까이가 조용히 사라진다 — 메뉴 가격이
@@ -205,8 +208,8 @@ export default function PlaceList({
                 // 가격으로 걸렀으면 그 가게를 통과시킨 근거를 보여준다. 통과 근거는
                 // 둘 중 가장 싼 값이다 — DB 가격 덕에 통과한 가게가 상한보다 비싼
                 // 값을 달고 나오면 필터가 고장 난 것처럼 읽힌다.
-                const special = specialPrices.get(place.kakao_place_id);
-                const dbMin = dbMinPrices.get(place.kakao_place_id);
+                const special = specialPrices.get(place.place_id);
+                const dbMin = dbMinPrices.get(place.place_id);
                 const cheapest = Math.min(
                   ...[dbMin, special?.price].filter((v): v is number => v != null),
                 );
@@ -218,11 +221,11 @@ export default function PlaceList({
                 }
                 return (
                   <Row
-                    key={place.kakao_place_id}
+                    key={place.place_id}
                     lead={formatDistance(distanceKm)}
                     title={place.name}
                     subtitle={place.category + line}
-                    href={sharePath(place.kakao_place_id)}
+                    href={sharePath(place.place_id)}
                     onOpen={() => onSelect(place)}
                   />
                 );
@@ -280,11 +283,11 @@ export default function PlaceList({
                 <ul className="mt-1">
                   {savedPlaces.map(place => (
                     <Row
-                      key={place.kakao_place_id}
+                      key={place.place_id}
                       lead={formatDistance(distKm(place))}
                       title={place.name}
                       subtitle={place.category}
-                      href={sharePath(place.kakao_place_id)}
+                      href={sharePath(place.place_id)}
                       onOpen={() => onSelect(place)}
                     />
                   ))}
@@ -306,7 +309,7 @@ export default function PlaceList({
                         lead={`★${rv.taste}`}
                         title={place.name}
                         subtitle={rv.body || `맛 ★${rv.taste} · 편의성 ★${rv.convenience}`}
-                        href={sharePath(place.kakao_place_id)}
+                        href={sharePath(place.place_id)}
                         onOpen={() => onSelect(place)}
                       />
                     );

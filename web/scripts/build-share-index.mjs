@@ -25,7 +25,7 @@ const coord = (n) => Number(n.toFixed(6));
 // kakao_url도 넣지 않는다: place_id로 만들 수 있는 주소다.
 const index = {};
 for (const r of restaurants) {
-  index[r.kakao_place_id] = {
+  index[r.place_id] = {
     name: r.name,
     category: r.category,
     distance_km: r.distance_km,

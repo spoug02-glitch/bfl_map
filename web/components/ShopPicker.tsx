@@ -90,11 +90,11 @@ export default function ShopPicker({
         matches.length > 0 && (
           <ul className="mt-1 overflow-hidden rounded-lg border border-outline-variant">
             {matches.map(r => (
-              <li key={r.kakao_place_id}>
+              <li key={r.place_id}>
                 <button
                   type="button"
                   className="flex min-h-11 w-full flex-col justify-center px-3 py-1.5 text-left transition-colors hover:bg-on-surface/8 active:bg-on-surface/10"
-                  onClick={() => { onChange({ placeId: r.kakao_place_id, name: r.name }); setQuery(""); }}
+                  onClick={() => { onChange({ placeId: r.place_id, name: r.name }); setQuery(""); }}
                 >
                   <span className="truncate text-sm text-on-surface">{r.name}</span>
                   <span className="truncate text-xs text-on-surface-variant">{r.address}</span>

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { MAX_LEGS, MIN_LEGS, decodeLadder, encodeLadder, type LadderDraw } from "@/lib/ladder-link";
 
-const draw: LadderDraw = { placeIds: ["1080924210", "13107949", "17266418"], winner: 1, seed: 42 };
+const draw: LadderDraw = { placeIds: ["3090000-101-2024-00209", "3090000-101-2019-00131", "3100000-101-2021-00172"], winner: 1, seed: 42 };
 
 describe("encodeLadder / decodeLadder", () => {
   it("round-trips a draw", () => {

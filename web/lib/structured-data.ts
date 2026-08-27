@@ -87,10 +87,15 @@ export function placeJsonLd(id: string, place: PlaceIndexEntry): Graph {
       longitude: place.lng,
     },
     telephone: place.phone,
-    // 카카오맵의 같은 자리. restaurants.json의 kakao_url은 http로 저장돼 있는데 그
-    // 호스트가 https로 308 리다이렉트하므로 최종 주소를 적는다.
-    sameAs: [`https://place.map.kakao.com/${encodeURIComponent(id)}`],
   };
+  // sameAs 는 뺐다 — 2026-08-27.
+  //
+  // 원래 `https://place.map.kakao.com/${id}` 를 넣었다. id 가 카카오 place_id 이던
+  // 시절엔 맞는 주장이었지만, 지금 id 는 인허가 관리번호라 저 주소는 **존재하지 않는
+  // 카카오 페이지**를 가리킨다. 카카오 id 를 아는 가게는 11,625곳 중 4,864곳뿐이고,
+  // 그걸 넣자고 share-index 를 더 키울 값어치는 없다.
+  //
+  // 없는 값을 구조화 데이터에 적는 것은 이 파일 위쪽 주석이 말하는 그 위험이다.
 
   // servesCuisine은 Restaurant의 속성이다. 카페·편의점에 붙이면 타입 위반이고,
   // 모르는 업종이면 지어내지 않고 뺀다.

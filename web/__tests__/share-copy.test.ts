@@ -38,7 +38,7 @@ describe("shareDescription", () => {
 describe("sharePath", () => {
   it("points at the route that carries per-place OG tags", () => {
     // /?place=... 로 돌아가면 슬랙 카드가 모든 가게에 대해 똑같아진다
-    expect(sharePath("1080924210")).toBe("/place/1080924210");
+    expect(sharePath("3090000-101-2024-00209")).toBe("/place/3090000-101-2024-00209");
   });
 
   it("encodes an id that would otherwise break the path", () => {

@@ -182,7 +182,7 @@ export function toMenuItems(rows, index, asOf) {
     if (!place) { unmatched.push(row["업소명"]); continue; }
     for (const { menuName, price } of menuPricePairs(row)) {
       items.push({
-        placeId: place.kakao_place_id,
+        placeId: place.place_id,
         menuName,
         price,
         sourceType: "public_data",

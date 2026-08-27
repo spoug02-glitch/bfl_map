@@ -17,10 +17,9 @@ npx vitest run -t "DB 메뉴"                      # tests whose name matches
 npm run build                    # prebuild regenerates lib/share-index.json
 
 # collector (Python). Run from Bfl_map/collector
-python -m pytest tests/ -q       # 99 tests
-python collect.py                # full re-collect, hours; resumes from .checkpoint.jsonl
-python verify_zeropay.py         # minutes: is restaurants.json still on the zeropay list?
-python verify_zeropay.py --prune # drop the ones that have left
+python -m pytest tests/ -q       # 143 tests
+python collect.py                # full re-collect, ~3 min. needs collector/.env
+python collect.py --skip-zeropay # permit data only; every zeropay flag comes out False
 
 # mcp. Run from Bfl_map/mcp
 python -m pytest tests/ -q       # 4 tests
@@ -97,26 +96,20 @@ because places are not in the database.
 Because the collector rewrites the JSON wholesale, **you cannot partially preserve anything in
 it** — that is why menus moved to Postgres rather than staying a field on each place.
 
-**Being in that file means zeropay listed the place, not that BeeflPay works there.** Two
-different things rot, and they need different instruments:
+**`zeropay: true` means zeropay lists the place, not that BeeflPay works there.** The list
+itself no longer depends on zeropay — a place it has never heard of stays on the map with the
+flag off. Two things still rot, and only one is mechanical:
 
-- *Left the zeropay list but still in our file* — mechanical. `verify_zeropay.py` refetches
-  zeropay only (minutes, no Kakao) and diffs. 52 such rows were pruned on 2026-08-21.
-  Match on `zeropay_name` where present: `name` is Kakao's spelling and differs for 2,541 rows.
+- *Left the zeropay list* — a re-collect recomputes every flag from scratch in about three
+  minutes, so there is nothing to reconcile. `verify_zeropay.py` existed only because a
+  re-collect used to cost hours; it was deleted on 2026-08-27.
 - *Still listed but the QR does not work* — undetectable in code; the endpoint publishes no
   merchant status. Only the `zeropay_fail` report kind catches these.
 
-`--prune` refuses unless every (gu, code) fetch came back complete. Zeropay has dropped rows
-transiently before, and deleting on that would take live places with it.
-
-**Roughly a fifth of zeropay merchants never make it in.** The 2026-08-21 re-collect crawled
-7,467 and kept 5,826: 1,469 unresolved, 67 out of radius, 105 merged onto a place already
-listed. So `verify_zeropay.py`'s arrived count reads far higher than any re-collect delivers —
-that run turned an upper bound of 1,592 into a net gain of 44. The gap is Kakao matching, not
-distance; `unresolved.json` is where those go.
-
-A re-collect is also the only way to drop the `menus` field left on every row by the pre-2026-08-18
-schema, and it takes about two hours.
+**About a third of zeropay merchants cannot be placed on a permit row** (2,293 of 7,479 on
+2026-08-27), and they land in `zeropay-unmatched.json`. Most are bakeries and convenience
+stores, which are licensed under 인허가 종목 this key is not approved for —
+see `docs/plans/2026-08-27-permit-data-as-place-source.md`. That gap costs flags, not places.
 
 ## Menu provenance
 

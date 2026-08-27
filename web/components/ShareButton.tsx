@@ -39,7 +39,7 @@ function shareUrl(r: Restaurant): string {
   const base = process.env.NEXT_PUBLIC_BASE_URL ?? window.location.origin;
   // /place/<id> 여야 가게별 OG 태그가 붙는다 — 슬랙·디스코드에 붙여넣었을 때
   // 카드가 뜨는 건 이 경로뿐이다.
-  return `${base}${sharePath(r.kakao_place_id)}`;
+  return `${base}${sharePath(r.place_id)}`;
 }
 
 export default function ShareButton({ restaurant }: { restaurant: Restaurant }) {
@@ -61,7 +61,7 @@ export default function ShareButton({ restaurant }: { restaurant: Restaurant }) 
       setManualUrl(null);
       setCopied(true);
       // 복사가 실제로 된 뒤에만 센다. 아래 catch(권한·포커스 거부)는 공유가 아니다.
-      track({ name: "place_share", place_id: restaurant.kakao_place_id, method: "copy" });
+      track({ name: "place_share", place_id: restaurant.place_id, method: "copy" });
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // 클립보드 쓰기는 권한·포커스·비보안 컨텍스트에서 거부된다. 조용히 실패하면
@@ -75,7 +75,7 @@ export default function ShareButton({ restaurant }: { restaurant: Restaurant }) 
     if (navigator.share) {
       try {
         await navigator.share({ title: restaurant.name, url });
-        track({ name: "place_share", place_id: restaurant.kakao_place_id, method: "web_share" });
+        track({ name: "place_share", place_id: restaurant.place_id, method: "web_share" });
         return;
       } catch {
         /* 사용자가 취소한 경우 — 복사로 넘어간다 */
@@ -109,7 +109,7 @@ export default function ShareButton({ restaurant }: { restaurant: Restaurant }) 
       });
       // sendDefault 는 전송 결과를 알려주지 않는다. 던지지 않았다는 것까지가
       // 우리가 아는 전부라, 여기서 세는 건 "공유창이 떴다"에 가깝다.
-      track({ name: "place_share", place_id: restaurant.kakao_place_id, method: "kakao" });
+      track({ name: "place_share", place_id: restaurant.place_id, method: "kakao" });
     } catch {
       await fallback();
     }

@@ -9,11 +9,16 @@ export const SITE_URL = "https://lunchpick.kr";
 
 export const OFFICE_LABEL = "창동씨드큐브";
 export const CENTER = { lat: 37.6545, lng: 127.0499 }; // 창동씨드큐브
+/**
+ * 반경 슬라이더의 최대값. **수집 범위가 아니다** — 2026-08-27에 출처가 인허가로
+ * 바뀌면서 데이터 경계는 도봉·노원·강북의 행정 경계가 됐고, 회사에서 가장 먼 가게는
+ * 5.35km 다. 이 값은 "슬라이더를 어디까지 밀 수 있나"만 정한다.
+ */
 export const RADIUS_KM = 5.0;
 
 /**
- * 처음 열었을 때의 반경. 데이터는 5km까지 있지만 그걸 다 그리면 핀이 수천 개
- * 깔려 정작 회사가 어딘지 안 보인다.
+ * 처음 열었을 때의 반경. 세 구 11,625곳을 다 그리면 핀이 만 개 넘게 깔려
+ * 정작 회사가 어딘지 안 보인다.
  *
  * 100m로 시작해봤더니 10곳뿐이라 "고를 게 없다"는 말을 들었다. 200m면 64곳 —
  * 걸어서 3분 안쪽이면서 매일 다른 걸 고를 수 있는 폭이다. 핀은 뭉쳐서 감당한다.
@@ -40,8 +45,18 @@ export interface BlogLink {
  */
 export type OwnBlogLinks = Record<string, BlogLink>;
 
-/** 카카오 place_id는 숫자 문자열이다. 외부에서 들어온 값은 이걸 통과해야 한다. */
-export const PLACE_ID_RE = /^\d{1,20}$/;
+/**
+ * 인허가 관리번호(MNG_NO) 형식. 외부에서 들어온 값은 전부 이걸 통과해야 한다 —
+ * URL 파라미터·API 본문·사다리 토큰이 모두 이 검사를 거친다.
+ *
+ * `3090000-101-2024-00209` = 자치단체 7 · 업종 3 · 연도 4 · 일련번호 5, 항상 22자.
+ * 3구 11,625건 전부 이 모양이다(실측 2026-08-27).
+ *
+ * > 2026-08-27에 바뀜. 원래는 카카오 place_id 라서 `/^\d{1,20}$/` 였다.
+ * > 관리번호에는 하이픈이 있어서 **그대로 뒀으면 새 id 가 전부 거부돼**
+ * > 가게 페이지와 API 가 통째로 404 였다.
+ */
+export const PLACE_ID_RE = /^\d{7}-\d{3}-\d{4}-\d{5}$/;
 
 /**
  * 카카오 panel3은 **가격 미공개를 `-1`로** 준다 — 수집한 메뉴 20,560개 중 5,132개가
@@ -137,7 +152,10 @@ export const OG_CARD_PATH = "/og-card.png?v=2";
 export const SERVICE = {
   name: "직장인 맛창고",
   tagline: "직장인을 위한 점심 맛집 지도",
-  description: "창동씨드큐브 반경 5km 비플페이(제로페이) 맛집 지도",
+  // 2026-08-27에 고침. 원래 "창동씨드큐브 반경 5km 비플페이(제로페이) 맛집 지도"
+  // 였는데 두 군데가 틀리게 됐다 — 경계는 원이 아니라 세 구고, 비플페이는 목록의
+  // 조건이 아니라 필터 하나다. 검색 결과와 공유 카드에 그대로 나가는 문장이다.
+  description: "도봉·노원·강북 점심 맛집 지도. 비플페이(제로페이) 되는 곳만 골라 볼 수 있어요",
 } as const;
 
 /**
@@ -164,8 +182,14 @@ export function normalizeQuery(q: string): string {
   return q.toLowerCase().replace(/[\s　.·\-_,&/()[\]{}]/g, "");
 }
 
-// zeropay BIZ_TYPE label -> UI chip group
-// NOTE: zeropay DB uses inconsistent spacing across records — include both variants
+// category -> UI chip group.
+//
+// 출처가 인허가로 바뀐 뒤로 category 는 permit_data.CATEGORY_MAP 이 만든다.
+// 제로페이 시절의 띄어쓰기 변형("한식 육류 요리 전문점")도 남겨둔다 — 옛 데이터를
+// 읽을 일이 있고, 지워서 얻는 것이 없다.
+//
+// **모든 category 가 어느 칩엔가 속해야 한다.** 안 그러면 그 가게들은 "전체"와
+// 검색으로만 닿고 칩으로는 영영 못 간다 — 실제로 2,138곳(18.4%)이 그랬다.
 export const CATEGORY_GROUPS: Record<string, string[]> = {
   한식: ["한식 일반 음식점업", "한식 육류 요리 전문점", "한식 육류요리 전문점"],
   중식: ["중식 음식점업"],
@@ -176,9 +200,16 @@ export const CATEGORY_GROUPS: Record<string, string[]> = {
   "피자·버거": ["피자, 햄버거, 샌드위치 및 유사 음식점업"],
   분식: ["김밥 및 기타 간이 음식점업", "간이음식 포장 판매 전문점", "간이 음식 포장 판매 전문점"],
   편의점: ["체인화 편의점"],
+  // 인허가 업태가 "기타"·"기타 휴게음식점"인 곳이 2,046곳으로 제일 큰 덩어리다.
+  // 뷔페(21)와 외국음식(71)은 따로 칩을 세우기엔 너무 얇아 같이 묶었다.
+  기타: ["기타", "뷔페", "외국음식 전문점"],
 };
 
 export interface Restaurant {
+  /** 행정안전부 인허가 관리번호. 가게의 신원이고, DB의 `place_id` 컬럼과 같은 값이다.
+   *  예전에는 카카오 place id 였다 — 2026-08-27 에 출처가 인허가로 바뀌면서
+   *  카카오 매칭에 실패한 가게가 지도에서 빠지는 문제가 함께 사라졌다. */
+  place_id: string;
   name: string;
   /** Precomputed brand/spelling-tolerant search keys from collector/brands.py.
    *  Search against these, never against `name` — that is what makes a query
@@ -187,10 +218,18 @@ export interface Restaurant {
   search_keys: string[];
   address: string;
   category: string;
+  /** 인허가 원문 업태구분명(한식·중식·호프/통닭 …). `category` 는 이걸 앱 어휘로
+   *  옮긴 것이라, 원문이 필요할 때만 쓴다. */
+  biz_type: string;
   phone: string;
   lat: number;
   lng: number;
   distance_km: number;
-  kakao_place_id: string;
-  kakao_url: string;
+  /** 비플페이(제로페이)가 되는 곳인지. **목록에 있다는 뜻이 아니다** — 이제 모든
+   *  인허가 음식점이 목록에 있고, 이 값만 다르다. 등재와 실제 결제는 또 별개다. */
+  zeropay: boolean;
+  /** 전환 이전부터 알던 가게에만 있다. 새로 들어온 가게에는 **없다** —
+   *  카카오 딥링크를 못 만들 뿐이고, 없다고 가게가 덜한 것이 아니다. */
+  kakao_place_id?: string;
+  kakao_url?: string;
 }

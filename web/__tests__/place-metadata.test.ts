@@ -17,7 +17,7 @@ describe("generateMetadata for /place/[id]", () => {
   });
 
   it("falls back to the app card for an id that is not in the index", async () => {
-    const meta = await generateMetadata(params("99999999999"));
+    const meta = await generateMetadata(params("3090000-101-1999-99999"));
     expect(meta.title).toBe("직장인 맛창고");
     expect(meta.openGraph).toBeUndefined();
   });
@@ -33,7 +33,7 @@ describe("generateMetadata for /place/[id]", () => {
   // 없는 id도 화면은 떠야 한다(데이터 갱신으로 사라진 가게). 다만 그건 soft 404라
   // 색인에는 들어가면 안 된다.
   it("색인에 없는 id는 noindex로 내보낸다", async () => {
-    const meta = await generateMetadata(params("99999999999"));
+    const meta = await generateMetadata(params("3090000-101-1999-99999"));
     expect(meta.robots).toMatchObject({ index: false });
   });
 

@@ -48,7 +48,7 @@ export default function PlacePanel({
     // 응답을 버리는 플래그로 막는다 — 여기서 setDbMenus([])로 먼저 비우면
     // react-hooks/set-state-in-effect에 걸린다.
     let live = true;
-    fetch(`/api/menu-items?placeId=${r.kakao_place_id}`)
+    fetch(`/api/menu-items?placeId=${r.place_id}`)
       .then(res => res.json())
       .then(d => {
         if (!live) return;
@@ -61,7 +61,7 @@ export default function PlacePanel({
         // 늦게 온 A의 응답이 B의 조회로 기록되지 않는다.
         track({
           name: "place_view",
-          place_id: r.kakao_place_id,
+          place_id: r.place_id,
           place_category: r.category,
           entry_context: entryContext,
           place_kind: isConvenienceStore(r.category) ? "convenience" : "meal",
@@ -76,7 +76,7 @@ export default function PlacePanel({
     // entryContext 는 가게가 바뀔 때 같이 정해진다. 여기 넣으면 같은 가게를 목록에서
     // 다시 여는 등으로 값만 바뀌었을 때 조회가 중복 기록된다.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [r.kakao_place_id, r.category]);
+  }, [r.place_id, r.category]);
 
   // 출처와 확인일은 줄마다 붙이지 않고 목록 아래 한 줄로 모은다. 메뉴 하나하나에
   // 배지와 날짜를 달면 정작 궁금한 메뉴명과 가격이 묻힌다.
@@ -104,6 +104,14 @@ export default function PlacePanel({
         <div>
           <h2 className="text-xl font-bold tracking-tight text-on-surface">{r.name}</h2>
           <p className="mt-1 text-base text-on-surface-variant">{r.category} · {formatDistance(distKm(r))}</p>
+          {/* 되는 곳만 표시한다. 안 되는 곳에 "비플페이 안 됨"을 붙이면 우리가
+              모르는 것을 아는 척하게 된다 — 제로페이 목록에 없다는 것이지
+              결제가 안 된다는 뜻은 아니고, 그 둘은 다르다. */}
+          {r.zeropay && (
+            <p className="mt-2 inline-flex items-center gap-1 rounded-full bg-primary/12 px-2.5 py-1 text-sm font-bold text-primary">
+              비플페이
+            </p>
+          )}
         </div>
         <button
           aria-label="닫기"
@@ -119,21 +127,26 @@ export default function PlacePanel({
         {r.phone && <p className="text-base text-on-surface">📞 {r.phone}</p>}
         {/* 핵심 전환이다 — 길찾기로 넘어갔다는 건 실제로 가겠다는 뜻이다.
             나가는 링크라 결과를 알 수 없어 클릭 시점에 센다. */}
+        {/* 전환 이전부터 알던 가게에만 카카오 주소가 있다(11,625곳 중 4,864곳).
+            없으면 링크 자체를 안 그린다 — href 없는 앵커는 눌러도 아무 일이
+            없어서 고장으로 읽힌다. */}
+        {r.kakao_url && (
         <a
           className="flex h-11 items-center text-base text-primary underline"
           href={r.kakao_url}
           target="_blank"
           rel="noreferrer"
           onClick={() =>
-            track({ name: "place_map_open", place_id: r.kakao_place_id, place_category: r.category })
+            track({ name: "place_map_open", place_id: r.place_id, place_category: r.category })
           }
         >
           카카오맵에서 보기 ↗
         </a>
+        )}
       </div>
 
       <SaveButton
-        placeId={r.kakao_place_id}
+        placeId={r.place_id}
         saved={saved}
         loggedIn={user !== null}
         onChange={onToggleSaved}
@@ -171,7 +184,7 @@ export default function PlacePanel({
           )}
           {/* 카카오 메뉴에는 점심특선이 거의 안 올라온다 — 그 빈칸은 먹어본
               사람이 채운다. 편의점 분기 안에 있는 이유: 특선은 밥집의 것이다. */}
-          <SpecialSection placeId={r.kakao_place_id} loggedIn={user !== null} hasMenus={dbMenus.length > 0} />
+          <SpecialSection placeId={r.place_id} loggedIn={user !== null} hasMenus={dbMenus.length > 0} />
         </>
       )}
 
@@ -185,7 +198,7 @@ export default function PlacePanel({
           rel="noreferrer"
           // 나가는 링크라 결과를 알 수 없다 — 클릭 시점에 쏜다.
           onClick={() =>
-            track({ name: "blog_review_click", place_id: r.kakao_place_id, place_category: r.category })
+            track({ name: "blog_review_click", place_id: r.place_id, place_category: r.category })
           }
         >
           <span className="text-xs font-medium text-on-surface-variant">✍️ 만든 이 블로그 후기</span>
@@ -193,7 +206,7 @@ export default function PlacePanel({
         </a>
       )}
 
-      <ReviewSection placeId={r.kakao_place_id} placeCategory={r.category} user={user} />
+      <ReviewSection placeId={r.place_id} placeCategory={r.category} user={user} />
     </aside>
   );
 }

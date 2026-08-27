@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { SPECIAL_NAME_MAX, SPECIAL_NOTE_MAX, validateSpecialInput } from "@/lib/specials";
 
-const base = { placeId: "123456", menuName: "초밥+냉모밀", price: 10000 };
+const base = { placeId: "3100000-101-2020-12345", menuName: "초밥+냉모밀", price: 10000 };
 
 describe("validateSpecialInput", () => {
   it("메뉴명과 가격만으로 통과한다 — 별점과 비고는 선택이다", () => {
