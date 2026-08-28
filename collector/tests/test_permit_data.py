@@ -114,3 +114,26 @@ def test_fetch_page_rejects_oversized_num_rows():
     totalCount 대조가 어긋나 완전성 판정이 망가진다."""
     with pytest.raises(ValueError):
         permit_data.fetch_page("general_restaurants", "3090000", 1, 1000, api_key="x")
+
+
+def test_incomplete_crawl_raises_instead_of_warning(monkeypatch):
+    """부분 수집을 통과시키면 collect.py 가 restaurants.json 을 줄어든 목록으로
+    덮어쓴다. 위키의 '--limit 스모크 테스트가 5,834곳을 19곳으로 덮어썼다' 사고와
+    같은 종류라, 경고가 아니라 실패여야 한다."""
+    # 서버가 250건이라 해놓고 2페이지에서 빈 목록을 준다 — 실제로 겪는 절단 모양이다.
+    def fake_fetch(service, local_code, page, num_rows=100, *, api_key, status="01"):
+        rows = [SAMPLE_ROW] if page == 1 else []
+        return {"totalCount": 250, "items": {"item": rows}}
+
+    monkeypatch.setattr(permit_data, "fetch_page", fake_fetch)
+    with pytest.raises(permit_data.IncompletePermitCrawl):
+        list(permit_data.iter_places("general_restaurants", "3090000", api_key="x"))
+
+
+def test_complete_crawl_does_not_raise(monkeypatch):
+    def fake_fetch(service, local_code, page, num_rows=100, *, api_key, status="01"):
+        return {"totalCount": 1, "items": {"item": [SAMPLE_ROW]}}
+
+    monkeypatch.setattr(permit_data, "fetch_page", fake_fetch)
+    got = list(permit_data.iter_places("general_restaurants", "3090000", api_key="x"))
+    assert len(got) == 1

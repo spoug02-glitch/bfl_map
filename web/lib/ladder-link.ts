@@ -52,8 +52,19 @@ export function encodeLadder(draw: LadderDraw): string {
 /**
  * 링크는 누구나 만들어 보낼 수 있다. 모양이 맞는지 전부 확인하고, 하나라도
  * 어긋나면 null을 돌려 호출부가 "못 읽는 링크" 화면으로 떨어지게 한다.
+ *
+ * `resolveLegacy` 를 주면 2026-08-27 전에 만들어진 토큰도 읽는다. 그 토큰들에는
+ * 카카오 place_id 가 박혀 있어서 새 `PLACE_ID_RE` 를 못 통과한다 — 넘기지 않으면
+ * 이미 나가 있는 룰렛 공유 링크가 통째로 "읽을 수 없는 링크"가 된다.
+ * `RouletteResult` 가 *"사다리 시절 링크가 이미 나가 있어서"* 라고 적어둔 그 이유다.
+ *
+ * **기본값은 엄격한 채로 둔다.** 해석기는 서버 라우트만 넘긴다 — 표가 176KB 라
+ * 브라우저에 실을 이유가 없고, 새 토큰을 만드는 쪽은 애초에 새 id 만 쓴다.
  */
-export function decodeLadder(token: string): LadderDraw | null {
+export function decodeLadder(
+  token: string,
+  resolveLegacy?: (id: string) => string | undefined,
+): LadderDraw | null {
   const json = fromBase64Url(token);
   if (json === null) return null;
 
@@ -67,10 +78,18 @@ export function decodeLadder(token: string): LadderDraw | null {
   const { p, w, s } = parsed as Record<string, unknown>;
 
   if (!Array.isArray(p) || p.length < MIN_LEGS || p.length > MAX_LEGS) return null;
-  if (!p.every(id => typeof id === "string" && PLACE_ID_RE.test(id))) return null;
-  if (new Set(p).size !== p.length) return null;
-  if (typeof w !== "number" || !Number.isInteger(w) || w < 0 || w >= p.length) return null;
+  if (!p.every(id => typeof id === "string")) return null;
+
+  // 옛 토큰은 통째로 옛 id 다. 하나라도 해석 못 하면 섞인 결과를 만들지 않고
+  // 통째로 버린다 — 반만 맞는 후보 목록을 보여주는 쪽이 더 나쁘다.
+  const ids = (p as string[]).map(id =>
+    PLACE_ID_RE.test(id) ? id : resolveLegacy?.(id));
+  if (!ids.every((id): id is string => typeof id === "string" && PLACE_ID_RE.test(id))) {
+    return null;
+  }
+  if (new Set(ids).size !== ids.length) return null;
+  if (typeof w !== "number" || !Number.isInteger(w) || w < 0 || w >= ids.length) return null;
   if (typeof s !== "number" || !Number.isFinite(s)) return null;
 
-  return { placeIds: p as string[], winner: w, seed: s };
+  return { placeIds: ids, winner: w, seed: s };
 }

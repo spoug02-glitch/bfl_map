@@ -59,6 +59,15 @@ export type OwnBlogLinks = Record<string, BlogLink>;
 export const PLACE_ID_RE = /^\d{7}-\d{3}-\d{4}-\d{5}$/;
 
 /**
+ * 2026-08-27 이전의 신원, 즉 카카오 place_id. 순수 숫자다.
+ *
+ * **입력 검증에는 쓰지 않는다.** 이 값을 받아주는 곳은 `/place/[id]` 라우트
+ * 하나뿐이고, 거기서도 `resolveLegacyPlaceId` 로 새 id 를 찾아 **리다이렉트**할
+ * 뿐 그대로 통과시키지 않는다. API·토큰은 `PLACE_ID_RE` 만 본다.
+ */
+export const LEGACY_PLACE_ID_RE = /^\d{1,20}$/;
+
+/**
  * 카카오 panel3은 **가격 미공개를 `-1`로** 준다 — 수집한 메뉴 20,560개 중 5,132개가
  * 그렇고, 빈 문자열도 121개 온다. 문자열 truthy 검사만 하면 화면에 `-1원`이 찍힌다.
  * 가격이 실제 숫자일 때만 표기하고, 아니면 null을 돌려 호출부가 아예 빼도록 한다.

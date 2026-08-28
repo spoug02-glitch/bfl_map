@@ -24,17 +24,35 @@ type Stats = {
   /** 최근 7일에 왔고 그 이전에도 온 적이 있는 사람 — 신규가 아닌 사람. */
   weeklyReturning: number;
 };
-type CrawlRun = {
+/**
+ * 이력 파일에는 두 시대가 섞여 있다. 2026-08-27 전 실행은 제로페이 명부를 크롤해
+ * 카카오로 매칭하던 시절이라 매칭·반경밖 숫자를 남겼고, 이후 실행은 인허가에서
+ * 곧장 목록을 받으므로 그런 개념 자체가 없다. `source` 로 갈라 읽는다 —
+ * 옛 필드를 그대로 그리면 새 실행 네 줄이 전부 `undefined/undefined/…` 로 나온다.
+ */
+type PermitRun = {
+  source: "permit";
   startedAt: string;
   finishedAt: string;
   districts: string[];
-  codes: string[];
+  places: number;
+  zeropayFlagged: number;
+  zeropayUnmatched: number;
+  /** 이 실행이 제로페이를 실제로 조회했는지. `--skip-zeropay` 면 false. */
+  zeropayChecked?: boolean;
+};
+type LegacyRun = {
+  source?: undefined;
+  startedAt: string;
+  finishedAt: string;
+  districts: string[];
   crawled: number;
   matched: number;
   unresolved: number;
   outOfRadius: number;
   duplicates: number;
 };
+type CrawlRun = PermitRun | LegacyRun;
 
 const DURATIONS = [
   { label: "1시간", value: "1h" },
@@ -264,7 +282,7 @@ export default function AdminDashboard({ role }: { role: "super_admin" | "operat
                 <tr>
                   <th className="px-3 py-2 font-medium">실행 시각</th>
                   <th className="px-3 py-2 font-medium">지역</th>
-                  <th className="px-3 py-2 font-medium">수집/매칭/미해결/반경밖/중복</th>
+                  <th className="px-3 py-2 font-medium">수집 결과</th>
                 </tr>
               </thead>
               <tbody>
@@ -275,7 +293,20 @@ export default function AdminDashboard({ role }: { role: "super_admin" | "operat
                     </td>
                     <td className="px-3 py-2 text-on-surface-variant">{run.districts.join(", ")}</td>
                     <td className="px-3 py-2 text-on-surface-variant">
-                      {run.crawled}/{run.matched}/{run.unresolved}/{run.outOfRadius}/{run.duplicates}
+                      {run.source === "permit" ? (
+                        <>
+                          {run.places.toLocaleString()}곳 · 제로페이 {run.zeropayFlagged.toLocaleString()}
+                          {" "}(미매칭 {run.zeropayUnmatched.toLocaleString()})
+                          {/* 플래그를 아예 안 매긴 실행이다. 표시하지 않으면 제로페이 0 을
+                              "이 동네에 되는 집이 없다"로 읽게 된다. */}
+                          {run.zeropayChecked === false && (
+                            <span className="ml-1 font-medium text-error">플래그 미확인</span>
+                          )}
+                        </>
+                      ) : (
+                        <>수집 {run.crawled}/매칭 {run.matched}/미해결 {run.unresolved}
+                          /반경밖 {run.outOfRadius}/중복 {run.duplicates}</>
+                      )}
                     </td>
                   </tr>
                 ))}

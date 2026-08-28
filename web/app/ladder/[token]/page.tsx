@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import RouletteResult from "@/components/RouletteResult";
-import { OG_CARD_PATH } from "@/lib/constants";
+import { OG_CARD_PATH, SERVICE } from "@/lib/constants";
 import { decodeLadder } from "@/lib/ladder-link";
+import { resolveLegacyPlaceId } from "@/lib/place-index";
 import type { ShareSubject } from "@/lib/share-copy";
 import shareIndex from "@/lib/share-index.json";
 
@@ -20,10 +21,10 @@ function nameOf(placeId: string): string | null {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { token } = await params;
-  const draw = decodeLadder(token);
+  const draw = decodeLadder(token, resolveLegacyPlaceId);
   const winner = draw ? nameOf(draw.placeIds[draw.winner]) : null;
   if (!draw || !winner) {
-    return { title: SITE_NAME, description: "창동씨드큐브 반경 5km 비플페이(제로페이) 맛집 지도" };
+    return { title: SITE_NAME, description: SERVICE.description };
   }
   const title = `오늘 점심은 ${winner}`;
   const description = `후보 ${draw.placeIds.length}곳 중에 룰렛으로 정했어요`;
@@ -40,5 +41,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function LadderPage({ params }: Props) {
   const { token } = await params;
-  return <RouletteResult draw={decodeLadder(token)} />;
+  // 옛 토큰(카카오 id)도 읽는다. 서버에서만 해석해 176KB 표를 브라우저에 안 싣는다.
+  return <RouletteResult draw={decodeLadder(token, resolveLegacyPlaceId)} />;
 }

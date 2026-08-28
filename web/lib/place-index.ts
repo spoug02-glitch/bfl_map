@@ -1,5 +1,6 @@
-import { PLACE_ID_RE } from "@/lib/constants";
+import { LEGACY_PLACE_ID_RE, PLACE_ID_RE } from "@/lib/constants";
 import type { ShareSubject } from "@/lib/share-copy";
+import legacyPlaceIds from "@/lib/legacy-place-ids.json";
 import shareIndex from "@/lib/share-index.json";
 
 /**
@@ -17,6 +18,7 @@ export type PlaceIndexEntry = ShareSubject & {
 };
 
 const index = shareIndex as Record<string, PlaceIndexEntry>;
+const legacyIds = legacyPlaceIds as Record<string, string>;
 
 /**
  * 경로 파라미터는 누구나 아무 값이나 넣을 수 있다. 평범한 객체 조회는 `__proto__`나
@@ -27,4 +29,23 @@ const index = shareIndex as Record<string, PlaceIndexEntry>;
 export function lookupPlace(id: string): PlaceIndexEntry | undefined {
   if (!PLACE_ID_RE.test(id)) return undefined;
   return Object.hasOwn(index, id) ? index[id] : undefined;
+}
+
+/**
+ * 2026-08-27 전에 뿌려진 `/place/<카카오숫자id>` 링크를 새 관리번호로 옮긴다.
+ *
+ * 그 주소들은 남의 채팅방에 박혀 있고 검색 색인과 무관하게 계속 열린다 —
+ * `place-url.ts` 가 *"이 경로가 끊기면 남의 채팅방에 있는 링크가 죽는다"* 고
+ * 이미 경고하던 그 문제다. 신원이 관리번호로 바뀌면서 실제로 끊겼고, 이 함수가
+ * 그걸 잇는다.
+ *
+ * 옛 id 를 아는 가게는 11,565곳 중 4,857곳뿐이다. 나머지는 애초에 그 시절
+ * 지도에 없던 가게라 옛 링크가 존재할 수 없다.
+ *
+ * **`PLACE_ID_RE` 는 느슨하게 만들지 않았다.** API 본문·사다리 토큰은 새 형식만
+ * 받아야 한다. 옛 id 는 오직 이 경로에서만, 그것도 새 id 로 바꿔서 넘긴다.
+ */
+export function resolveLegacyPlaceId(id: string): string | undefined {
+  if (!LEGACY_PLACE_ID_RE.test(id)) return undefined;
+  return Object.hasOwn(legacyIds, id) ? legacyIds[id] : undefined;
 }

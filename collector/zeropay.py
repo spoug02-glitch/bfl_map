@@ -38,6 +38,10 @@ CONVENIENCE_CODES: dict[str, str] = {
 MAX_RETRIES = 2
 
 
+class IncompleteZeropayCrawl(RuntimeError):
+    """제로페이가 TOTAL_CNT 보다 적게 줬다. 부분 결과로 플래그를 매기면 안 된다."""
+
+
 def _build_body(gu: str, biz_type_cd: str, page: int, page_size: int) -> str:
     payload = {
         "AFLT_ADDR_CITY": "서울특별시",
@@ -123,16 +127,23 @@ def iter_all_merchants(gu: str, biz_type_cd: str, delay_sec: float = 0.3, page_s
     _fetch_all_pages remains a fallback for any set larger than one page.
 
     Completeness guarantee: the number of rows RECEIVED is compared against
-    the server's TOTAL_CNT. If short, the whole fetch is retried once; if
-    still short, a warning is printed (partial data beats a dead run) and the
-    partial result is yielded as-is. Judging on received rather than unique
-    rows matters: the source data contains exact duplicate listings, so a
-    unique-count comparison would report every such category as incomplete
-    and retry it on every run forever."""
+    the server's TOTAL_CNT. If short, the whole fetch is retried once; if it is
+    still short, **IncompleteZeropayCrawl is raised.** Judging on received
+    rather than unique rows matters: the source data contains exact duplicate
+    listings, so a unique-count comparison would report every such category as
+    incomplete and retry it on every run forever.
+
+    > 2026-08-28에 바뀜. 원래는 경고만 찍고 부분 결과를 그대로 내보냈고, 이유는
+    > *"partial data beats a dead run"* 이었다. **제로페이가 목록이던 시절의
+    > 논리다** — 그때는 부분 목록이라도 없는 것보다 나았다. 지금 제로페이는
+    > `zeropay` 플래그만 정하므로, 덜 받아온 결과는 작은 목록이 아니라
+    > **비플페이 되는 집을 "안 된다"고 말하는 틀린 값**이 된다. 그건 이 서비스가
+    > 가진 유일한 신뢰 자산을 깎는다 → collect.py
+    """
     merchants, received, total = _fetch_all_pages(gu, biz_type_cd, delay_sec, page_size)
     if total > 0 and received < total:
         merchants, received, total = _fetch_all_pages(gu, biz_type_cd, delay_sec, page_size)
         if received < total:
-            print(f"[warn] incomplete zeropay crawl: gu={gu} code={biz_type_cd} "
-                  f"expected={total} actual={received}", flush=True)
+            raise IncompleteZeropayCrawl(
+                f"gu={gu} code={biz_type_cd} expected={total} actual={received}")
     yield from merchants

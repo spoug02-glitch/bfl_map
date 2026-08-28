@@ -39,6 +39,10 @@ STATUS_OPEN = "01"  # 영업/정상
 MAX_ROWS_PER_REQUEST = 100  # API hard cap
 MAX_RETRIES = 2
 
+
+class IncompletePermitCrawl(RuntimeError):
+    """서버가 알려준 totalCount 보다 적게 받았다. 부분 결과로 파일을 덮으면 안 된다."""
+
 # Bumped on every HTTP call so callers can see the request budget being spent.
 REQUEST_COUNT = 0
 
@@ -213,8 +217,12 @@ def iter_places(service: str, local_code: str, *, api_key: str,
         time.sleep(delay_sec)
 
     if total and received < total:
-        print(f"[warn] incomplete permit crawl: service={service} "
-              f"local={local_code} expected={total} actual={received}", flush=True)
+        # 경고가 아니라 실패다. 이 API 는 이제 가게 목록의 유일한 출처이고,
+        # collect.py 는 결과를 restaurants.json 에 **통째로 덮어쓴다** — 부분 수집을
+        # 그냥 통과시키면 배포 산출물이 조용히 줄어든다. 위키가 "--limit 스모크
+        # 테스트가 5,834곳을 19곳으로 덮어썼다"고 적어둔 바로 그 사고의 자동화판이다.
+        raise IncompletePermitCrawl(
+            f"service={service} local={local_code} expected={total} actual={received}")
     if dropped:
         print(f"[warn] {dropped} rows had no usable coordinate: "
               f"service={service} local={local_code}", flush=True)

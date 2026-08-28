@@ -140,7 +140,8 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--districts", default=",".join(permit_data.DISTRICTS))
     ap.add_argument("--skip-zeropay", action="store_true",
-                    help="permit data only; every zeropay flag comes out False")
+                    help="permit data only. 모든 zeropay 가 False 로 나가므로 "
+                         "개발용이지 배포용이 아니다")
     args = ap.parse_args()
     districts = [d.strip() for d in args.districts.split(",") if d.strip()]
     api_key = _read_api_key()
@@ -148,8 +149,15 @@ def main() -> None:
     places: list[dict] = []
     for service, label in permit_data.SERVICES.items():
         for gu in districts:
-            got = list(permit_data.iter_places(
-                service, permit_data.DISTRICTS[gu], api_key=api_key))
+            try:
+                got = list(permit_data.iter_places(
+                    service, permit_data.DISTRICTS[gu], api_key=api_key))
+            except permit_data.IncompletePermitCrawl as e:
+                # 여기서 죽는 것이 restaurants.json 을 줄어든 목록으로 덮는 것보다 낫다.
+                # 기존 파일은 손대지 않은 채 남는다.
+                raise SystemExit(
+                    f"[중단] 인허가 API 가 온전히 응답하지 않았다: {e}\n"
+                    "restaurants.json 은 건드리지 않았다. 잠시 뒤 다시 돌릴 것.") from e
             print(f"[permit] {label} / {gu}: {len(got):,}")
             places += got
     print(f"[permit] total: {len(places):,} ({permit_data.REQUEST_COUNT} requests)")
@@ -161,7 +169,16 @@ def main() -> None:
         codes = {**zeropay.FOOD_CODES, **zeropay.CONVENIENCE_CODES}
         for gu in districts:
             for code in codes:
-                merchants += list(zeropay.iter_all_merchants(gu, code))
+                try:
+                    merchants += list(zeropay.iter_all_merchants(gu, code))
+                except zeropay.IncompleteZeropayCrawl as e:
+                    # 인허가 쪽과 같은 이유로 여기서 죽는다. 덜 받아온 명부로
+                    # 플래그를 매기면 비플페이 되는 집이 "안 된다"고 나간다.
+                    raise SystemExit(
+                        f"[중단] 제로페이가 온전히 응답하지 않았다: {e}\n"
+                        "restaurants.json 은 건드리지 않았다. 잠시 뒤 다시 돌릴 것.\n"
+                        "플래그 없이 목록만 갱신할 거면 --skip-zeropay 를 쓸 것 "
+                        "(그 경우 모든 zeropay 가 false 로 나가므로 배포하면 안 된다).") from e
         print(f"[zeropay] merchants: {len(merchants):,}")
         zeropay_ids, unmatched = zeropay_flag.flag(places, merchants)
         print(f"[zeropay] flagged {len(zeropay_ids):,} places; "
@@ -192,6 +209,9 @@ def main() -> None:
         "places": len(rows),
         "zeropayFlagged": flagged,
         "zeropayUnmatched": len(unmatched),
+        # 플래그가 실제로 매겨졌는지. --skip-zeropay 로 만든 산출물을 나중에
+        # "제로페이 되는 집이 하나도 없네"로 오해하지 않게 이력에 남긴다.
+        "zeropayChecked": not args.skip_zeropay,
         "apiRequests": permit_data.REQUEST_COUNT,
     })
 

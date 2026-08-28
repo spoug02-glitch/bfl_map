@@ -43,3 +43,16 @@ writeFileSync(out, JSON.stringify(index), "utf8");
 
 const kb = (readFileSync(out).length / 1024).toFixed(0);
 console.log(`share index: ${Object.keys(index).length} places, ${kb}KB -> lib/share-index.json`);
+
+// 옛 카카오 id -> 관리번호. 2026-08-27 전에 뿌려진 /place/<숫자> 링크가
+// 남의 채팅방에 박혀 있어서, 그걸 새 주소로 넘겨주려면 이 표가 필요하다.
+// 서버 라우트만 읽는다 — 클라이언트는 restaurants.json 에 이미 두 id 가
+// 다 있으므로 따로 실을 이유가 없다.
+const legacy = {};
+for (const r of restaurants) {
+  if (r.kakao_place_id) legacy[r.kakao_place_id] = r.place_id;
+}
+const legacyOut = join(web, "lib/legacy-place-ids.json");
+writeFileSync(legacyOut, JSON.stringify(legacy), "utf8");
+const legacyKb = (readFileSync(legacyOut).length / 1024).toFixed(0);
+console.log(`legacy ids: ${Object.keys(legacy).length} -> lib/legacy-place-ids.json (${legacyKb}KB)`);

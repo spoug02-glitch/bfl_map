@@ -187,10 +187,15 @@ def test_iter_all_merchants_retries_once_and_recovers(monkeypatch, capsys):
     assert "[warn]" not in out
 
 
-def test_iter_all_merchants_permanently_short_yields_partial_and_warns(monkeypatch, capsys):
-    """(c) A server that stays short even after the retry still yields what
-    it has (partial beats nothing) AND emits a clear warning naming gu,
-    code, expected and actual counts."""
+def test_iter_all_merchants_permanently_short_raises(monkeypatch):
+    """(c) 재시도 뒤에도 짧으면 **예외를 던진다.**
+
+    2026-08-28에 바뀌었다. 원래는 부분 결과를 그대로 내보내고 경고만 찍었고,
+    이유는 "partial beats nothing" 이었다 — 제로페이가 가게 목록이던 시절의
+    논리다. 지금 제로페이는 `zeropay` 플래그만 정하므로 덜 받아온 결과는 작은
+    목록이 아니라 **비플페이 되는 집을 "안 된다"고 말하는 틀린 값**이 된다.
+    collect.py 가 이 예외를 받아 restaurants.json 을 건드리지 않고 죽는다.
+    """
 
     def fake_fetch(gu, code, page, page_size=1000):
         if page == 1:
@@ -201,13 +206,12 @@ def test_iter_all_merchants_permanently_short_yields_partial_and_warns(monkeypat
         return {"TOTAL_CNT": 3, "PAGE_SIZE": page_size, "LIST2": []}
 
     monkeypatch.setattr(zeropay, "fetch_merchants", fake_fetch)
-    got = list(zeropay.iter_all_merchants("도봉구", "56111", delay_sec=0))
-    assert [m["name"] for m in got] == ["가게A", "가게B"]
-    out = capsys.readouterr().out
-    assert "도봉구" in out
-    assert "56111" in out
-    assert "expected=3" in out
-    assert "actual=2" in out
+    with pytest.raises(zeropay.IncompleteZeropayCrawl) as e:
+        list(zeropay.iter_all_merchants("도봉구", "56111", delay_sec=0))
+    # 어느 구·어느 코드가 얼마나 모자랐는지 메시지에 남아야 사람이 판단할 수 있다.
+    msg = str(e.value)
+    assert "도봉구" in msg and "56111" in msg
+    assert "expected=3" in msg and "actual=2" in msg
 
 
 def test_iter_all_merchants_dedupes_repeated_rows_across_pages(monkeypatch):

@@ -143,7 +143,9 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
       setAll(data);
       const id = initialPlaceId ?? placeIdFromUrl(window.location.pathname, window.location.search);
       if (!id) return;
-      const found = data.find(r => r.place_id === id);
+      // 옛 카카오 id 로도 찾는다 — `/?place=<숫자>` 는 서버 리다이렉트를 안 타고
+      // 여기까지 온다. restaurants.json 에 두 id 가 다 있어 파일을 더 실을 필요는 없다.
+      const found = data.find(r => r.place_id === id || r.kakao_place_id === id);
       if (found) {
         showPlace(found, "shared_link");
         setPinned(found);
@@ -301,7 +303,12 @@ export default function MapApp({ initialPlaceId }: { initialPlaceId?: string }) 
     if (all.length === 0) return;
     const sync = () => {
       const id = placeIdFromUrl(window.location.pathname, window.location.search);
-      const found = id ? all.find(r => r.place_id === id) : undefined;
+      // 옛 카카오 id 도 받아준다. /place/ 경로는 서버가 리다이렉트하지만
+      // `/?place=<숫자>` 는 클라이언트에서만 읽히고, restaurants.json 에 두 id 가
+      // 다 있으므로 여기서 해석하면 파일을 더 실을 필요가 없다.
+      const found = id
+        ? all.find(r => r.place_id === id || r.kakao_place_id === id)
+        : undefined;
       if (found) {
         showPlace(found, "shared_link");
         setPinned(found);

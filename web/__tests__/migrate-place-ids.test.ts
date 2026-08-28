@@ -1,5 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { TABLES, invertLegacyMap, planMoves } from "@/scripts/migrate-place-ids.mjs";
+import {
+  COMPOSITE_PK_TABLES,
+  TABLES,
+  findPkConflicts,
+  invertLegacyMap,
+  planMoves,
+} from "@/scripts/migrate-place-ids.mjs";
 
 const legacy = {
   "3090000-101-2024-00209": { kakao_place_id: "1080924210", kakao_url: "http://x/1" },
@@ -55,5 +61,42 @@ describe("TABLES", () => {
     expect(new Set(TABLES)).toEqual(
       new Set(["menu_items", "reviews", "lunch_specials", "saved_places", "reports"]),
     );
+  });
+});
+
+describe("findPkConflicts", () => {
+  const mapping = invertLegacyMap(legacy);
+
+  it("같은 사람이 옛 id 와 새 id 를 둘 다 가진 경우를 잡는다", () => {
+    // 배포와 이행 사이에 누가 같은 가게를 새 id 로 저장하면 이 상태가 된다.
+    // 그대로 UPDATE 하면 (user_id, place_id) PK 를 위반해 문장이 터진다.
+    const rows = [
+      { owner: "kakao:1", place_id: "1080924210" },
+      { owner: "kakao:1", place_id: "3090000-101-2024-00209" },
+    ];
+    expect(findPkConflicts(rows, mapping)).toEqual([
+      { owner: "kakao:1", from: "1080924210", to: "3090000-101-2024-00209" },
+    ]);
+  });
+
+  it("다른 사람이면 충돌이 아니다", () => {
+    const rows = [
+      { owner: "kakao:1", place_id: "1080924210" },
+      { owner: "kakao:2", place_id: "3090000-101-2024-00209" },
+    ];
+    expect(findPkConflicts(rows, mapping)).toEqual([]);
+  });
+
+  it("옮길 게 없으면 충돌도 없다", () => {
+    const rows = [{ owner: "kakao:1", place_id: "3090000-101-2024-00209" }];
+    expect(findPkConflicts(rows, mapping)).toEqual([]);
+  });
+});
+
+describe("COMPOSITE_PK_TABLES", () => {
+  it("복합 PK 를 가진 테이블만 담는다", () => {
+    // saved_places(user_id, place_id) · lunch_specials(place_id, user_id).
+    // 나머지는 SERIAL PK 라 충돌이 날 수 없다.
+    expect(new Set(COMPOSITE_PK_TABLES)).toEqual(new Set(["saved_places", "lunch_specials"]));
   });
 });
